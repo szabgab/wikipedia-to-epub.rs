@@ -22,7 +22,8 @@ cargo run -- examples/korea.json
 This repository is currently a single-binary Rust CLI with all implementation in `src/main.rs`.
 
 - `BookConfig`, `Metadata`, and `PageResponse` deserialize the input config and Wikipedia page dump JSON.
-- `run()` is the top-level flow: parse the config path from CLI args, read the config, load each article from `pages/`, render chapters, then write the EPUB.
+- `run()` is the top-level flow: parse the config path from CLI args, read the config, fetch each article from the Wikipedia parse API, render chapters, then write the EPUB.
+- `WikipediaApiPageSource` is the runtime article source. `FixturePageSource` is the test-only source that reads cached JSON dumps from `pages/`.
 - `find_page_path()` resolves article names to fixture files in `pages/` using several filename variants plus a normalized fallback that ignores case and punctuation.
 - `render_wikitext()` converts Wikipedia `parse.wikitext["*"]` content into simplified XHTML by stripping templates/tables and cleaning inline wiki markup before the EPUB is assembled.
 - `write_epub()` builds the final archive directly with the `zip` crate. It writes the required EPUB pieces (`mimetype`, `META-INF/container.xml`, `OEBPS/content.opf`, `OEBPS/toc.ncx`, `OEBPS/nav.xhtml`, chapter files, and a minimal stylesheet) without an external EPUB library.
@@ -30,9 +31,9 @@ This repository is currently a single-binary Rust CLI with all implementation in
 Important repo context from the docs and code together:
 
 - `examples/*.json` are book configs that drive output file name, metadata, and article order.
-- `pages/*.json` are cached Wikipedia API `parse` responses and are the current content source used by the executable and tests.
+- `pages/*.json` are cached Wikipedia API `parse` responses used by tests as offline fixtures.
 - `books/` contains generated EPUB outputs, not source inputs.
-- `README.md` mentions downloading from the live Wikipedia API, but the current implementation does not perform HTTP requests yet; it reads local dumps only.
+- `books/*.json` are the configs currently used by CI to generate books.
 
 ## Key conventions
 
@@ -46,4 +47,3 @@ Important repo context from the docs and code together:
 ## Documentation
 
 As new instructions are given to add features, change design or improve coding style, update this document as well.
-

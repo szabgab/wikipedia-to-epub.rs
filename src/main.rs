@@ -10,6 +10,7 @@ use std::{
 
 use html_escape::{decode_html_entities, encode_text};
 use regex::Regex;
+use reqwest::blocking::Client;
 use serde::Deserialize;
 use zip::{
     CompressionMethod, ZipWriter,
@@ -17,11 +18,14 @@ use zip::{
 };
 
 type AppResult<T> = Result<T, AppError>;
+const WIKIPEDIA_PARSE_API_URL: &str = "https://en.wikipedia.org/w/api.php";
+const USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"));
 
 #[derive(Debug)]
 enum AppError {
     Io(std::io::Error),
     Json(serde_json::Error),
+    Http(reqwest::Error),
     Zip(zip::result::ZipError),
     Message(String),
 }
@@ -31,6 +35,7 @@ impl Display for AppError {
         match self {
             Self::Io(err) => write!(f, "{err}"),
             Self::Json(err) => write!(f, "{err}"),
+            Self::Http(err) => write!(f, "{err}"),
             Self::Zip(err) => write!(f, "{err}"),
             Self::Message(message) => write!(f, "{message}"),
         }
@@ -48,6 +53,12 @@ impl From<std::io::Error> for AppError {
 impl From<serde_json::Error> for AppError {
     fn from(value: serde_json::Error) -> Self {
         Self::Json(value)
+    }
+}
+
+impl From<reqwest::Error> for AppError {
+    fn from(value: reqwest::Error) -> Self {
+        Self::Http(value)
     }
 }
 
@@ -98,6 +109,69 @@ struct Chapter {
     content: String,
 }
 
+trait PageSource {
+    fn load_page(&self, article: &str) -> AppResult<PageResponse>;
+}
+
+struct WikipediaApiPageSource {
+    client: Client,
+}
+
+impl WikipediaApiPageSource {
+    fn new() -> AppResult<Self> {
+        let client = Client::builder().user_agent(USER_AGENT).build()?;
+        Ok(Self { client })
+    }
+}
+
+impl PageSource for WikipediaApiPageSource {
+    fn load_page(&self, article: &str) -> AppResult<PageResponse> {
+        let response = self
+            .client
+            .get(WIKIPEDIA_PARSE_API_URL)
+            .query(&[
+                ("action", "parse"),
+                ("prop", "wikitext"),
+                ("redirects", "true"),
+                ("format", "json"),
+                ("page", article),
+            ])
+            .send()?
+            .error_for_status()?;
+
+        let payload = response.text()?;
+        let page = serde_json::from_str::<PageResponse>(&payload).map_err(|err| {
+            AppError::Message(format!(
+                "failed to parse Wikipedia response for '{article}': {err}"
+            ))
+        })?;
+
+        Ok(page)
+    }
+}
+
+#[cfg(test)]
+struct FixturePageSource {
+    pages_dir: PathBuf,
+}
+
+#[cfg(test)]
+impl FixturePageSource {
+    fn new(pages_dir: impl Into<PathBuf>) -> Self {
+        Self {
+            pages_dir: pages_dir.into(),
+        }
+    }
+}
+
+#[cfg(test)]
+impl PageSource for FixturePageSource {
+    fn load_page(&self, article: &str) -> AppResult<PageResponse> {
+        let page_path = find_page_path(article, &self.pages_dir)?;
+        read_json::<PageResponse>(&page_path)
+    }
+}
+
 fn main() {
     if let Err(err) = run() {
         eprintln!("error: {err}");
@@ -108,26 +182,19 @@ fn main() {
 fn run() -> AppResult<()> {
     let config_path = parse_args()?;
     let config = read_json::<BookConfig>(&config_path)?;
-    let pages_dir = Path::new("pages");
-
-    if !pages_dir.is_dir() {
-        return Err(AppError::Message(format!(
-            "pages directory not found: {}",
-            pages_dir.display()
-        )));
-    }
-
     if config.articles.is_empty() {
         return Err(AppError::Message(
             "the configuration must contain at least one article".to_string(),
         ));
     }
 
+    let page_source = WikipediaApiPageSource::new()?;
+
     let chapters = config
         .articles
         .iter()
         .enumerate()
-        .map(|(index, article)| load_chapter(article, index + 1, pages_dir))
+        .map(|(index, article)| load_chapter(&page_source, article, index + 1))
         .collect::<AppResult<Vec<_>>>()?;
 
     write_epub(&config, &chapters)?;
@@ -159,9 +226,8 @@ fn read_json<T: for<'de> Deserialize<'de>>(path: &Path) -> AppResult<T> {
     Ok(serde_json::from_str(&content)?)
 }
 
-fn load_chapter(article: &str, index: usize, pages_dir: &Path) -> AppResult<Chapter> {
-    let page_path = find_page_path(article, pages_dir)?;
-    let page = read_json::<PageResponse>(&page_path)?;
+fn load_chapter(page_source: &impl PageSource, article: &str, index: usize) -> AppResult<Chapter> {
+    let page = page_source.load_page(article)?;
     let rendered = render_wikitext(&page.parse.title, &page.parse.wikitext.text);
 
     Ok(Chapter {
@@ -171,6 +237,7 @@ fn load_chapter(article: &str, index: usize, pages_dir: &Path) -> AppResult<Chap
     })
 }
 
+#[cfg(test)]
 fn find_page_path(article: &str, pages_dir: &Path) -> AppResult<PathBuf> {
     for candidate in article_file_candidates(article) {
         let path = pages_dir.join(candidate);
@@ -202,6 +269,7 @@ fn find_page_path(article: &str, pages_dir: &Path) -> AppResult<PathBuf> {
     )))
 }
 
+#[cfg(test)]
 fn article_file_candidates(article: &str) -> Vec<String> {
     let trimmed = article.trim();
     let lowercase = trimmed.to_lowercase();
@@ -222,6 +290,7 @@ fn article_file_candidates(article: &str) -> Vec<String> {
     .collect::<Vec<_>>()
 }
 
+#[cfg(test)]
 fn normalize_lookup_key(value: &str) -> String {
     value
         .chars()
@@ -761,5 +830,14 @@ mod tests {
     fn strip_balanced_sections_removes_nested_templates() {
         let cleaned = strip_balanced_sections("before {{a {{nested}} value}} after", "{{", "}}");
         assert_eq!(cleaned, "before  after");
+    }
+
+    #[test]
+    fn fixture_page_source_uses_local_page_dumps() {
+        let source = FixturePageSource::new("pages");
+        let page = source.load_page("Korea").expect("fixture page should load");
+
+        assert_eq!(page.parse.title, "Korea");
+        assert!(page.parse.wikitext.text.contains("East Asia"));
     }
 }
