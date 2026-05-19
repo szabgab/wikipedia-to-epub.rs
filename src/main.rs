@@ -141,7 +141,7 @@ fn parse_args() -> AppResult<PathBuf> {
     let program = args
         .next()
         .and_then(|arg| arg.into_string().ok())
-        .unwrap_or_else(|| "wikipedia2epaub".to_string());
+        .unwrap_or_else(|| "wikipedia-to-epub".to_string());
 
     let config_path = args
         .next()
@@ -714,7 +714,7 @@ fn book_identifier() -> String {
         .duration_since(UNIX_EPOCH)
         .map(|duration| duration.as_nanos())
         .unwrap_or_default();
-    format!("urn:wikipedia2epaub:{nanos}")
+    format!("urn:wikipedia-to-epub:{nanos}")
 }
 
 #[cfg(test)]

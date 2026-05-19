@@ -284,7 +284,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1292c0d970b54115d14f2492fe0170adf21d68a1de108eebc51c1df4f346a091"
 
 [[package]]
-name = "wikipedia2epaub"
+name = "wikipedia-to-epub"
 version = "0.1.0"
 dependencies = [
  "html-escape",

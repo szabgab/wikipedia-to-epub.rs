@@ -1,4 +1,4 @@
-# Copilot instructions for `wikipedia2epaub`
+# Copilot instructions for `wikipedia-to-epub`
 
 ## Build and test commands
 
