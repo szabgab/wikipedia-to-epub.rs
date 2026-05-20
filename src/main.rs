@@ -9,6 +9,7 @@ use std::{
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
 
+use clap::Parser;
 use html_escape::{decode_html_entities, encode_text};
 use regex::Regex;
 use reqwest::blocking::Client;
@@ -110,9 +111,12 @@ struct Chapter {
     content: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Parser)]
+#[command(name = "wikipedia-to-epub")]
 struct CliArgs {
+    #[arg(value_name = "config.json")]
     config_path: PathBuf,
+    #[arg(long = "local", value_name = "pages-dir")]
     local_pages_dir: Option<PathBuf>,
 }
 
@@ -219,47 +223,9 @@ fn parse_args() -> AppResult<CliArgs> {
 fn parse_args_from<I, T>(args: I) -> AppResult<CliArgs>
 where
     I: IntoIterator<Item = T>,
-    T: Into<std::ffi::OsString>,
+    T: Into<std::ffi::OsString> + Clone,
 {
-    let mut args = args.into_iter().map(Into::into);
-    let program = args
-        .next()
-        .and_then(|arg| arg.into_string().ok())
-        .unwrap_or_else(|| "wikipedia-to-epub".to_string());
-
-    let usage = format!("usage: {program} <config.json> [--local <pages-dir>]");
-    let mut config_path: Option<PathBuf> = None;
-    let mut local_pages_dir: Option<PathBuf> = None;
-
-    while let Some(arg) = args.next() {
-        if arg == "--local" {
-            let local_dir = args
-                .next()
-                .ok_or_else(|| AppError::Message(format!("missing value for --local\n{usage}")))?;
-            local_pages_dir = Some(PathBuf::from(local_dir));
-            continue;
-        }
-
-        if arg.to_string_lossy().starts_with('-') {
-            return Err(AppError::Message(format!(
-                "unknown argument: {}\n{usage}",
-                arg.to_string_lossy()
-            )));
-        }
-
-        if config_path.is_some() {
-            return Err(AppError::Message(usage));
-        }
-
-        config_path = Some(PathBuf::from(arg));
-    }
-
-    let config_path = config_path.ok_or_else(|| AppError::Message(usage.clone()))?;
-
-    Ok(CliArgs {
-        config_path,
-        local_pages_dir,
-    })
+    CliArgs::try_parse_from(args).map_err(|err| AppError::Message(err.to_string()))
 }
 
 fn read_json<T: for<'de> Deserialize<'de>>(path: &Path) -> AppResult<T> {
@@ -893,6 +859,8 @@ mod tests {
         let err = parse_args_from(["wikipedia-to-epub", "books/korea.json", "--bogus"])
             .expect_err("unknown flags should fail");
 
-        assert!(err.to_string().contains("unknown argument: --bogus"));
+        let err_message = err.to_string();
+        assert!(err_message.contains("unexpected argument"));
+        assert!(err_message.contains("--bogus"));
     }
 }
