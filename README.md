@@ -2,6 +2,7 @@ A command line tool written in Rust that given a configuration file such as `exa
 the API of Wikipedia, download the source of the specific pages, and create an `.epub` file from them.
 
 * The API URL is this: `https://en.wikipedia.org/w/api.php?action=parse&prop=wikitext&redirects=true&format=json&page=`
+* Live API fetches are throttled with a 1-second delay between requests to reduce `429 Too Many Requests` responses.
 * The book does not include any embedded or included files such as style sheets or images.
 
 There are several Wikipedia page dumps in the `pages/` folder to allow tests to run without accessing the API.

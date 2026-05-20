@@ -5,7 +5,9 @@ use std::{
     fs::{self, File},
     io::Write,
     path::{Path, PathBuf},
-    time::{SystemTime, UNIX_EPOCH},
+    sync::Mutex,
+    thread,
+    time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
 use html_escape::{decode_html_entities, encode_text};
@@ -121,17 +123,36 @@ trait PageSource {
 
 struct WikipediaApiPageSource {
     client: Client,
+    last_request_at: Mutex<Option<Instant>>,
 }
 
 impl WikipediaApiPageSource {
     fn new() -> AppResult<Self> {
         let client = Client::builder().user_agent(USER_AGENT).build()?;
-        Ok(Self { client })
+        Ok(Self {
+            client,
+            last_request_at: Mutex::new(None),
+        })
+    }
+
+    fn wait_before_next_request(&self) {
+        let minimum_interval = Duration::from_secs(1);
+        let mut last_request_at = self
+            .last_request_at
+            .lock()
+            .expect("wikipedia request timing lock should not be poisoned");
+
+        if let Some(delay) = throttle_delay(*last_request_at, Instant::now(), minimum_interval) {
+            thread::sleep(delay);
+        }
+        *last_request_at = Some(Instant::now());
     }
 }
 
 impl PageSource for WikipediaApiPageSource {
     fn load_page(&self, article: &str) -> AppResult<PageResponse> {
+        self.wait_before_next_request();
+
         let response = self
             .client
             .get(WIKIPEDIA_PARSE_API_URL)
@@ -274,6 +295,20 @@ fn load_chapter(page_source: &dyn PageSource, article: &str, index: usize) -> Ap
         title: page.parse.title,
         content: rendered,
     })
+}
+
+fn throttle_delay(
+    last_request_at: Option<Instant>,
+    now: Instant,
+    minimum_interval: Duration,
+) -> Option<Duration> {
+    let last_request_at = last_request_at?;
+    let elapsed = now.saturating_duration_since(last_request_at);
+    if elapsed < minimum_interval {
+        Some(minimum_interval - elapsed)
+    } else {
+        None
+    }
 }
 
 fn find_page_path(article: &str, pages_dir: &Path) -> AppResult<PathBuf> {
@@ -884,6 +919,25 @@ mod tests {
 
         assert_eq!(args.config_path, PathBuf::from("books/korea.json"));
         assert_eq!(args.local_pages_dir, Some(PathBuf::from("pages")));
+    }
+
+    #[test]
+    fn throttle_delay_only_waits_when_previous_request_was_recent() {
+        let interval = Duration::from_secs(1);
+        let now = Instant::now();
+        let recent = now
+            .checked_sub(Duration::from_millis(250))
+            .expect("instant should support subtracting 250ms");
+        let old = now
+            .checked_sub(Duration::from_millis(1200))
+            .expect("instant should support subtracting 1200ms");
+
+        assert_eq!(throttle_delay(None, now, interval), None);
+        assert_eq!(
+            throttle_delay(Some(recent), now, interval),
+            Some(Duration::from_millis(750))
+        );
+        assert_eq!(throttle_delay(Some(old), now, interval), None);
     }
 
     #[test]
