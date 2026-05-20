@@ -6,6 +6,11 @@ the API of Wikipedia, download the source of the specific pages, and create an `
 
 There are several Wikipedia page dumps in the `pages/` folder to allow tests to run without accessing the API.
 
+The CI workflow also generates a small GitHub Pages site that:
+
+* links to the newest generated EPUB artifact bundle
+* shows the JSON configs from `books/*.json` as examples
+
 
 ## Usage
 
