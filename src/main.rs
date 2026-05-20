@@ -9,11 +9,16 @@ use std::{
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
 
-use clap::Parser;
+use clap::{Parser, ValueEnum};
 use html_escape::{decode_html_entities, encode_text};
 use regex::Regex;
-use reqwest::blocking::Client;
+use reqwest::{
+    blocking::Client,
+    header::{HeaderMap, RETRY_AFTER},
+};
 use serde::Deserialize;
+use tracing::{Level, info, warn};
+use tracing_subscriber::fmt as tracing_fmt;
 use zip::{
     CompressionMethod, ZipWriter,
     write::{FileOptions, SimpleFileOptions},
@@ -104,11 +109,57 @@ struct WikitextValue {
     text: String,
 }
 
+#[derive(Debug, Deserialize)]
+struct WikipediaErrorResponse {
+    error: Option<WikipediaError>,
+}
+
+#[derive(Debug, Deserialize)]
+struct WikipediaError {
+    code: String,
+    info: String,
+}
+
 #[derive(Debug)]
 struct Chapter {
     file_name: String,
     title: String,
     content: String,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+enum LogLevel {
+    Error,
+    #[value(alias = "warn")]
+    Warning,
+    Info,
+    Debug,
+    Trace,
+}
+
+impl LogLevel {
+    fn tracing_level(self) -> Level {
+        match self {
+            Self::Error => Level::ERROR,
+            Self::Warning => Level::WARN,
+            Self::Info => Level::INFO,
+            Self::Debug => Level::DEBUG,
+            Self::Trace => Level::TRACE,
+        }
+    }
+}
+
+impl Display for LogLevel {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let value = match self {
+            Self::Error => "error",
+            Self::Warning => "warning",
+            Self::Info => "info",
+            Self::Debug => "debug",
+            Self::Trace => "trace",
+        };
+        write!(f, "{value}")
+    }
 }
 
 #[derive(Debug, Parser)]
@@ -118,6 +169,8 @@ struct CliArgs {
     config_path: PathBuf,
     #[arg(long = "local", value_name = "pages-dir")]
     local_pages_dir: Option<PathBuf>,
+    #[arg(long = "log", value_name = "level", default_value_t = LogLevel::Warning)]
+    log_level: LogLevel,
 }
 
 trait PageSource {
@@ -147,15 +200,39 @@ impl PageSource for WikipediaApiPageSource {
                 ("format", "json"),
                 ("page", article),
             ])
-            .send()?
-            .error_for_status()?;
+            .send()?;
 
+        let status = response.status();
+        let headers = response.headers().clone();
         let payload = response.text()?;
+        if !status.is_success() {
+            let detail = http_failure_detail(&headers, &payload);
+            if let Some(detail) = detail.as_deref() {
+                warn!(
+                    article = article,
+                    %status,
+                    detail = detail,
+                    "Wikipedia API request failed"
+                );
+            } else {
+                warn!(article = article, %status, "Wikipedia API request failed");
+            }
+
+            let mut message =
+                format!("Wikipedia API request for '{article}' failed with status {status}");
+            if let Some(detail) = detail {
+                message.push_str(": ");
+                message.push_str(&detail);
+            }
+            return Err(AppError::Message(message));
+        }
+
         let page = serde_json::from_str::<PageResponse>(&payload).map_err(|err| {
             AppError::Message(format!(
                 "failed to parse Wikipedia response for '{article}': {err}"
             ))
         })?;
+        info!(article = article, "downloaded page");
         thread::sleep(Duration::from_secs(1));
 
         Ok(page)
@@ -182,14 +259,25 @@ impl PageSource for FixturePageSource {
 }
 
 fn main() {
-    if let Err(err) = run() {
+    if let Err(err) = try_main() {
         eprintln!("error: {err}");
         std::process::exit(1);
     }
 }
 
-fn run() -> AppResult<()> {
+fn try_main() -> AppResult<()> {
     let args = parse_args()?;
+    init_logging(args.log_level);
+    info!(
+        config_path = %args.config_path.display(),
+        local_pages_dir = ?args.local_pages_dir,
+        log_level = ?args.log_level,
+        "starting wikipedia-to-epub"
+    );
+    run(args)
+}
+
+fn run(args: CliArgs) -> AppResult<()> {
     let config = read_json::<BookConfig>(&args.config_path)?;
     if config.articles.is_empty() {
         return Err(AppError::Message(
@@ -233,7 +321,15 @@ fn read_json<T: for<'de> Deserialize<'de>>(path: &Path) -> AppResult<T> {
     Ok(serde_json::from_str(&content)?)
 }
 
+fn init_logging(level: LogLevel) {
+    let _ = tracing_fmt()
+        .with_max_level(level.tracing_level())
+        .with_target(false)
+        .try_init();
+}
+
 fn load_chapter(page_source: &dyn PageSource, article: &str, index: usize) -> AppResult<Chapter> {
+    info!(article = article, "fetching article");
     let page = page_source.load_page(article)?;
     let rendered = render_wikitext(&page.parse.title, &page.parse.wikitext.text);
 
@@ -301,6 +397,28 @@ fn normalize_lookup_key(value: &str) -> String {
         .flat_map(char::to_lowercase)
         .filter(|ch| ch.is_alphanumeric())
         .collect()
+}
+
+fn http_failure_detail(headers: &HeaderMap, body: &str) -> Option<String> {
+    if let Ok(error) = serde_json::from_str::<WikipediaErrorResponse>(body)
+        && let Some(error) = error.error
+    {
+        return Some(format!("{}: {}", error.code, error.info));
+    }
+
+    let body = body.split_whitespace().collect::<Vec<_>>().join(" ");
+    if !body.is_empty() {
+        let mut shortened = body.chars().take(240).collect::<String>();
+        if body.chars().count() > 240 {
+            shortened.push('…');
+        }
+        return Some(shortened);
+    }
+
+    headers
+        .get(RETRY_AFTER)
+        .and_then(|value| value.to_str().ok())
+        .map(|value| format!("retry-after: {value}"))
 }
 
 fn render_wikitext(title: &str, wikitext: &str) -> String {
@@ -793,6 +911,7 @@ fn book_identifier() -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use reqwest::header::HeaderValue;
 
     #[test]
     fn article_candidates_cover_common_file_names() {
@@ -852,6 +971,15 @@ mod tests {
 
         assert_eq!(args.config_path, PathBuf::from("books/korea.json"));
         assert_eq!(args.local_pages_dir, Some(PathBuf::from("pages")));
+        assert_eq!(args.log_level, LogLevel::Warning);
+    }
+
+    #[test]
+    fn parse_args_accepts_explicit_log_level() {
+        let args = parse_args_from(["wikipedia-to-epub", "books/korea.json", "--log", "debug"])
+            .expect("args should parse");
+
+        assert_eq!(args.log_level, LogLevel::Debug);
     }
 
     #[test]
@@ -862,5 +990,25 @@ mod tests {
         let err_message = err.to_string();
         assert!(err_message.contains("unexpected argument"));
         assert!(err_message.contains("--bogus"));
+    }
+
+    #[test]
+    fn http_failure_detail_prefers_wikipedia_error_body() {
+        let detail = http_failure_detail(
+            &HeaderMap::new(),
+            r#"{"error":{"code":"ratelimited","info":"Slow down"}}"#,
+        );
+
+        assert_eq!(detail.as_deref(), Some("ratelimited: Slow down"));
+    }
+
+    #[test]
+    fn http_failure_detail_falls_back_to_retry_after_header() {
+        let mut headers = HeaderMap::new();
+        headers.insert(RETRY_AFTER, HeaderValue::from_static("60"));
+
+        let detail = http_failure_detail(&headers, "");
+
+        assert_eq!(detail.as_deref(), Some("retry-after: 60"));
     }
 }
