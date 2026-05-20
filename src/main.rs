@@ -9,7 +9,7 @@ use std::{
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
 
-use clap::{Parser, ValueEnum};
+use clap::Parser;
 use html_escape::{decode_html_entities, encode_text};
 use regex::Regex;
 use reqwest::{
@@ -127,41 +127,6 @@ struct Chapter {
     content: String,
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
-enum LogLevel {
-    Error,
-    #[value(alias = "warn")]
-    Warning,
-    Info,
-    Debug,
-    Trace,
-}
-
-impl LogLevel {
-    fn tracing_level(self) -> Level {
-        match self {
-            Self::Error => Level::ERROR,
-            Self::Warning => Level::WARN,
-            Self::Info => Level::INFO,
-            Self::Debug => Level::DEBUG,
-            Self::Trace => Level::TRACE,
-        }
-    }
-}
-
-impl Display for LogLevel {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let value = match self {
-            Self::Error => "error",
-            Self::Warning => "warning",
-            Self::Info => "info",
-            Self::Debug => "debug",
-            Self::Trace => "trace",
-        };
-        write!(f, "{value}")
-    }
-}
-
 #[derive(Debug, Parser)]
 #[command(name = "wikipedia-to-epub")]
 struct CliArgs {
@@ -169,8 +134,8 @@ struct CliArgs {
     config_path: PathBuf,
     #[arg(long = "local", value_name = "pages-dir")]
     local_pages_dir: Option<PathBuf>,
-    #[arg(long = "log", value_name = "level", default_value_t = LogLevel::Warning)]
-    log_level: LogLevel,
+    #[arg(long = "log", value_name = "level", default_value_t = Level::WARN)]
+    log_level: Level,
 }
 
 trait PageSource {
@@ -321,9 +286,9 @@ fn read_json<T: for<'de> Deserialize<'de>>(path: &Path) -> AppResult<T> {
     Ok(serde_json::from_str(&content)?)
 }
 
-fn init_logging(level: LogLevel) {
+fn init_logging(level: Level) {
     let _ = tracing_fmt()
-        .with_max_level(level.tracing_level())
+        .with_max_level(level)
         .with_target(false)
         .try_init();
 }
@@ -971,7 +936,7 @@ mod tests {
 
         assert_eq!(args.config_path, PathBuf::from("books/korea.json"));
         assert_eq!(args.local_pages_dir, Some(PathBuf::from("pages")));
-        assert_eq!(args.log_level, LogLevel::Warning);
+        assert_eq!(args.log_level, Level::WARN);
     }
 
     #[test]
@@ -979,7 +944,7 @@ mod tests {
         let args = parse_args_from(["wikipedia-to-epub", "books/korea.json", "--log", "debug"])
             .expect("args should parse");
 
-        assert_eq!(args.log_level, LogLevel::Debug);
+        assert_eq!(args.log_level, Level::DEBUG);
     }
 
     #[test]
