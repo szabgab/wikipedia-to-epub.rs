@@ -17,6 +17,12 @@ Run the CLI with the sample config:
 cargo run -- examples/korea.json
 ```
 
+Generate the GitHub Pages index locally:
+
+```bash
+python scripts/generate_site.py --artifact-url https://github.com/szabgab/wikipedia-to-epub.rs/actions
+```
+
 ## High-level architecture
 
 This repository is currently a single-binary Rust CLI with all implementation in `src/main.rs`.
@@ -27,13 +33,13 @@ This repository is currently a single-binary Rust CLI with all implementation in
 - `find_page_path()` resolves article names to fixture files in `pages/` using several filename variants plus a normalized fallback that ignores case and punctuation.
 - `render_wikitext()` converts Wikipedia `parse.wikitext["*"]` content into simplified XHTML by stripping templates/tables and cleaning inline wiki markup before the EPUB is assembled.
 - `write_epub()` builds the final archive directly with the `zip` crate. It writes the required EPUB pieces (`mimetype`, `META-INF/container.xml`, `OEBPS/content.opf`, `OEBPS/toc.ncx`, `OEBPS/nav.xhtml`, chapter files, and a minimal stylesheet) without an external EPUB library.
+- `scripts/generate_site.py` renders `templates/site/index.html.j2` with Jinja to publish a GitHub Pages index from the `books/*.json` configs and the latest artifact URL.
 
 Important repo context from the docs and code together:
 
 - `examples/*.json` are book configs that drive output file name, metadata, and article order.
 - `pages/*.json` are cached Wikipedia API `parse` responses used by tests as offline fixtures.
-- `books/` contains generated EPUB outputs, not source inputs.
-- `books/*.json` are the configs currently used by CI to generate books.
+- `books/*.json` are the configs currently used by CI both for generating books and for publishing site examples.
 
 ## Key conventions
 
