@@ -26,7 +26,12 @@ use zip::{
 
 type AppResult<T> = Result<T, AppError>;
 const WIKIPEDIA_PARSE_API_URL: &str = "https://en.wikipedia.org/w/api.php";
-const USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"));
+const USER_AGENT: &str = concat!(
+    env!("CARGO_PKG_NAME"),
+    "/",
+    env!("CARGO_PKG_VERSION"),
+    " (https://github.com/szabgab/wikipedia-to-epub.rs; contact: https://github.com/szabgab/wikipedia-to-epub.rs/issues)"
+);
 
 #[derive(Debug)]
 enum AppError {
@@ -975,5 +980,12 @@ mod tests {
         let detail = http_failure_detail(&headers, "");
 
         assert_eq!(detail.as_deref(), Some("retry-after: 60"));
+    }
+
+    #[test]
+    fn user_agent_includes_contact_information() {
+        assert!(USER_AGENT.contains('/'));
+        assert!(USER_AGENT.contains("github.com/szabgab/wikipedia-to-epub.rs"));
+        assert!(USER_AGENT.contains("contact:"));
     }
 }
