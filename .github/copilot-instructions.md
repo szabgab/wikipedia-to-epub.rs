@@ -15,6 +15,7 @@ Run the CLI with the sample config:
 
 ```bash
 cargo run -- examples/korea.json
+cargo run -- examples/korea.json --local pages
 ```
 
 Generate the GitHub Pages index locally:
@@ -28,8 +29,8 @@ python scripts/generate_site.py --artifact-url https://github.com/szabgab/wikipe
 This repository is currently a single-binary Rust CLI with all implementation in `src/main.rs`.
 
 - `BookConfig`, `Metadata`, and `PageResponse` deserialize the input config and Wikipedia page dump JSON.
-- `run()` is the top-level flow: parse the config path from CLI args, read the config, fetch each article from the Wikipedia parse API, render chapters, then write the EPUB.
-- `WikipediaApiPageSource` is the runtime article source. `FixturePageSource` is the test-only source that reads cached JSON dumps from `pages/`.
+- `run()` is the top-level flow: parse the config path and optional `--local <dir>` flag, read the config, load each article from either the Wikipedia parse API or the specified local fixture directory, render chapters, then write the EPUB.
+- `WikipediaApiPageSource` is the default runtime article source. `FixturePageSource` is used both by tests and by `--local` runs to read cached JSON dumps from disk.
 - `find_page_path()` resolves article names to fixture files in `pages/` using several filename variants plus a normalized fallback that ignores case and punctuation.
 - `render_wikitext()` converts Wikipedia `parse.wikitext["*"]` content into simplified XHTML by stripping templates/tables and cleaning inline wiki markup before the EPUB is assembled.
 - `write_epub()` builds the final archive directly with the `zip` crate. It writes the required EPUB pieces (`mimetype`, `META-INF/container.xml`, `OEBPS/content.opf`, `OEBPS/toc.ncx`, `OEBPS/nav.xhtml`, chapter files, and a minimal stylesheet) without an external EPUB library.

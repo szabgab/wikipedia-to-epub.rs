@@ -109,6 +109,12 @@ struct Chapter {
     content: String,
 }
 
+#[derive(Debug)]
+struct CliArgs {
+    config_path: PathBuf,
+    local_pages_dir: Option<PathBuf>,
+}
+
 trait PageSource {
     fn load_page(&self, article: &str) -> AppResult<PageResponse>;
 }
@@ -150,12 +156,10 @@ impl PageSource for WikipediaApiPageSource {
     }
 }
 
-#[cfg(test)]
 struct FixturePageSource {
     pages_dir: PathBuf,
 }
 
-#[cfg(test)]
 impl FixturePageSource {
     fn new(pages_dir: impl Into<PathBuf>) -> Self {
         Self {
@@ -164,7 +168,6 @@ impl FixturePageSource {
     }
 }
 
-#[cfg(test)]
 impl PageSource for FixturePageSource {
     fn load_page(&self, article: &str) -> AppResult<PageResponse> {
         let page_path = find_page_path(article, &self.pages_dir)?;
@@ -180,21 +183,25 @@ fn main() {
 }
 
 fn run() -> AppResult<()> {
-    let config_path = parse_args()?;
-    let config = read_json::<BookConfig>(&config_path)?;
+    let args = parse_args()?;
+    let config = read_json::<BookConfig>(&args.config_path)?;
     if config.articles.is_empty() {
         return Err(AppError::Message(
             "the configuration must contain at least one article".to_string(),
         ));
     }
 
-    let page_source = WikipediaApiPageSource::new()?;
+    let page_source: Box<dyn PageSource> = if let Some(pages_dir) = args.local_pages_dir {
+        Box::new(FixturePageSource::new(pages_dir))
+    } else {
+        Box::new(WikipediaApiPageSource::new()?)
+    };
 
     let chapters = config
         .articles
         .iter()
         .enumerate()
-        .map(|(index, article)| load_chapter(&page_source, article, index + 1))
+        .map(|(index, article)| load_chapter(page_source.as_ref(), article, index + 1))
         .collect::<AppResult<Vec<_>>>()?;
 
     write_epub(&config, &chapters)?;
@@ -203,22 +210,54 @@ fn run() -> AppResult<()> {
     Ok(())
 }
 
-fn parse_args() -> AppResult<PathBuf> {
-    let mut args = env::args_os();
+fn parse_args() -> AppResult<CliArgs> {
+    parse_args_from(env::args_os())
+}
+
+fn parse_args_from<I, T>(args: I) -> AppResult<CliArgs>
+where
+    I: IntoIterator<Item = T>,
+    T: Into<std::ffi::OsString>,
+{
+    let mut args = args.into_iter().map(Into::into);
     let program = args
         .next()
         .and_then(|arg| arg.into_string().ok())
         .unwrap_or_else(|| "wikipedia-to-epub".to_string());
 
-    let config_path = args
-        .next()
-        .ok_or_else(|| AppError::Message(format!("usage: {program} <config.json>")))?;
+    let usage = format!("usage: {program} <config.json> [--local <pages-dir>]");
+    let mut config_path: Option<PathBuf> = None;
+    let mut local_pages_dir: Option<PathBuf> = None;
 
-    if args.next().is_some() {
-        return Err(AppError::Message(format!("usage: {program} <config.json>")));
+    while let Some(arg) = args.next() {
+        if arg == "--local" {
+            let local_dir = args
+                .next()
+                .ok_or_else(|| AppError::Message(format!("missing value for --local\n{usage}")))?;
+            local_pages_dir = Some(PathBuf::from(local_dir));
+            continue;
+        }
+
+        if arg.to_string_lossy().starts_with('-') {
+            return Err(AppError::Message(format!(
+                "unknown argument: {}\n{usage}",
+                arg.to_string_lossy()
+            )));
+        }
+
+        if config_path.is_some() {
+            return Err(AppError::Message(usage));
+        }
+
+        config_path = Some(PathBuf::from(arg));
     }
 
-    Ok(PathBuf::from(config_path))
+    let config_path = config_path.ok_or_else(|| AppError::Message(usage.clone()))?;
+
+    Ok(CliArgs {
+        config_path,
+        local_pages_dir,
+    })
 }
 
 fn read_json<T: for<'de> Deserialize<'de>>(path: &Path) -> AppResult<T> {
@@ -226,7 +265,7 @@ fn read_json<T: for<'de> Deserialize<'de>>(path: &Path) -> AppResult<T> {
     Ok(serde_json::from_str(&content)?)
 }
 
-fn load_chapter(page_source: &impl PageSource, article: &str, index: usize) -> AppResult<Chapter> {
+fn load_chapter(page_source: &dyn PageSource, article: &str, index: usize) -> AppResult<Chapter> {
     let page = page_source.load_page(article)?;
     let rendered = render_wikitext(&page.parse.title, &page.parse.wikitext.text);
 
@@ -237,7 +276,6 @@ fn load_chapter(page_source: &impl PageSource, article: &str, index: usize) -> A
     })
 }
 
-#[cfg(test)]
 fn find_page_path(article: &str, pages_dir: &Path) -> AppResult<PathBuf> {
     for candidate in article_file_candidates(article) {
         let path = pages_dir.join(candidate);
@@ -269,7 +307,6 @@ fn find_page_path(article: &str, pages_dir: &Path) -> AppResult<PathBuf> {
     )))
 }
 
-#[cfg(test)]
 fn article_file_candidates(article: &str) -> Vec<String> {
     let trimmed = article.trim();
     let lowercase = trimmed.to_lowercase();
@@ -290,7 +327,6 @@ fn article_file_candidates(article: &str) -> Vec<String> {
     .collect::<Vec<_>>()
 }
 
-#[cfg(test)]
 fn normalize_lookup_key(value: &str) -> String {
     value
         .chars()
@@ -839,5 +875,22 @@ mod tests {
 
         assert_eq!(page.parse.title, "Korea");
         assert!(page.parse.wikitext.text.contains("East Asia"));
+    }
+
+    #[test]
+    fn parse_args_accepts_local_pages_dir() {
+        let args = parse_args_from(["wikipedia-to-epub", "books/korea.json", "--local", "pages"])
+            .expect("args should parse");
+
+        assert_eq!(args.config_path, PathBuf::from("books/korea.json"));
+        assert_eq!(args.local_pages_dir, Some(PathBuf::from("pages")));
+    }
+
+    #[test]
+    fn parse_args_rejects_unknown_flags() {
+        let err = parse_args_from(["wikipedia-to-epub", "books/korea.json", "--bogus"])
+            .expect_err("unknown flags should fail");
+
+        assert!(err.to_string().contains("unknown argument: --bogus"));
     }
 }

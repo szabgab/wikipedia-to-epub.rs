@@ -18,6 +18,12 @@ The CI workflow also generates a small GitHub Pages site that:
 cargo run -- examples/korea.json
 ```
 
+Use local page dumps instead of downloading from Wikipedia:
+
+```bash
+cargo run -- examples/korea.json --local pages
+```
+
 The configuration file contains:
 
 ```json
