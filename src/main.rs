@@ -540,6 +540,13 @@ fn cleanup_inline_markup(line: &str) -> String {
     let bare_external_link_re = Regex::new(r"\[(https?://[^\]]+)\]").unwrap();
     text = bare_external_link_re.replace_all(&text, "$1").into_owned();
 
+    text = Regex::new(r"'''(.*?)'''")
+        .unwrap()
+        .replace_all(
+            &text,
+            "__WIKIPEDIA_TO_EPUB_BOLD_START__${1}__WIKIPEDIA_TO_EPUB_BOLD_END__",
+        )
+        .into_owned();
     text = text.replace("'''", "");
     text = text.replace("''", "");
 
@@ -551,7 +558,9 @@ fn cleanup_inline_markup(line: &str) -> String {
         .split_whitespace()
         .collect::<Vec<_>>()
         .join(" ");
-    encode_text(collapsed.trim()).into_owned()
+    encode_text(collapsed.trim())
+        .replace("__WIKIPEDIA_TO_EPUB_BOLD_START__", "<strong>")
+        .replace("__WIKIPEDIA_TO_EPUB_BOLD_END__", "</strong>")
 }
 
 fn parse_heading(line: &str) -> Option<(usize, String)> {
@@ -909,7 +918,9 @@ mod tests {
 "#,
         );
 
-        assert!(rendered.contains("<p>Intro with visible text and bold text.</p>"));
+        assert!(
+            rendered.contains("<p>Intro with visible text and <strong>bold</strong> text.</p>")
+        );
         assert!(rendered.contains("<h2>History</h2>"));
         assert!(rendered.contains("<ul>"));
         assert!(rendered.contains("<li>First item</li>"));
