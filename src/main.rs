@@ -10,7 +10,7 @@ use std::{
 };
 
 use clap::Parser;
-use html_escape::{decode_html_entities, encode_text};
+use html_escape::{decode_html_entities, encode_double_quoted_attribute, encode_text};
 use regex::Regex;
 use reqwest::{
     blocking::Client,
@@ -524,15 +524,24 @@ fn flush_list(html: &mut Vec<String>, active_list: &mut Option<char>) {
 
 fn cleanup_inline_markup(line: &str) -> String {
     let mut text = line.trim().to_string();
+    let mut link_placeholders = Vec::new();
 
     let file_link_re = Regex::new(r"\[\[(?:File|Image):[^\]]+\]\]").unwrap();
     text = file_link_re.replace_all(&text, "").into_owned();
 
-    let piped_link_re = Regex::new(r"\[\[[^\]|]+\|([^\]]+)\]\]").unwrap();
-    text = piped_link_re.replace_all(&text, "$1").into_owned();
+    let piped_link_re = Regex::new(r"\[\[([^\]|]+)\|([^\]]+)\]\]").unwrap();
+    text = piped_link_re
+        .replace_all(&text, |captures: &regex::Captures| {
+            wiki_link_placeholder(&mut link_placeholders, &captures[1], &captures[2])
+        })
+        .into_owned();
 
     let simple_link_re = Regex::new(r"\[\[([^\]|]+)\]\]").unwrap();
-    text = simple_link_re.replace_all(&text, "$1").into_owned();
+    text = simple_link_re
+        .replace_all(&text, |captures: &regex::Captures| {
+            wiki_link_placeholder(&mut link_placeholders, &captures[1], &captures[1])
+        })
+        .into_owned();
 
     let external_link_re = Regex::new(r"\[(https?://[^\s\]]+)\s+([^\]]+)\]").unwrap();
     text = external_link_re.replace_all(&text, "$2").into_owned();
@@ -558,9 +567,35 @@ fn cleanup_inline_markup(line: &str) -> String {
         .split_whitespace()
         .collect::<Vec<_>>()
         .join(" ");
-    encode_text(collapsed.trim())
+    let mut html = encode_text(collapsed.trim())
         .replace("__WIKIPEDIA_TO_EPUB_BOLD_START__", "<strong>")
-        .replace("__WIKIPEDIA_TO_EPUB_BOLD_END__", "</strong>")
+        .replace("__WIKIPEDIA_TO_EPUB_BOLD_END__", "</strong>");
+
+    for (index, link) in link_placeholders.iter().enumerate() {
+        html = html.replace(&format!("__WIKIPEDIA_TO_EPUB_LINK_{index}__"), link);
+    }
+
+    html
+}
+
+fn wiki_link_placeholder(links: &mut Vec<String>, target: &str, label: &str) -> String {
+    let placeholder = format!("__WIKIPEDIA_TO_EPUB_LINK_{}__", links.len());
+    links.push(wikipedia_link_html(target, label));
+    placeholder
+}
+
+fn wikipedia_link_html(target: &str, label: &str) -> String {
+    let href = wikipedia_article_url(target);
+    format!(
+        r#"<a href="{}">{}</a>"#,
+        encode_double_quoted_attribute(&href),
+        encode_text(decode_html_entities(label).trim())
+    )
+}
+
+fn wikipedia_article_url(target: &str) -> String {
+    let target = target.trim().replace(' ', "_");
+    format!("https://en.wikipedia.org/wiki/{target}")
 }
 
 fn parse_heading(line: &str) -> Option<(usize, String)> {
@@ -919,7 +954,9 @@ mod tests {
         );
 
         assert!(
-            rendered.contains("<p>Intro with visible text and <strong>bold</strong> text.</p>")
+            rendered.contains(
+                r#"<p>Intro with <a href="https://en.wikipedia.org/wiki/Link_target">visible text</a> and <strong>bold</strong> text.</p>"#
+            )
         );
         assert!(rendered.contains("<h2>History</h2>"));
         assert!(rendered.contains("<ul>"));
