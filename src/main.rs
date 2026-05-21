@@ -620,11 +620,17 @@ fn wiki_link_placeholder(
 }
 
 fn wikipedia_link_html(target: &str, label: &str, internal_links: &InternalLinks) -> String {
-    let href = internal_article_url(target, internal_links)
-        .unwrap_or_else(|| wikipedia_article_url(target));
+    if let Some(href) = internal_article_url(target, internal_links) {
+        return format!(
+            r#"<a href="{}">{}</a>"#,
+            encode_double_quoted_attribute(&href),
+            encode_text(decode_html_entities(label).trim())
+        );
+    }
+
     format!(
-        r#"<a href="{}">{}</a>"#,
-        encode_double_quoted_attribute(&href),
+        r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
+        encode_double_quoted_attribute(&wikipedia_article_url(target)),
         encode_text(decode_html_entities(label).trim())
     )
 }
@@ -763,6 +769,11 @@ fn style_css() -> &'static str {
 
 h1, h2, h3, h4, h5, h6 {
   page-break-after: avoid;
+}
+
+.external-link {
+  font-size: 0.8em;
+  vertical-align: super;
 }
 "#
 }
@@ -1003,7 +1014,7 @@ mod tests {
 
         assert!(
             rendered.contains(
-                r#"<p>Intro with <a href="https://en.wikipedia.org/wiki/Link_target">visible text</a> and <strong>bold</strong> text. See <a href="chapter-2.xhtml">Seoul</a>.</p>"#
+                r#"<p>Intro with <a href="https://en.wikipedia.org/wiki/Link_target">visible text</a><span class="external-link">↗</span> and <strong>bold</strong> text. See <a href="chapter-2.xhtml">Seoul</a>.</p>"#
             )
         );
         assert!(rendered.contains("<h2>History</h2>"));
