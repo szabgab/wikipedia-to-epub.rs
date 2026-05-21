@@ -1,4 +1,5 @@
 use std::{
+    collections::HashMap,
     env,
     error::Error,
     fmt::{self, Display},
@@ -25,6 +26,7 @@ use zip::{
 };
 
 type AppResult<T> = Result<T, AppError>;
+type InternalLinks = HashMap<String, String>;
 const WIKIPEDIA_PARSE_API_URL: &str = "https://en.wikipedia.org/w/api.php";
 const USER_AGENT: &str = concat!(
     env!("CARGO_PKG_NAME"),
@@ -261,11 +263,14 @@ fn run(args: CliArgs) -> AppResult<()> {
         Box::new(WikipediaApiPageSource::new()?)
     };
 
+    let internal_links = internal_links(&config.articles);
     let chapters = config
         .articles
         .iter()
         .enumerate()
-        .map(|(index, article)| load_chapter(page_source.as_ref(), article, index + 1))
+        .map(|(index, article)| {
+            load_chapter(page_source.as_ref(), article, index + 1, &internal_links)
+        })
         .collect::<AppResult<Vec<_>>>()?;
 
     write_epub(&config, &chapters)?;
@@ -298,10 +303,25 @@ fn init_logging(level: Level) {
         .try_init();
 }
 
-fn load_chapter(page_source: &dyn PageSource, article: &str, index: usize) -> AppResult<Chapter> {
+fn internal_links(articles: &[String]) -> InternalLinks {
+    let mut links = InternalLinks::new();
+    for (index, article) in articles.iter().enumerate() {
+        links
+            .entry(normalize_lookup_key(article))
+            .or_insert_with(|| format!("chapter-{}.xhtml", index + 1));
+    }
+    links
+}
+
+fn load_chapter(
+    page_source: &dyn PageSource,
+    article: &str,
+    index: usize,
+    internal_links: &InternalLinks,
+) -> AppResult<Chapter> {
     info!(article = article, "fetching article");
     let page = page_source.load_page(article)?;
-    let rendered = render_wikitext(&page.parse.title, &page.parse.wikitext.text);
+    let rendered = render_wikitext(&page.parse.title, &page.parse.wikitext.text, internal_links);
 
     Ok(Chapter {
         file_name: format!("chapter-{index}.xhtml"),
@@ -391,7 +411,7 @@ fn http_failure_detail(headers: &HeaderMap, body: &str) -> Option<String> {
         .map(|value| format!("retry-after: {value}"))
 }
 
-fn render_wikitext(title: &str, wikitext: &str) -> String {
+fn render_wikitext(title: &str, wikitext: &str, internal_links: &InternalLinks) -> String {
     let mut text = wikitext.replace("\r\n", "\n");
     text = Regex::new(r"(?s)<!--.*?-->")
         .unwrap()
@@ -445,7 +465,7 @@ fn render_wikitext(title: &str, wikitext: &str) -> String {
             flush_paragraph(&mut html, &mut paragraph_lines);
             flush_list(&mut html, &mut active_list);
 
-            let heading = cleanup_inline_markup(&heading);
+            let heading = cleanup_inline_markup(&heading, internal_links);
             if !heading.is_empty() {
                 html.push(format!("<h{level}>{heading}</h{level}>"));
             }
@@ -466,7 +486,7 @@ fn render_wikitext(title: &str, wikitext: &str) -> String {
                 });
             }
 
-            let item = cleanup_inline_markup(&captures[2]);
+            let item = cleanup_inline_markup(&captures[2], internal_links);
             if !item.is_empty() {
                 html.push(format!("<li>{item}</li>"));
             }
@@ -475,7 +495,7 @@ fn render_wikitext(title: &str, wikitext: &str) -> String {
 
         flush_list(&mut html, &mut active_list);
 
-        let cleaned = cleanup_inline_markup(line);
+        let cleaned = cleanup_inline_markup(line, internal_links);
         if !cleaned.is_empty() {
             paragraph_lines.push(cleaned);
         }
@@ -522,7 +542,7 @@ fn flush_list(html: &mut Vec<String>, active_list: &mut Option<char>) {
     }
 }
 
-fn cleanup_inline_markup(line: &str) -> String {
+fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks) -> String {
     let mut text = line.trim().to_string();
     let mut link_placeholders = Vec::new();
 
@@ -532,14 +552,24 @@ fn cleanup_inline_markup(line: &str) -> String {
     let piped_link_re = Regex::new(r"\[\[([^\]|]+)\|([^\]]+)\]\]").unwrap();
     text = piped_link_re
         .replace_all(&text, |captures: &regex::Captures| {
-            wiki_link_placeholder(&mut link_placeholders, &captures[1], &captures[2])
+            wiki_link_placeholder(
+                &mut link_placeholders,
+                &captures[1],
+                &captures[2],
+                internal_links,
+            )
         })
         .into_owned();
 
     let simple_link_re = Regex::new(r"\[\[([^\]|]+)\]\]").unwrap();
     text = simple_link_re
         .replace_all(&text, |captures: &regex::Captures| {
-            wiki_link_placeholder(&mut link_placeholders, &captures[1], &captures[1])
+            wiki_link_placeholder(
+                &mut link_placeholders,
+                &captures[1],
+                &captures[1],
+                internal_links,
+            )
         })
         .into_owned();
 
@@ -578,19 +608,34 @@ fn cleanup_inline_markup(line: &str) -> String {
     html
 }
 
-fn wiki_link_placeholder(links: &mut Vec<String>, target: &str, label: &str) -> String {
+fn wiki_link_placeholder(
+    links: &mut Vec<String>,
+    target: &str,
+    label: &str,
+    internal_links: &InternalLinks,
+) -> String {
     let placeholder = format!("__WIKIPEDIA_TO_EPUB_LINK_{}__", links.len());
-    links.push(wikipedia_link_html(target, label));
+    links.push(wikipedia_link_html(target, label, internal_links));
     placeholder
 }
 
-fn wikipedia_link_html(target: &str, label: &str) -> String {
-    let href = wikipedia_article_url(target);
+fn wikipedia_link_html(target: &str, label: &str, internal_links: &InternalLinks) -> String {
+    let href = internal_article_url(target, internal_links)
+        .unwrap_or_else(|| wikipedia_article_url(target));
     format!(
         r#"<a href="{}">{}</a>"#,
         encode_double_quoted_attribute(&href),
         encode_text(decode_html_entities(label).trim())
     )
+}
+
+fn internal_article_url(target: &str, internal_links: &InternalLinks) -> Option<String> {
+    let article = target
+        .split_once('#')
+        .map_or(target, |(article, _)| article);
+    internal_links
+        .get(&normalize_lookup_key(article))
+        .map(ToString::to_string)
 }
 
 fn wikipedia_article_url(target: &str) -> String {
@@ -723,15 +768,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 fn frontmatter_xhtml(metadata: &Metadata) -> String {
+    let internal_links = InternalLinks::new();
     let license = metadata
         .license
         .as_deref()
-        .map(cleanup_inline_markup)
+        .map(|license| cleanup_inline_markup(license, &internal_links))
         .unwrap_or_default();
     let date = metadata
         .date
         .as_deref()
-        .map(cleanup_inline_markup)
+        .map(|date| cleanup_inline_markup(date, &internal_links))
         .unwrap_or_default();
 
     let mut details = vec![format!(
@@ -940,9 +986,10 @@ mod tests {
 
     #[test]
     fn render_wikitext_handles_sections_links_and_lists() {
+        let internal_links = internal_links(&["Sample".to_string(), "Seoul".to_string()]);
         let rendered = render_wikitext(
             "Sample",
-            r#"Intro with [[Link target|visible text]] and '''bold''' text.
+            r#"Intro with [[Link target|visible text]] and '''bold''' text. See [[Seoul]].
 
 == History ==
 * First item
@@ -951,11 +998,12 @@ mod tests {
 {{Infobox|ignored=yes}}
 <ref>omit this</ref>
 "#,
+            &internal_links,
         );
 
         assert!(
             rendered.contains(
-                r#"<p>Intro with <a href="https://en.wikipedia.org/wiki/Link_target">visible text</a> and <strong>bold</strong> text.</p>"#
+                r#"<p>Intro with <a href="https://en.wikipedia.org/wiki/Link_target">visible text</a> and <strong>bold</strong> text. See <a href="chapter-2.xhtml">Seoul</a>.</p>"#
             )
         );
         assert!(rendered.contains("<h2>History</h2>"));
