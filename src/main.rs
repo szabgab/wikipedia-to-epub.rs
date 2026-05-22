@@ -614,11 +614,30 @@ fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks, language: &
     let bare_external_link_re = Regex::new(r"\[(https?://[^\]]+)\]").unwrap();
     text = bare_external_link_re.replace_all(&text, "$1").into_owned();
 
+    let mut html = format_inline_text(&text);
+
+    for (index, link) in link_placeholders.iter().enumerate() {
+        html = html.replace(&format!("__WIKIPEDIA_TO_EPUB_LINK_{index}__"), link);
+    }
+
+    html
+}
+
+fn format_inline_text(text: &str) -> String {
+    let mut text = text.to_string();
+
     text = Regex::new(r"'''(.*?)'''")
         .unwrap()
         .replace_all(
             &text,
             "__WIKIPEDIA_TO_EPUB_BOLD_START__${1}__WIKIPEDIA_TO_EPUB_BOLD_END__",
+        )
+        .into_owned();
+    text = Regex::new(r"''(.*?)''")
+        .unwrap()
+        .replace_all(
+            &text,
+            "__WIKIPEDIA_TO_EPUB_ITALIC_START__${1}__WIKIPEDIA_TO_EPUB_ITALIC_END__",
         )
         .into_owned();
     text = text.replace("'''", "");
@@ -632,15 +651,11 @@ fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks, language: &
         .split_whitespace()
         .collect::<Vec<_>>()
         .join(" ");
-    let mut html = encode_text(collapsed.trim())
+    encode_text(collapsed.trim())
         .replace("__WIKIPEDIA_TO_EPUB_BOLD_START__", "<strong>")
-        .replace("__WIKIPEDIA_TO_EPUB_BOLD_END__", "</strong>");
-
-    for (index, link) in link_placeholders.iter().enumerate() {
-        html = html.replace(&format!("__WIKIPEDIA_TO_EPUB_LINK_{index}__"), link);
-    }
-
-    html
+        .replace("__WIKIPEDIA_TO_EPUB_BOLD_END__", "</strong>")
+        .replace("__WIKIPEDIA_TO_EPUB_ITALIC_START__", "<em>")
+        .replace("__WIKIPEDIA_TO_EPUB_ITALIC_END__", "</em>")
 }
 
 fn wiki_link_placeholder(
@@ -665,14 +680,14 @@ fn wikipedia_link_html(
         return format!(
             r#"<a href="{}">{}</a>"#,
             encode_double_quoted_attribute(&href),
-            encode_text(decode_html_entities(label).trim())
+            format_inline_text(label)
         );
     }
 
     format!(
         r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
         encode_double_quoted_attribute(&wikipedia_article_url(target, language)),
-        encode_text(decode_html_entities(label).trim())
+        format_inline_text(label)
     )
 }
 
@@ -1170,6 +1185,20 @@ mod tests {
         assert!(!rendered.contains("Category:Hidden"));
         assert!(!rendered.contains("Infobox"));
         assert!(!rendered.contains("omit this"));
+    }
+
+    #[test]
+    fn render_wikitext_formats_italic_markup() {
+        let rendered = render_wikitext(
+            "Sample",
+            "Intro with ''italic text'' and [[Fortune Global 500|''Fortune'' Global 500]].",
+            &InternalLinks::new(),
+            "en",
+        );
+
+        assert!(rendered.contains(
+            r#"<p>Intro with <em>italic text</em> and <a href="https://en.wikipedia.org/wiki/Fortune_Global_500"><em>Fortune</em> Global 500</a><span class="external-link">↗</span>.</p>"#
+        ));
     }
 
     #[test]
