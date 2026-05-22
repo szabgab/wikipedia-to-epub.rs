@@ -39,3 +39,7 @@ articles:
   - Korea
   - Seoul
 ```
+
+## Amazon
+
+You can upload your book to your Kindle via this link: [Send to Kindle](https://www.amazon.com/sendtokindle)
