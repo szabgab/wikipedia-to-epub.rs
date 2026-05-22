@@ -451,6 +451,7 @@ fn render_wikitext(title: &str, wikitext: &str, internal_links: &InternalLinks) 
         .into_owned();
     text = strip_balanced_sections(&text, "{{", "}}");
     text = strip_balanced_sections(&text, "{|", "|}");
+    text = strip_file_links(&text);
 
     let list_re = Regex::new(r"^([*#]+)\s*(.+?)\s*$").unwrap();
     let mut html = Vec::new();
@@ -559,8 +560,7 @@ fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks) -> String {
     let mut text = line.trim().to_string();
     let mut link_placeholders = Vec::new();
 
-    let file_link_re = Regex::new(r"\[\[(?:File|Image):[^\]]+\]\]").unwrap();
-    text = file_link_re.replace_all(&text, "").into_owned();
+    text = strip_file_links(&text);
 
     let piped_link_re = Regex::new(r"\[\[([^\]|]+)\|([^\]]+)\]\]").unwrap();
     text = piped_link_re
@@ -713,6 +713,63 @@ fn strip_balanced_sections(text: &str, open: &str, close: &str) -> String {
     }
 
     output
+}
+
+fn strip_file_links(text: &str) -> String {
+    let mut output = String::with_capacity(text.len());
+    let mut index = 0usize;
+
+    while index < text.len() {
+        let remaining = &text[index..];
+
+        if remaining.starts_with("[[") && is_file_link_start(&text[index + 2..]) {
+            if let Some(end) = balanced_wiki_link_end(text, index) {
+                index = end;
+                continue;
+            }
+        }
+
+        let ch = remaining.chars().next().unwrap();
+        output.push(ch);
+        index += ch.len_utf8();
+    }
+
+    output
+}
+
+fn is_file_link_start(text: &str) -> bool {
+    let trimmed = text.trim_start();
+    let lowercase = trimmed.chars().take(6).collect::<String>().to_lowercase();
+    lowercase.starts_with("file:") || lowercase.starts_with("image:")
+}
+
+fn balanced_wiki_link_end(text: &str, start: usize) -> Option<usize> {
+    let mut depth = 0usize;
+    let mut index = start;
+
+    while index < text.len() {
+        let remaining = &text[index..];
+
+        if remaining.starts_with("[[") {
+            depth += 1;
+            index += 2;
+            continue;
+        }
+
+        if remaining.starts_with("]]") && depth > 0 {
+            depth -= 1;
+            index += 2;
+            if depth == 0 {
+                return Some(index);
+            }
+            continue;
+        }
+
+        let ch = remaining.chars().next().unwrap();
+        index += ch.len_utf8();
+    }
+
+    None
 }
 
 fn write_epub(config: &BookConfig, chapters: &[Chapter]) -> AppResult<()> {
@@ -1043,6 +1100,30 @@ mod tests {
     fn strip_balanced_sections_removes_nested_templates() {
         let cleaned = strip_balanced_sections("before {{a {{nested}} value}} after", "{{", "}}");
         assert_eq!(cleaned, "before  after");
+    }
+
+    #[test]
+    fn strip_file_links_removes_nested_caption_links() {
+        let cleaned = strip_file_links(
+            "before [[File:Hangul.svg|thumb|[[Hangul]], afterwards called [[Korean alphabet]]]] after",
+        );
+
+        assert_eq!(cleaned, "before  after");
+    }
+
+    #[test]
+    fn render_wikitext_omits_file_links_without_leaking_closing_markup() {
+        let internal_links = InternalLinks::new();
+        let rendered = render_wikitext(
+            "Sample",
+            "[[File:Gimjang.jpg|thumb|[[Gimjang]], the process for making [[kimchi]]]] Koreans traditionally believe in spices.",
+            &internal_links,
+        );
+
+        assert!(rendered.contains("<p>Koreans traditionally believe in spices.</p>"));
+        assert!(!rendered.contains("[[File:"));
+        assert!(!rendered.contains("]]"));
+        assert!(!rendered.contains("Gimjang"));
     }
 
     #[test]
