@@ -21,7 +21,7 @@ cargo run -- examples/korea.yaml --local pages
 Generate the GitHub Pages index locally:
 
 ```bash
-python scripts/generate_site.py --artifact-url https://github.com/szabgab/wikipedia-to-epub.rs/actions
+uv run scripts/generate_site.py --artifact-url https://github.com/szabgab/wikipedia-to-epub.rs/actions
 ```
 
 ## High-level architecture

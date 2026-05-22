@@ -82,13 +82,8 @@ jobs:
           toolchain: stable
           cache: true
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.x"
-
-      - name: Install Python dependencies
-        run: pip install jinja2 PyYAML
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
 
       - name: Download compiled binaries
         uses: actions/download-artifact@v7
@@ -114,7 +109,7 @@ jobs:
         env:
           ARTIFACT_URL: ${{ steps.upload_books.outputs.artifact-url || format('https://github.com/{0}/actions/runs/{1}', github.repository, github.run_id) }}
         run: |
-          python scripts/generate_site.py \
+          uv run scripts/generate_site.py \
             --books-dir books \
             --template templates/site/index.html.j2 \
             --output-dir site \
