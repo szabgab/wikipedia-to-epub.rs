@@ -27,6 +27,9 @@ jobs:
       - name: Test
         run: cargo test --locked
 
+      - name: Test ignored tests
+        run: cargo test --locked -- --ignored
+
   build-binaries:
     needs: build-and-test
     strategy:

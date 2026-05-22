@@ -24,6 +24,13 @@ fn generate_spanish_corea_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("es-corea");
 }
 
+#[test]
+#[ignore = "hits the real Wikipedia API"]
+fn generate_example_books_from_real_wikipedia_api() {
+    assert_real_api_generates_book("korea", &["Korea", "Seoul"]);
+    assert_real_api_generates_book("macchini", &["Macchini", "Licia Macchini"]);
+}
+
 fn assert_generated_book_matches_expected(book: &str) {
     let repo = repo_root();
     let work_dir = unique_test_dir(&repo, book);
@@ -65,6 +72,54 @@ fn assert_generated_book_matches_expected(book: &str) {
             &fs::read_to_string(&expected_path).expect("expected epub entry reads"),
         );
         assert_eq!(generated, expected, "EPUB entry differs: {entry_name}");
+    }
+
+    fs::remove_dir_all(&work_dir).expect("test output directory is cleaned up");
+}
+
+fn assert_real_api_generates_book(book: &str, chapter_titles: &[&str]) {
+    let repo = repo_root();
+    let work_dir = unique_test_dir(&repo, &format!("{book}-real-api"));
+    fs::create_dir_all(&work_dir).expect("test output directory is created");
+
+    let output_file_name = format!("{book}.epub");
+    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+        .current_dir(&work_dir)
+        .arg(repo.join(format!("examples/{book}.yaml")))
+        .output()
+        .expect("wikipedia-to-epub runs");
+
+    assert!(
+        output.status.success(),
+        "wikipedia-to-epub failed\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        format!("Created {output_file_name}\n")
+    );
+
+    let output_file = work_dir.join(output_file_name);
+    assert!(output_file.is_file());
+
+    let mut epub = open_epub(&output_file);
+    let expected_dir = repo.join("expected").join(book);
+    let expected_entries = expected_epub_entries(&expected_dir);
+    assert_eq!(zip_entries(&epub), expected_entries);
+
+    for (index, title) in chapter_titles.iter().enumerate() {
+        let chapter = read_epub_entry(&mut epub, &format!("OEBPS/chapter-{}.xhtml", index + 1));
+        assert!(
+            chapter.contains(&format!("<title>{title}</title>")),
+            "chapter {} is missing expected title {title:?}",
+            index + 1
+        );
+        assert!(
+            chapter.contains(&format!("<h1>{title}</h1>")),
+            "chapter {} is missing expected heading {title:?}",
+            index + 1
+        );
     }
 
     fs::remove_dir_all(&work_dir).expect("test output directory is cleaned up");
