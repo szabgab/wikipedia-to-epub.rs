@@ -83,13 +83,13 @@ jobs:
           python-version: "3.x"
 
       - name: Install Python dependencies
-        run: pip install jinja2
+        run: pip install jinja2 PyYAML
 
       - name: Generate book about Japan
-        run: cargo run --locked -- books/japan.json
+        run: cargo run --locked -- books/japan.yaml
 
       - name: Generate book about Korea
-        run: cargo run --locked -- books/korea.json
+        run: cargo run --locked -- books/korea.yaml
 
       - name: Upload generated EPUB files
         id: upload_books

@@ -17,7 +17,7 @@ fn generate_macchini_book_from_local_page_dump() {
 
     let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
         .current_dir(&work_dir)
-        .arg(repo.join("examples/macchini.json"))
+        .arg(repo.join("examples/macchini.yaml"))
         .arg("--local")
         .arg(repo.join("pages"))
         .output()

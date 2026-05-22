@@ -39,6 +39,7 @@ const USER_AGENT: &str = concat!(
 enum AppError {
     Io(std::io::Error),
     Json(serde_json::Error),
+    Yaml(serde_yaml::Error),
     Http(reqwest::Error),
     Zip(zip::result::ZipError),
     Message(String),
@@ -49,6 +50,7 @@ impl Display for AppError {
         match self {
             Self::Io(err) => write!(f, "{err}"),
             Self::Json(err) => write!(f, "{err}"),
+            Self::Yaml(err) => write!(f, "{err}"),
             Self::Http(err) => write!(f, "{err}"),
             Self::Zip(err) => write!(f, "{err}"),
             Self::Message(message) => write!(f, "{message}"),
@@ -67,6 +69,12 @@ impl From<std::io::Error> for AppError {
 impl From<serde_json::Error> for AppError {
     fn from(value: serde_json::Error) -> Self {
         Self::Json(value)
+    }
+}
+
+impl From<serde_yaml::Error> for AppError {
+    fn from(value: serde_yaml::Error) -> Self {
+        Self::Yaml(value)
     }
 }
 
@@ -137,7 +145,7 @@ struct Chapter {
 #[derive(Debug, Parser)]
 #[command(name = "wikipedia-to-epub")]
 struct CliArgs {
-    #[arg(value_name = "config.json")]
+    #[arg(value_name = "config.yaml")]
     config_path: PathBuf,
     #[arg(long = "local", value_name = "pages-dir")]
     local_pages_dir: Option<PathBuf>,
@@ -250,7 +258,7 @@ fn try_main() -> AppResult<()> {
 }
 
 fn run(args: CliArgs) -> AppResult<()> {
-    let config = read_json::<BookConfig>(&args.config_path)?;
+    let config = read_config(&args.config_path)?;
     if config.articles.is_empty() {
         return Err(AppError::Message(
             "the configuration must contain at least one article".to_string(),
@@ -294,6 +302,11 @@ where
 fn read_json<T: for<'de> Deserialize<'de>>(path: &Path) -> AppResult<T> {
     let content = fs::read_to_string(path)?;
     Ok(serde_json::from_str(&content)?)
+}
+
+fn read_config(path: &Path) -> AppResult<BookConfig> {
+    let content = fs::read_to_string(path)?;
+    Ok(serde_yaml::from_str(&content)?)
 }
 
 fn init_logging(level: Level) {
@@ -1043,17 +1056,17 @@ mod tests {
 
     #[test]
     fn parse_args_accepts_local_pages_dir() {
-        let args = parse_args_from(["wikipedia-to-epub", "books/korea.json", "--local", "pages"])
+        let args = parse_args_from(["wikipedia-to-epub", "books/korea.yaml", "--local", "pages"])
             .expect("args should parse");
 
-        assert_eq!(args.config_path, PathBuf::from("books/korea.json"));
+        assert_eq!(args.config_path, PathBuf::from("books/korea.yaml"));
         assert_eq!(args.local_pages_dir, Some(PathBuf::from("pages")));
         assert_eq!(args.log_level, Level::WARN);
     }
 
     #[test]
     fn parse_args_accepts_explicit_log_level() {
-        let args = parse_args_from(["wikipedia-to-epub", "books/korea.json", "--log", "debug"])
+        let args = parse_args_from(["wikipedia-to-epub", "books/korea.yaml", "--log", "debug"])
             .expect("args should parse");
 
         assert_eq!(args.log_level, Level::DEBUG);
@@ -1061,7 +1074,7 @@ mod tests {
 
     #[test]
     fn parse_args_rejects_unknown_flags() {
-        let err = parse_args_from(["wikipedia-to-epub", "books/korea.json", "--bogus"])
+        let err = parse_args_from(["wikipedia-to-epub", "books/korea.yaml", "--bogus"])
             .expect_err("unknown flags should fail");
 
         let err_message = err.to_string();
