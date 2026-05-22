@@ -41,6 +41,19 @@ articles:
   - Seoul
 ```
 
+## Conversion rules
+
+The converter renders a simplified subset of Wikipedia wikitext as XHTML:
+
+* `''seoul''` becomes `<em>seoul</em>`
+* `'''seoul'''` becomes `<strong>seoul</strong>`
+* `[[Seoul]]` becomes a link to the internal chapter if `Seoul` is listed in `articles`, otherwise it links to the Wikipedia article
+* `[[Seoul|capital city]]` becomes a link with `capital city` as the visible text
+* `== History ==` becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings
+* Lines starting with `*` become unordered list items
+* Lines starting with `#` become ordered list items
+* References, templates, tables, categories, and file/image links are omitted
+
 ## Amazon
 
 You can upload your book to your Kindle via this link: [Send to Kindle](https://www.amazon.com/sendtokindle)
