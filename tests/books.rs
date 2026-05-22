@@ -47,6 +47,8 @@ fn assert_generated_book_matches_expected(book: &str) {
         .arg(repo.join(format!("examples/{book}.yaml")))
         .arg("--local")
         .arg(repo.join("pages"))
+        .arg("--log")
+        .arg("WARN")
         .output()
         .expect("wikipedia-to-epub runs");
 
@@ -91,6 +93,8 @@ fn assert_real_api_generates_book(book: &str, chapter_titles: &[&str]) {
     let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
         .current_dir(&work_dir)
         .arg(repo.join(format!("examples/{book}.yaml")))
+        .arg("--log")
+        .arg("WARN")
         .output()
         .expect("wikipedia-to-epub runs");
 

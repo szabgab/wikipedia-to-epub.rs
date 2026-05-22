@@ -148,7 +148,7 @@ struct CliArgs {
     config_path: PathBuf,
     #[arg(long = "local", value_name = "pages-dir")]
     local_pages_dir: Option<PathBuf>,
-    #[arg(long = "log", value_name = "level", default_value_t = Level::WARN)]
+    #[arg(long = "log", value_name = "level", default_value_t = Level::INFO)]
     log_level: Level,
 }
 
@@ -1243,7 +1243,7 @@ mod tests {
 
         assert_eq!(args.config_path, PathBuf::from("books/korea.yaml"));
         assert_eq!(args.local_pages_dir, Some(PathBuf::from("pages")));
-        assert_eq!(args.log_level, Level::WARN);
+        assert_eq!(args.log_level, Level::INFO);
     }
 
     #[test]
