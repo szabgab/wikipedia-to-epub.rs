@@ -104,6 +104,7 @@ struct Metadata {
     license: Option<String>,
     language: String,
     date: Option<String>,
+    edition: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -930,11 +931,14 @@ fn frontmatter_xhtml(metadata: &Metadata, wikipedia_language: &str) -> String {
         .as_deref()
         .map(|date| cleanup_inline_markup(date, &internal_links, wikipedia_language))
         .unwrap_or_default();
+    let edition = cleanup_inline_markup(&metadata.edition, &internal_links, wikipedia_language);
 
     let mut details = vec![format!(
         "<p><strong>Author:</strong> {}</p>",
         encode_text(&metadata.author)
     )];
+
+    details.push(format!("<p><strong>Edition:</strong> {edition}</p>"));
 
     if !date.is_empty() {
         details.push(format!("<p><strong>Date:</strong> {date}</p>"));

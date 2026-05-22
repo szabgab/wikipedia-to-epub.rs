@@ -33,6 +33,7 @@ metadata:
   author: Wikipedia contributors
   license: Creative Commons Non-Commercial Share Alike 3.0
   language: en
+  edition: First edition
   date: 2026-05-19
 output-file: korea.epub
 articles:
