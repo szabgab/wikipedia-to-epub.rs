@@ -31,7 +31,7 @@ The configuration file contains:
 metadata:
   title: Korea
   author: Wikipedia contributors
-  license: Creative Commons Non-Commercial Share Alike 3.0
+  license: Creative Commons Attribution-ShareAlike 4.0 License
   language: en
   edition: First edition
   date: 2026-05-19
