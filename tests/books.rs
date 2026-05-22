@@ -19,6 +19,11 @@ fn generate_korea_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("korea");
 }
 
+#[test]
+fn generate_spanish_corea_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("es-corea");
+}
+
 fn assert_generated_book_matches_expected(book: &str) {
     let repo = repo_root();
     let work_dir = unique_test_dir(&repo, book);
