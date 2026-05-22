@@ -11,13 +11,23 @@ use zip::ZipArchive;
 
 #[test]
 fn generate_macchini_book_from_local_page_dump() {
-    let repo = Path::new(env!("CARGO_MANIFEST_DIR"));
-    let work_dir = unique_test_dir(repo);
+    assert_generated_book_matches_expected("macchini");
+}
+
+#[test]
+fn generate_korea_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("korea");
+}
+
+fn assert_generated_book_matches_expected(book: &str) {
+    let repo = repo_root();
+    let work_dir = unique_test_dir(&repo, book);
     fs::create_dir_all(&work_dir).expect("test output directory is created");
 
+    let output_file_name = format!("{book}.epub");
     let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
         .current_dir(&work_dir)
-        .arg(repo.join("examples/macchini.yaml"))
+        .arg(repo.join(format!("examples/{book}.yaml")))
         .arg("--local")
         .arg(repo.join("pages"))
         .output()
@@ -31,22 +41,16 @@ fn generate_macchini_book_from_local_page_dump() {
     );
     assert_eq!(
         String::from_utf8_lossy(&output.stdout),
-        "Created macchini.epub\n"
+        format!("Created {output_file_name}\n")
     );
 
-    let output_file = work_dir.join("macchini.epub");
+    let output_file = work_dir.join(output_file_name);
     assert!(output_file.is_file());
 
-    let file = File::open(&output_file).expect("generated epub opens");
-    let mut epub = ZipArchive::new(file).expect("generated epub is a zip archive");
-    let expected_dir = repo.join("expected/macchini");
+    let mut epub = open_epub(&output_file);
+    let expected_dir = repo.join("expected").join(book);
     let expected_entries = expected_epub_entries(&expected_dir);
-    let mut generated_entries = epub
-        .file_names()
-        .map(str::to_string)
-        .collect::<Vec<String>>();
-    generated_entries.sort();
-    assert_eq!(generated_entries, expected_entries);
+    assert_eq!(zip_entries(&epub), expected_entries);
 
     for entry_name in expected_entries {
         let generated = normalize_epub_entry(&entry_name, &read_epub_entry(&mut epub, &entry_name));
@@ -61,11 +65,49 @@ fn generate_macchini_book_from_local_page_dump() {
     fs::remove_dir_all(&work_dir).expect("test output directory is cleaned up");
 }
 
+fn repo_root() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+}
+
+fn open_epub(path: &Path) -> ZipArchive<File> {
+    let file = File::open(path).expect("generated epub opens");
+    ZipArchive::new(file).expect("generated epub is a zip archive")
+}
+
+fn zip_entries(epub: &ZipArchive<File>) -> Vec<String> {
+    let mut entries = epub.file_names().map(str::to_string).collect::<Vec<_>>();
+    entries.sort();
+    entries
+}
+
+fn read_epub_entry<R: std::io::Read + std::io::Seek>(
+    epub: &mut ZipArchive<R>,
+    name: &str,
+) -> String {
+    let mut entry = epub.by_name(name).expect("epub entry exists");
+    let mut content = String::new();
+    entry
+        .read_to_string(&mut content)
+        .expect("epub entry is valid utf-8");
+    content
+}
+
 fn expected_epub_entries(expected_dir: &Path) -> Vec<String> {
     let mut entries = Vec::new();
     collect_expected_epub_entries(expected_dir, expected_dir, &mut entries);
     entries.sort();
     entries
+}
+
+fn normalize_epub_entry(name: &str, content: &str) -> String {
+    if matches!(name, "OEBPS/content.opf" | "OEBPS/toc.ncx") {
+        return Regex::new(r"urn:wikipedia-to-epub:\d+")
+            .unwrap()
+            .replace_all(content, "urn:wikipedia-to-epub:normalized")
+            .into_owned();
+    }
+
+    content.to_string()
 }
 
 fn collect_expected_epub_entries(root: &Path, dir: &Path, entries: &mut Vec<String>) {
@@ -84,35 +126,12 @@ fn collect_expected_epub_entries(root: &Path, dir: &Path, entries: &mut Vec<Stri
     }
 }
 
-fn normalize_epub_entry(name: &str, content: &str) -> String {
-    if matches!(name, "OEBPS/content.opf" | "OEBPS/toc.ncx") {
-        return Regex::new(r"urn:wikipedia-to-epub:\d+")
-            .unwrap()
-            .replace_all(content, "urn:wikipedia-to-epub:normalized")
-            .into_owned();
-    }
-
-    content.to_string()
-}
-
-fn unique_test_dir(repo: &Path) -> PathBuf {
+fn unique_test_dir(repo: &Path, test_name: &str) -> PathBuf {
     let nanos = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("system time is after unix epoch")
         .as_nanos();
     repo.join("target")
         .join("test-output")
-        .join(format!("macchini-{}-{nanos}", std::process::id()))
-}
-
-fn read_epub_entry<R: std::io::Read + std::io::Seek>(
-    epub: &mut ZipArchive<R>,
-    name: &str,
-) -> String {
-    let mut entry = epub.by_name(name).expect("epub entry exists");
-    let mut content = String::new();
-    entry
-        .read_to_string(&mut content)
-        .expect("epub entry is valid utf-8");
-    content
+        .join(format!("{test_name}-{}-{nanos}", std::process::id()))
 }
