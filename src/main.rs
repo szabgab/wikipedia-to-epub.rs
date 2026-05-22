@@ -538,7 +538,7 @@ fn render_wikitext(
 
     format!(
         r#"<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{language}">
+<html xmlns="http://www.w3.org/1999/xhtml" {language_attributes}>
   <head>
     <title>{}</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
@@ -552,7 +552,7 @@ fn render_wikitext(
         encode_text(title),
         encode_text(title),
         html.join("\n    "),
-        language = encode_text(language),
+        language_attributes = html_language_attributes(language),
     )
 }
 
@@ -712,6 +712,20 @@ fn normalized_wikipedia_language(language: &str) -> AppResult<String> {
             "invalid Wikipedia language code: {language:?}"
         )))
     }
+}
+
+fn html_language_attributes(language: &str) -> String {
+    let language = encode_double_quoted_attribute(language);
+    if is_right_to_left_language(&language) {
+        format!(r#"xml:lang="{language}" dir="rtl""#)
+    } else {
+        format!(r#"xml:lang="{language}""#)
+    }
+}
+
+fn is_right_to_left_language(language: &str) -> bool {
+    let base_language = language.split_once('-').map_or(language, |(base, _)| base);
+    matches!(base_language, "ar" | "fa" | "he" | "ur")
 }
 
 fn parse_heading(line: &str) -> Option<(usize, String)> {
@@ -932,7 +946,7 @@ fn frontmatter_xhtml(metadata: &Metadata, wikipedia_language: &str) -> String {
 
     format!(
         r#"<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{language}">
+<html xmlns="http://www.w3.org/1999/xhtml" {language_attributes}>
   <head>
     <title>{title}</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
@@ -944,7 +958,7 @@ fn frontmatter_xhtml(metadata: &Metadata, wikipedia_language: &str) -> String {
 </html>
 "#,
         details.join("\n    "),
-        language = encode_text(wikipedia_language),
+        language_attributes = html_language_attributes(wikipedia_language),
         title = encode_text(&metadata.title),
     )
 }
@@ -964,7 +978,7 @@ fn nav_xhtml(chapters: &[Chapter], language: &str) -> String {
 
     format!(
         r#"<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="{language}">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" {language_attributes}>
   <head>
     <title>Table of contents</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
@@ -980,7 +994,7 @@ fn nav_xhtml(chapters: &[Chapter], language: &str) -> String {
   </body>
 </html>
 "#,
-        language = encode_text(language),
+        language_attributes = html_language_attributes(language),
     )
 }
 
@@ -1214,6 +1228,12 @@ mod tests {
             .expect_err("invalid language should fail");
 
         assert!(err.to_string().contains("invalid Wikipedia language code"));
+    }
+
+    #[test]
+    fn hebrew_html_uses_right_to_left_direction() {
+        assert_eq!(html_language_attributes("he"), r#"xml:lang="he" dir="rtl""#);
+        assert_eq!(html_language_attributes("en"), r#"xml:lang="en""#);
     }
 
     #[test]

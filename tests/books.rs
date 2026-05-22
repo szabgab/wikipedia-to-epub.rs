@@ -25,6 +25,11 @@ fn generate_spanish_corea_book_from_local_page_dumps() {
 }
 
 #[test]
+fn generate_hebrew_korea_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("he-korea");
+}
+
+#[test]
 #[ignore = "hits the real Wikipedia API"]
 fn generate_example_books_from_real_wikipedia_api() {
     assert_real_api_generates_book("korea", &["Korea", "Seoul"]);
