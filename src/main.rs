@@ -6,8 +6,7 @@ use std::{
     fs::{self, File},
     io::Write,
     path::{Path, PathBuf},
-    thread,
-    time::{Duration, SystemTime, UNIX_EPOCH},
+    time::{SystemTime, UNIX_EPOCH},
 };
 
 use clap::Parser;
@@ -213,7 +212,6 @@ impl PageSource for WikipediaApiPageSource {
             ))
         })?;
         info!(article = article, "downloaded page");
-        thread::sleep(Duration::from_secs(1));
 
         Ok(page)
     }
