@@ -469,6 +469,7 @@ fn render_wikitext(
         .replace_all(&text, "\n")
         .into_owned();
     text = render_korean_templates(&text);
+    text = render_japanese_templates(&text);
     text = strip_balanced_sections(&text, "{{", "}}");
     text = strip_balanced_sections(&text, "{|", "|}");
     text = strip_file_links(&text);
@@ -591,15 +592,15 @@ fn render_korean_template(params: &str) -> String {
     let mut hanja = None;
     let mut positional = Vec::new();
 
-    for part in params
-        .split('|')
-        .map(str::trim)
+    for part in split_template_params(params)
+        .into_iter()
+        .map(|part| part.trim().to_string())
         .filter(|part| !part.is_empty())
     {
         if let Some((key, value)) = part.split_once('=') {
             match key.trim().to_lowercase().as_str() {
-                "hangul" => hangul = Some(value.trim()),
-                "hanja" => hanja = Some(value.trim()),
+                "hangul" => hangul = Some(value.trim().to_string()),
+                "hanja" => hanja = Some(value.trim().to_string()),
                 _ => {}
             }
         } else {
@@ -607,20 +608,20 @@ fn render_korean_template(params: &str) -> String {
         }
     }
 
-    let hangul = hangul.or_else(|| positional.first().copied());
-    let hanja = hanja.or_else(|| positional.get(1).copied());
+    let hangul = hangul.or_else(|| positional.first().cloned());
+    let hanja = hanja.or_else(|| positional.get(1).cloned());
     let mut values = Vec::new();
 
-    if let Some(hangul) = hangul
-        && !hangul.is_empty()
+    if let Some(hangul) = hangul.as_deref()
+        && !hangul.trim().is_empty()
     {
         values.push(format!(
             "__WIKIPEDIA_TO_EPUB_KOREAN_HANGUL_START__{hangul}__WIKIPEDIA_TO_EPUB_KOREAN_SCRIPT_END__"
         ));
     }
 
-    if let Some(hanja) = hanja
-        && !hanja.is_empty()
+    if let Some(hanja) = hanja.as_deref()
+        && !hanja.trim().is_empty()
     {
         values.push(format!(
             "__WIKIPEDIA_TO_EPUB_KOREAN_HANJA_START__{hanja}__WIKIPEDIA_TO_EPUB_KOREAN_SCRIPT_END__"
@@ -635,6 +636,56 @@ fn render_korean_template(params: &str) -> String {
         "__WIKIPEDIA_TO_EPUB_KOREAN_TEXT_START__{}__WIKIPEDIA_TO_EPUB_KOREAN_TEXT_END__",
         values.join(" / ")
     )
+}
+
+fn render_japanese_templates(text: &str) -> String {
+    let japanese_template_re = Regex::new(r"(?is)\{\{\s*Nihongo4\s*\|([^{}]*)\}\}").unwrap();
+    japanese_template_re
+        .replace_all(text, |captures: &regex::Captures| {
+            render_japanese_template(&captures[1])
+        })
+        .into_owned()
+}
+
+fn render_japanese_template(params: &str) -> String {
+    let params = split_template_params(params);
+    let term = params.first().map_or("", |value| value.trim());
+    let japanese = params.get(1).map_or("", |value| value.trim());
+
+    if japanese.is_empty() {
+        return term.to_string();
+    }
+
+    format!(
+        "{term}__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_START__ (__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__{japanese}__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__)__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_END__"
+    )
+}
+
+fn split_template_params(params: &str) -> Vec<String> {
+    let mut parts = Vec::new();
+    let mut current = String::new();
+    let mut link_depth = 0usize;
+    let mut chars = params.chars().peekable();
+
+    while let Some(ch) = chars.next() {
+        if ch == '[' && chars.peek() == Some(&'[') {
+            current.push(ch);
+            current.push(chars.next().unwrap());
+            link_depth += 1;
+        } else if ch == ']' && chars.peek() == Some(&']') {
+            current.push(ch);
+            current.push(chars.next().unwrap());
+            link_depth = link_depth.saturating_sub(1);
+        } else if ch == '|' && link_depth == 0 {
+            parts.push(current);
+            current = String::new();
+        } else {
+            current.push(ch);
+        }
+    }
+
+    parts.push(current);
+    parts
 }
 
 fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks, language: &str) -> String {
@@ -731,6 +782,13 @@ fn format_inline_text(text: &str) -> String {
             r#"<span lang="ko-Hani">"#,
         )
         .replace("__WIKIPEDIA_TO_EPUB_KOREAN_SCRIPT_END__", "</span>")
+        .replace("__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_START__", "<span>")
+        .replace("__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_END__", "</span>")
+        .replace(
+            "__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__",
+            r#"<span title="Japanese-language text"><span lang="ja">"#,
+        )
+        .replace("__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__", "</span></span>")
 }
 
 fn wiki_link_placeholder(
@@ -751,6 +809,14 @@ fn wikipedia_link_html(
     internal_links: &InternalLinks,
     language: &str,
 ) -> String {
+    if let Some(href) = wiktionary_article_url(target) {
+        return format!(
+            r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
+            encode_double_quoted_attribute(&href),
+            format_inline_text(label)
+        );
+    }
+
     if let Some(href) = internal_article_url(target, internal_links) {
         return format!(
             r#"<a href="{}">{}</a>"#,
@@ -778,6 +844,13 @@ fn internal_article_url(target: &str, internal_links: &InternalLinks) -> Option<
 fn wikipedia_article_url(target: &str, language: &str) -> String {
     let target = target.trim().replace(' ', "_");
     format!("https://{language}.wikipedia.org/wiki/{target}")
+}
+
+fn wiktionary_article_url(target: &str) -> Option<String> {
+    let title = target.strip_prefix("wikt:")?.trim().replace(' ', "_");
+    let mut url = Url::parse("https://en.wiktionary.org").unwrap();
+    url.path_segments_mut().unwrap().push("wiki").push(&title);
+    Some(url.into())
 }
 
 fn wikipedia_parse_api_url(language: &str) -> AppResult<Url> {
@@ -1288,6 +1361,23 @@ mod tests {
         assert!(rendered.contains(
             r#"<p>Traditionally, <em>seoul</em> (<span title="Korean-language text"><span lang="ko-Hang">서울</span></span>) meant capital. Earlier <span title="Korean-language text"><span lang="ko-Hang">위례성</span> / <span lang="ko-Hani">慰禮城</span></span> was nearby.</p>"#
         ));
+    }
+
+    #[test]
+    fn render_wikitext_formats_japanese_nihongo4_templates() {
+        let rendered = render_wikitext(
+            "Sample",
+            "The city was formerly {{Nihongo4|''[[Edo (Tokyo)|Edo]]''|[[wikt:江戸|江戸]]}}.",
+            &InternalLinks::new(),
+            "en",
+        );
+
+        assert!(
+            rendered.contains(
+                r#"<p>The city was formerly <em><a href="https://en.wikipedia.org/wiki/Edo_(Tokyo)">Edo</a><span class="external-link">↗</span></em><span> (<span title="Japanese-language text"><span lang="ja"><a href="https://en.wiktionary.org/wiki/%E6%B1%9F%E6%88%B8">江戸</a><span class="external-link">↗</span></span></span>)</span>.</p>"#
+            ),
+            "{rendered}"
+        );
     }
 
     #[test]
