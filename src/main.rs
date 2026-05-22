@@ -13,6 +13,7 @@ use clap::Parser;
 use html_escape::{decode_html_entities, encode_double_quoted_attribute, encode_text};
 use regex::Regex;
 use reqwest::{
+    Url,
     blocking::Client,
     header::{HeaderMap, RETRY_AFTER},
 };
@@ -26,7 +27,6 @@ use zip::{
 
 type AppResult<T> = Result<T, AppError>;
 type InternalLinks = HashMap<String, String>;
-const WIKIPEDIA_PARSE_API_URL: &str = "https://en.wikipedia.org/w/api.php";
 const USER_AGENT: &str = concat!(
     env!("CARGO_PKG_NAME"),
     "/",
@@ -158,12 +158,14 @@ trait PageSource {
 
 struct WikipediaApiPageSource {
     client: Client,
+    api_url: Url,
 }
 
 impl WikipediaApiPageSource {
-    fn new() -> AppResult<Self> {
+    fn new(language: &str) -> AppResult<Self> {
         let client = Client::builder().user_agent(USER_AGENT).build()?;
-        Ok(Self { client })
+        let api_url = wikipedia_parse_api_url(language)?;
+        Ok(Self { client, api_url })
     }
 }
 
@@ -171,7 +173,7 @@ impl PageSource for WikipediaApiPageSource {
     fn load_page(&self, article: &str) -> AppResult<PageResponse> {
         let response = self
             .client
-            .get(WIKIPEDIA_PARSE_API_URL)
+            .get(self.api_url.clone())
             .query(&[
                 ("action", "parse"),
                 ("prop", "wikitext"),
@@ -257,6 +259,7 @@ fn try_main() -> AppResult<()> {
 
 fn run(args: CliArgs) -> AppResult<()> {
     let config = read_config(&args.config_path)?;
+    let wikipedia_language = normalized_wikipedia_language(&config.metadata.language)?;
     if config.articles.is_empty() {
         return Err(AppError::Message(
             "the configuration must contain at least one article".to_string(),
@@ -266,7 +269,7 @@ fn run(args: CliArgs) -> AppResult<()> {
     let page_source: Box<dyn PageSource> = if let Some(pages_dir) = args.local_pages_dir {
         Box::new(FixturePageSource::new(pages_dir))
     } else {
-        Box::new(WikipediaApiPageSource::new()?)
+        Box::new(WikipediaApiPageSource::new(&wikipedia_language)?)
     };
 
     let internal_links = internal_links(&config.articles);
@@ -275,11 +278,17 @@ fn run(args: CliArgs) -> AppResult<()> {
         .iter()
         .enumerate()
         .map(|(index, article)| {
-            load_chapter(page_source.as_ref(), article, index + 1, &internal_links)
+            load_chapter(
+                page_source.as_ref(),
+                article,
+                index + 1,
+                &internal_links,
+                &wikipedia_language,
+            )
         })
         .collect::<AppResult<Vec<_>>>()?;
 
-    write_epub(&config, &chapters)?;
+    write_epub(&config, &chapters, &wikipedia_language)?;
     println!("Created {}", config.output_file.display());
 
     Ok(())
@@ -329,10 +338,16 @@ fn load_chapter(
     article: &str,
     index: usize,
     internal_links: &InternalLinks,
+    language: &str,
 ) -> AppResult<Chapter> {
     info!(article = article, "fetching article");
     let page = page_source.load_page(article)?;
-    let rendered = render_wikitext(&page.parse.title, &page.parse.wikitext.text, internal_links);
+    let rendered = render_wikitext(
+        &page.parse.title,
+        &page.parse.wikitext.text,
+        internal_links,
+        language,
+    );
 
     Ok(Chapter {
         file_name: format!("chapter-{index}.xhtml"),
@@ -422,7 +437,12 @@ fn http_failure_detail(headers: &HeaderMap, body: &str) -> Option<String> {
         .map(|value| format!("retry-after: {value}"))
 }
 
-fn render_wikitext(title: &str, wikitext: &str, internal_links: &InternalLinks) -> String {
+fn render_wikitext(
+    title: &str,
+    wikitext: &str,
+    internal_links: &InternalLinks,
+    language: &str,
+) -> String {
     let mut text = wikitext.replace("\r\n", "\n");
     text = Regex::new(r"(?s)<!--.*?-->")
         .unwrap()
@@ -477,7 +497,7 @@ fn render_wikitext(title: &str, wikitext: &str, internal_links: &InternalLinks) 
             flush_paragraph(&mut html, &mut paragraph_lines);
             flush_list(&mut html, &mut active_list);
 
-            let heading = cleanup_inline_markup(&heading, internal_links);
+            let heading = cleanup_inline_markup(&heading, internal_links, language);
             if !heading.is_empty() {
                 html.push(format!("<h{level}>{heading}</h{level}>"));
             }
@@ -498,7 +518,7 @@ fn render_wikitext(title: &str, wikitext: &str, internal_links: &InternalLinks) 
                 });
             }
 
-            let item = cleanup_inline_markup(&captures[2], internal_links);
+            let item = cleanup_inline_markup(&captures[2], internal_links, language);
             if !item.is_empty() {
                 html.push(format!("<li>{item}</li>"));
             }
@@ -507,7 +527,7 @@ fn render_wikitext(title: &str, wikitext: &str, internal_links: &InternalLinks) 
 
         flush_list(&mut html, &mut active_list);
 
-        let cleaned = cleanup_inline_markup(line, internal_links);
+        let cleaned = cleanup_inline_markup(line, internal_links, language);
         if !cleaned.is_empty() {
             paragraph_lines.push(cleaned);
         }
@@ -518,7 +538,7 @@ fn render_wikitext(title: &str, wikitext: &str, internal_links: &InternalLinks) 
 
     format!(
         r#"<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{language}">
   <head>
     <title>{}</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
@@ -531,7 +551,8 @@ fn render_wikitext(title: &str, wikitext: &str, internal_links: &InternalLinks) 
 "#,
         encode_text(title),
         encode_text(title),
-        html.join("\n    ")
+        html.join("\n    "),
+        language = encode_text(language),
     )
 }
 
@@ -554,7 +575,7 @@ fn flush_list(html: &mut Vec<String>, active_list: &mut Option<char>) {
     }
 }
 
-fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks) -> String {
+fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks, language: &str) -> String {
     let mut text = line.trim().to_string();
     let mut link_placeholders = Vec::new();
 
@@ -568,6 +589,7 @@ fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks) -> String {
                 &captures[1],
                 &captures[2],
                 internal_links,
+                language,
             )
         })
         .into_owned();
@@ -580,6 +602,7 @@ fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks) -> String {
                 &captures[1],
                 &captures[1],
                 internal_links,
+                language,
             )
         })
         .into_owned();
@@ -624,13 +647,19 @@ fn wiki_link_placeholder(
     target: &str,
     label: &str,
     internal_links: &InternalLinks,
+    language: &str,
 ) -> String {
     let placeholder = format!("__WIKIPEDIA_TO_EPUB_LINK_{}__", links.len());
-    links.push(wikipedia_link_html(target, label, internal_links));
+    links.push(wikipedia_link_html(target, label, internal_links, language));
     placeholder
 }
 
-fn wikipedia_link_html(target: &str, label: &str, internal_links: &InternalLinks) -> String {
+fn wikipedia_link_html(
+    target: &str,
+    label: &str,
+    internal_links: &InternalLinks,
+    language: &str,
+) -> String {
     if let Some(href) = internal_article_url(target, internal_links) {
         return format!(
             r#"<a href="{}">{}</a>"#,
@@ -641,7 +670,7 @@ fn wikipedia_link_html(target: &str, label: &str, internal_links: &InternalLinks
 
     format!(
         r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
-        encode_double_quoted_attribute(&wikipedia_article_url(target)),
+        encode_double_quoted_attribute(&wikipedia_article_url(target, language)),
         encode_text(decode_html_entities(label).trim())
     )
 }
@@ -655,9 +684,34 @@ fn internal_article_url(target: &str, internal_links: &InternalLinks) -> Option<
         .map(ToString::to_string)
 }
 
-fn wikipedia_article_url(target: &str) -> String {
+fn wikipedia_article_url(target: &str, language: &str) -> String {
     let target = target.trim().replace(' ', "_");
-    format!("https://en.wikipedia.org/wiki/{target}")
+    format!("https://{language}.wikipedia.org/wiki/{target}")
+}
+
+fn wikipedia_parse_api_url(language: &str) -> AppResult<Url> {
+    let language = normalized_wikipedia_language(language)?;
+    Url::parse(&format!("https://{language}.wikipedia.org/w/api.php"))
+        .map_err(|err| AppError::Message(format!("invalid Wikipedia API URL: {err}")))
+}
+
+fn normalized_wikipedia_language(language: &str) -> AppResult<String> {
+    let language = language.trim().to_ascii_lowercase();
+    let valid = !language.is_empty()
+        && language
+            .chars()
+            .all(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit() || ch == '-')
+        && language
+            .split('-')
+            .all(|part| !part.is_empty() && !part.starts_with(|ch: char| ch.is_ascii_digit()));
+
+    if valid {
+        Ok(language)
+    } else {
+        Err(AppError::Message(format!(
+            "invalid Wikipedia language code: {language:?}"
+        )))
+    }
 }
 
 fn parse_heading(line: &str) -> Option<(usize, String)> {
@@ -770,7 +824,11 @@ fn balanced_wiki_link_end(text: &str, start: usize) -> Option<usize> {
     None
 }
 
-fn write_epub(config: &BookConfig, chapters: &[Chapter]) -> AppResult<()> {
+fn write_epub(
+    config: &BookConfig,
+    chapters: &[Chapter],
+    wikipedia_language: &str,
+) -> AppResult<()> {
     if let Some(parent) = config.output_file.parent()
         && !parent.as_os_str().is_empty()
     {
@@ -794,7 +852,7 @@ fn write_epub(config: &BookConfig, chapters: &[Chapter]) -> AppResult<()> {
     zip.start_file("OEBPS/style.css", deflated)?;
     zip.write_all(style_css().as_bytes())?;
 
-    let frontmatter = frontmatter_xhtml(&config.metadata);
+    let frontmatter = frontmatter_xhtml(&config.metadata, wikipedia_language);
     zip.start_file("OEBPS/frontmatter.xhtml", deflated)?;
     zip.write_all(frontmatter.as_bytes())?;
 
@@ -803,7 +861,7 @@ fn write_epub(config: &BookConfig, chapters: &[Chapter]) -> AppResult<()> {
         zip.write_all(chapter.content.as_bytes())?;
     }
 
-    let nav = nav_xhtml(chapters);
+    let nav = nav_xhtml(chapters, wikipedia_language);
     zip.start_file("OEBPS/nav.xhtml", deflated)?;
     zip.write_all(nav.as_bytes())?;
 
@@ -846,17 +904,17 @@ h1, h2, h3, h4, h5, h6 {
 "#
 }
 
-fn frontmatter_xhtml(metadata: &Metadata) -> String {
+fn frontmatter_xhtml(metadata: &Metadata, wikipedia_language: &str) -> String {
     let internal_links = InternalLinks::new();
     let license = metadata
         .license
         .as_deref()
-        .map(|license| cleanup_inline_markup(license, &internal_links))
+        .map(|license| cleanup_inline_markup(license, &internal_links, wikipedia_language))
         .unwrap_or_default();
     let date = metadata
         .date
         .as_deref()
-        .map(|date| cleanup_inline_markup(date, &internal_links))
+        .map(|date| cleanup_inline_markup(date, &internal_links, wikipedia_language))
         .unwrap_or_default();
 
     let mut details = vec![format!(
@@ -886,12 +944,12 @@ fn frontmatter_xhtml(metadata: &Metadata) -> String {
 </html>
 "#,
         details.join("\n    "),
-        language = encode_text(&metadata.language),
+        language = encode_text(wikipedia_language),
         title = encode_text(&metadata.title),
     )
 }
 
-fn nav_xhtml(chapters: &[Chapter]) -> String {
+fn nav_xhtml(chapters: &[Chapter], language: &str) -> String {
     let items = chapters
         .iter()
         .map(|chapter| {
@@ -906,7 +964,7 @@ fn nav_xhtml(chapters: &[Chapter]) -> String {
 
     format!(
         r#"<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="{language}">
   <head>
     <title>Table of contents</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
@@ -921,7 +979,8 @@ fn nav_xhtml(chapters: &[Chapter]) -> String {
     </nav>
   </body>
 </html>
-"#
+"#,
+        language = encode_text(language),
     )
 }
 
@@ -1078,6 +1137,7 @@ mod tests {
 <ref>omit this</ref>
 "#,
             &internal_links,
+            "en",
         );
 
         assert!(
@@ -1116,6 +1176,7 @@ mod tests {
             "Sample",
             "[[File:Gimjang.jpg|thumb|[[Gimjang]], the process for making [[kimchi]]]] Koreans traditionally believe in spices.",
             &internal_links,
+            "en",
         );
 
         assert!(rendered.contains("<p>Koreans traditionally believe in spices.</p>"));
@@ -1131,6 +1192,28 @@ mod tests {
 
         assert_eq!(page.parse.title, "Korea");
         assert!(page.parse.wikitext.text.contains("East Asia"));
+    }
+
+    #[test]
+    fn wikipedia_urls_use_configured_language() {
+        assert_eq!(
+            wikipedia_parse_api_url("es")
+                .expect("Spanish API URL should build")
+                .as_str(),
+            "https://es.wikipedia.org/w/api.php"
+        );
+        assert_eq!(
+            wikipedia_article_url("Corea del Sur", "es"),
+            "https://es.wikipedia.org/wiki/Corea_del_Sur"
+        );
+    }
+
+    #[test]
+    fn wikipedia_language_rejects_invalid_hostname_labels() {
+        let err = normalized_wikipedia_language("en.example.com")
+            .expect_err("invalid language should fail");
+
+        assert!(err.to_string().contains("invalid Wikipedia language code"));
     }
 
     #[test]
