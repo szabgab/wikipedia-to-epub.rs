@@ -7,6 +7,21 @@ from pathlib import Path
 import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+BINARY_DOWNLOADS = [
+    {
+        "label": "Linux",
+        "href": "downloads/wikipedia-to-epub-linux/wikipedia-to-epub",
+    },
+    {
+        "label": "macOS",
+        "href": "downloads/wikipedia-to-epub-macos/wikipedia-to-epub",
+    },
+    {
+        "label": "Windows",
+        "href": "downloads/wikipedia-to-epub-windows/wikipedia-to-epub.exe",
+    },
+]
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate the GitHub Pages site")
@@ -45,6 +60,7 @@ def main() -> None:
 
     rendered = template.render(
         artifact_url=args.artifact_url,
+        binary_downloads=BINARY_DOWNLOADS,
         examples=load_examples(args.books_dir),
     )
 
