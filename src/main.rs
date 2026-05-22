@@ -468,6 +468,7 @@ fn render_wikitext(
         .unwrap()
         .replace_all(&text, "\n")
         .into_owned();
+    text = render_korean_templates(&text);
     text = strip_balanced_sections(&text, "{{", "}}");
     text = strip_balanced_sections(&text, "{|", "|}");
     text = strip_file_links(&text);
@@ -576,6 +577,66 @@ fn flush_list(html: &mut Vec<String>, active_list: &mut Option<char>) {
     }
 }
 
+fn render_korean_templates(text: &str) -> String {
+    let korean_template_re = Regex::new(r"(?is)\{\{\s*Korean\s*\|([^{}]*)\}\}").unwrap();
+    korean_template_re
+        .replace_all(text, |captures: &regex::Captures| {
+            render_korean_template(&captures[1])
+        })
+        .into_owned()
+}
+
+fn render_korean_template(params: &str) -> String {
+    let mut hangul = None;
+    let mut hanja = None;
+    let mut positional = Vec::new();
+
+    for part in params
+        .split('|')
+        .map(str::trim)
+        .filter(|part| !part.is_empty())
+    {
+        if let Some((key, value)) = part.split_once('=') {
+            match key.trim().to_lowercase().as_str() {
+                "hangul" => hangul = Some(value.trim()),
+                "hanja" => hanja = Some(value.trim()),
+                _ => {}
+            }
+        } else {
+            positional.push(part);
+        }
+    }
+
+    let hangul = hangul.or_else(|| positional.first().copied());
+    let hanja = hanja.or_else(|| positional.get(1).copied());
+    let mut values = Vec::new();
+
+    if let Some(hangul) = hangul
+        && !hangul.is_empty()
+    {
+        values.push(format!(
+            "__WIKIPEDIA_TO_EPUB_KOREAN_HANGUL_START__{hangul}__WIKIPEDIA_TO_EPUB_KOREAN_SCRIPT_END__"
+        ));
+    }
+
+    if let Some(hanja) = hanja
+        && !hanja.is_empty()
+    {
+        values.push(format!(
+            "__WIKIPEDIA_TO_EPUB_KOREAN_HANJA_START__{hanja}__WIKIPEDIA_TO_EPUB_KOREAN_SCRIPT_END__"
+        ));
+    }
+
+    if values.is_empty() {
+        return String::new();
+    }
+
+    format!(
+        "__WIKIPEDIA_TO_EPUB_KOREAN_TEXT_START__{}__WIKIPEDIA_TO_EPUB_KOREAN_TEXT_END__",
+        values.join(" / ")
+    )
+}
+
 fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks, language: &str) -> String {
     let mut text = line.trim().to_string();
     let mut link_placeholders = Vec::new();
@@ -656,6 +717,20 @@ fn format_inline_text(text: &str) -> String {
         .replace("__WIKIPEDIA_TO_EPUB_BOLD_END__", "</strong>")
         .replace("__WIKIPEDIA_TO_EPUB_ITALIC_START__", "<em>")
         .replace("__WIKIPEDIA_TO_EPUB_ITALIC_END__", "</em>")
+        .replace(
+            "__WIKIPEDIA_TO_EPUB_KOREAN_TEXT_START__",
+            r#"<span title="Korean-language text">"#,
+        )
+        .replace("__WIKIPEDIA_TO_EPUB_KOREAN_TEXT_END__", "</span>")
+        .replace(
+            "__WIKIPEDIA_TO_EPUB_KOREAN_HANGUL_START__",
+            r#"<span lang="ko-Hang">"#,
+        )
+        .replace(
+            "__WIKIPEDIA_TO_EPUB_KOREAN_HANJA_START__",
+            r#"<span lang="ko-Hani">"#,
+        )
+        .replace("__WIKIPEDIA_TO_EPUB_KOREAN_SCRIPT_END__", "</span>")
 }
 
 fn wiki_link_placeholder(
@@ -1198,6 +1273,20 @@ mod tests {
 
         assert!(rendered.contains(
             r#"<p>Intro with <em>italic text</em> and <a href="https://en.wikipedia.org/wiki/Fortune_Global_500"><em>Fortune</em> Global 500</a><span class="external-link">↗</span>.</p>"#
+        ));
+    }
+
+    #[test]
+    fn render_wikitext_formats_korean_templates() {
+        let rendered = render_wikitext(
+            "Sample",
+            "Traditionally, ''seoul'' ({{Korean|hangul=서울|labels=no}}) meant capital. Earlier {{Korean|labels=no|위례성|慰禮城}} was nearby.",
+            &InternalLinks::new(),
+            "en",
+        );
+
+        assert!(rendered.contains(
+            r#"<p>Traditionally, <em>seoul</em> (<span title="Korean-language text"><span lang="ko-Hang">서울</span></span>) meant capital. Earlier <span title="Korean-language text"><span lang="ko-Hang">위례성</span> / <span lang="ko-Hani">慰禮城</span></span> was nearby.</p>"#
         ));
     }
 

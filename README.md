@@ -49,6 +49,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `'''seoul'''` becomes `<strong>seoul</strong>`
 * `[[Seoul]]` becomes a link to the internal chapter if `Seoul` is listed in `articles`, otherwise it links to the Wikipedia article
 * `[[Seoul|capital city]]` becomes a link with `capital city` as the visible text
+* `{{Korean|hangul=서울|labels=no}}` becomes `<span title="Korean-language text"><span lang="ko-Hang">서울</span></span>`
 * `== History ==` becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings
 * Lines starting with `*` become unordered list items
 * Lines starting with `#` become ordered list items
