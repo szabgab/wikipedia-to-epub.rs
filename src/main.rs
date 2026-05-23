@@ -630,6 +630,8 @@ fn render_template(content: &str) -> String {
         render_japanese_template(params)
     } else if template.eq_ignore_ascii_case("lang") {
         render_lang_template(params)
+    } else if template.eq_ignore_ascii_case("langx") {
+        render_langx_template(params)
     } else if template.eq_ignore_ascii_case("percentage") {
         render_percentage_template(params)
     } else if template.eq_ignore_ascii_case("UN_Population") {
@@ -687,6 +689,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Korean/auto")
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("lang")
+        || template.eq_ignore_ascii_case("langx")
         || template.eq_ignore_ascii_case("percentage")
         || template.eq_ignore_ascii_case("UN_Population")
         || template.eq_ignore_ascii_case("convert")
@@ -846,6 +849,48 @@ fn render_lang_template(params: &str) -> String {
     format!(
         "__WIKIPEDIA_TO_EPUB_LANG_START__{language}__WIKIPEDIA_TO_EPUB_LANG_VALUE__{text}__WIKIPEDIA_TO_EPUB_LANG_END__"
     )
+}
+
+fn render_langx_template(params: &str) -> String {
+    let mut positional = Vec::new();
+    let mut named = HashMap::new();
+
+    for param in split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty())
+    {
+        if let Some((key, value)) = param.split_once('=') {
+            named.insert(key.trim().to_lowercase(), value.trim().to_string());
+        } else {
+            positional.push(param);
+        }
+    }
+
+    let Some(language) = positional.first().map(String::as_str) else {
+        return String::new();
+    };
+    let Some(text) = positional.get(1).map(String::as_str) else {
+        return String::new();
+    };
+
+    let mut rendered = render_lang_template(&format!("{language}|{text}"));
+
+    if let Some(translit) = named
+        .get("translit")
+        .filter(|value| !value.trim().is_empty())
+    {
+        rendered.push_str(" (");
+        rendered.push_str(translit.trim());
+        rendered.push(')');
+    }
+
+    if let Some(literal) = named.get("lit").filter(|value| !value.trim().is_empty()) {
+        rendered.push_str(", lit. ");
+        rendered.push_str(literal.trim());
+    }
+
+    rendered
 }
 
 fn render_percentage_template(params: &str) -> String {
@@ -2042,6 +2087,34 @@ Visible text."#,
             );
             assert!(!rendered.contains("{{"));
             assert!(!rendered.contains("lang|"));
+        }
+    }
+
+    #[test]
+    fn render_wikitext_formats_langx_templates() {
+        let cases = [
+            (
+                "{{langx|ko|溝樓|lit=Walled City|label=none}}",
+                r#"<p><span lang="ko">溝樓</span>, lit. Walled City</p>"#,
+            ),
+            (
+                "{{langx|ko|가우리|lit=Center|label=none}}",
+                r#"<p><span lang="ko">가우리</span>, lit. Center</p>"#,
+            ),
+            (
+                "{{Langx|ja|朝鮮|translit=Chōsen|label=none}}",
+                r#"<p><span lang="ja">朝鮮</span> (Chōsen)</p>"#,
+            ),
+        ];
+
+        for (template, expected) in cases {
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            assert!(
+                rendered.contains(expected),
+                "langx template {template:?} rendered unexpectedly:\n{rendered}"
+            );
+            assert!(!rendered.contains("{{"));
+            assert!(!rendered.contains("langx|"));
         }
     }
 
