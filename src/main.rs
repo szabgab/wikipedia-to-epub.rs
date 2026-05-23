@@ -697,6 +697,8 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Protection padlock")
         || template.eq_ignore_ascii_case("Short description")
         || template.eq_ignore_ascii_case("About")
+        || template.eq_ignore_ascii_case("Redirect")
+        || template.eq_ignore_ascii_case("pp-semi-indef")
         || template
             .get(.."Infobox".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Infobox"))
@@ -1831,6 +1833,8 @@ mod tests {
 {{Distinguish|Example}}
 {{Pp-move}}
 {{Protection padlock|small=yes}}
+{{Redirect|Sample}}
+{{pp-semi-indef}}
 {{Infobox settlement|name=Sample}}
 Visible text."#,
             &InternalLinks::new(),
@@ -1844,6 +1848,8 @@ Visible text."#,
         assert!(!rendered.contains("Distinguish"));
         assert!(!rendered.contains("Pp-move"));
         assert!(!rendered.contains("Protection padlock"));
+        assert!(!rendered.contains("Redirect"));
+        assert!(!rendered.contains("pp-semi-indef"));
         assert!(!rendered.contains("Infobox"));
     }
 
