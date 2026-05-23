@@ -634,6 +634,8 @@ fn render_template(content: &str) -> String {
         render_main_template(params)
     } else if template.eq_ignore_ascii_case("see also") {
         render_see_also_template(params)
+    } else if template.eq_ignore_ascii_case("ill") {
+        render_interlanguage_link_template(params)
     } else if is_silent_template_name(template) {
         String::new()
     } else {
@@ -678,6 +680,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("convert")
         || template.eq_ignore_ascii_case("main")
         || template.eq_ignore_ascii_case("see also")
+        || template.eq_ignore_ascii_case("ill")
         || is_silent_template_name(template)
 }
 
@@ -835,6 +838,57 @@ fn render_see_also_template(params: &str) -> String {
         String::new()
     } else {
         format!("See also: {}", join_template_articles(&articles))
+    }
+}
+
+fn render_interlanguage_link_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .collect::<Vec<_>>();
+
+    let Some(article) = params.first().filter(|article| !article.is_empty()) else {
+        return String::new();
+    };
+
+    let label = params
+        .iter()
+        .filter_map(|param| param.split_once('='))
+        .find_map(|(key, value)| {
+            if key.trim().eq_ignore_ascii_case("lt") {
+                Some(value.trim())
+            } else {
+                None
+            }
+        })
+        .filter(|value| !value.is_empty())
+        .unwrap_or(article);
+
+    if label == article {
+        format_interlanguage_link(article, None, params.get(1))
+    } else {
+        format_interlanguage_link(article, Some(label), params.get(1))
+    }
+}
+
+fn format_interlanguage_link(
+    article: &str,
+    label: Option<&str>,
+    language: Option<&String>,
+) -> String {
+    let link = if let Some(label) = label {
+        format!("[[{article}|{label}]]")
+    } else {
+        format!("[[{article}]]")
+    };
+
+    match language
+        .map(String::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
+        Some(language) => format!("{link} [{language}]"),
+        None => link,
     }
 }
 
@@ -1718,6 +1772,23 @@ Visible text."#,
         assert!(rendered.contains(
             r#"See also: <a href="https://en.wikipedia.org/wiki/Korean_tea_ceremony">Korean tea ceremony</a><span class="external-link">↗</span> and <a href="https://en.wikipedia.org/wiki/Korean_royal_court_cuisine">Korean royal court cuisine</a><span class="external-link">↗</span>"#
         ));
+    }
+
+    #[test]
+    fn render_wikitext_formats_interlanguage_link_templates() {
+        let rendered = render_wikitext(
+            "Sample",
+            "Known as ''{{ill|Hyangyakchips\u{014f}ngbang|ko|향약집성방}}'' and {{ill|Seoul|ko|서울|lt=the capital}}.",
+            &InternalLinks::new(),
+            "en",
+        );
+
+        assert!(
+            rendered.contains(
+                r#"<p>Known as <em><a href="https://en.wikipedia.org/wiki/Hyangyakchipsŏngbang">Hyangyakchipsŏngbang</a><span class="external-link">↗</span> [ko]</em> and <a href="https://en.wikipedia.org/wiki/Seoul">the capital</a><span class="external-link">↗</span> [ko].</p>"#
+            ),
+            "{rendered}"
+        );
     }
 
     #[test]
