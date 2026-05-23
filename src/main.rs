@@ -18,7 +18,7 @@ use reqwest::{
     header::{HeaderMap, RETRY_AFTER},
 };
 use serde::Deserialize;
-use tracing::{Level, info, warn};
+use tracing::{Level, debug, info, warn};
 use tracing_subscriber::fmt as tracing_fmt;
 use zip::{
     CompressionMethod, ZipWriter,
@@ -468,9 +468,7 @@ fn render_wikitext(
         .unwrap()
         .replace_all(&text, "\n")
         .into_owned();
-    text = render_korean_templates(&text);
-    text = render_japanese_templates(&text);
-    text = strip_balanced_sections(&text, "{{", "}}");
+    text = render_templates(&text);
     text = strip_balanced_sections(&text, "{|", "|}");
     text = strip_file_links(&text);
 
@@ -578,13 +576,109 @@ fn flush_list(html: &mut Vec<String>, active_list: &mut Option<char>) {
     }
 }
 
-fn render_korean_templates(text: &str) -> String {
-    let korean_template_re = Regex::new(r"(?is)\{\{\s*Korean\s*\|([^{}]*)\}\}").unwrap();
-    korean_template_re
-        .replace_all(text, |captures: &regex::Captures| {
-            render_korean_template(&captures[1])
-        })
-        .into_owned()
+fn render_templates(text: &str) -> String {
+    let mut rendered = String::new();
+    let mut offset = 0;
+
+    while let Some(start) = text[offset..].find("{{").map(|index| offset + index) {
+        rendered.push_str(&text[offset..start]);
+
+        if let Some(end) = matching_template_end(text, start) {
+            let content = &text[start + 2..end];
+            rendered.push_str(&render_template(content));
+            offset = end + 2;
+        } else {
+            rendered.push_str(&text[start..]);
+            offset = text.len();
+        }
+    }
+
+    rendered.push_str(&text[offset..]);
+    rendered
+}
+
+fn matching_template_end(text: &str, start: usize) -> Option<usize> {
+    let bytes = text.as_bytes();
+    let mut depth = 1usize;
+    let mut index = start + 2;
+
+    while index + 1 < bytes.len() {
+        if bytes[index] == b'{' && bytes[index + 1] == b'{' {
+            depth += 1;
+            index += 2;
+        } else if bytes[index] == b'}' && bytes[index + 1] == b'}' {
+            depth -= 1;
+            if depth == 0 {
+                return Some(index);
+            }
+            index += 2;
+        } else {
+            index += 1;
+        }
+    }
+
+    None
+}
+
+fn render_template(content: &str) -> String {
+    let (instruction, params) = split_template_instruction(content);
+    let instruction = instruction.trim();
+
+    debug!(instruction, "handling wikitext template");
+    log_nested_template_instructions(params);
+
+    if instruction.eq_ignore_ascii_case("Korean") {
+        render_korean_template(params)
+    } else if instruction.eq_ignore_ascii_case("Nihongo4") {
+        render_japanese_template(params)
+    } else {
+        String::new()
+    }
+}
+
+fn log_nested_template_instructions(text: &str) {
+    let mut offset = 0;
+
+    while let Some(start) = text[offset..].find("{{").map(|index| offset + index) {
+        if let Some(end) = matching_template_end(text, start) {
+            let content = &text[start + 2..end];
+            let (instruction, params) = split_template_instruction(content);
+            debug!(
+                instruction = instruction.trim(),
+                "handling nested wikitext template"
+            );
+            log_nested_template_instructions(params);
+            offset = end + 2;
+        } else {
+            break;
+        }
+    }
+}
+
+fn split_template_instruction(content: &str) -> (&str, &str) {
+    let mut template_depth = 0usize;
+    let mut link_depth = 0usize;
+    let mut chars = content.char_indices().peekable();
+
+    while let Some((index, ch)) = chars.next() {
+        if ch == '[' && chars.peek().is_some_and(|(_, next)| *next == '[') {
+            chars.next();
+            link_depth += 1;
+        } else if ch == ']' && chars.peek().is_some_and(|(_, next)| *next == ']') {
+            chars.next();
+            link_depth = link_depth.saturating_sub(1);
+        } else if ch == '{' && chars.peek().is_some_and(|(_, next)| *next == '{') {
+            chars.next();
+            template_depth += 1;
+        } else if ch == '}' && chars.peek().is_some_and(|(_, next)| *next == '}') {
+            chars.next();
+            template_depth = template_depth.saturating_sub(1);
+        } else if ch == '|' && template_depth == 0 && link_depth == 0 {
+            return (&content[..index], &content[index + 1..]);
+        }
+    }
+
+    (content, "")
 }
 
 fn render_korean_template(params: &str) -> String {
@@ -638,15 +732,6 @@ fn render_korean_template(params: &str) -> String {
     )
 }
 
-fn render_japanese_templates(text: &str) -> String {
-    let japanese_template_re = Regex::new(r"(?is)\{\{\s*Nihongo4\s*\|([^{}]*)\}\}").unwrap();
-    japanese_template_re
-        .replace_all(text, |captures: &regex::Captures| {
-            render_japanese_template(&captures[1])
-        })
-        .into_owned()
-}
-
 fn render_japanese_template(params: &str) -> String {
     let params = split_template_params(params);
     let term = params.first().map_or("", |value| value.trim());
@@ -664,6 +749,7 @@ fn render_japanese_template(params: &str) -> String {
 fn split_template_params(params: &str) -> Vec<String> {
     let mut parts = Vec::new();
     let mut current = String::new();
+    let mut template_depth = 0usize;
     let mut link_depth = 0usize;
     let mut chars = params.chars().peekable();
 
@@ -676,7 +762,15 @@ fn split_template_params(params: &str) -> Vec<String> {
             current.push(ch);
             current.push(chars.next().unwrap());
             link_depth = link_depth.saturating_sub(1);
-        } else if ch == '|' && link_depth == 0 {
+        } else if ch == '{' && chars.peek() == Some(&'{') {
+            current.push(ch);
+            current.push(chars.next().unwrap());
+            template_depth += 1;
+        } else if ch == '}' && chars.peek() == Some(&'}') {
+            current.push(ch);
+            current.push(chars.next().unwrap());
+            template_depth = template_depth.saturating_sub(1);
+        } else if ch == '|' && template_depth == 0 && link_depth == 0 {
             parts.push(current);
             current = String::new();
         } else {
