@@ -632,6 +632,8 @@ fn render_template(content: &str) -> String {
         render_lang_template(params)
     } else if template.eq_ignore_ascii_case("langx") {
         render_langx_template(params)
+    } else if template.eq_ignore_ascii_case("ko-translit") {
+        render_korean_transliteration_template(params)
     } else if template.eq_ignore_ascii_case("percentage") {
         render_percentage_template(params)
     } else if template.eq_ignore_ascii_case("UN_Population") {
@@ -690,6 +692,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("lang")
         || template.eq_ignore_ascii_case("langx")
+        || template.eq_ignore_ascii_case("ko-translit")
         || template.eq_ignore_ascii_case("percentage")
         || template.eq_ignore_ascii_case("UN_Population")
         || template.eq_ignore_ascii_case("convert")
@@ -891,6 +894,29 @@ fn render_langx_template(params: &str) -> String {
     }
 
     rendered
+}
+
+fn render_korean_transliteration_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect::<Vec<_>>();
+
+    let Some(system) = params.first().map(String::as_str) else {
+        return String::new();
+    };
+    let Some(korean) = params.get(1).map(|value| clean_korean_auto_value(value)) else {
+        return String::new();
+    };
+
+    match (system.trim().to_ascii_lowercase().as_str(), korean.as_str()) {
+        ("rr", "한국") => "Hanguk".to_string(),
+        ("mr", "한국") => "Han'guk".to_string(),
+        ("rr", "조선") => "Joseon".to_string(),
+        ("mr", "조선") => "Chosŏn".to_string(),
+        _ => korean,
+    }
 }
 
 fn render_percentage_template(params: &str) -> String {
@@ -2115,6 +2141,26 @@ Visible text."#,
             );
             assert!(!rendered.contains("{{"));
             assert!(!rendered.contains("langx|"));
+        }
+    }
+
+    #[test]
+    fn render_wikitext_formats_korean_transliteration_templates() {
+        let cases = [
+            ("{{Ko-translit|rr|^한국}}", "Hanguk"),
+            ("{{Ko-translit|mr|^한국}}", "Han'guk"),
+            ("{{ko-translit|rr|^조선}}", "Joseon"),
+            ("{{ko-translit|mr|^조선}}", "Chosŏn"),
+        ];
+
+        for (template, expected) in cases {
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            assert!(
+                rendered.contains(&format!("<p>{expected}</p>")),
+                "Ko-translit template {template:?} rendered unexpectedly:\n{rendered}"
+            );
+            assert!(!rendered.contains("{{"));
+            assert!(!rendered.contains("translit|"));
         }
     }
 
