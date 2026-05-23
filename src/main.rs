@@ -632,6 +632,8 @@ fn render_template(content: &str) -> String {
         render_convert_template(params)
     } else if template.eq_ignore_ascii_case("main") {
         render_main_template(params)
+    } else if template.eq_ignore_ascii_case("see also") {
+        render_see_also_template(params)
     } else {
         debug!(template, "removing unhandled wikitext template");
         log_unhandled_nested_template_instructions(params);
@@ -663,6 +665,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("convert")
         || template.eq_ignore_ascii_case("main")
+        || template.eq_ignore_ascii_case("see also")
 }
 
 fn split_template_name(content: &str) -> (&str, &str) {
@@ -791,20 +794,34 @@ fn render_convert_template(params: &str) -> String {
 }
 
 fn render_main_template(params: &str) -> String {
-    let articles = split_template_params(params)
-        .into_iter()
-        .map(|param| param.trim().to_string())
-        .filter(|param| !param.is_empty() && !param.contains('='))
-        .collect::<Vec<_>>();
+    let articles = template_article_params(params);
 
     match articles.as_slice() {
         [] => String::new(),
         [article] => format!("Main article: [[{article}]]"),
-        articles => format!("Main articles: {}", join_main_articles(articles)),
+        articles => format!("Main articles: {}", join_template_articles(articles)),
     }
 }
 
-fn join_main_articles(articles: &[String]) -> String {
+fn render_see_also_template(params: &str) -> String {
+    let articles = template_article_params(params);
+
+    if articles.is_empty() {
+        String::new()
+    } else {
+        format!("See also: {}", join_template_articles(&articles))
+    }
+}
+
+fn template_article_params(params: &str) -> Vec<String> {
+    split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect::<Vec<_>>()
+}
+
+fn join_template_articles(articles: &[String]) -> String {
     let links = articles
         .iter()
         .map(|article| format!("[[{article}]]"))
@@ -1617,6 +1634,27 @@ mod tests {
         );
         assert!(rendered.contains(
             r#"Main articles: <a href="https://en.wikipedia.org/wiki/Korean_cuisine">Korean cuisine</a><span class="external-link">↗</span> and <a href="https://en.wikipedia.org/wiki/Korean_tea_ceremony">Korean tea ceremony</a><span class="external-link">↗</span>"#
+        ));
+    }
+
+    #[test]
+    fn render_wikitext_formats_see_also_templates() {
+        let mut internal_links = InternalLinks::new();
+        internal_links.insert("seoul".to_string(), "chapter-2.xhtml".to_string());
+
+        let rendered = render_wikitext(
+            "Sample",
+            "{{See also|Seoul}}\n{{See also|Korean tea ceremony|Korean royal court cuisine}}",
+            &internal_links,
+            "en",
+        );
+
+        assert!(
+            rendered.contains(r#"See also: <a href="chapter-2.xhtml">Seoul</a>"#),
+            "{rendered}"
+        );
+        assert!(rendered.contains(
+            r#"See also: <a href="https://en.wikipedia.org/wiki/Korean_tea_ceremony">Korean tea ceremony</a><span class="external-link">↗</span> and <a href="https://en.wikipedia.org/wiki/Korean_royal_court_cuisine">Korean royal court cuisine</a><span class="external-link">↗</span>"#
         ));
     }
 
