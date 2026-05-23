@@ -1669,6 +1669,32 @@ Visible text."#,
     }
 
     #[test]
+    fn render_wikitext_parses_example_file() {
+        let rendered = render_wikitext(
+            "Sample",
+            r#"''{{ill|Hyangyakchips\u014fngbang|ko|\ud5a5\uc57d\uc9d1\uc131\ubc29}}''"#,
+            &InternalLinks::new(),
+            "en",
+        );
+
+        assert!(rendered.contains("<h1>Sample</h1>"));
+        assert!(rendered.contains(
+            r#"<p><em><a href="https://en.wikipedia.org/wiki/Hyangyakchips\u014fngbang">Hyangyakchips\u014fngbang</a><span class="external-link">↗</span> [ko]</em></p>"#
+        ));
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("ill|"));
+    }
+
+    #[test]
+    fn render_wikitext_parses_empty_template_inside_italics() {
+        let rendered = render_wikitext("Sample", "''{{  }}''", &InternalLinks::new(), "en");
+
+        assert!(rendered.contains("<p><em></em></p>"));
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("}}"));
+    }
+
+    #[test]
     fn render_wikitext_formats_korean_templates() {
         let rendered = render_wikitext(
             "Sample",
