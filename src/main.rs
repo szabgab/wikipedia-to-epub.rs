@@ -637,7 +637,10 @@ fn render_template(content: &str) -> String {
     } else if is_silent_template_name(template) {
         String::new()
     } else {
-        debug!(template, "removing unhandled wikitext template");
+        debug!(
+            content = template_log_content(content),
+            "removing unhandled wikitext template"
+        );
         log_unhandled_nested_template_instructions(params);
         String::new()
     }
@@ -652,7 +655,10 @@ fn log_unhandled_nested_template_instructions(text: &str) {
             let (template, params) = split_template_name(content);
             let template = template.trim();
             if !is_handled_template_name(template) {
-                debug!(template, "removing nested unhandled wikitext template");
+                debug!(
+                    content = template_log_content(content),
+                    "removing nested unhandled wikitext template"
+                );
                 log_unhandled_nested_template_instructions(params);
             }
             offset = end + 2;
@@ -660,6 +666,10 @@ fn log_unhandled_nested_template_instructions(text: &str) {
             break;
         }
     }
+}
+
+fn template_log_content(content: &str) -> String {
+    content.chars().take(20).collect()
 }
 
 fn is_handled_template_name(template: &str) -> bool {
@@ -1576,6 +1586,18 @@ Visible text."#,
         assert!(!rendered.contains("Pp-move"));
         assert!(!rendered.contains("Protection padlock"));
         assert!(!rendered.contains("Infobox"));
+    }
+
+    #[test]
+    fn template_log_content_is_limited_to_twenty_characters() {
+        assert_eq!(
+            template_log_content("Unhandled template with a long body"),
+            "Unhandled template w"
+        );
+        assert_eq!(
+            template_log_content("短いtemplate content"),
+            "短いtemplate content"
+        );
     }
 
     #[test]
