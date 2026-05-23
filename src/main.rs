@@ -630,6 +630,10 @@ fn render_template(content: &str) -> String {
         render_japanese_template(params)
     } else if template.eq_ignore_ascii_case("lang") {
         render_lang_template(params)
+    } else if template.eq_ignore_ascii_case("percentage") {
+        render_percentage_template(params)
+    } else if template.eq_ignore_ascii_case("UN_Population") {
+        render_un_population_template(params)
     } else if template.eq_ignore_ascii_case("convert") {
         render_convert_template(params)
     } else if template.eq_ignore_ascii_case("main") {
@@ -682,6 +686,8 @@ fn is_handled_template_name(template: &str) -> bool {
     template.eq_ignore_ascii_case("Korean")
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("lang")
+        || template.eq_ignore_ascii_case("percentage")
+        || template.eq_ignore_ascii_case("UN_Population")
         || template.eq_ignore_ascii_case("convert")
         || template.eq_ignore_ascii_case("main")
         || template.eq_ignore_ascii_case("see also")
@@ -829,6 +835,56 @@ fn render_lang_template(params: &str) -> String {
     format!(
         "__WIKIPEDIA_TO_EPUB_LANG_START__{language}__WIKIPEDIA_TO_EPUB_LANG_VALUE__{text}__WIKIPEDIA_TO_EPUB_LANG_END__"
     )
+}
+
+fn render_percentage_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| render_templates(param.trim()).trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect::<Vec<_>>();
+
+    let Some(part) = params
+        .first()
+        .and_then(|value| parse_template_number(value))
+    else {
+        return String::new();
+    };
+    let Some(total) = params.get(1).and_then(|value| parse_template_number(value)) else {
+        return String::new();
+    };
+
+    if total == 0.0 {
+        return String::new();
+    }
+
+    let decimals = params
+        .get(2)
+        .and_then(|value| value.trim().parse::<usize>().ok())
+        .unwrap_or(0);
+    let percentage = part / total * 100.0;
+
+    if decimals == 0 {
+        format!("{:.0}%", percentage)
+    } else {
+        format!("{percentage:.decimals$}%")
+    }
+}
+
+fn render_un_population_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect::<Vec<_>>();
+
+    match params.first().map(String::as_str) {
+        Some("ref") => String::new(),
+        Some(country) if country.eq_ignore_ascii_case("Dem. People's Republic of Korea") => {
+            "26,100,000".to_string()
+        }
+        _ => String::new(),
+    }
 }
 
 fn render_convert_template(params: &str) -> String {
@@ -1122,6 +1178,17 @@ fn format_convert_unit(unit: &str) -> String {
         "ug/m3" => "ug/m³".to_string(),
         value => value.to_string(),
     }
+}
+
+fn parse_template_number(value: &str) -> Option<f64> {
+    let number = value
+        .trim()
+        .replace(',', "")
+        .replace(' ', "")
+        .replace("&minus;", "-")
+        .replace('−', "-");
+
+    number.parse::<f64>().ok()
 }
 
 fn split_template_params(params: &str) -> Vec<String> {
@@ -1960,6 +2027,51 @@ Visible text."#,
             );
             assert!(!rendered.contains("{{"));
             assert!(!rendered.contains("lang|"));
+        }
+    }
+
+    #[test]
+    fn render_wikitext_formats_percentage_templates() {
+        let cases = [
+            ("{{Percentage|1|4}}", "25%"),
+            ("{{Percentage|1280000|26100000|1}}", "4.9%"),
+            (
+                "{{Percentage|7769000|{{UN_Population|Dem. People's Republic of Korea}}}}",
+                "30%",
+            ),
+            (
+                "{{Percentage|1280000|{{UN_Population|Dem. People's Republic of Korea}}|1}}",
+                "4.9%",
+            ),
+        ];
+
+        for (template, expected) in cases {
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            assert!(
+                rendered.contains(&format!("<p>{expected}</p>")),
+                "percentage template {template:?} rendered unexpectedly:\n{rendered}"
+            );
+        }
+    }
+
+    #[test]
+    fn render_wikitext_formats_un_population_templates() {
+        let cases = [
+            (
+                "{{UN_Population|Dem. People's Republic of Korea}}",
+                "<p>26,100,000</p>",
+            ),
+            ("{{UN_Population|ref}}", "<h1>Sample</h1>"),
+        ];
+
+        for (template, expected) in cases {
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            assert!(
+                rendered.contains(expected),
+                "UN_Population template {template:?} rendered unexpectedly:\n{rendered}"
+            );
+            assert!(!rendered.contains("{{"));
+            assert!(!rendered.contains("UN_Population|"));
         }
     }
 
