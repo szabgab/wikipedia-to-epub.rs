@@ -634,6 +634,8 @@ fn render_template(content: &str) -> String {
         render_main_template(params)
     } else if template.eq_ignore_ascii_case("see also") {
         render_see_also_template(params)
+    } else if is_silent_template_name(template) {
+        String::new()
     } else {
         debug!(template, "removing unhandled wikitext template");
         log_unhandled_nested_template_instructions(params);
@@ -666,6 +668,19 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("convert")
         || template.eq_ignore_ascii_case("main")
         || template.eq_ignore_ascii_case("see also")
+        || is_silent_template_name(template)
+}
+
+fn is_silent_template_name(template: &str) -> bool {
+    let template = template.trim();
+    template.eq_ignore_ascii_case("Distinguish")
+        || template.eq_ignore_ascii_case("Pp-move")
+        || template.eq_ignore_ascii_case("Protection padlock")
+        || template.eq_ignore_ascii_case("Short description")
+        || template.eq_ignore_ascii_case("About")
+        || template
+            .get(.."Infobox".len())
+            .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Infobox"))
 }
 
 fn split_template_name(content: &str) -> (&str, &str) {
@@ -1536,6 +1551,31 @@ mod tests {
         assert!(!rendered.contains("Category:Hidden"));
         assert!(!rendered.contains("Infobox"));
         assert!(!rendered.contains("omit this"));
+    }
+
+    #[test]
+    fn render_wikitext_silently_skips_metadata_templates() {
+        let rendered = render_wikitext(
+            "Sample",
+            r#"{{Short description|Sample page}}
+{{About|the sample|other uses|Sample (disambiguation)}}
+{{Distinguish|Example}}
+{{Pp-move}}
+{{Protection padlock|small=yes}}
+{{Infobox settlement|name=Sample}}
+Visible text."#,
+            &InternalLinks::new(),
+            "en",
+        );
+
+        assert!(rendered.contains("<h1>Sample</h1>"));
+        assert!(rendered.contains("<p>Visible text.</p>"));
+        assert!(!rendered.contains("Short description"));
+        assert!(!rendered.contains("About"));
+        assert!(!rendered.contains("Distinguish"));
+        assert!(!rendered.contains("Pp-move"));
+        assert!(!rendered.contains("Protection padlock"));
+        assert!(!rendered.contains("Infobox"));
     }
 
     #[test]
