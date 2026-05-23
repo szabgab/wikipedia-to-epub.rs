@@ -621,33 +621,32 @@ fn matching_template_end(text: &str, start: usize) -> Option<usize> {
 }
 
 fn render_template(content: &str) -> String {
-    let (instruction, params) = split_template_instruction(content);
-    let instruction = instruction.trim();
+    let (template, params) = split_template_name(content);
+    let template = template.trim();
 
-    debug!(instruction, "handling wikitext template");
-    log_nested_template_instructions(params);
-
-    if instruction.eq_ignore_ascii_case("Korean") {
+    if template.eq_ignore_ascii_case("Korean") {
         render_korean_template(params)
-    } else if instruction.eq_ignore_ascii_case("Nihongo4") {
+    } else if template.eq_ignore_ascii_case("Nihongo4") {
         render_japanese_template(params)
     } else {
+        debug!(template, "removing unhandled wikitext template");
+        log_unhandled_nested_template_instructions(params);
         String::new()
     }
 }
 
-fn log_nested_template_instructions(text: &str) {
+fn log_unhandled_nested_template_instructions(text: &str) {
     let mut offset = 0;
 
     while let Some(start) = text[offset..].find("{{").map(|index| offset + index) {
         if let Some(end) = matching_template_end(text, start) {
             let content = &text[start + 2..end];
-            let (instruction, params) = split_template_instruction(content);
-            debug!(
-                instruction = instruction.trim(),
-                "handling nested wikitext template"
-            );
-            log_nested_template_instructions(params);
+            let (template, params) = split_template_name(content);
+            let template = template.trim();
+            if !is_handled_template_name(template) {
+                debug!(template, "removing nested unhandled wikitext template");
+                log_unhandled_nested_template_instructions(params);
+            }
             offset = end + 2;
         } else {
             break;
@@ -655,7 +654,11 @@ fn log_nested_template_instructions(text: &str) {
     }
 }
 
-fn split_template_instruction(content: &str) -> (&str, &str) {
+fn is_handled_template_name(template: &str) -> bool {
+    template.eq_ignore_ascii_case("Korean") || template.eq_ignore_ascii_case("Nihongo4")
+}
+
+fn split_template_name(content: &str) -> (&str, &str) {
     let mut template_depth = 0usize;
     let mut link_depth = 0usize;
     let mut chars = content.char_indices().peekable();
