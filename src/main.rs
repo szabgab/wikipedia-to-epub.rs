@@ -628,6 +628,8 @@ fn render_template(content: &str) -> String {
         render_korean_template(params)
     } else if template.eq_ignore_ascii_case("Nihongo4") {
         render_japanese_template(params)
+    } else if template.eq_ignore_ascii_case("convert") {
+        render_convert_template(params)
     } else {
         debug!(template, "removing unhandled wikitext template");
         log_unhandled_nested_template_instructions(params);
@@ -655,7 +657,9 @@ fn log_unhandled_nested_template_instructions(text: &str) {
 }
 
 fn is_handled_template_name(template: &str) -> bool {
-    template.eq_ignore_ascii_case("Korean") || template.eq_ignore_ascii_case("Nihongo4")
+    template.eq_ignore_ascii_case("Korean")
+        || template.eq_ignore_ascii_case("Nihongo4")
+        || template.eq_ignore_ascii_case("convert")
 }
 
 fn split_template_name(content: &str) -> (&str, &str) {
@@ -747,6 +751,56 @@ fn render_japanese_template(params: &str) -> String {
     format!(
         "{term}__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_START__ (__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__{japanese}__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__)__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_END__"
     )
+}
+
+fn render_convert_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.contains('='))
+        .collect::<Vec<_>>();
+
+    let Some(value) = params.first().map(String::as_str) else {
+        return String::new();
+    };
+
+    match params.get(1).map(String::as_str) {
+        Some("to") if params.len() >= 4 => format!(
+            "{} to {} {}",
+            format_convert_value(value),
+            format_convert_value(&params[2]),
+            format_convert_unit(&params[3])
+        ),
+        Some("and") if params.len() >= 4 => format!(
+            "{} {} and {} {}",
+            format_convert_value(value),
+            format_convert_unit(&params[3]),
+            format_convert_value(&params[2]),
+            format_convert_unit(&params[3])
+        ),
+        Some(unit) => format!(
+            "{} {}",
+            format_convert_value(value),
+            format_convert_unit(unit)
+        ),
+        None => format_convert_value(value),
+    }
+}
+
+fn format_convert_value(value: &str) -> String {
+    value.trim().replace("&minus;", "−")
+}
+
+fn format_convert_unit(unit: &str) -> String {
+    match unit.trim() {
+        "C" => "°C".to_string(),
+        "F" => "°F".to_string(),
+        "km2" => "km²".to_string(),
+        "mi2" | "sqmi" => "mi²".to_string(),
+        "m3" => "m³".to_string(),
+        "ug/m3" => "ug/m³".to_string(),
+        value => value.to_string(),
+    }
 }
 
 fn split_template_params(params: &str) -> Vec<String> {
@@ -1475,6 +1529,39 @@ mod tests {
             ),
             "{rendered}"
         );
+    }
+
+    #[test]
+    fn render_wikitext_formats_convert_templates() {
+        let cases = [
+            ("{{convert|1100|km|abbr=on}}", "1100 km"),
+            ("{{convert|30|°C|°F}}", "30 °C"),
+            ("{{Convert|24|ug/m3||sp=us}}", "24 ug/m³"),
+            ("{{convert|&minus;3|°C|1|disp=or}}", "−3 °C"),
+            ("{{convert|10|to|47|km2|disp=or|abbr=on}}", "10 to 47 km²"),
+            ("{{convert|15|km|0|abbr=on}}", "15 km"),
+            ("{{convert|2.1|and|−5.5|C|F|1}}", "2.1 °C and −5.5 °C"),
+            ("{{convert|250|km|0|abbr=on}}", "250 km"),
+            ("{{convert|268|km2|mi2|sp=us|abbr=on}}", "268 km²"),
+            ("{{convert|30.0|and|22.9|C|F|0}}", "30.0 °C and 22.9 °C"),
+            ("{{convert|300|km/h|0|abbr=on}}", "300 km/h"),
+            ("{{convert|40|C|F|1}}", "40 °C"),
+            ("{{convert|4|km|mile|sp=us|abbr=on}}", "4 km"),
+            ("{{convert|605.25|km2|sqmi|abbr=unit}}", "605.25 km²"),
+            ("{{convert|613|km2|mi2|sp=us|abbr=on}}", "613 km²"),
+            ("{{convert|940|km|abbr=on}}", "940 km"),
+            ("{{convert|−10|C}}", "−10 °C"),
+            ("{{convert|−15|C}}", "−15 °C"),
+            ("{{convert|−20|C}}", "−20 °C"),
+        ];
+
+        for (template, expected) in cases {
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            assert!(
+                rendered.contains(&format!("<p>{expected}</p>")),
+                "convert template {template:?} rendered unexpectedly:\n{rendered}"
+            );
+        }
     }
 
     #[test]
