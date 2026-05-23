@@ -630,6 +630,8 @@ fn render_template(content: &str) -> String {
         render_japanese_template(params)
     } else if template.eq_ignore_ascii_case("convert") {
         render_convert_template(params)
+    } else if template.eq_ignore_ascii_case("main") {
+        render_main_template(params)
     } else {
         debug!(template, "removing unhandled wikitext template");
         log_unhandled_nested_template_instructions(params);
@@ -660,6 +662,7 @@ fn is_handled_template_name(template: &str) -> bool {
     template.eq_ignore_ascii_case("Korean")
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("convert")
+        || template.eq_ignore_ascii_case("main")
 }
 
 fn split_template_name(content: &str) -> (&str, &str) {
@@ -784,6 +787,38 @@ fn render_convert_template(params: &str) -> String {
             format_convert_unit(unit)
         ),
         None => format_convert_value(value),
+    }
+}
+
+fn render_main_template(params: &str) -> String {
+    let articles = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect::<Vec<_>>();
+
+    match articles.as_slice() {
+        [] => String::new(),
+        [article] => format!("Main article: [[{article}]]"),
+        articles => format!("Main articles: {}", join_main_articles(articles)),
+    }
+}
+
+fn join_main_articles(articles: &[String]) -> String {
+    let links = articles
+        .iter()
+        .map(|article| format!("[[{article}]]"))
+        .collect::<Vec<_>>();
+
+    match links.as_slice() {
+        [] => String::new(),
+        [link] => link.clone(),
+        [first, second] => format!("{first} and {second}"),
+        _ => {
+            let last = links.last().cloned().unwrap_or_default();
+            let leading = &links[..links.len() - 1];
+            format!("{}, and {last}", leading.join(", "))
+        }
     }
 }
 
@@ -1562,6 +1597,27 @@ mod tests {
                 "convert template {template:?} rendered unexpectedly:\n{rendered}"
             );
         }
+    }
+
+    #[test]
+    fn render_wikitext_formats_main_templates() {
+        let mut internal_links = InternalLinks::new();
+        internal_links.insert("namesofkorea".to_string(), "chapter-2.xhtml".to_string());
+
+        let rendered = render_wikitext(
+            "Sample",
+            "{{Main|Names of Korea}}\n{{Main|Korean cuisine|Korean tea ceremony}}",
+            &internal_links,
+            "en",
+        );
+
+        assert!(
+            rendered.contains(r#"Main article: <a href="chapter-2.xhtml">Names of Korea</a>"#),
+            "{rendered}"
+        );
+        assert!(rendered.contains(
+            r#"Main articles: <a href="https://en.wikipedia.org/wiki/Korean_cuisine">Korean cuisine</a><span class="external-link">↗</span> and <a href="https://en.wikipedia.org/wiki/Korean_tea_ceremony">Korean tea ceremony</a><span class="external-link">↗</span>"#
+        ));
     }
 
     #[test]
