@@ -49,12 +49,14 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Korean|hangul=서울|labels=no}}` becomes `<span title="Korean-language text"><span lang="ko-Hang">서울</span></span>`
 * `{{Nihongo4|''[[Edo (Tokyo)|Edo]]''|[[wikt:江戸|江戸]]}}` becomes an italicized `Edo` article link followed by the Japanese text in a `lang="ja"` span
 * `{{convert|1100|km|abbr=on}}` becomes `1100 km`; range forms such as `{{convert|10|to|47|km2}}` become `10 to 47 km²`
+* `{{ill|Ch'ilchŏngsan|ko}}` becomes a link to `Ch'ilchŏngsan` followed by `[ko]`
+* `{{Reign|1400|1418}}` becomes `r. 1400–1418`
 * `{{Main|Names of Korea}}` becomes `Main article:` followed by a link to `Names of Korea`
 * `{{See also|Korean tea ceremony|Korean royal court cuisine}}` becomes `See also:` followed by links to those articles
 * `== History ==` becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings
 * Lines starting with `*` become unordered list items
 * Lines starting with `#` become ordered list items
-* References, templates, tables, categories, and file/image links are omitted
+* References, unhandled templates, tables, categories, and file/image links are omitted
 
 ## Amazon
 

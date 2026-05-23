@@ -636,6 +636,8 @@ fn render_template(content: &str) -> String {
         render_see_also_template(params)
     } else if template.eq_ignore_ascii_case("ill") {
         render_interlanguage_link_template(params)
+    } else if template.eq_ignore_ascii_case("reign") {
+        render_reign_template(params)
     } else if is_silent_template_name(template) {
         String::new()
     } else {
@@ -681,6 +683,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("main")
         || template.eq_ignore_ascii_case("see also")
         || template.eq_ignore_ascii_case("ill")
+        || template.eq_ignore_ascii_case("reign")
         || is_silent_template_name(template)
 }
 
@@ -890,6 +893,152 @@ fn format_interlanguage_link(
         Some(language) => format!("{link} [{language}]"),
         None => link,
     }
+}
+
+fn render_reign_template(params: &str) -> String {
+    let mut positional = Vec::new();
+    let mut named = HashMap::new();
+
+    if !params.trim().is_empty() {
+        for param in split_template_params(params)
+            .into_iter()
+            .map(|param| param.trim().to_string())
+        {
+            if let Some((key, value)) = param.split_once('=') {
+                named.insert(key.trim().to_lowercase(), value.trim().to_string());
+            } else {
+                positional.push(param);
+            }
+        }
+    }
+
+    let label = reign_label(&named);
+    let era = named.get("era").map(String::as_str);
+    let mut dates = Vec::new();
+
+    if let Some(pre_date) = named.get("pre-date").filter(|value| !value.is_empty()) {
+        dates.push(pre_date.to_string());
+    }
+
+    if let Some(single) = named
+        .get("single")
+        .or_else(|| named.get("post-date"))
+        .filter(|value| !value.is_empty() && positional.is_empty() && dates.is_empty())
+    {
+        dates.push(single.to_string());
+    } else if !positional.is_empty() {
+        dates.push(format_reign_range(
+            positional.first().map(String::as_str),
+            positional.get(1).map(String::as_str),
+        ));
+    }
+
+    if let Some(mid_date) = named.get("mid-date").filter(|value| !value.is_empty()) {
+        dates.push(mid_date.to_string());
+    }
+
+    if positional.get(1).is_some() && positional.get(3).is_some() {
+        dates.push(format_reign_range(
+            positional.get(2).map(String::as_str),
+            positional.get(3).map(String::as_str),
+        ));
+    }
+
+    if let Some(post_date) = named
+        .get("post-date")
+        .filter(|value| !value.is_empty() && !positional.is_empty())
+    {
+        dates.push(post_date.to_string());
+    }
+
+    if let Some(era) = era.filter(|value| !value.trim().is_empty())
+        && let Some(last) = dates.last_mut()
+    {
+        last.push(' ');
+        last.push_str(era.trim());
+    }
+
+    match (label.as_str(), dates.is_empty()) {
+        ("", true) => String::new(),
+        ("", false) => dates.join(", "),
+        (_, true) => label,
+        (_, false) => format!("{label} {}", dates.join(", ")),
+    }
+}
+
+fn reign_label(named: &HashMap<String, String>) -> String {
+    if let Some(label) = named.get("label").filter(|value| !value.trim().is_empty()) {
+        return label.trim().to_string();
+    }
+
+    let show = named
+        .get("show")
+        .or_else(|| named.get("link"))
+        .or_else(|| named.get("lk"))
+        .map(String::as_str)
+        .unwrap_or_default()
+        .trim()
+        .to_lowercase();
+    let capitalized = named.contains_key("cap");
+
+    match show.as_str() {
+        "none" | "no" | "n" | "off" | "false" | "0" | "blank" => String::new(),
+        "word" => {
+            if capitalized {
+                "Reigned".to_string()
+            } else {
+                "reigned".to_string()
+            }
+        }
+        "colon" => {
+            if capitalized {
+                "Reign:".to_string()
+            } else {
+                "reign:".to_string()
+            }
+        }
+        "lword" => {
+            if capitalized {
+                "[[Reign|Reigned]]".to_string()
+            } else {
+                "[[Reign|reigned]]".to_string()
+            }
+        }
+        "lcolon" => {
+            if capitalized {
+                "[[Reign|Reign]]:".to_string()
+            } else {
+                "[[Reign|reign]]:".to_string()
+            }
+        }
+        "link" | "yes" | "y" | "on" | "true" | "1" => {
+            if capitalized {
+                "[[Reign|R.]]".to_string()
+            } else {
+                "[[Reign|r.]]".to_string()
+            }
+        }
+        _ => {
+            if capitalized {
+                "R.".to_string()
+            } else {
+                "r.".to_string()
+            }
+        }
+    }
+}
+
+fn format_reign_range(start: Option<&str>, end: Option<&str>) -> String {
+    let start = start.unwrap_or("").trim();
+    let end = end.unwrap_or("").trim();
+    let start = if start.is_empty() { "?" } else { start };
+    let separator = if start.contains(char::is_whitespace) || end.contains(char::is_whitespace) {
+        " – "
+    } else {
+        "–"
+    };
+
+    format!("{start}{separator}{end}")
 }
 
 fn template_article_params(params: &str) -> Vec<String> {
@@ -1815,6 +1964,35 @@ Visible text."#,
             ),
             "{rendered}"
         );
+    }
+
+    #[test]
+    fn render_wikitext_formats_reign_templates() {
+        let cases = [
+            ("{{Reign}}", "r."),
+            ("{{Reign|1207|1272}}", "r. 1207–1272"),
+            (
+                "{{Reign |1 October 1207 |1272}}",
+                "r. 1 October 1207 – 1272",
+            ),
+            ("{{Reign|1207|present}}", "r. 1207–present"),
+            ("{{Reign||940}}", "r. ?–940"),
+            ("{{Reign|89|67|era=BCE}}", "r. 89–67 BCE"),
+            ("{{Reign|single=1872}}", "r. 1872"),
+            ("{{Reign|1962|present|show=word}}", "reigned 1962–present"),
+            ("{{Reign|1962|present|show=colon}}", "reign: 1962–present"),
+            ("{{Reign|1962|present|show=blank}}", "1962–present"),
+            ("{{Reign|label=ruled|1967|1969}}", "ruled 1967–1969"),
+            ("{{Reign|1267|1272|post-date=1275}}", "r. 1267–1272, 1275"),
+        ];
+
+        for (template, expected) in cases {
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            assert!(
+                rendered.contains(&format!("<p>{expected}</p>")),
+                "reign template {template:?} rendered unexpectedly:\n{rendered}"
+            );
+        }
     }
 
     #[test]
