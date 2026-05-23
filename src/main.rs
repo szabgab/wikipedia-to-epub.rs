@@ -624,7 +624,7 @@ fn render_template(content: &str) -> String {
     let (template, params) = split_template_name(content);
     let template = template.trim();
 
-    if template.eq_ignore_ascii_case("Korean") {
+    if template.eq_ignore_ascii_case("Korean") || template.eq_ignore_ascii_case("Korean/auto") {
         render_korean_template(params)
     } else if template.eq_ignore_ascii_case("Nihongo4") {
         render_japanese_template(params)
@@ -684,6 +684,7 @@ fn template_log_content(content: &str) -> String {
 
 fn is_handled_template_name(template: &str) -> bool {
     template.eq_ignore_ascii_case("Korean")
+        || template.eq_ignore_ascii_case("Korean/auto")
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("lang")
         || template.eq_ignore_ascii_case("percentage")
@@ -748,12 +749,12 @@ fn render_korean_template(params: &str) -> String {
     {
         if let Some((key, value)) = part.split_once('=') {
             match key.trim().to_lowercase().as_str() {
-                "hangul" => hangul = Some(value.trim().to_string()),
-                "hanja" => hanja = Some(value.trim().to_string()),
+                "hangul" => hangul = Some(clean_korean_auto_value(value)),
+                "hanja" => hanja = Some(clean_korean_auto_value(value)),
                 _ => {}
             }
         } else {
-            positional.push(part);
+            positional.push(clean_korean_auto_value(&part));
         }
     }
 
@@ -785,6 +786,14 @@ fn render_korean_template(params: &str) -> String {
         "__WIKIPEDIA_TO_EPUB_KOREAN_TEXT_START__{}__WIKIPEDIA_TO_EPUB_KOREAN_TEXT_END__",
         values.join(" / ")
     )
+}
+
+fn clean_korean_auto_value(value: &str) -> String {
+    value
+        .trim()
+        .chars()
+        .filter(|ch| !matches!(ch, '^' | '%' | '_'))
+        .collect()
 }
 
 fn render_japanese_template(params: &str) -> String {
@@ -1976,13 +1985,13 @@ Visible text."#,
     fn render_wikitext_formats_korean_templates() {
         let rendered = render_wikitext(
             "Sample",
-            "Traditionally, ''seoul'' ({{Korean|hangul=서울|labels=no}}) meant capital. Earlier {{Korean|labels=no|위례성|慰禮城}} was nearby.",
+            "Traditionally, ''seoul'' ({{Korean|hangul=서울|labels=no}}) meant capital. Earlier {{Korean|labels=no|위례성|慰禮城}} was nearby. He was called {{Korean/auto|hangul=^해동_^요순|hanja=海東堯舜|mr=yes|labels=no}}.",
             &InternalLinks::new(),
             "en",
         );
 
         assert!(rendered.contains(
-            r#"<p>Traditionally, <em>seoul</em> (<span title="Korean-language text"><span lang="ko-Hang">서울</span></span>) meant capital. Earlier <span title="Korean-language text"><span lang="ko-Hang">위례성</span> / <span lang="ko-Hani">慰禮城</span></span> was nearby.</p>"#
+            r#"<p>Traditionally, <em>seoul</em> (<span title="Korean-language text"><span lang="ko-Hang">서울</span></span>) meant capital. Earlier <span title="Korean-language text"><span lang="ko-Hang">위례성</span> / <span lang="ko-Hani">慰禮城</span></span> was nearby. He was called <span title="Korean-language text"><span lang="ko-Hang">해동요순</span> / <span lang="ko-Hani">海東堯舜</span></span>.</p>"#
         ));
     }
 
