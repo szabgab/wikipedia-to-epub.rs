@@ -628,6 +628,8 @@ fn render_template(content: &str) -> String {
         render_korean_template(params)
     } else if template.eq_ignore_ascii_case("Nihongo4") {
         render_japanese_template(params)
+    } else if template.eq_ignore_ascii_case("lang") {
+        render_lang_template(params)
     } else if template.eq_ignore_ascii_case("convert") {
         render_convert_template(params)
     } else if template.eq_ignore_ascii_case("main") {
@@ -679,6 +681,7 @@ fn template_log_content(content: &str) -> String {
 fn is_handled_template_name(template: &str) -> bool {
     template.eq_ignore_ascii_case("Korean")
         || template.eq_ignore_ascii_case("Nihongo4")
+        || template.eq_ignore_ascii_case("lang")
         || template.eq_ignore_ascii_case("convert")
         || template.eq_ignore_ascii_case("main")
         || template.eq_ignore_ascii_case("see also")
@@ -787,6 +790,42 @@ fn render_japanese_template(params: &str) -> String {
 
     format!(
         "{term}__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_START__ (__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__{japanese}__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__)__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_END__"
+    )
+}
+
+fn render_lang_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect::<Vec<_>>();
+
+    let Some(language) = params
+        .first()
+        .map(String::as_str)
+        .filter(|value| !value.is_empty())
+    else {
+        return String::new();
+    };
+    let Some(text) = params
+        .get(1)
+        .map(String::as_str)
+        .filter(|value| !value.is_empty())
+    else {
+        return String::new();
+    };
+
+    let language = language
+        .chars()
+        .filter(|ch| ch.is_ascii_alphanumeric() || *ch == '-')
+        .collect::<String>();
+
+    if language.is_empty() {
+        return text.to_string();
+    }
+
+    format!(
+        "__WIKIPEDIA_TO_EPUB_LANG_START__{language}__WIKIPEDIA_TO_EPUB_LANG_VALUE__{text}__WIKIPEDIA_TO_EPUB_LANG_END__"
     )
 }
 
@@ -1194,7 +1233,7 @@ fn format_inline_text(text: &str) -> String {
         .split_whitespace()
         .collect::<Vec<_>>()
         .join(" ");
-    encode_text(collapsed.trim())
+    let html = encode_text(collapsed.trim())
         .replace("__WIKIPEDIA_TO_EPUB_BOLD_START__", "<strong>")
         .replace("__WIKIPEDIA_TO_EPUB_BOLD_END__", "</strong>")
         .replace("__WIKIPEDIA_TO_EPUB_ITALIC_START__", "<em>")
@@ -1219,7 +1258,24 @@ fn format_inline_text(text: &str) -> String {
             "__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__",
             r#"<span title="Japanese-language text"><span lang="ja">"#,
         )
-        .replace("__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__", "</span></span>")
+        .replace("__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__", "</span></span>");
+
+    restore_lang_template_spans(&html)
+}
+
+fn restore_lang_template_spans(html: &str) -> String {
+    Regex::new(
+        r"__WIKIPEDIA_TO_EPUB_LANG_START__([A-Za-z0-9-]+)__WIKIPEDIA_TO_EPUB_LANG_VALUE__(.*?)__WIKIPEDIA_TO_EPUB_LANG_END__",
+    )
+    .unwrap()
+    .replace_all(html, |captures: &regex::Captures| {
+        format!(
+            r#"<span lang="{}">{}</span>"#,
+            encode_double_quoted_attribute(&captures[1]),
+            &captures[2]
+        )
+    })
+    .into_owned()
 }
 
 fn wiki_link_placeholder(
@@ -1872,6 +1928,33 @@ Visible text."#,
             ),
             "{rendered}"
         );
+    }
+
+    #[test]
+    fn render_wikitext_formats_lang_templates() {
+        let cases = [
+            ("{{lang|ko|서울}}", r#"<p><span lang="ko">서울</span></p>"#),
+            (
+                "{{lang|ja|''Edo''}}",
+                r#"<p><span lang="ja"><em>Edo</em></span></p>"#,
+            ),
+            (
+                "{{lang|ko-Hang|[[Seoul|서울]]}}",
+                r#"<p><span lang="ko-Hang"><a href="https://en.wikipedia.org/wiki/Seoul">서울</a><span class="external-link">↗</span></span></p>"#,
+            ),
+            ("{{lang|ko}}", "<h1>Sample</h1>"),
+            ("{{lang|!|서울}}", "<p>서울</p>"),
+        ];
+
+        for (template, expected) in cases {
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            assert!(
+                rendered.contains(expected),
+                "lang template {template:?} rendered unexpectedly:\n{rendered}"
+            );
+            assert!(!rendered.contains("{{"));
+            assert!(!rendered.contains("lang|"));
+        }
     }
 
     #[test]
