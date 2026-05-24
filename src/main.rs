@@ -805,6 +805,7 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Excessive citations inline")
         || template.eq_ignore_ascii_case("Portal bar")
         || template.eq_ignore_ascii_case("Authority control")
+        || template.eq_ignore_ascii_case("Portal")
         || is_succession_template_name(template)
         || template
             .get(.."Self-published".len())

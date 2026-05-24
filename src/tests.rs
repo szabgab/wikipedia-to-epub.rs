@@ -90,6 +90,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Seoul landmarks}}
 {{Navboxes|title=Articles related to Seoul}}
 {{Authority control}}
+{{Portal|Geography|Asia|North Korea|South Korea}}
 {{S-start}}
 {{s-hou|[[House of Yi]]|10 April|1397|17 February|1450}}
 {{s-reg}}
@@ -133,6 +134,7 @@ Visible text."#,
     assert!(!rendered.contains("Seoul"));
     assert!(!rendered.contains("Navboxes"));
     assert!(!rendered.contains("Authority control"));
+    assert!(!rendered.contains("Portal"));
     assert!(!rendered.contains("S-start"));
     assert!(!rendered.contains("House of Yi"));
     assert!(!rendered.contains("s-reg"));
