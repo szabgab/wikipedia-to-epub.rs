@@ -650,6 +650,8 @@ fn render_template(content: &str) -> String {
         render_cite_report_template(params)
     } else if template.eq_ignore_ascii_case("citation") {
         render_citation_template(params)
+    } else if template.eq_ignore_ascii_case("harvc") {
+        render_harvc_template(params)
     } else if template.eq_ignore_ascii_case("percentage") {
         render_percentage_template(params)
     } else if template.eq_ignore_ascii_case("UN_Population") {
@@ -719,6 +721,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("cite journal")
         || template.eq_ignore_ascii_case("cite report")
         || template.eq_ignore_ascii_case("citation")
+        || template.eq_ignore_ascii_case("harvc")
         || template.eq_ignore_ascii_case("percentage")
         || template.eq_ignore_ascii_case("UN_Population")
         || template.eq_ignore_ascii_case("convert")
@@ -1245,6 +1248,70 @@ fn render_citation_template(params: &str) -> String {
     parts.join(". ")
 }
 
+fn render_harvc_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(contribution) = template_param(&named, &["c", "chapter", "contribution"]) {
+        let contribution = match template_param(&named, &["url", "chapter-url", "contribution-url"])
+        {
+            Some(url) => format!(
+                "[{} \"{}\"]",
+                render_templates(url),
+                render_templates(contribution)
+            ),
+            None => format!("\"{}\"", render_templates(contribution)),
+        };
+        parts.push(contribution);
+    }
+
+    let source = harvc_source(&named);
+    if !source.is_empty() {
+        parts.push(format!("In {source}"));
+    }
+
+    if let Some(page) = template_param(&named, &["p", "page"]) {
+        parts.push(format!("p. {}", render_templates(page)));
+    } else if let Some(pages) = template_param(&named, &["pp", "pages"]) {
+        parts.push(format!("pp. {}", render_templates(pages)));
+    }
+
+    if let Some(location) = template_param(&named, &["loc"]) {
+        parts.push(render_templates(location));
+    }
+
+    parts.join(". ")
+}
+
+fn harvc_source(named: &HashMap<String, String>) -> String {
+    let source_authors = (1..=4)
+        .filter_map(|index| {
+            let keys = if index == 1 {
+                vec!["in".to_string(), "in1".to_string()]
+            } else {
+                vec![format!("in{index}")]
+            };
+            template_param_owned(named, &keys).map(|value| render_templates(&value))
+        })
+        .collect::<Vec<_>>();
+
+    let year = template_param(named, &["anchor-year", "year"]).map(render_templates);
+
+    match (source_authors.as_slice(), year) {
+        ([], None) => String::new(),
+        ([], Some(year)) => year,
+        ([source], None) => source.clone(),
+        ([source], Some(year)) => format!("{source} {year}"),
+        (sources, None) => sources.join(" and "),
+        (sources, Some(year)) => format!("{} {year}", sources.join(" and ")),
+    }
+}
+
 #[derive(Clone, Copy)]
 enum PersonRole {
     Author,
@@ -1262,7 +1329,39 @@ fn citation_people(named: &HashMap<String, String>, role: PersonRole) -> String 
         people.push(render_templates(person));
     }
 
+    let unnumbered_first_keys = person_first_keys(first_key, 0);
+    let unnumbered_last_keys = person_last_keys(last_key, 0);
+    let unnumbered_link_keys = person_link_keys(link_key, 0);
+    let unnumbered_first = template_param_owned(named, &unnumbered_first_keys);
+    let unnumbered_last = template_param_owned(named, &unnumbered_last_keys);
+    let unnumbered_link = template_param_owned(named, &unnumbered_link_keys);
+    let unnumbered_name = match (unnumbered_first.as_deref(), unnumbered_last.as_deref()) {
+        (Some(first), Some(last)) => {
+            format!("{} {}", render_templates(first), render_templates(last))
+        }
+        (Some(first), None) => render_templates(first),
+        (None, Some(last)) => render_templates(last),
+        (None, None) => String::new(),
+    };
+    let has_unnumbered_name = !unnumbered_name.is_empty();
+
+    if has_unnumbered_name {
+        if let Some(link) = unnumbered_link.filter(|value| !value.trim().is_empty()) {
+            people.push(format!(
+                "[[{}|{}]]",
+                render_templates(&link),
+                unnumbered_name
+            ));
+        } else {
+            people.push(unnumbered_name);
+        }
+    }
+
     for index in 1..=8 {
+        if has_unnumbered_name && matches!(role, PersonRole::Editor) && index == 1 {
+            continue;
+        }
+
         let first_keys = person_first_keys(first_key, index);
         let last_keys = person_last_keys(last_key, index);
         let link_keys = person_link_keys(link_key, index);
@@ -1288,33 +1387,6 @@ fn citation_people(named: &HashMap<String, String>, role: PersonRole) -> String 
             people.push(format!("[[{}|{}]]", render_templates(&link), name));
         } else {
             people.push(name);
-        }
-    }
-
-    if people.is_empty() {
-        let first_keys = person_first_keys(first_key, 0);
-        let last_keys = person_last_keys(last_key, 0);
-        let link_keys = person_link_keys(link_key, 0);
-
-        let first = template_param_owned(named, &first_keys);
-        let last = template_param_owned(named, &last_keys);
-        let link = template_param_owned(named, &link_keys);
-
-        let name = match (first.as_deref(), last.as_deref()) {
-            (Some(first), Some(last)) => {
-                format!("{} {}", render_templates(first), render_templates(last))
-            }
-            (Some(first), None) => render_templates(first),
-            (None, Some(last)) => render_templates(last),
-            (None, None) => String::new(),
-        };
-
-        if !name.is_empty() {
-            if let Some(link) = link.filter(|value| !value.trim().is_empty()) {
-                people.push(format!("[[{}|{}]]", render_templates(&link), name));
-            } else {
-                people.push(name);
-            }
         }
     }
 

@@ -464,6 +464,34 @@ fn render_wikitext_formats_cite_report_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_harvc_templates() {
+    let cases = [
+        (
+            "{{harvc|last=Peterson|first=Mark|year=1992|in=Kim-Renaud|c=The Sejong Sillok|author-link=Mark A. Peterson}}",
+            r#"<p><a href="https://en.wikipedia.org/wiki/Mark_A._Peterson">Mark Peterson</a><span class="external-link">↗</span>. "The Sejong Sillok". In Kim-Renaud 1992</p>"#,
+        ),
+        (
+            "{{Harvc|last=Yi|first=Tae-jin|year=1992|in=Kim-Renaud|c=The Arts under King Sejong|first2=Sang-Woon|last2=Jeon|first3=Don|last3=Baker|pp=45–67}}",
+            r#"<p>Tae-jin Yi, Sang-Woon Jeon, and Don Baker. "The Arts under King Sejong". In Kim-Renaud 1992. pp. 45–67</p>"#,
+        ),
+        (
+            "{{harvc|last=Benson|first=Ezra Taft|year=1957|chapter=Foreword|chapter-url=https://archive.org/example|in=Stefferud|p=vi|loc=§2}}",
+            r#"<p>Ezra Taft Benson. "Foreword". In Stefferud 1957. p. vi. §2</p>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "harvc template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("harvc"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_percentage_templates() {
     let cases = [
         ("{{Percentage|1|4}}", "25%"),
