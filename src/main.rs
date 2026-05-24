@@ -642,6 +642,8 @@ fn render_template(content: &str) -> String {
         render_abbr_template(params)
     } else if template.eq_ignore_ascii_case("cite book") {
         render_cite_book_template(params)
+    } else if template.eq_ignore_ascii_case("cite journal") {
+        render_cite_journal_template(params)
     } else if template.eq_ignore_ascii_case("citation") {
         render_citation_template(params)
     } else if template.eq_ignore_ascii_case("percentage") {
@@ -707,6 +709,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("ipa")
         || template.eq_ignore_ascii_case("abbr")
         || template.eq_ignore_ascii_case("cite book")
+        || template.eq_ignore_ascii_case("cite journal")
         || template.eq_ignore_ascii_case("citation")
         || template.eq_ignore_ascii_case("percentage")
         || template.eq_ignore_ascii_case("UN_Population")
@@ -1014,6 +1017,63 @@ fn render_cite_book_template(params: &str) -> String {
     render_citation_template(params)
 }
 
+fn render_cite_journal_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(title) = template_param(&named, &["title", "trans-title", "script-title"]) {
+        let title = match template_param(&named, &["url"]) {
+            Some(url) => format!(
+                "[{} \"{}\"]",
+                render_templates(url),
+                render_templates(title)
+            ),
+            None => format!("\"{}\"", render_templates(title)),
+        };
+        parts.push(title);
+    }
+
+    if let Some(journal) = template_param(&named, &["journal", "work", "website"]) {
+        parts.push(format!("''{}''", render_templates(journal)));
+    }
+
+    let mut details = Vec::new();
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        details.push(render_templates(date));
+    }
+    if let Some(volume) = template_param(&named, &["volume"]) {
+        details.push(format!("vol. {}", render_templates(volume)));
+    }
+    if let Some(issue) = template_param(&named, &["issue", "number"]) {
+        details.push(format!("no. {}", render_templates(issue)));
+    }
+    if let Some(pages) = template_param(&named, &["pages", "page"]) {
+        details.push(format!("pp. {}", render_templates(pages)));
+    }
+    if !details.is_empty() {
+        parts.push(details.join(", "));
+    }
+
+    if let Some(doi) = template_param(&named, &["doi"]) {
+        parts.push(format!("doi:{}", render_templates(doi)));
+    }
+
+    if let Some(jstor) = template_param(&named, &["jstor"]) {
+        parts.push(format!("JSTOR {}", render_templates(jstor)));
+    }
+
+    if let Some(issn) = template_param(&named, &["issn"]) {
+        parts.push(format!("ISSN {}", render_templates(issn)));
+    }
+
+    parts.join(". ")
+}
+
 fn render_citation_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
@@ -1101,7 +1161,7 @@ fn citation_people(named: &HashMap<String, String>, role: PersonRole) -> String 
         people.push(render_templates(person));
     }
 
-    for index in 1..=4 {
+    for index in 1..=8 {
         let first_keys = person_first_keys(first_key, index);
         let last_keys = person_last_keys(last_key, index);
         let link_keys = person_link_keys(link_key, index);
@@ -2686,6 +2746,30 @@ Visible text."#,
             );
             assert!(!rendered.contains("{{"));
             assert!(!rendered.contains("Citation"));
+        }
+    }
+
+    #[test]
+    fn render_wikitext_formats_cite_journal_templates() {
+        let cases = [
+            (
+                "{{Cite journal |last=Kim |first=Chin W. |date=2000 |title=The Legacy of King Sejong the Great |url=https://www.ideals.illinois.edu/items/9673 |journal=Studies in the Linguistic Sciences |volume=30 |issue=1 |pages=3–12 |issn=0049-2388}}",
+                r#"<p>Chin W. Kim. "The Legacy of King Sejong the Great". <em>Studies in the Linguistic Sciences</em>. 2000, vol. 30, no. 1, pp. 3–12. ISSN 0049-2388</p>"#,
+            ),
+            (
+                "{{Cite journal |last1=Lee |first1=Sang-Hyun |last2=Baik |first2=Jong-Jin |date=1 March 2010 |title=Statistical and dynamical characteristics of the urban heat island intensity in Seoul |journal=Theoretical and Applied Climatology |volume=100 |issue=1–2 |pages=227–237 |doi=10.1007/s00704-009-0247-1}}",
+                r#"<p>Sang-Hyun Lee and Jong-Jin Baik. "Statistical and dynamical characteristics of the urban heat island intensity in Seoul". <em>Theoretical and Applied Climatology</em>. 1 March 2010, vol. 100, no. 1–2, pp. 227–237. doi:10.1007/s00704-009-0247-1</p>"#,
+            ),
+        ];
+
+        for (template, expected) in cases {
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            assert!(
+                rendered.contains(expected),
+                "cite journal template {template:?} rendered unexpectedly:\n{rendered}"
+            );
+            assert!(!rendered.contains("{{"));
+            assert!(!rendered.contains("Cite journal"));
         }
     }
 
