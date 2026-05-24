@@ -700,6 +700,8 @@ fn render_template(content: &str) -> String {
         render_main_template(params)
     } else if template.eq_ignore_ascii_case("see also") {
         render_see_also_template(params)
+    } else if template.eq_ignore_ascii_case("further") {
+        render_further_template(params)
     } else if template.eq_ignore_ascii_case("ill") {
         render_interlanguage_link_template(params)
     } else if template.eq_ignore_ascii_case("reign") {
@@ -767,6 +769,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("convert")
         || template.eq_ignore_ascii_case("main")
         || template.eq_ignore_ascii_case("see also")
+        || template.eq_ignore_ascii_case("further")
         || template.eq_ignore_ascii_case("ill")
         || template.eq_ignore_ascii_case("reign")
         || template.eq_ignore_ascii_case("open access")
@@ -1769,6 +1772,23 @@ fn render_see_also_template(params: &str) -> String {
         String::new()
     } else {
         format!("See also: {}", join_template_articles(&articles))
+    }
+}
+
+fn render_further_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let articles = template_article_params(params);
+
+    if articles.is_empty() {
+        String::new()
+    } else if let Some(topic) = template_param(&named, &["topic"]) {
+        format!(
+            "Further information about {}: {}",
+            render_templates(topic),
+            join_template_articles(&articles)
+        )
+    } else {
+        format!("Further information: {}", join_template_articles(&articles))
     }
 }
 

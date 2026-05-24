@@ -678,6 +678,30 @@ fn render_wikitext_formats_see_also_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_further_templates() {
+    let mut internal_links = InternalLinks::new();
+    internal_links.insert("joseondynasty".to_string(), "chapter-3.xhtml".to_string());
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Further|Joseon dynasty|Downtown Seoul|Seongjeosimni}}\n{{Further|topic=the logistics and shipping company|Ilyang Logistics}}",
+        &internal_links,
+        "en",
+    );
+
+    assert!(
+        rendered.contains(r#"Further information: <a href="chapter-3.xhtml">Joseon dynasty</a>, <a href="https://en.wikipedia.org/wiki/Downtown_Seoul">Downtown Seoul</a><span class="external-link">↗</span>, and <a href="https://en.wikipedia.org/wiki/Seongjeosimni">Seongjeosimni</a><span class="external-link">↗</span>"#),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains(r#"Further information about the logistics and shipping company: <a href="https://en.wikipedia.org/wiki/Ilyang_Logistics">Ilyang Logistics</a><span class="external-link">↗</span>"#),
+        "{rendered}"
+    );
+    assert!(!rendered.contains("{{"));
+    assert!(!rendered.contains("Further|"));
+}
+
+#[test]
 fn render_wikitext_formats_interlanguage_link_templates() {
     let rendered = render_wikitext(
         "Sample",
