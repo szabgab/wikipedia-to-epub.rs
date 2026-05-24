@@ -742,6 +742,13 @@ fn is_silent_template_name(template: &str) -> bool {
         || template
             .get(.."Infobox".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Infobox"))
+        || is_observed_navigation_template_name(template)
+}
+
+fn is_observed_navigation_template_name(template: &str) -> bool {
+    template.eq_ignore_ascii_case("History of Korea")
+        || template.eq_ignore_ascii_case("Korea topics")
+        || template.eq_ignore_ascii_case("East Asian topics")
 }
 
 fn split_template_name(content: &str) -> (&str, &str) {
@@ -2434,6 +2441,9 @@ mod tests {
 {{Use British English|date=March 2022}}
 {{Use dmy dates|date=April 2022}}
 {{Infobox settlement|name=Sample}}
+{{History of Korea}}
+{{Korea topics}}
+{{East Asian topics}}
 Visible text."#,
             &InternalLinks::new(),
             "en",
@@ -2456,6 +2466,9 @@ Visible text."#,
         assert!(!rendered.contains("Author"));
         assert!(!rendered.contains("Footnote text"));
         assert!(!rendered.contains("Infobox"));
+        assert!(!rendered.contains("History of Korea"));
+        assert!(!rendered.contains("Korea topics"));
+        assert!(!rendered.contains("East Asian topics"));
     }
 
     #[test]

@@ -65,6 +65,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Reign|1400|1418}}` becomes `r. 1400–1418`
 * `{{Main|Names of Korea}}` becomes `Main article:` followed by a link to `Names of Korea`
 * `{{See also|Korean tea ceremony|Korean royal court cuisine}}` becomes `See also:` followed by links to those articles
+* Observed Wikipedia navigation templates such as `{{History of Korea}}`, `{{Korea topics}}`, and `{{East Asian topics}}` are omitted
 * `== History ==` becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings
 * Lines starting with `*` become unordered list items
 * Lines starting with `#` become ordered list items
