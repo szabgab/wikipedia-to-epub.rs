@@ -632,6 +632,8 @@ fn render_template(content: &str) -> String {
         render_lang_template(params)
     } else if template.eq_ignore_ascii_case("langx") {
         render_langx_template(params)
+    } else if template.eq_ignore_ascii_case("transliteration") {
+        render_transliteration_template(params)
     } else if template.eq_ignore_ascii_case("ko-translit") {
         render_korean_transliteration_template(params)
     } else if template.eq_ignore_ascii_case("ipa") {
@@ -700,6 +702,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("lang")
         || template.eq_ignore_ascii_case("langx")
+        || template.eq_ignore_ascii_case("transliteration")
         || template.eq_ignore_ascii_case("ko-translit")
         || template.eq_ignore_ascii_case("ipa")
         || template.eq_ignore_ascii_case("abbr")
@@ -911,6 +914,39 @@ fn render_langx_template(params: &str) -> String {
     }
 
     rendered
+}
+
+fn render_transliteration_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect::<Vec<_>>();
+
+    let Some(language) = params.first().map(String::as_str) else {
+        return String::new();
+    };
+    let Some(text) = params
+        .last()
+        .map(String::as_str)
+        .filter(|value| !value.is_empty() && params.len() > 1)
+    else {
+        return String::new();
+    };
+
+    let language = language
+        .chars()
+        .filter(|ch| ch.is_ascii_alphanumeric() || *ch == '-')
+        .collect::<String>();
+
+    if language.is_empty() {
+        return render_templates(text);
+    }
+
+    format!(
+        "__WIKIPEDIA_TO_EPUB_LANG_START__{language}-Latn__WIKIPEDIA_TO_EPUB_LANG_VALUE__{}__WIKIPEDIA_TO_EPUB_LANG_END__",
+        render_templates(text)
+    )
 }
 
 fn render_korean_transliteration_template(params: &str) -> String {
@@ -2493,6 +2529,30 @@ Visible text."#,
             );
             assert!(!rendered.contains("{{"));
             assert!(!rendered.contains("langx|"));
+        }
+    }
+
+    #[test]
+    fn render_wikitext_formats_transliteration_templates() {
+        let cases = [
+            (
+                "{{Transliteration|zh|pinyin|Zhuāngxiàn}}",
+                r#"<p><span lang="zh-Latn">Zhuāngxiàn</span></p>"#,
+            ),
+            (
+                "{{transliteration|ko|Han'guk}}",
+                r#"<p><span lang="ko-Latn">Han'guk</span></p>"#,
+            ),
+        ];
+
+        for (template, expected) in cases {
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            assert!(
+                rendered.contains(expected),
+                "transliteration template {template:?} rendered unexpectedly:\n{rendered}"
+            );
+            assert!(!rendered.contains("{{"));
+            assert!(!rendered.contains("Transliteration|"));
         }
     }
 

@@ -51,6 +51,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Nihongo4|''[[Edo (Tokyo)|Edo]]''|[[wikt:江戸|江戸]]}}` becomes an italicized `Edo` article link followed by the Japanese text in a `lang="ja"` span
 * `{{lang|ko|서울}}` becomes `<span lang="ko">서울</span>`
 * `{{langx|ko|溝樓|lit=Walled City|label=none}}` becomes `<span lang="ko">溝樓</span>, lit. Walled City`
+* `{{Transliteration|zh|pinyin|Zhuāngxiàn}}` becomes `<span lang="zh-Latn">Zhuāngxiàn</span>`
 * `{{Ko-translit|rr|^한국}}` becomes `Hanguk`
 * `{{IPA|ko|haːnɡuk|}}` becomes `<span title="International Phonetic Alphabet">[haːnɡuk]</span>`
 * `{{Abbr|c.|circa}}` becomes `<abbr title="circa">c.</abbr>`
