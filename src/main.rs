@@ -636,6 +636,8 @@ fn render_template(content: &str) -> String {
         render_korean_transliteration_template(params)
     } else if template.eq_ignore_ascii_case("abbr") {
         render_abbr_template(params)
+    } else if template.eq_ignore_ascii_case("cite book") {
+        render_cite_book_template(params)
     } else if template.eq_ignore_ascii_case("percentage") {
         render_percentage_template(params)
     } else if template.eq_ignore_ascii_case("UN_Population") {
@@ -685,7 +687,7 @@ fn log_unhandled_nested_template_instructions(text: &str) {
 }
 
 fn template_log_content(content: &str) -> String {
-    content.chars().take(50).collect()
+    content.chars().take(20).collect()
 }
 
 fn is_handled_template_name(template: &str) -> bool {
@@ -696,6 +698,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("langx")
         || template.eq_ignore_ascii_case("ko-translit")
         || template.eq_ignore_ascii_case("abbr")
+        || template.eq_ignore_ascii_case("cite book")
         || template.eq_ignore_ascii_case("percentage")
         || template.eq_ignore_ascii_case("UN_Population")
         || template.eq_ignore_ascii_case("convert")
@@ -942,6 +945,165 @@ fn render_abbr_template(params: &str) -> String {
         render_templates(title),
         render_templates(text)
     )
+}
+
+fn render_cite_book_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let authors = cite_book_authors(&named);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(title) = template_param(&named, &["title"]) {
+        let title = match template_param(&named, &["url"]) {
+            Some(url) => format!(
+                "[{} ''{}'']",
+                render_templates(url),
+                render_templates(title)
+            ),
+            None => format!("''{}''", render_templates(title)),
+        };
+        parts.push(title);
+    }
+
+    let mut publication = String::new();
+    if let Some(location) = template_param(&named, &["location", "place"]) {
+        publication.push_str(&render_templates(location));
+        publication.push_str(": ");
+    }
+    if let Some(publisher) = template_param(&named, &["publisher"]) {
+        publication.push_str(&render_templates(publisher));
+    }
+    if let Some(year) = template_param(&named, &["year", "date"]) {
+        if !publication.is_empty() {
+            publication.push_str(", ");
+        }
+        publication.push_str(&render_templates(year));
+    }
+    if !publication.is_empty() {
+        parts.push(publication);
+    }
+
+    if let Some(edition) = template_param(&named, &["edition"]) {
+        parts.push(format!("{} ed", render_templates(edition)));
+    }
+
+    if let Some(pages) = template_param(&named, &["page", "pages"]) {
+        parts.push(format!("p. {}", render_templates(pages)));
+    }
+
+    if let Some(isbn) = template_param(&named, &["isbn"]) {
+        parts.push(format!("ISBN {}", render_templates(isbn)));
+    }
+
+    if let Some(oclc) = template_param(&named, &["oclc"]) {
+        parts.push(format!("OCLC {}", render_templates(oclc)));
+    }
+
+    parts.join(". ")
+}
+
+fn cite_book_authors(named: &HashMap<String, String>) -> String {
+    let mut authors = Vec::new();
+
+    if let Some(author) = template_param(named, &["author"]) {
+        authors.push(render_templates(author));
+    }
+
+    for index in 1..=4 {
+        let first_keys = [format!("first{index}"), format!("given{index}")];
+        let last_keys = [format!("last{index}"), format!("surname{index}")];
+        let link_keys = [format!("author-link{index}"), format!("authorlink{index}")];
+
+        let first = template_param_owned(named, &first_keys);
+        let last = template_param_owned(named, &last_keys);
+        let link = template_param_owned(named, &link_keys);
+
+        if first.is_none() && last.is_none() {
+            continue;
+        }
+
+        let name = match (first.as_deref(), last.as_deref()) {
+            (Some(first), Some(last)) => {
+                format!("{} {}", render_templates(first), render_templates(last))
+            }
+            (Some(first), None) => render_templates(first),
+            (None, Some(last)) => render_templates(last),
+            (None, None) => String::new(),
+        };
+
+        if let Some(link) = link.filter(|value| !value.trim().is_empty()) {
+            authors.push(format!("[[{}|{}]]", render_templates(&link), name));
+        } else {
+            authors.push(name);
+        }
+    }
+
+    if authors.is_empty() {
+        let first = template_param(named, &["first", "given"]);
+        let last = template_param(named, &["last", "surname"]);
+        let link = template_param(named, &["author-link", "authorlink"]);
+
+        let name = match (first, last) {
+            (Some(first), Some(last)) => {
+                format!("{} {}", render_templates(first), render_templates(last))
+            }
+            (Some(first), None) => render_templates(first),
+            (None, Some(last)) => render_templates(last),
+            (None, None) => String::new(),
+        };
+
+        if !name.is_empty() {
+            if let Some(link) = link.filter(|value| !value.trim().is_empty()) {
+                authors.push(format!("[[{}|{}]]", render_templates(link), name));
+            } else {
+                authors.push(name);
+            }
+        }
+    }
+
+    if let Some(others) = template_param(named, &["others"]) {
+        authors.push(render_templates(others));
+    }
+
+    match authors.as_slice() {
+        [] => String::new(),
+        [author] => author.clone(),
+        [first, second] => format!("{first} and {second}"),
+        _ => {
+            let last = authors.last().cloned().unwrap_or_default();
+            format!("{}, and {last}", authors[..authors.len() - 1].join(", "))
+        }
+    }
+}
+
+fn template_named_params(params: &str) -> HashMap<String, String> {
+    split_template_params(params)
+        .into_iter()
+        .filter_map(|param| {
+            let (key, value) = param.split_once('=')?;
+            Some((key.trim().to_lowercase(), value.trim().to_string()))
+        })
+        .collect()
+}
+
+fn template_param<'a>(named: &'a HashMap<String, String>, keys: &[&str]) -> Option<&'a str> {
+    keys.iter()
+        .find_map(|key| named.get(*key))
+        .map(String::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+}
+
+fn template_param_owned(named: &HashMap<String, String>, keys: &[String]) -> Option<String> {
+    keys.iter()
+        .find_map(|key| named.get(key))
+        .map(String::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(String::from)
 }
 
 fn render_percentage_template(params: &str) -> String {
@@ -2232,6 +2394,38 @@ Visible text."#,
             );
             assert!(!rendered.contains("{{"));
             assert!(!rendered.contains("abbr|"));
+        }
+    }
+
+    #[test]
+    fn render_wikitext_formats_cite_book_templates() {
+        let cases = [
+            (
+                "{{Cite book | last = Oberdorfer | first = Don | title=The Two Koreas: a Contemporary History | year =2001| publisher =Basic Books| isbn =978-0465051625|oclc=47831650}}",
+                r#"<p>Don Oberdorfer. <em>The Two Koreas: a Contemporary History</em>. Basic Books, 2001. ISBN 978-0465051625. OCLC 47831650</p>"#,
+            ),
+            (
+                "{{cite book|last =Pratt| first = Keith L| title = Everlasting Flower: A History of Korea| year = 2006| publisher =Reaktion| location = London| isbn = 9781861892737 |oclc=63137295}}",
+                r#"<p>Keith L Pratt. <em>Everlasting Flower: A History of Korea</em>. London: Reaktion, 2006. ISBN 9781861892737. OCLC 63137295</p>"#,
+            ),
+            (
+                "{{cite book | last = Jager | first = Sheila Miyoshi |author-link= Sheila Miyoshi Jager | title = Brothers at War | url = https://example.com/book | year = 2013 | publisher = Profile Books | location = London}}",
+                r#"<p><a href="https://en.wikipedia.org/wiki/Sheila_Miyoshi_Jager">Sheila Miyoshi Jager</a><span class="external-link">↗</span>. <em>Brothers at War</em>. London: Profile Books, 2013</p>"#,
+            ),
+            (
+                "{{cite book | first1 = Ian | last1 = Castello-Cortes | first2 = Bruce | last2 = Cumings | title = Korea | edition = 2nd American | pages = 12–14}}",
+                r#"<p>Ian Castello-Cortes and Bruce Cumings. <em>Korea</em>. 2nd American ed. p. 12–14</p>"#,
+            ),
+        ];
+
+        for (template, expected) in cases {
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            assert!(
+                rendered.contains(expected),
+                "cite book template {template:?} rendered unexpectedly:\n{rendered}"
+            );
+            assert!(!rendered.contains("{{"));
+            assert!(!rendered.contains("cite book"));
         }
     }
 
