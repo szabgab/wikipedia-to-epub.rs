@@ -716,6 +716,7 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Redirect")
         || template.eq_ignore_ascii_case("pp-semi-indef")
         || template.eq_ignore_ascii_case("Sfn")
+        || template.eq_ignore_ascii_case("sfnm")
         || template.eq_ignore_ascii_case("efn")
         || template
             .get(.."Infobox".len())
@@ -2024,6 +2025,7 @@ mod tests {
 {{Redirect|Sample}}
 {{pp-semi-indef}}
 {{Sfn|Author|2024|p=1}}
+{{sfnm|1a1=Author|1y=2024|1p=1}}
 {{efn|Footnote text}}
 {{Infobox settlement|name=Sample}}
 Visible text."#,
@@ -2036,6 +2038,7 @@ Visible text."#,
         assert!(!rendered.contains("Short description"));
         assert!(!rendered.contains("About"));
         assert!(!rendered.contains("Distinguish"));
+        assert!(!rendered.contains("sfnm"));
         assert!(!rendered.contains("Pp-move"));
         assert!(!rendered.contains("Protection padlock"));
         assert!(!rendered.contains("Redirect"));
