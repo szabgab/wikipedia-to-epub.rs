@@ -697,7 +697,7 @@ fn log_unhandled_nested_template_instructions(text: &str) {
 }
 
 fn template_log_content(content: &str) -> String {
-    content.chars().take(20).collect()
+    content.chars().take(50).collect()
 }
 
 fn is_handled_template_name(template: &str) -> bool {
