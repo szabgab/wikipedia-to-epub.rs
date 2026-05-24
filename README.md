@@ -52,6 +52,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{lang|ko|서울}}` becomes `<span lang="ko">서울</span>`
 * `{{langx|ko|溝樓|lit=Walled City|label=none}}` becomes `<span lang="ko">溝樓</span>, lit. Walled City`
 * `{{Ko-translit|rr|^한국}}` becomes `Hanguk`
+* `{{Abbr|c.|circa}}` becomes `<abbr title="circa">c.</abbr>`
 * `{{Percentage|1|4}}` becomes `25%`
 * `{{UN_Population|Dem. People's Republic of Korea}}` becomes `26,100,000`; `{{UN_Population|ref}}` is omitted
 * `{{convert|1100|km|abbr=on}}` becomes `1100 km`; range forms such as `{{convert|10|to|47|km2}}` become `10 to 47 km²`

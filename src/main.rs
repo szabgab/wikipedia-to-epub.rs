@@ -634,6 +634,8 @@ fn render_template(content: &str) -> String {
         render_langx_template(params)
     } else if template.eq_ignore_ascii_case("ko-translit") {
         render_korean_transliteration_template(params)
+    } else if template.eq_ignore_ascii_case("abbr") {
+        render_abbr_template(params)
     } else if template.eq_ignore_ascii_case("percentage") {
         render_percentage_template(params)
     } else if template.eq_ignore_ascii_case("UN_Population") {
@@ -693,6 +695,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("lang")
         || template.eq_ignore_ascii_case("langx")
         || template.eq_ignore_ascii_case("ko-translit")
+        || template.eq_ignore_ascii_case("abbr")
         || template.eq_ignore_ascii_case("percentage")
         || template.eq_ignore_ascii_case("UN_Population")
         || template.eq_ignore_ascii_case("convert")
@@ -917,6 +920,27 @@ fn render_korean_transliteration_template(params: &str) -> String {
         ("mr", "조선") => "Chosŏn".to_string(),
         _ => korean,
     }
+}
+
+fn render_abbr_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .collect::<Vec<_>>();
+
+    let Some(text) = params.first().filter(|value| !value.is_empty()) else {
+        return String::new();
+    };
+
+    let Some(title) = params.get(1).filter(|value| !value.is_empty()) else {
+        return render_templates(text);
+    };
+
+    format!(
+        "__WIKIPEDIA_TO_EPUB_ABBR_START__{}__WIKIPEDIA_TO_EPUB_ABBR_VALUE__{}__WIKIPEDIA_TO_EPUB_ABBR_END__",
+        render_templates(title),
+        render_templates(text)
+    )
 }
 
 fn render_percentage_template(params: &str) -> String {
@@ -1411,7 +1435,7 @@ fn format_inline_text(text: &str) -> String {
         )
         .replace("__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__", "</span></span>");
 
-    restore_lang_template_spans(&html)
+    restore_abbr_template_spans(&restore_lang_template_spans(&html))
 }
 
 fn restore_lang_template_spans(html: &str) -> String {
@@ -1422,6 +1446,21 @@ fn restore_lang_template_spans(html: &str) -> String {
     .replace_all(html, |captures: &regex::Captures| {
         format!(
             r#"<span lang="{}">{}</span>"#,
+            encode_double_quoted_attribute(&captures[1]),
+            &captures[2]
+        )
+    })
+    .into_owned()
+}
+
+fn restore_abbr_template_spans(html: &str) -> String {
+    Regex::new(
+        r"__WIKIPEDIA_TO_EPUB_ABBR_START__(.*?)__WIKIPEDIA_TO_EPUB_ABBR_VALUE__(.*?)__WIKIPEDIA_TO_EPUB_ABBR_END__",
+    )
+    .unwrap()
+    .replace_all(html, |captures: &regex::Captures| {
+        format!(
+            r#"<abbr title="{}">{}</abbr>"#,
             encode_double_quoted_attribute(&captures[1]),
             &captures[2]
         )
@@ -2161,6 +2200,35 @@ Visible text."#,
             );
             assert!(!rendered.contains("{{"));
             assert!(!rendered.contains("translit|"));
+        }
+    }
+
+    #[test]
+    fn render_wikitext_formats_abbr_templates() {
+        let cases = [
+            (
+                "{{Abbr|c.|circa}}",
+                r#"<p><abbr title="circa">c.</abbr></p>"#,
+            ),
+            (
+                "{{abbr|HTML|HyperText Markup Language}}",
+                r#"<p><abbr title="HyperText Markup Language">HTML</abbr></p>"#,
+            ),
+            (
+                "{{abbr|''r.''|reigned}}",
+                r#"<p><abbr title="reigned"><em>r.</em></abbr></p>"#,
+            ),
+            ("{{abbr|kg}}", "<p>kg</p>"),
+        ];
+
+        for (template, expected) in cases {
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            assert!(
+                rendered.contains(expected),
+                "abbr template {template:?} rendered unexpectedly:\n{rendered}"
+            );
+            assert!(!rendered.contains("{{"));
+            assert!(!rendered.contains("abbr|"));
         }
     }
 
