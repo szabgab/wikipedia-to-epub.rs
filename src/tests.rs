@@ -492,6 +492,28 @@ fn render_wikitext_formats_harvc_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_as_of_templates() {
+    let cases = [
+        ("{{As of|2023}}", "<p>As of 2023</p>"),
+        ("{{As of|2009|lc=y}}", "<p>as of 2009</p>"),
+        ("{{As of|2024|5}}", "<p>As of May 2024</p>"),
+        ("{{As of|2024|5|15}}", "<p>As of May 15, 2024</p>"),
+        ("{{As of|2024|5|15|df=dmy}}", "<p>As of 15 May 2024</p>"),
+        ("{{As of|2024|alt=currently}}", "<p>currently</p>"),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "as of template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("As of|"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_percentage_templates() {
     let cases = [
         ("{{Percentage|1|4}}", "25%"),

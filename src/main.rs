@@ -652,6 +652,8 @@ fn render_template(content: &str) -> String {
         render_citation_template(params)
     } else if template.eq_ignore_ascii_case("harvc") {
         render_harvc_template(params)
+    } else if template.eq_ignore_ascii_case("as of") {
+        render_as_of_template(params)
     } else if template.eq_ignore_ascii_case("percentage") {
         render_percentage_template(params)
     } else if template.eq_ignore_ascii_case("UN_Population") {
@@ -722,6 +724,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("cite report")
         || template.eq_ignore_ascii_case("citation")
         || template.eq_ignore_ascii_case("harvc")
+        || template.eq_ignore_ascii_case("as of")
         || template.eq_ignore_ascii_case("percentage")
         || template.eq_ignore_ascii_case("UN_Population")
         || template.eq_ignore_ascii_case("convert")
@@ -1310,6 +1313,82 @@ fn harvc_source(named: &HashMap<String, String>) -> String {
         (sources, None) => sources.join(" and "),
         (sources, Some(year)) => format!("{} {year}", sources.join(" and ")),
     }
+}
+
+fn render_as_of_template(params: &str) -> String {
+    let named = template_named_params(params);
+    if let Some(alt) = template_param(&named, &["alt"]) {
+        return render_templates(alt);
+    }
+
+    let positional = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .map(|param| render_templates(&param))
+        .collect::<Vec<_>>();
+
+    let Some(year) = positional.first() else {
+        return String::new();
+    };
+
+    let date = as_of_date(&positional, template_param(&named, &["df"]));
+    let prefix = if template_param_truthy(&named, &["lc"]) {
+        "as of"
+    } else {
+        "As of"
+    };
+
+    if date.is_empty() {
+        render_templates(year)
+    } else {
+        format!("{prefix} {date}")
+    }
+}
+
+fn as_of_date(positional: &[String], date_format: Option<&str>) -> String {
+    let year = positional.first().map(String::as_str).unwrap_or_default();
+    let Some(month) = positional.get(1).map(String::as_str) else {
+        return year.to_string();
+    };
+
+    let month = as_of_month_name(month).unwrap_or(month);
+    let Some(day) = positional.get(2).map(String::as_str) else {
+        return format!("{month} {year}");
+    };
+
+    if date_format.is_some_and(|value| value.eq_ignore_ascii_case("dmy")) {
+        format!("{day} {month} {year}")
+    } else {
+        format!("{month} {day}, {year}")
+    }
+}
+
+fn as_of_month_name(month: &str) -> Option<&'static str> {
+    match month.trim().parse::<usize>().ok()? {
+        1 => Some("January"),
+        2 => Some("February"),
+        3 => Some("March"),
+        4 => Some("April"),
+        5 => Some("May"),
+        6 => Some("June"),
+        7 => Some("July"),
+        8 => Some("August"),
+        9 => Some("September"),
+        10 => Some("October"),
+        11 => Some("November"),
+        12 => Some("December"),
+        _ => None,
+    }
+}
+
+fn template_param_truthy(named: &HashMap<String, String>, keys: &[&str]) -> bool {
+    template_param(named, keys).is_some_and(|value| {
+        value.eq_ignore_ascii_case("y")
+            || value.eq_ignore_ascii_case("yes")
+            || value.eq_ignore_ascii_case("true")
+            || value == "1"
+    })
 }
 
 #[derive(Clone, Copy)]
