@@ -18,6 +18,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * `Further` is rendered as visible hatnote-style prose: `Further information:` plus article links, with `topic=` becoming `Further information about ...:`.
 * Wikipedia succession-box templates whose names start with `s-` are treated as navigation/metadata and skipped silently.
 * `Refbegin` and `Refend` are bibliography layout wrappers; they are skipped silently while preserving the reference list items between them.
+* `refn` is treated like other footnote wrappers such as `efn`; it is skipped silently so note text does not appear inline in the EPUB body.
 * `flagicon` is treated as decorative image markup and skipped silently; nearby country/city prose remains visible.
 * `Wiktionary` renders as visible sister-project prose, linking to the requested Wiktionary entry through the existing external-link path.
 * The README should describe conversion rules with concrete before/after examples.
@@ -28,7 +29,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
   * Added or extended rendering for templates including `ill`, `Reign`, `lang`, `langx`, `Percentage`, `UN Population`, `Korean/auto`, `Ko-translit`, `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, and `Wiktionary`.
   * Added block-level handling for rendered blockquote markers so quotes are not flattened into ordinary paragraphs.
   * Updated citation author collection so unnumbered `last`/`first` can combine correctly with numbered coauthors such as `last2`/`first2`.
-  * Added silent skipping for templates such as `Redirect`, `pp-semi-indef`, `Sfn`, `efn`, `Refbegin`, `Refend`, `flagicon`, and succession templates prefixed with `s-`.
+  * Added silent skipping for templates such as `Redirect`, `pp-semi-indef`, `Sfn`, `efn`, `refn`, `Refbegin`, `Refend`, `flagicon`, and succession templates prefixed with `s-`.
   * Added tests for template rendering behavior, including the restored example fixture and Korean transliteration cases.
 * `README.md`
   * Added notes describing wiki-to-HTML conversion rules and template rendering examples.
@@ -39,7 +40,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * `expected/korea/OEBPS/chapter-3.xhtml`
   * Updated the Sejong fixture after citation-template and blockquote rendering changed the generated EPUB output.
 * `src/tests.rs`
-  * Added unit coverage for `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `Wiktionary`, `Refbegin`/`Refend`, `flagicon`, and silent `s-` template handling.
+  * Added unit coverage for `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `Wiktionary`, `Refbegin`/`Refend`, `efn`/`refn`, `flagicon`, and silent `s-` template handling.
 
 ### Tests Run
 

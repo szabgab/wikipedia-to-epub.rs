@@ -75,6 +75,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Wiktionary|Korea}}` becomes `Wiktionary:` followed by a link to the Wiktionary entry
 * Observed Wikipedia navigation templates such as `{{History of Korea}}`, `{{Korea topics}}`, and `{{East Asian topics}}` are omitted
 * Wikipedia succession-box templates whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are omitted
+* Footnote wrappers such as `{{efn|...}}` and `{{refn|...}}` are omitted
 * Bibliography layout wrappers such as `{{Refbegin}}` and `{{Refend}}` are omitted while their list contents are preserved
 * Decorative flag image templates such as `{{flagicon|US}}` are omitted
 * `== History ==` becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings

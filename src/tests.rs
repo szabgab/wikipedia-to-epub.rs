@@ -58,6 +58,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Sfn|Author|2024|p=1}}
 {{sfnm|1a1=Author|1y=2024|1p=1}}
 {{efn|Footnote text}}
+{{refn|Reference note text}}
 {{Refbegin|30em}}
 {{refend}}
 {{flagicon|US}}
@@ -100,6 +101,7 @@ Visible text."#,
     assert!(!rendered.contains("pp-semi-indef"));
     assert!(!rendered.contains("Author"));
     assert!(!rendered.contains("Footnote text"));
+    assert!(!rendered.contains("Reference note text"));
     assert!(!rendered.contains("Infobox"));
     assert!(!rendered.contains("History of Korea"));
     assert!(!rendered.contains("Korea topics"));
