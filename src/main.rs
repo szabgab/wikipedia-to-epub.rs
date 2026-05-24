@@ -788,6 +788,8 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Sfn")
         || template.eq_ignore_ascii_case("sfnm")
         || template.eq_ignore_ascii_case("efn")
+        || template.eq_ignore_ascii_case("Refbegin")
+        || template.eq_ignore_ascii_case("Refend")
         || is_succession_template_name(template)
         || template
             .get(.."Self-published".len())

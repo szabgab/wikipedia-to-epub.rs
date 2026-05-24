@@ -58,6 +58,8 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Sfn|Author|2024|p=1}}
 {{sfnm|1a1=Author|1y=2024|1p=1}}
 {{efn|Footnote text}}
+{{Refbegin|30em}}
+{{refend}}
 {{Self-published|date=May 2026}}
 {{self-published inline|date=May 2026}}
 {{Use British English|date=March 2022}}
@@ -84,6 +86,8 @@ Visible text."#,
     assert!(!rendered.contains("About"));
     assert!(!rendered.contains("Distinguish"));
     assert!(!rendered.contains("sfnm"));
+    assert!(!rendered.contains("Refbegin"));
+    assert!(!rendered.contains("refend"));
     assert!(!rendered.contains("Self-published"));
     assert!(!rendered.contains("self-published inline"));
     assert!(!rendered.contains("Use British English"));

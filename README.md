@@ -74,6 +74,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Further|Joseon dynasty|Downtown Seoul}}` becomes `Further information:` followed by links to those articles
 * Observed Wikipedia navigation templates such as `{{History of Korea}}`, `{{Korea topics}}`, and `{{East Asian topics}}` are omitted
 * Wikipedia succession-box templates whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are omitted
+* Bibliography layout wrappers such as `{{Refbegin}}` and `{{Refend}}` are omitted while their list contents are preserved
 * `== History ==` becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings
 * Lines starting with `*` become unordered list items
 * Lines starting with `#` become ordered list items
