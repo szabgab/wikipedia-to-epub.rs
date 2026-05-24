@@ -76,6 +76,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{flagicon|US}}
 {{unreferenced section|date=November 2022}}
 {{Excessive citations inline|date=November 2022}}
+{{Portal bar|North Korea|South Korea|Asia|History|Linguistics|Monarchy|Biography}}
 {{Self-published|date=May 2026}}
 {{self-published inline|date=May 2026}}
 {{Use British English|date=March 2022}}
@@ -108,6 +109,7 @@ Visible text."#,
     assert!(!rendered.contains("flagicon"));
     assert!(!rendered.contains("unreferenced section"));
     assert!(!rendered.contains("Excessive citations inline"));
+    assert!(!rendered.contains("Portal bar"));
     assert!(!rendered.contains("Self-published"));
     assert!(!rendered.contains("self-published inline"));
     assert!(!rendered.contains("Use British English"));

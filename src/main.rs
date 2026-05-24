@@ -803,6 +803,7 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("flagicon")
         || template.eq_ignore_ascii_case("unreferenced section")
         || template.eq_ignore_ascii_case("Excessive citations inline")
+        || template.eq_ignore_ascii_case("Portal bar")
         || is_succession_template_name(template)
         || template
             .get(.."Self-published".len())
