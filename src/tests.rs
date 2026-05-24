@@ -95,10 +95,11 @@ Visible text."#,
 
 #[test]
 fn template_log_content_is_limited_to_twenty_characters() {
-    assert_eq!(
-        template_log_content("Unhandled template with a long body"),
-        "Unhandled template w"
+    let res = template_log_content(
+        "Unhandled template with a long body that is more than 50 characters long",
     );
+    assert_eq!(res, "Unhandled template with a long body that is more t");
+    assert_eq!(res.len(), 50);
     assert_eq!(
         template_log_content("短いtemplate content"),
         "短いtemplate content"
