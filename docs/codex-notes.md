@@ -34,7 +34,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
   * Added or extended rendering for templates including `ill`, `Reign`, `lang`, `langx`, `Percentage`, `UN Population`, `Korean/auto`, `Ko-translit`, `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `For timeline`, `Wiktionary`, and `Wikivoyage`.
   * Added block-level handling for rendered blockquote markers so quotes are not flattened into ordinary paragraphs.
   * Updated citation author collection so unnumbered `last`/`first` can combine correctly with numbered coauthors such as `last2`/`first2`.
-  * Added silent skipping for templates such as `Redirect`, `pp-semi-indef`, `Sfn`, `efn`, `refn`, `Refbegin`, `Refend`, `flagicon`, `unreferenced section`, `Excessive citations inline`, `Portal bar`, succession templates prefixed with `s-`, and `Succession box`.
+  * Added silent skipping for templates such as `Redirect`, `pp-semi-indef`, `Sfn`, `efn`, `refn`, `Refbegin`, `Refend`, `flagicon`, `unreferenced section`, `Excessive citations inline`, `Portal bar`, `Seoul`, `Seoul weatherbox`, `Seoul landmarks`, `Navboxes`, succession templates prefixed with `s-`, and `Succession box`.
   * Added tests for template rendering behavior, including the restored example fixture and Korean transliteration cases.
 * `README.md`
   * Added notes describing wiki-to-HTML conversion rules and template rendering examples.
@@ -45,7 +45,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * `expected/korea/OEBPS/chapter-3.xhtml`
   * Updated the Sejong fixture after citation-template and blockquote rendering changed the generated EPUB output.
 * `src/tests.rs`
-  * Added unit coverage for `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `For timeline`, `Wiktionary`, `Wikivoyage`, `Refbegin`/`Refend`, `efn`/`refn`, `flagicon`, `unreferenced section`, `Excessive citations inline`, `Portal bar`, silent `s-` template handling, and `Succession box`.
+  * Added unit coverage for `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `For timeline`, `Wiktionary`, `Wikivoyage`, `Refbegin`/`Refend`, `efn`/`refn`, `flagicon`, `unreferenced section`, `Excessive citations inline`, `Portal bar`, `Seoul`, `Navboxes`, silent `s-` template handling, and `Succession box`.
 
 ### Tests Run
 

@@ -824,6 +824,10 @@ fn is_observed_navigation_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Joseon monarchs")
         || template.eq_ignore_ascii_case("Grand princes of Joseon")
         || template.eq_ignore_ascii_case("House of Yi")
+        || template.eq_ignore_ascii_case("Seoul")
+        || template.eq_ignore_ascii_case("Seoul weatherbox")
+        || template.eq_ignore_ascii_case("Seoul landmarks")
+        || template.eq_ignore_ascii_case("Navboxes")
 }
 
 fn is_succession_template_name(template: &str) -> bool {
