@@ -634,6 +634,8 @@ fn render_template(content: &str) -> String {
         render_langx_template(params)
     } else if template.eq_ignore_ascii_case("ko-translit") {
         render_korean_transliteration_template(params)
+    } else if template.eq_ignore_ascii_case("ipa") {
+        render_ipa_template(params)
     } else if template.eq_ignore_ascii_case("abbr") {
         render_abbr_template(params)
     } else if template.eq_ignore_ascii_case("cite book") {
@@ -699,6 +701,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("lang")
         || template.eq_ignore_ascii_case("langx")
         || template.eq_ignore_ascii_case("ko-translit")
+        || template.eq_ignore_ascii_case("ipa")
         || template.eq_ignore_ascii_case("abbr")
         || template.eq_ignore_ascii_case("cite book")
         || template.eq_ignore_ascii_case("citation")
@@ -927,6 +930,23 @@ fn render_korean_transliteration_template(params: &str) -> String {
         ("mr", "조선") => "Chosŏn".to_string(),
         _ => korean,
     }
+}
+
+fn render_ipa_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect::<Vec<_>>();
+
+    let Some(ipa) = params.get(1).map(String::as_str) else {
+        return String::new();
+    };
+
+    format!(
+        "__WIKIPEDIA_TO_EPUB_IPA_START__{}__WIKIPEDIA_TO_EPUB_IPA_END__",
+        render_templates(ipa)
+    )
 }
 
 fn render_abbr_template(params: &str) -> String {
@@ -1702,7 +1722,9 @@ fn format_inline_text(text: &str) -> String {
         )
         .replace("__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__", "</span></span>");
 
-    restore_abbr_template_spans(&restore_lang_template_spans(&html))
+    restore_ipa_template_spans(&restore_abbr_template_spans(&restore_lang_template_spans(
+        &html,
+    )))
 }
 
 fn restore_lang_template_spans(html: &str) -> String {
@@ -1733,6 +1755,18 @@ fn restore_abbr_template_spans(html: &str) -> String {
         )
     })
     .into_owned()
+}
+
+fn restore_ipa_template_spans(html: &str) -> String {
+    Regex::new(r"__WIKIPEDIA_TO_EPUB_IPA_START__(.*?)__WIKIPEDIA_TO_EPUB_IPA_END__")
+        .unwrap()
+        .replace_all(html, |captures: &regex::Captures| {
+            format!(
+                r#"<span title="International Phonetic Alphabet">[{}]</span>"#,
+                &captures[1]
+            )
+        })
+        .into_owned()
 }
 
 fn wiki_link_placeholder(
@@ -2469,6 +2503,30 @@ Visible text."#,
             );
             assert!(!rendered.contains("{{"));
             assert!(!rendered.contains("translit|"));
+        }
+    }
+
+    #[test]
+    fn render_wikitext_formats_ipa_templates() {
+        let cases = [
+            (
+                "{{IPA|ko|haːnɡuk|}}",
+                r#"<p><span title="International Phonetic Alphabet">[haːnɡuk]</span></p>"#,
+            ),
+            (
+                "{{IPA|ko|sʰʌ.uɭ|IPA|ko-Seoul.ogg}}",
+                r#"<p><span title="International Phonetic Alphabet">[sʰʌ.uɭ]</span></p>"#,
+            ),
+        ];
+
+        for (template, expected) in cases {
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            assert!(
+                rendered.contains(expected),
+                "IPA template {template:?} rendered unexpectedly:\n{rendered}"
+            );
+            assert!(!rendered.contains("{{"));
+            assert!(!rendered.contains("IPA|"));
         }
     }
 
