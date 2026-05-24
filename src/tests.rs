@@ -708,6 +708,30 @@ fn render_wikitext_formats_further_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_wiktionary_templates() {
+    let cases = [
+        (
+            "{{Wiktionary|Korea}}",
+            r#"<p>Wiktionary: <a href="https://en.wiktionary.org/wiki/Korea">Korea</a><span class="external-link">↗</span></p>"#,
+        ),
+        (
+            "{{wiktionary|Korean language|Korean}}",
+            r#"<p>Wiktionary: <a href="https://en.wiktionary.org/wiki/Korean_language">Korean</a><span class="external-link">↗</span></p>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "wiktionary template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("Wiktionary|"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_interlanguage_link_templates() {
     let rendered = render_wikitext(
         "Sample",

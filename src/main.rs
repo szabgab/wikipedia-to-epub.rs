@@ -702,6 +702,8 @@ fn render_template(content: &str) -> String {
         render_see_also_template(params)
     } else if template.eq_ignore_ascii_case("further") {
         render_further_template(params)
+    } else if template.eq_ignore_ascii_case("wiktionary") {
+        render_wiktionary_template(params)
     } else if template.eq_ignore_ascii_case("ill") {
         render_interlanguage_link_template(params)
     } else if template.eq_ignore_ascii_case("reign") {
@@ -770,6 +772,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("main")
         || template.eq_ignore_ascii_case("see also")
         || template.eq_ignore_ascii_case("further")
+        || template.eq_ignore_ascii_case("wiktionary")
         || template.eq_ignore_ascii_case("ill")
         || template.eq_ignore_ascii_case("reign")
         || template.eq_ignore_ascii_case("open access")
@@ -1793,6 +1796,22 @@ fn render_further_template(params: &str) -> String {
     } else {
         format!("Further information: {}", join_template_articles(&articles))
     }
+}
+
+fn render_wiktionary_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect::<Vec<_>>();
+
+    let Some(title) = params.first() else {
+        return String::new();
+    };
+    let label = params.get(1).unwrap_or(title);
+    let target = format!("wikt:{title}");
+
+    format!("Wiktionary: [[{target}|{label}]]")
 }
 
 fn render_interlanguage_link_template(params: &str) -> String {

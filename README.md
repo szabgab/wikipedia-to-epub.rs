@@ -72,6 +72,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Main|Names of Korea}}` becomes `Main article:` followed by a link to `Names of Korea`
 * `{{See also|Korean tea ceremony|Korean royal court cuisine}}` becomes `See also:` followed by links to those articles
 * `{{Further|Joseon dynasty|Downtown Seoul}}` becomes `Further information:` followed by links to those articles
+* `{{Wiktionary|Korea}}` becomes `Wiktionary:` followed by a link to the Wiktionary entry
 * Observed Wikipedia navigation templates such as `{{History of Korea}}`, `{{Korea topics}}`, and `{{East Asian topics}}` are omitted
 * Wikipedia succession-box templates whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are omitted
 * Bibliography layout wrappers such as `{{Refbegin}}` and `{{Refend}}` are omitted while their list contents are preserved
