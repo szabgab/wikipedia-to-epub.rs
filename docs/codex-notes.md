@@ -4,13 +4,15 @@
 
 ### Summary
 
-This session focused on expanding Wikipedia template rendering for EPUB output, specifically handling "Succession box" templates, updating documentation, and verifying behavior with tests.
+This session focused on expanding Wikipedia template rendering for EPUB output, specifically handling "Succession box", "For timeline", and maintenance templates, updating documentation, and verifying behavior with tests.
 
 ### Decisions Made
 
 * Template handling should happen through the shared `{{...}}` parser, with only unhandled templates logged.
 * Metadata or maintenance templates are skipped silently when they should not appear in EPUB output.
 * "Succession box" templates should be handled the same way as "s-" templates, meaning they are silently skipped to avoid unhandled template logs.
+* "For timeline" templates are rendered as visible hatnote-style prose to guide the reader to relevant timelines.
+* Maintenance templates like "unreferenced section" should be skipped silently.
 * Language-specific templates should render EPUB-friendly HTML using `lang` attributes where appropriate.
 * Known Korean transliteration templates are rendered directly instead of leaking template syntax into the book.
 * `harvc` is treated as a compact chapter/contribution citation; EPUB output keeps the contributor, quoted contribution title, enclosing source key/year, and optional page/location details.
@@ -32,18 +34,18 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
   * Added or extended rendering for templates including `ill`, `Reign`, `lang`, `langx`, `Percentage`, `UN Population`, `Korean/auto`, `Ko-translit`, `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `For timeline`, `Wiktionary`, and `Wikivoyage`.
   * Added block-level handling for rendered blockquote markers so quotes are not flattened into ordinary paragraphs.
   * Updated citation author collection so unnumbered `last`/`first` can combine correctly with numbered coauthors such as `last2`/`first2`.
-  * Added silent skipping for templates such as `Redirect`, `pp-semi-indef`, `Sfn`, `efn`, `refn`, `Refbegin`, `Refend`, `flagicon`, succession templates prefixed with `s-`, and `Succession box`.
+  * Added silent skipping for templates such as `Redirect`, `pp-semi-indef`, `Sfn`, `efn`, `refn`, `Refbegin`, `Refend`, `flagicon`, `unreferenced section`, succession templates prefixed with `s-`, and `Succession box`.
   * Added tests for template rendering behavior, including the restored example fixture and Korean transliteration cases.
 * `README.md`
   * Added notes describing wiki-to-HTML conversion rules and template rendering examples.
 * `expected/korea/OEBPS/chapter-1.xhtml`
   * Updated the Korea fixture so visible `As of 2023` prose is preserved and the external-links Wiktionary/Wikivoyage templates become real links.
 * `expected/korea/OEBPS/chapter-2.xhtml`
-  * Updated the Seoul fixture so visible `As of`, `Further`, blockquote prose, and the external-links Wikivoyage template are preserved.
+  * Updated the Seoul fixture so visible `As of`, `Further`, blockquote prose, and the external-links Wikvoyage template are preserved.
 * `expected/korea/OEBPS/chapter-3.xhtml`
   * Updated the Sejong fixture after citation-template and blockquote rendering changed the generated EPUB output.
 * `src/tests.rs`
-  * Added unit coverage for `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `For timeline`, `Wiktionary`, `Wikivoyage`, `Refbegin`/`Refend`, `efn`/`refn`, `flagicon`, silent `s-` template handling, and `Succession box`.
+  * Added unit coverage for `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `For timeline`, `Wiktionary`, `Wikivoyage`, `Refbegin`/`Refend`, `efn`/`refn`, `flagicon`, `unreferenced section`, silent `s-` template handling, and `Succession box`.
 
 ### Tests Run
 

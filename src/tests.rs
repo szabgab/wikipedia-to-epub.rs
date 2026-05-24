@@ -74,6 +74,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Refbegin|30em}}
 {{refend}}
 {{flagicon|US}}
+{{unreferenced section|date=November 2022}}
 {{Self-published|date=May 2026}}
 {{self-published inline|date=May 2026}}
 {{Use British English|date=March 2022}}
@@ -104,6 +105,7 @@ Visible text."#,
     assert!(!rendered.contains("Refbegin"));
     assert!(!rendered.contains("refend"));
     assert!(!rendered.contains("flagicon"));
+    assert!(!rendered.contains("unreferenced section"));
     assert!(!rendered.contains("Self-published"));
     assert!(!rendered.contains("self-published inline"));
     assert!(!rendered.contains("Use British English"));
