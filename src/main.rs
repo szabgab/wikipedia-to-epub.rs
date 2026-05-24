@@ -815,6 +815,9 @@ fn is_observed_navigation_template_name(template: &str) -> bool {
     template.eq_ignore_ascii_case("History of Korea")
         || template.eq_ignore_ascii_case("Korea topics")
         || template.eq_ignore_ascii_case("East Asian topics")
+        || template.eq_ignore_ascii_case("Joseon monarchs")
+        || template.eq_ignore_ascii_case("Grand princes of Joseon")
+        || template.eq_ignore_ascii_case("House of Yi")
 }
 
 fn is_succession_template_name(template: &str) -> bool {
