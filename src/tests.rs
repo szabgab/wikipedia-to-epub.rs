@@ -45,6 +45,18 @@ fn render_wikitext_handles_sections_links_and_lists() {
 }
 
 #[test]
+fn render_wikitext_formats_for_timeline_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{For timeline|Timeline of Sample}}",
+        &InternalLinks::new(),
+        "en",
+    );
+
+    assert!(rendered.contains("For a timeline, see: <a href=\"https://en.wikipedia.org/wiki/Timeline_of_Sample\">Timeline of Sample</a>"));
+}
+
+#[test]
 fn render_wikitext_silently_skips_metadata_templates() {
     let rendered = render_wikitext(
         "Sample",

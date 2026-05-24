@@ -18,6 +18,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * `Blockquote` is rendered as block-level XHTML with quote text in `<blockquote><p>...` and optional source text in `p.blockquote-source`.
 * `Further` is rendered as visible hatnote-style prose: `Further information:` plus article links, with `topic=` becoming `Further information about ...:`.
 * Wikipedia succession-box templates such as `{{Succession box}}` or those whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are treated as navigation/metadata and skipped silently.
+* `For timeline` renders as visible hatnote-style prose: `For a timeline, see:` plus article links.
 * `Refbegin` and `Refend` are bibliography layout wrappers; they are skipped silently while preserving the reference list items between them.
 * `refn` is treated like other footnote wrappers such as `efn`; it is skipped silently so note text does not appear inline in the EPUB body.
 * `flagicon` is treated as decorative image markup and skipped silently; nearby country/city prose remains visible.
@@ -28,7 +29,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 ### Files Changed
 
 * `src/main.rs`
-  * Added or extended rendering for templates including `ill`, `Reign`, `lang`, `langx`, `Percentage`, `UN Population`, `Korean/auto`, `Ko-translit`, `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `Wiktionary`, and `Wikivoyage`.
+  * Added or extended rendering for templates including `ill`, `Reign`, `lang`, `langx`, `Percentage`, `UN Population`, `Korean/auto`, `Ko-translit`, `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `For timeline`, `Wiktionary`, and `Wikivoyage`.
   * Added block-level handling for rendered blockquote markers so quotes are not flattened into ordinary paragraphs.
   * Updated citation author collection so unnumbered `last`/`first` can combine correctly with numbered coauthors such as `last2`/`first2`.
   * Added silent skipping for templates such as `Redirect`, `pp-semi-indef`, `Sfn`, `efn`, `refn`, `Refbegin`, `Refend`, `flagicon`, succession templates prefixed with `s-`, and `Succession box`.
@@ -42,7 +43,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * `expected/korea/OEBPS/chapter-3.xhtml`
   * Updated the Sejong fixture after citation-template and blockquote rendering changed the generated EPUB output.
 * `src/tests.rs`
-  * Added unit coverage for `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `Wiktionary`, `Wikivoyage`, `Refbegin`/`Refend`, `efn`/`refn`, `flagicon`, silent `s-` template handling, and `Succession box`.
+  * Added unit coverage for `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `For timeline`, `Wiktionary`, `Wikivoyage`, `Refbegin`/`Refend`, `efn`/`refn`, `flagicon`, silent `s-` template handling, and `Succession box`.
 
 ### Tests Run
 
@@ -50,6 +51,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * `cargo test render_wikitext_silently_skips_metadata_templates`
 * `cargo test render_wikitext_formats_blockquote_templates`
 * `cargo test render_wikitext_formats_further_templates`
+* `cargo test render_wikitext_formats_for_timeline_templates`
 * `cargo test render_wikitext_formats_wiktionary_templates`
 * `cargo test render_wikitext_formats_wikivoyage_templates`
 * `cargo test --test books`

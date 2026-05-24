@@ -696,6 +696,8 @@ fn render_template(content: &str) -> String {
         render_un_population_template(params)
     } else if template.eq_ignore_ascii_case("convert") {
         render_convert_template(params)
+    } else if template.eq_ignore_ascii_case("for timeline") {
+        render_for_timeline_template(params)
     } else if template.eq_ignore_ascii_case("main") {
         render_main_template(params)
     } else if template.eq_ignore_ascii_case("see also") {
@@ -771,6 +773,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("percentage")
         || template.eq_ignore_ascii_case("UN_Population")
         || template.eq_ignore_ascii_case("convert")
+        || template.eq_ignore_ascii_case("for timeline")
         || template.eq_ignore_ascii_case("main")
         || template.eq_ignore_ascii_case("see also")
         || template.eq_ignore_ascii_case("further")
@@ -1766,6 +1769,16 @@ fn render_convert_template(params: &str) -> String {
             format_convert_unit(unit)
         ),
         None => format_convert_value(value),
+    }
+}
+
+fn render_for_timeline_template(params: &str) -> String {
+    let articles = template_article_params(params);
+
+    match articles.as_slice() {
+        [] => String::new(),
+        [article] => format!("For a timeline, see: [[{article}]]"),
+        articles => format!("For timelines, see: {}", join_template_articles(articles)),
     }
 }
 
