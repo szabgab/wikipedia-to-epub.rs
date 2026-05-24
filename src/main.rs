@@ -704,6 +704,8 @@ fn render_template(content: &str) -> String {
         render_further_template(params)
     } else if template.eq_ignore_ascii_case("wiktionary") {
         render_wiktionary_template(params)
+    } else if template.eq_ignore_ascii_case("wikivoyage") {
+        render_wikivoyage_template(params)
     } else if template.eq_ignore_ascii_case("ill") {
         render_interlanguage_link_template(params)
     } else if template.eq_ignore_ascii_case("reign") {
@@ -773,6 +775,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("see also")
         || template.eq_ignore_ascii_case("further")
         || template.eq_ignore_ascii_case("wiktionary")
+        || template.eq_ignore_ascii_case("wikivoyage")
         || template.eq_ignore_ascii_case("ill")
         || template.eq_ignore_ascii_case("reign")
         || template.eq_ignore_ascii_case("open access")
@@ -1815,6 +1818,22 @@ fn render_wiktionary_template(params: &str) -> String {
     format!("Wiktionary: [[{target}|{label}]]")
 }
 
+fn render_wikivoyage_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect::<Vec<_>>();
+
+    let Some(title) = params.first() else {
+        return String::new();
+    };
+    let label = params.get(1).unwrap_or(title);
+    let target = format!("voy:{title}");
+
+    format!("Wikivoyage: [[{target}|{label}]]")
+}
+
 fn render_interlanguage_link_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
@@ -2287,6 +2306,14 @@ fn wikipedia_link_html(
         );
     }
 
+    if let Some(href) = wikivoyage_article_url(target) {
+        return format!(
+            r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
+            encode_double_quoted_attribute(&href),
+            format_inline_text(label)
+        );
+    }
+
     if let Some(href) = internal_article_url(target, internal_links) {
         return format!(
             r#"<a href="{}">{}</a>"#,
@@ -2319,6 +2346,13 @@ fn wikipedia_article_url(target: &str, language: &str) -> String {
 fn wiktionary_article_url(target: &str) -> Option<String> {
     let title = target.strip_prefix("wikt:")?.trim().replace(' ', "_");
     let mut url = Url::parse("https://en.wiktionary.org").unwrap();
+    url.path_segments_mut().unwrap().push("wiki").push(&title);
+    Some(url.into())
+}
+
+fn wikivoyage_article_url(target: &str) -> Option<String> {
+    let title = target.strip_prefix("voy:")?.trim().replace(' ', "_");
+    let mut url = Url::parse("https://en.wikivoyage.org").unwrap();
     url.path_segments_mut().unwrap().push("wiki").push(&title);
     Some(url.into())
 }

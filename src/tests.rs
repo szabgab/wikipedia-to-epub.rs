@@ -734,6 +734,30 @@ fn render_wikitext_formats_wiktionary_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_wikivoyage_templates() {
+    let cases = [
+        (
+            "{{Wikivoyage|Korea}}",
+            r#"<p>Wikivoyage: <a href="https://en.wikivoyage.org/wiki/Korea">Korea</a><span class="external-link">↗</span></p>"#,
+        ),
+        (
+            "{{wikivoyage|South Korea|travel guide}}",
+            r#"<p>Wikivoyage: <a href="https://en.wikivoyage.org/wiki/South_Korea">travel guide</a><span class="external-link">↗</span></p>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "wikivoyage template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("Wikivoyage|"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_interlanguage_link_templates() {
     let rendered = render_wikitext(
         "Sample",
