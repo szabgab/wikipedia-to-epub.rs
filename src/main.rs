@@ -632,6 +632,8 @@ fn render_template(content: &str) -> String {
         render_lang_template(params)
     } else if template.eq_ignore_ascii_case("langx") {
         render_langx_template(params)
+    } else if template.eq_ignore_ascii_case("lang-zh") {
+        render_chinese_lang_template(params)
     } else if template.eq_ignore_ascii_case("transliteration") {
         render_transliteration_template(params)
     } else if template.eq_ignore_ascii_case("ko-translit") {
@@ -704,6 +706,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("lang")
         || template.eq_ignore_ascii_case("langx")
+        || template.eq_ignore_ascii_case("lang-zh")
         || template.eq_ignore_ascii_case("transliteration")
         || template.eq_ignore_ascii_case("ko-translit")
         || template.eq_ignore_ascii_case("ipa")
@@ -923,6 +926,49 @@ fn render_langx_template(params: &str) -> String {
     if let Some(literal) = named.get("lit").filter(|value| !value.trim().is_empty()) {
         rendered.push_str(", lit. ");
         rendered.push_str(literal.trim());
+    }
+
+    rendered
+}
+
+fn render_chinese_lang_template(params: &str) -> String {
+    let mut positional = Vec::new();
+    let mut named = HashMap::new();
+
+    for param in split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty())
+    {
+        if let Some((key, value)) = param.split_once('=') {
+            named.insert(key.trim().to_lowercase(), value.trim().to_string());
+        } else {
+            positional.push(param);
+        }
+    }
+
+    let Some(text) = named
+        .get("t")
+        .or_else(|| named.get("s"))
+        .or_else(|| named.get("c"))
+        .or_else(|| named.get("text"))
+        .or_else(|| positional.first())
+        .map(String::as_str)
+        .filter(|value| !value.trim().is_empty())
+    else {
+        return String::new();
+    };
+
+    let mut rendered = render_lang_template(&format!("zh|{text}"));
+
+    if let Some(pinyin) = named
+        .get("p")
+        .or_else(|| named.get("pinyin"))
+        .filter(|value| !value.trim().is_empty())
+    {
+        rendered.push_str(" (");
+        rendered.push_str(pinyin.trim());
+        rendered.push(')');
     }
 
     rendered
@@ -2606,6 +2652,32 @@ Visible text."#,
             );
             assert!(!rendered.contains("{{"));
             assert!(!rendered.contains("langx|"));
+        }
+    }
+
+    #[test]
+    fn render_wikitext_formats_chinese_lang_templates() {
+        let cases = [
+            (
+                "{{Lang-zh|t=朝鮮|p=Cháoxiǎn|labels=no}}",
+                r#"<p><span lang="zh">朝鮮</span> (Cháoxiǎn)</p>"#,
+            ),
+            (
+                "{{lang-zh|s=汉字|p=Hànzì}}",
+                r#"<p><span lang="zh">汉字</span> (Hànzì)</p>"#,
+            ),
+            ("{{Lang-zh|中國}}", r#"<p><span lang="zh">中國</span></p>"#),
+        ];
+
+        for (template, expected) in cases {
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            assert!(
+                rendered.contains(expected),
+                "Lang-zh template {template:?} rendered unexpectedly:\n{rendered}"
+            );
+            assert!(!rendered.contains("{{"));
+            assert!(!rendered.contains("Lang-zh"));
+            assert!(!rendered.contains("lang-zh"));
         }
     }
 
