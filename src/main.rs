@@ -727,6 +727,10 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Sfn")
         || template.eq_ignore_ascii_case("sfnm")
         || template.eq_ignore_ascii_case("efn")
+        || template.eq_ignore_ascii_case("Self-published")
+        || template
+            .get(.."Use ".len())
+            .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Use "))
         || template
             .get(.."Infobox".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Infobox"))
@@ -2327,6 +2331,9 @@ mod tests {
 {{Sfn|Author|2024|p=1}}
 {{sfnm|1a1=Author|1y=2024|1p=1}}
 {{efn|Footnote text}}
+{{Self-published|date=May 2026}}
+{{Use British English|date=March 2022}}
+{{Use dmy dates|date=April 2022}}
 {{Infobox settlement|name=Sample}}
 Visible text."#,
             &InternalLinks::new(),
@@ -2339,6 +2346,9 @@ Visible text."#,
         assert!(!rendered.contains("About"));
         assert!(!rendered.contains("Distinguish"));
         assert!(!rendered.contains("sfnm"));
+        assert!(!rendered.contains("Self-published"));
+        assert!(!rendered.contains("Use British English"));
+        assert!(!rendered.contains("Use dmy dates"));
         assert!(!rendered.contains("Pp-move"));
         assert!(!rendered.contains("Protection padlock"));
         assert!(!rendered.contains("Redirect"));
