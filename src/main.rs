@@ -790,6 +790,7 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("efn")
         || template.eq_ignore_ascii_case("Refbegin")
         || template.eq_ignore_ascii_case("Refend")
+        || template.eq_ignore_ascii_case("flagicon")
         || is_succession_template_name(template)
         || template
             .get(.."Self-published".len())
