@@ -528,6 +528,36 @@ fn render_wikitext_formats_as_of_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_blockquote_templates() {
+    let cases = [
+        (
+            "{{Blockquote|text=The sounds of our country's language are different from those of the [[Names of China|Middle Kingdom]].|source=''Hunminjeongeum''}}",
+            r#"<blockquote>
+    <p>The sounds of our country's language are different from those of the <a href="https://en.wikipedia.org/wiki/Names_of_China">Middle Kingdom</a><span class="external-link">↗</span>.</p>
+    <p class="blockquote-source"><em>Hunminjeongeum</em></p>
+    </blockquote>"#,
+        ),
+        (
+            "{{blockquote|A short quoted passage.|Example source}}",
+            r#"<blockquote>
+    <p>A short quoted passage.</p>
+    <p class="blockquote-source">Example source</p>
+    </blockquote>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "blockquote template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("Blockquote|"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_percentage_templates() {
     let cases = [
         ("{{Percentage|1|4}}", "25%"),

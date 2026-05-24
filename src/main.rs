@@ -494,6 +494,40 @@ fn render_wikitext(
             continue;
         }
 
+        if line == "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_START__" {
+            flush_paragraph(&mut html, &mut paragraph_lines);
+            flush_list(&mut html, &mut active_list);
+            html.push("<blockquote>".to_string());
+            continue;
+        }
+
+        if line == "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_END__" {
+            flush_paragraph(&mut html, &mut paragraph_lines);
+            flush_list(&mut html, &mut active_list);
+            html.push("</blockquote>".to_string());
+            continue;
+        }
+
+        if let Some(text) = line.strip_prefix("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__") {
+            flush_paragraph(&mut html, &mut paragraph_lines);
+            flush_list(&mut html, &mut active_list);
+            let text = cleanup_inline_markup(text, internal_links, language);
+            if !text.is_empty() {
+                html.push(format!("<p>{text}</p>"));
+            }
+            continue;
+        }
+
+        if let Some(source) = line.strip_prefix("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_SOURCE__") {
+            flush_paragraph(&mut html, &mut paragraph_lines);
+            flush_list(&mut html, &mut active_list);
+            let source = cleanup_inline_markup(source, internal_links, language);
+            if !source.is_empty() {
+                html.push(format!(r#"<p class="blockquote-source">{source}</p>"#));
+            }
+            continue;
+        }
+
         if let Some((level, heading)) = parse_heading(line) {
             flush_paragraph(&mut html, &mut paragraph_lines);
             flush_list(&mut html, &mut active_list);
@@ -654,6 +688,8 @@ fn render_template(content: &str) -> String {
         render_harvc_template(params)
     } else if template.eq_ignore_ascii_case("as of") {
         render_as_of_template(params)
+    } else if template.eq_ignore_ascii_case("blockquote") {
+        render_blockquote_template(params)
     } else if template.eq_ignore_ascii_case("percentage") {
         render_percentage_template(params)
     } else if template.eq_ignore_ascii_case("UN_Population") {
@@ -725,6 +761,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("citation")
         || template.eq_ignore_ascii_case("harvc")
         || template.eq_ignore_ascii_case("as of")
+        || template.eq_ignore_ascii_case("blockquote")
         || template.eq_ignore_ascii_case("percentage")
         || template.eq_ignore_ascii_case("UN_Population")
         || template.eq_ignore_ascii_case("convert")
@@ -1398,6 +1435,40 @@ fn template_param_truthy(named: &HashMap<String, String>, keys: &[&str]) -> bool
     })
 }
 
+fn render_blockquote_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let text = template_param(&named, &["text", "quote", "1"])
+        .map(str::to_string)
+        .or_else(|| positional.first().cloned())
+        .map(|value| render_templates(&value).replace('\n', " "))
+        .unwrap_or_default();
+
+    let source = template_param(&named, &["source", "author", "cite", "2"])
+        .map(str::to_string)
+        .or_else(|| positional.get(1).cloned())
+        .map(|value| render_templates(&value).replace('\n', " "))
+        .unwrap_or_default();
+
+    if text.trim().is_empty() {
+        return String::new();
+    }
+
+    let mut rendered = format!(
+        "\n__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_START__\n__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__{}\n",
+        text.trim()
+    );
+    if !source.trim().is_empty() {
+        rendered.push_str(&format!(
+            "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_SOURCE__{}\n",
+            source.trim()
+        ));
+    }
+    rendered.push_str("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_END__\n");
+    rendered
+}
+
 #[derive(Clone, Copy)]
 enum PersonRole {
     Author,
@@ -1569,6 +1640,14 @@ fn template_named_params(params: &str) -> HashMap<String, String> {
             let (key, value) = param.split_once('=')?;
             Some((key.trim().to_lowercase(), value.trim().to_string()))
         })
+        .collect()
+}
+
+fn template_positional_params(params: &str) -> Vec<String> {
+    split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
         .collect()
 }
 
