@@ -638,6 +638,8 @@ fn render_template(content: &str) -> String {
         render_abbr_template(params)
     } else if template.eq_ignore_ascii_case("cite book") {
         render_cite_book_template(params)
+    } else if template.eq_ignore_ascii_case("citation") {
+        render_citation_template(params)
     } else if template.eq_ignore_ascii_case("percentage") {
         render_percentage_template(params)
     } else if template.eq_ignore_ascii_case("UN_Population") {
@@ -699,6 +701,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("ko-translit")
         || template.eq_ignore_ascii_case("abbr")
         || template.eq_ignore_ascii_case("cite book")
+        || template.eq_ignore_ascii_case("citation")
         || template.eq_ignore_ascii_case("percentage")
         || template.eq_ignore_ascii_case("UN_Population")
         || template.eq_ignore_ascii_case("convert")
@@ -948,12 +951,28 @@ fn render_abbr_template(params: &str) -> String {
 }
 
 fn render_cite_book_template(params: &str) -> String {
+    render_citation_template(params)
+}
+
+fn render_citation_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
 
-    let authors = cite_book_authors(&named);
-    if !authors.is_empty() {
+    let authors = citation_people(&named, PersonRole::Author);
+    let has_authors = !authors.is_empty();
+    if has_authors {
         parts.push(authors);
+    }
+
+    if !has_authors {
+        let editors = citation_people(&named, PersonRole::Editor);
+        if !editors.is_empty() {
+            parts.push(format!("{editors}, ed"));
+        }
+    }
+
+    if let Some(contribution) = template_param(&named, &["contribution", "chapter", "article"]) {
+        parts.push(render_templates(contribution));
     }
 
     if let Some(title) = template_param(&named, &["title"]) {
@@ -1005,17 +1024,27 @@ fn render_cite_book_template(params: &str) -> String {
     parts.join(". ")
 }
 
-fn cite_book_authors(named: &HashMap<String, String>) -> String {
-    let mut authors = Vec::new();
+#[derive(Clone, Copy)]
+enum PersonRole {
+    Author,
+    Editor,
+}
 
-    if let Some(author) = template_param(named, &["author"]) {
-        authors.push(render_templates(author));
+fn citation_people(named: &HashMap<String, String>, role: PersonRole) -> String {
+    let mut people = Vec::new();
+    let (person_key, first_key, last_key, link_key) = match role {
+        PersonRole::Author => ("author", "first", "last", "author-link"),
+        PersonRole::Editor => ("editor", "editor-first", "editor-last", "editor-link"),
+    };
+
+    if let Some(person) = template_param(named, &[person_key]) {
+        people.push(render_templates(person));
     }
 
     for index in 1..=4 {
-        let first_keys = [format!("first{index}"), format!("given{index}")];
-        let last_keys = [format!("last{index}"), format!("surname{index}")];
-        let link_keys = [format!("author-link{index}"), format!("authorlink{index}")];
+        let first_keys = person_first_keys(first_key, index);
+        let last_keys = person_last_keys(last_key, index);
+        let link_keys = person_link_keys(link_key, index);
 
         let first = template_param_owned(named, &first_keys);
         let last = template_param_owned(named, &last_keys);
@@ -1035,18 +1064,22 @@ fn cite_book_authors(named: &HashMap<String, String>) -> String {
         };
 
         if let Some(link) = link.filter(|value| !value.trim().is_empty()) {
-            authors.push(format!("[[{}|{}]]", render_templates(&link), name));
+            people.push(format!("[[{}|{}]]", render_templates(&link), name));
         } else {
-            authors.push(name);
+            people.push(name);
         }
     }
 
-    if authors.is_empty() {
-        let first = template_param(named, &["first", "given"]);
-        let last = template_param(named, &["last", "surname"]);
-        let link = template_param(named, &["author-link", "authorlink"]);
+    if people.is_empty() {
+        let first_keys = person_first_keys(first_key, 0);
+        let last_keys = person_last_keys(last_key, 0);
+        let link_keys = person_link_keys(link_key, 0);
 
-        let name = match (first, last) {
+        let first = template_param_owned(named, &first_keys);
+        let last = template_param_owned(named, &last_keys);
+        let link = template_param_owned(named, &link_keys);
+
+        let name = match (first.as_deref(), last.as_deref()) {
             (Some(first), Some(last)) => {
                 format!("{} {}", render_templates(first), render_templates(last))
             }
@@ -1057,24 +1090,95 @@ fn cite_book_authors(named: &HashMap<String, String>) -> String {
 
         if !name.is_empty() {
             if let Some(link) = link.filter(|value| !value.trim().is_empty()) {
-                authors.push(format!("[[{}|{}]]", render_templates(link), name));
+                people.push(format!("[[{}|{}]]", render_templates(&link), name));
             } else {
-                authors.push(name);
+                people.push(name);
             }
         }
     }
 
-    if let Some(others) = template_param(named, &["others"]) {
-        authors.push(render_templates(others));
+    if matches!(role, PersonRole::Author)
+        && let Some(others) = template_param(named, &["others"])
+    {
+        people.push(render_templates(others));
     }
 
-    match authors.as_slice() {
+    match people.as_slice() {
         [] => String::new(),
-        [author] => author.clone(),
+        [person] => person.clone(),
         [first, second] => format!("{first} and {second}"),
         _ => {
-            let last = authors.last().cloned().unwrap_or_default();
-            format!("{}, and {last}", authors[..authors.len() - 1].join(", "))
+            let last = people.last().cloned().unwrap_or_default();
+            format!("{}, and {last}", people[..people.len() - 1].join(", "))
+        }
+    }
+}
+
+fn person_first_keys(base: &str, index: usize) -> Vec<String> {
+    if index == 0 {
+        match base {
+            "first" => vec!["first".to_string(), "given".to_string()],
+            "editor-first" => vec![
+                "editor-first".to_string(),
+                "editor-given".to_string(),
+                "editor-first1".to_string(),
+                "editor-given1".to_string(),
+            ],
+            _ => vec![base.to_string()],
+        }
+    } else {
+        match base {
+            "first" => vec![format!("first{index}"), format!("given{index}")],
+            "editor-first" => vec![
+                format!("editor-first{index}"),
+                format!("editor-given{index}"),
+            ],
+            _ => vec![format!("{base}{index}")],
+        }
+    }
+}
+
+fn person_last_keys(base: &str, index: usize) -> Vec<String> {
+    if index == 0 {
+        match base {
+            "last" => vec!["last".to_string(), "surname".to_string()],
+            "editor-last" => vec![
+                "editor-last".to_string(),
+                "editor-surname".to_string(),
+                "editor-last1".to_string(),
+                "editor-surname1".to_string(),
+            ],
+            _ => vec![base.to_string()],
+        }
+    } else {
+        match base {
+            "last" => vec![format!("last{index}"), format!("surname{index}")],
+            "editor-last" => vec![
+                format!("editor-last{index}"),
+                format!("editor-surname{index}"),
+            ],
+            _ => vec![format!("{base}{index}")],
+        }
+    }
+}
+
+fn person_link_keys(base: &str, index: usize) -> Vec<String> {
+    if index == 0 {
+        match base {
+            "author-link" => vec!["author-link".to_string(), "authorlink".to_string()],
+            "editor-link" => vec![
+                "editor-link".to_string(),
+                "editorlink".to_string(),
+                "editor-link1".to_string(),
+                "editorlink1".to_string(),
+            ],
+            _ => vec![base.to_string()],
+        }
+    } else {
+        match base {
+            "author-link" => vec![format!("author-link{index}"), format!("authorlink{index}")],
+            "editor-link" => vec![format!("editor-link{index}"), format!("editorlink{index}")],
+            _ => vec![format!("{base}{index}")],
         }
     }
 }
@@ -2426,6 +2530,34 @@ Visible text."#,
             );
             assert!(!rendered.contains("{{"));
             assert!(!rendered.contains("cite book"));
+        }
+    }
+
+    #[test]
+    fn render_wikitext_formats_citation_templates() {
+        let cases = [
+            (
+                "{{Citation | editor-first = Ian | editor-last = Castello-Cortes | title = World Reference Atlas | contribution = North Korea | edition = 2nd American | year = 1996 | publisher = Dorling Kindersley | location = New York | isbn = 978-0-7894-1085-6}}",
+                r#"<p>Ian Castello-Cortes, ed. North Korea. <em>World Reference Atlas</em>. New York: Dorling Kindersley, 1996. 2nd American ed. ISBN 978-0-7894-1085-6</p>"#,
+            ),
+            (
+                "{{Citation | last = Cumings | first = Bruce | title = Korea's Place in the Sun | publisher = Norton | year = 1997 | isbn = 978-0-393-31681-0 | url = https://archive.org/details/koreasplaceinsun00bruc }}",
+                r#"<p>Bruce Cumings. <em>Korea's Place in the Sun</em>. Norton, 1997. ISBN 978-0-393-31681-0</p>"#,
+            ),
+            (
+                "{{Citation | url = http://www.asianinfo.org/asianinfo/korea/history.htm | publisher = Asian Info | title = Korea | contribution = History | access-date = 11 July 2006}}",
+                r#"<p>History. <em>Korea</em>. Asian Info</p>"#,
+            ),
+        ];
+
+        for (template, expected) in cases {
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            assert!(
+                rendered.contains(expected),
+                "citation template {template:?} rendered unexpectedly:\n{rendered}"
+            );
+            assert!(!rendered.contains("{{"));
+            assert!(!rendered.contains("Citation"));
         }
     }
 

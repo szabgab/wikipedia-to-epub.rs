@@ -54,6 +54,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Ko-translit|rr|^한국}}` becomes `Hanguk`
 * `{{Abbr|c.|circa}}` becomes `<abbr title="circa">c.</abbr>`
 * `{{Cite book|last=Oberdorfer|first=Don|title=The Two Koreas|year=2001|publisher=Basic Books}}` becomes `Don Oberdorfer. <em>The Two Koreas</em>. Basic Books, 2001`
+* `{{Citation|last=Cumings|first=Bruce|title=Korea's Place in the Sun|publisher=Norton|year=1997}}` becomes `Bruce Cumings. <em>Korea's Place in the Sun</em>. Norton, 1997`
 * `{{Percentage|1|4}}` becomes `25%`
 * `{{UN_Population|Dem. People's Republic of Korea}}` becomes `26,100,000`; `{{UN_Population|ref}}` is omitted
 * `{{convert|1100|km|abbr=on}}` becomes `1100 km`; range forms such as `{{convert|10|to|47|km2}}` become `10 to 47 km²`
