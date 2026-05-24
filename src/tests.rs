@@ -440,6 +440,30 @@ fn render_wikitext_formats_cite_journal_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_cite_report_templates() {
+    let cases = [
+        (
+            "{{Cite report|last=Ledyard|first=Gari Keith|title=The Cultural Work of Sejong the Great|publication-date=November 2002|pages=7–18}} {{Open access}}",
+            r#"<p>Gari Keith Ledyard. <em>The Cultural Work of Sejong the Great</em>. November 2002. p. 7–18 <span title="open access">&#128275;</span></p>"#,
+        ),
+        (
+            "{{cite report|author=The Example Institute|title=Sample Report|year=1999|page=4}}",
+            r#"<p>The Example Institute. <em>Sample Report</em>. 1999. p. 4</p>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "cite report template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("Cite report"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_percentage_templates() {
     let cases = [
         ("{{Percentage|1|4}}", "25%"),

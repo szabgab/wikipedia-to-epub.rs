@@ -646,6 +646,8 @@ fn render_template(content: &str) -> String {
         render_cite_book_template(params)
     } else if template.eq_ignore_ascii_case("cite journal") {
         render_cite_journal_template(params)
+    } else if template.eq_ignore_ascii_case("cite report") {
+        render_cite_report_template(params)
     } else if template.eq_ignore_ascii_case("citation") {
         render_citation_template(params)
     } else if template.eq_ignore_ascii_case("percentage") {
@@ -715,6 +717,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("abbr")
         || template.eq_ignore_ascii_case("cite book")
         || template.eq_ignore_ascii_case("cite journal")
+        || template.eq_ignore_ascii_case("cite report")
         || template.eq_ignore_ascii_case("citation")
         || template.eq_ignore_ascii_case("percentage")
         || template.eq_ignore_ascii_case("UN_Population")
@@ -1127,6 +1130,46 @@ fn render_cite_journal_template(params: &str) -> String {
 
     if let Some(issn) = template_param(&named, &["issn"]) {
         parts.push(format!("ISSN {}", render_templates(issn)));
+    }
+
+    parts.join(". ")
+}
+
+fn render_cite_report_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(title) = template_param(&named, &["title", "trans-title", "script-title"]) {
+        let title = match template_param(&named, &["url"]) {
+            Some(url) => format!(
+                "[{} \"{}\"]",
+                render_templates(url),
+                render_templates(title)
+            ),
+            None => format!("''{}''", render_templates(title)),
+        };
+        parts.push(title);
+    }
+
+    if let Some(date) = template_param(&named, &["publication-date", "date", "year"]) {
+        parts.push(render_templates(date));
+    }
+
+    if let Some(pages) = template_param(&named, &["pages", "page"]) {
+        parts.push(format!("p. {}", render_templates(pages)));
+    }
+
+    if let Some(isbn) = template_param(&named, &["isbn"]) {
+        parts.push(format!("ISBN {}", render_templates(isbn)));
+    }
+
+    if let Some(oclc) = template_param(&named, &["oclc"]) {
+        parts.push(format!("OCLC {}", render_templates(oclc)));
     }
 
     parts.join(". ")
