@@ -77,6 +77,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{s-ttl|title=[[List of monarchs of Korea|King of Joseon]]|years=1418–1450}}
 {{s-aft|after=[[Munjong of Joseon|Munjong]]}}
 {{s-end}}
+{{Succession box|title=[[Capital of Korea|Capital of Baekje]]|before=|after=[[Gongju|Ungjin]]|years=18 BC – 475 AD}}
 Visible text."#,
         &InternalLinks::new(),
         "en",
@@ -113,6 +114,8 @@ Visible text."#,
     assert!(!rendered.contains("King of Joseon"));
     assert!(!rendered.contains("Munjong"));
     assert!(!rendered.contains("s-end"));
+    assert!(!rendered.contains("Succession box"));
+    assert!(!rendered.contains("Capital of Baekje"));
 }
 
 #[test]

@@ -4,19 +4,20 @@
 
 ### Summary
 
-This session focused on expanding Wikipedia template rendering for EPUB output, updating expected integration fixtures, and documenting the conversion behavior.
+This session focused on expanding Wikipedia template rendering for EPUB output, specifically handling "Succession box" templates, updating documentation, and verifying behavior with tests.
 
 ### Decisions Made
 
 * Template handling should happen through the shared `{{...}}` parser, with only unhandled templates logged.
 * Metadata or maintenance templates are skipped silently when they should not appear in EPUB output.
+* "Succession box" templates should be handled the same way as "s-" templates, meaning they are silently skipped to avoid unhandled template logs.
 * Language-specific templates should render EPUB-friendly HTML using `lang` attributes where appropriate.
 * Known Korean transliteration templates are rendered directly instead of leaking template syntax into the book.
 * `harvc` is treated as a compact chapter/contribution citation; EPUB output keeps the contributor, quoted contribution title, enclosing source key/year, and optional page/location details.
 * `As of` is rendered as visible prose, preserving the capitalization option `lc=y` and basic year/month/day date forms.
 * `Blockquote` is rendered as block-level XHTML with quote text in `<blockquote><p>...` and optional source text in `p.blockquote-source`.
 * `Further` is rendered as visible hatnote-style prose: `Further information:` plus article links, with `topic=` becoming `Further information about ...:`.
-* Wikipedia succession-box templates whose names start with `s-` are treated as navigation/metadata and skipped silently.
+* Wikipedia succession-box templates such as `{{Succession box}}` or those whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are treated as navigation/metadata and skipped silently.
 * `Refbegin` and `Refend` are bibliography layout wrappers; they are skipped silently while preserving the reference list items between them.
 * `refn` is treated like other footnote wrappers such as `efn`; it is skipped silently so note text does not appear inline in the EPUB body.
 * `flagicon` is treated as decorative image markup and skipped silently; nearby country/city prose remains visible.
@@ -30,7 +31,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
   * Added or extended rendering for templates including `ill`, `Reign`, `lang`, `langx`, `Percentage`, `UN Population`, `Korean/auto`, `Ko-translit`, `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `Wiktionary`, and `Wikivoyage`.
   * Added block-level handling for rendered blockquote markers so quotes are not flattened into ordinary paragraphs.
   * Updated citation author collection so unnumbered `last`/`first` can combine correctly with numbered coauthors such as `last2`/`first2`.
-  * Added silent skipping for templates such as `Redirect`, `pp-semi-indef`, `Sfn`, `efn`, `refn`, `Refbegin`, `Refend`, `flagicon`, and succession templates prefixed with `s-`.
+  * Added silent skipping for templates such as `Redirect`, `pp-semi-indef`, `Sfn`, `efn`, `refn`, `Refbegin`, `Refend`, `flagicon`, succession templates prefixed with `s-`, and `Succession box`.
   * Added tests for template rendering behavior, including the restored example fixture and Korean transliteration cases.
 * `README.md`
   * Added notes describing wiki-to-HTML conversion rules and template rendering examples.
@@ -41,7 +42,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * `expected/korea/OEBPS/chapter-3.xhtml`
   * Updated the Sejong fixture after citation-template and blockquote rendering changed the generated EPUB output.
 * `src/tests.rs`
-  * Added unit coverage for `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `Wiktionary`, `Wikivoyage`, `Refbegin`/`Refend`, `efn`/`refn`, `flagicon`, and silent `s-` template handling.
+  * Added unit coverage for `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `Wiktionary`, `Wikivoyage`, `Refbegin`/`Refend`, `efn`/`refn`, `flagicon`, silent `s-` template handling, and `Succession box`.
 
 ### Tests Run
 

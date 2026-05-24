@@ -824,6 +824,7 @@ fn is_succession_template_name(template: &str) -> bool {
     template
         .get(.."s-".len())
         .is_some_and(|prefix| prefix.eq_ignore_ascii_case("s-"))
+        || template.eq_ignore_ascii_case("Succession box")
 }
 
 fn split_template_name(content: &str) -> (&str, &str) {
