@@ -748,6 +748,7 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Sfn")
         || template.eq_ignore_ascii_case("sfnm")
         || template.eq_ignore_ascii_case("efn")
+        || is_succession_template_name(template)
         || template
             .get(.."Self-published".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Self-published"))
@@ -764,6 +765,12 @@ fn is_observed_navigation_template_name(template: &str) -> bool {
     template.eq_ignore_ascii_case("History of Korea")
         || template.eq_ignore_ascii_case("Korea topics")
         || template.eq_ignore_ascii_case("East Asian topics")
+}
+
+fn is_succession_template_name(template: &str) -> bool {
+    template
+        .get(.."s-".len())
+        .is_some_and(|prefix| prefix.eq_ignore_ascii_case("s-"))
 }
 
 fn split_template_name(content: &str) -> (&str, &str) {

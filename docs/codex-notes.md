@@ -14,6 +14,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * Known Korean transliteration templates are rendered directly instead of leaking template syntax into the book.
 * `harvc` is treated as a compact chapter/contribution citation; EPUB output keeps the contributor, quoted contribution title, enclosing source key/year, and optional page/location details.
 * `As of` is rendered as visible prose, preserving the capitalization option `lc=y` and basic year/month/day date forms.
+* Wikipedia succession-box templates whose names start with `s-` are treated as navigation/metadata and skipped silently.
 * The README should describe conversion rules with concrete before/after examples.
 
 ### Files Changed
@@ -21,7 +22,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * `src/main.rs`
   * Added or extended rendering for templates including `ill`, `Reign`, `lang`, `langx`, `Percentage`, `UN Population`, `Korean/auto`, `Ko-translit`, `Cite report`, `harvc`, and `As of`.
   * Updated citation author collection so unnumbered `last`/`first` can combine correctly with numbered coauthors such as `last2`/`first2`.
-  * Added silent skipping for templates such as `Redirect`, `pp-semi-indef`, `Sfn`, and `efn`.
+  * Added silent skipping for templates such as `Redirect`, `pp-semi-indef`, `Sfn`, `efn`, and succession templates prefixed with `s-`.
   * Added tests for template rendering behavior, including the restored example fixture and Korean transliteration cases.
 * `README.md`
   * Added notes describing wiki-to-HTML conversion rules and template rendering examples.
@@ -32,11 +33,12 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * `expected/korea/OEBPS/chapter-3.xhtml`
   * Updated the Sejong bibliography fixture after citation-template rendering changed the generated EPUB output.
 * `src/tests.rs`
-  * Added unit coverage for `Cite report`, `harvc`, and `As of` rendering.
+  * Added unit coverage for `Cite report`, `harvc`, `As of`, and silent `s-` template handling.
 
 ### Tests Run
 
 * `cargo test generate_korea_book_from_local_page_dumps`
+* `cargo test render_wikitext_silently_skips_metadata_templates`
 * `cargo test --test books`
 * `cargo test`
 

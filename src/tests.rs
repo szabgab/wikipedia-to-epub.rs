@@ -66,6 +66,13 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{History of Korea}}
 {{Korea topics}}
 {{East Asian topics}}
+{{S-start}}
+{{s-hou|[[House of Yi]]|10 April|1397|17 February|1450}}
+{{s-reg}}
+{{s-bef|before=[[Taejong of Joseon|Taejong]]}}
+{{s-ttl|title=[[List of monarchs of Korea|King of Joseon]]|years=1418–1450}}
+{{s-aft|after=[[Munjong of Joseon|Munjong]]}}
+{{s-end}}
 Visible text."#,
         &InternalLinks::new(),
         "en",
@@ -91,6 +98,13 @@ Visible text."#,
     assert!(!rendered.contains("History of Korea"));
     assert!(!rendered.contains("Korea topics"));
     assert!(!rendered.contains("East Asian topics"));
+    assert!(!rendered.contains("S-start"));
+    assert!(!rendered.contains("House of Yi"));
+    assert!(!rendered.contains("s-reg"));
+    assert!(!rendered.contains("Taejong"));
+    assert!(!rendered.contains("King of Joseon"));
+    assert!(!rendered.contains("Munjong"));
+    assert!(!rendered.contains("s-end"));
 }
 
 #[test]
