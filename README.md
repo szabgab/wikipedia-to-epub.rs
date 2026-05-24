@@ -64,6 +64,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{convert|1100|km|abbr=on}}` becomes `1100 km`; range forms such as `{{convert|10|to|47|km2}}` become `10 to 47 km²`
 * `{{ill|Ch'ilchŏngsan|ko}}` becomes a link to `Ch'ilchŏngsan` followed by `[ko]`
 * `{{Reign|1400|1418}}` becomes `r. 1400–1418`
+* `{{Open access}}` becomes an open-lock marker: `<span title="open access">&#128275;</span>`
 * `{{Main|Names of Korea}}` becomes `Main article:` followed by a link to `Names of Korea`
 * `{{See also|Korean tea ceremony|Korean royal court cuisine}}` becomes `See also:` followed by links to those articles
 * Observed Wikipedia navigation templates such as `{{History of Korea}}`, `{{Korea topics}}`, and `{{East Asian topics}}` are omitted

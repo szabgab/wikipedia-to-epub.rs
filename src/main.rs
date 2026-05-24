@@ -662,6 +662,8 @@ fn render_template(content: &str) -> String {
         render_interlanguage_link_template(params)
     } else if template.eq_ignore_ascii_case("reign") {
         render_reign_template(params)
+    } else if template.eq_ignore_ascii_case("open access") {
+        render_open_access_template()
     } else if is_silent_template_name(template) {
         String::new()
     } else {
@@ -721,6 +723,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("see also")
         || template.eq_ignore_ascii_case("ill")
         || template.eq_ignore_ascii_case("reign")
+        || template.eq_ignore_ascii_case("open access")
         || is_silent_template_name(template)
 }
 
@@ -1611,6 +1614,10 @@ fn render_reign_template(params: &str) -> String {
     }
 }
 
+fn render_open_access_template() -> String {
+    "__WIKIPEDIA_TO_EPUB_OPEN_ACCESS__".to_string()
+}
+
 fn reign_label(named: &HashMap<String, String>) -> String {
     if let Some(label) = named.get("label").filter(|value| !value.trim().is_empty()) {
         return label.trim().to_string();
@@ -1877,9 +1884,16 @@ fn format_inline_text(text: &str) -> String {
         )
         .replace("__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__", "</span></span>");
 
-    restore_ipa_template_spans(&restore_abbr_template_spans(&restore_lang_template_spans(
-        &html,
+    restore_open_access_spans(&restore_ipa_template_spans(&restore_abbr_template_spans(
+        &restore_lang_template_spans(&html),
     )))
+}
+
+fn restore_open_access_spans(html: &str) -> String {
+    html.replace(
+        "__WIKIPEDIA_TO_EPUB_OPEN_ACCESS__",
+        r#"<span title="open access">&#128275;</span>"#,
+    )
 }
 
 fn restore_lang_template_spans(html: &str) -> String {
