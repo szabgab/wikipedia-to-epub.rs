@@ -678,6 +678,8 @@ fn render_template(content: &str) -> String {
         render_ipa_template(params)
     } else if template.eq_ignore_ascii_case("abbr") {
         render_abbr_template(params)
+    } else if template.eq_ignore_ascii_case("coord") {
+        render_coord_template(params)
     } else if template.eq_ignore_ascii_case("rp") {
         render_reference_page_template(params)
     } else if template.eq_ignore_ascii_case("cite book") {
@@ -778,6 +780,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("ko-translit")
         || template.eq_ignore_ascii_case("ipa")
         || template.eq_ignore_ascii_case("abbr")
+        || template.eq_ignore_ascii_case("coord")
         || template.eq_ignore_ascii_case("rp")
         || template.eq_ignore_ascii_case("cite book")
         || template.eq_ignore_ascii_case("cite journal")
@@ -1195,6 +1198,111 @@ fn render_abbr_template(params: &str) -> String {
         render_templates(title),
         render_templates(text)
     )
+}
+
+fn render_coord_template(params: &str) -> String {
+    let named = template_named_params(params);
+    // For now both inline and title will display inline
+    if let Some(display) = template_param(&named, &["display"]) {
+        let shows_inline = display.split([',', ';']).any(|value| {
+            value.trim().eq_ignore_ascii_case("inline")
+                || value.trim().eq_ignore_ascii_case("title")
+        });
+        if !shows_inline {
+            return String::new();
+        }
+    }
+
+    let positional = split_template_params(params)
+        .into_iter()
+        .map(|param| render_templates(param.trim()).trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect::<Vec<_>>();
+
+    format_coord_components(&positional).unwrap_or_default()
+}
+
+fn format_coord_components(params: &[String]) -> Option<String> {
+    format_hemisphere_coordinates(params).or_else(|| format_decimal_coordinates(params))
+}
+
+fn format_hemisphere_coordinates(params: &[String]) -> Option<String> {
+    let lat_hemisphere_index = params
+        .iter()
+        .position(|param| matches_direction(param, ['N', 'S']))?;
+    if !(1..=3).contains(&lat_hemisphere_index) {
+        return None;
+    }
+
+    let lon_hemisphere_index = params
+        .iter()
+        .skip(lat_hemisphere_index + 1)
+        .position(|param| matches_direction(param, ['E', 'W']))
+        .map(|index| index + lat_hemisphere_index + 1)?;
+    let lon_component_count = lon_hemisphere_index.checked_sub(lat_hemisphere_index + 1)?;
+    if !(1..=3).contains(&lon_component_count) {
+        return None;
+    }
+
+    let latitude = format_coord_axis(
+        &params[..lat_hemisphere_index],
+        params[lat_hemisphere_index].chars().next()?,
+    )?;
+    let longitude = format_coord_axis(
+        &params[lat_hemisphere_index + 1..lon_hemisphere_index],
+        params[lon_hemisphere_index].chars().next()?,
+    )?;
+
+    Some(format!("{latitude} {longitude}"))
+}
+
+fn format_coord_axis(parts: &[String], hemisphere: char) -> Option<String> {
+    if parts.is_empty()
+        || parts.len() > 3
+        || !parts.iter().all(|part| coord_component_is_number(part))
+    {
+        return None;
+    }
+
+    let mut rendered = String::new();
+    rendered.push_str(parts.first()?.trim());
+    rendered.push('°');
+
+    if let Some(minutes) = parts.get(1) {
+        rendered.push_str(minutes.trim());
+        rendered.push('′');
+    }
+    if let Some(seconds) = parts.get(2) {
+        rendered.push_str(seconds.trim());
+        rendered.push('″');
+    }
+
+    rendered.push(hemisphere.to_ascii_uppercase());
+    Some(rendered)
+}
+
+fn format_decimal_coordinates(params: &[String]) -> Option<String> {
+    let latitude = params.first()?.trim();
+    let longitude = params.get(1)?.trim();
+    if !coord_component_is_number(latitude) || !coord_component_is_number(longitude) {
+        return None;
+    }
+
+    Some(format!("{latitude}, {longitude}"))
+}
+
+fn coord_component_is_number(value: &str) -> bool {
+    value.trim().parse::<f64>().is_ok()
+}
+
+fn matches_direction(value: &str, allowed: [char; 2]) -> bool {
+    let trimmed = value.trim();
+    trimmed.len() == 1
+        && trimmed.chars().next().is_some_and(|ch| {
+            allowed
+                .iter()
+                .any(|direction| ch.eq_ignore_ascii_case(direction))
+        })
 }
 
 fn render_cite_book_template(params: &str) -> String {

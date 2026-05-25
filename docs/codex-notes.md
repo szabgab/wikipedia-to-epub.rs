@@ -4,6 +4,40 @@
 
 ### Summary
 
+This session added handling for the Wikipedia `Coord` template so common inline coordinate forms render as readable text while title-only and Wikidata `qid=` metadata cases stay omitted.
+
+### Decisions Made
+
+* `Coord` should render visible text only when `display=` is absent or includes `inline`; `display=title` remains omitted.
+* Common positional latitude/longitude forms are supported: degrees/minutes/seconds with hemispheres and signed decimal latitude/longitude pairs.
+* Trailing coord metadata such as `region:` or `type:` positional arguments are ignored after the coordinate values are parsed.
+* `qid=`-only `Coord` usages are treated as metadata and omitted.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added `Coord` to template dispatch and implemented inline coordinate rendering helpers.
+* `src/tests.rs`
+  * Added unit coverage for DMS, decimal, title-only, and `qid=` `Coord` forms.
+* `README.md`
+  * Documented the new `Coord` conversion behavior.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `rustfmt --edition 2024 src/main.rs src/tests.rs`
+* `cargo test render_wikitext_formats_coord_templates`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* Extend `Coord` support if future pages need additional named-parameter forms beyond the currently handled positional formats.
+
+## 2026-05-25
+
+### Summary
+
 This session improved the local-book integration test failure output so EPUB fixture mismatches report the first differing location with short context instead of a huge full-string diff.
 
 ### Decisions Made

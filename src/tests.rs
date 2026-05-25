@@ -69,6 +69,43 @@ fn render_wikitext_formats_excerpt_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_coord_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Coord|37|33|36|N|126|59|24|E|region:KR-11_type:adm1st|display=inline,title}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<p>37°33′36″N 126°59′24″E</p>"),
+        "{rendered}"
+    );
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Coord|43.65107|-79.347015|type:city|display=inline}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<p>43.65107, -79.347015</p>"),
+        "{rendered}"
+    );
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Coord|37|33|36|N|126|59|24|E|display=title}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("37°33′36″N 126°59′24″E"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{Coord|qid=Q884}}", &InternalLinks::new(), "en");
+    assert!(!rendered.contains("Q884"), "{rendered}");
+    assert!(!rendered.contains("Coord"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_silently_skips_metadata_templates() {
     let rendered = render_wikitext(
         "Sample",
@@ -949,7 +986,10 @@ fn render_wikitext_formats_largest_cities_templates() {
         "en",
     );
 
-    assert!(rendered.contains("<p>Largest cities in Korea:</p>"), "{rendered}");
+    assert!(
+        rendered.contains("<p>Largest cities in Korea:</p>"),
+        "{rendered}"
+    );
     assert!(
         rendered.contains(r#"<li><a href="https://en.wikipedia.org/wiki/Seoul">Seoul</a><span class="external-link">↗</span> (Seoul, population 9,904,312)</li>"#),
         "{rendered}"

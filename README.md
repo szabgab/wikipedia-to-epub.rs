@@ -57,6 +57,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Ko-translit|rr|^한국}}` becomes `Hanguk`
 * `{{IPA|ko|haːnɡuk|}}` becomes `<span title="International Phonetic Alphabet">[haːnɡuk]</span>`
 * `{{Abbr|c.|circa}}` becomes `<abbr title="circa">c.</abbr>`
+* `{{Coord|37|33|36|N|126|59|24|E|display=inline}}` becomes `37°33′36″N 126°59′24″E`; decimal forms such as `{{Coord|43.65107|-79.347015|display=inline}}` become `43.65107, -79.347015`
 * `{{rp|12}}` becomes an inline reference page marker: `p. 12`; multiple values such as `{{rp|12|15}}` become `pp. 12, 15`
 * `{{Cite book|last=Oberdorfer|first=Don|title=The Two Koreas|year=2001|publisher=Basic Books}}` becomes `Don Oberdorfer. <em>The Two Koreas</em>. Basic Books, 2001`
 * `{{Cite journal|last=Kim|first=Chin W.|title=The Legacy of King Sejong the Great|journal=Studies in the Linguistic Sciences|year=2000}}` becomes `Chin W. Kim. "The Legacy of King Sejong the Great". <em>Studies in the Linguistic Sciences</em>. 2000`
