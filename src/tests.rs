@@ -563,6 +563,30 @@ fn render_wikitext_formats_korean_transliteration_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_literal_templates() {
+    let cases = [
+        (
+            "{{lit|Vernacular Script Commission}}",
+            "<p>lit. Vernacular Script Commission</p>",
+        ),
+        (
+            "{{lit|''vernacular'' [[script]]}}",
+            r#"<p>lit. <em>vernacular</em> <a href="https://en.wikipedia.org/wiki/script">script</a><span class="external-link">↗</span></p>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "lit template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("lit|"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_ipa_templates() {
     let cases = [
         (

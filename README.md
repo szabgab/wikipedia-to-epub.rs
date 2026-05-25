@@ -56,6 +56,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Lang-zh|t=朝鮮|p=Cháoxiǎn|labels=no}}` becomes `<span lang="zh">朝鮮</span> (Cháoxiǎn)`
 * `{{Transliteration|zh|pinyin|Zhuāngxiàn}}` becomes `<span lang="zh-Latn">Zhuāngxiàn</span>`
 * `{{Ko-translit|rr|^한국}}` becomes `Hanguk`
+* `{{lit|Vernacular Script Commission}}` becomes `lit. Vernacular Script Commission`
 * `{{IPA|ko|haːnɡuk|}}` becomes `<span title="International Phonetic Alphabet">[haːnɡuk]</span>`
 * `{{Abbr|c.|circa}}` becomes `<abbr title="circa">c.</abbr>`
 * `{{frac|2|3}}` becomes `2/3`; mixed-number forms such as `{{frac|1|1|2}}` become `1 1/2`
