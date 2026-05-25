@@ -417,6 +417,29 @@ fn render_wikitext_formats_lang_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_in_lang_templates() {
+    let cases = [
+        ("{{in lang|ko}}", "<p>(in Korean)</p>"),
+        ("{{in lang|ko|en}}", "<p>(in Korean and English)</p>"),
+        (
+            "{{in lang|ko|ja|zh-hant}}",
+            "<p>(in Korean, Japanese, and Chinese)</p>",
+        ),
+        ("{{in lang|abc}}", "<p>(in abc)</p>"),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "in lang template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("in lang|"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_linktext_templates() {
     let cases = [
         (

@@ -664,6 +664,8 @@ fn render_template(content: &str) -> String {
         render_japanese_template(params)
     } else if template.eq_ignore_ascii_case("lang") {
         render_lang_template(params)
+    } else if template.eq_ignore_ascii_case("in lang") {
+        render_in_lang_template(params)
     } else if template.eq_ignore_ascii_case("langx") {
         render_langx_template(params)
     } else if template.eq_ignore_ascii_case("linktext") {
@@ -779,6 +781,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Korean/auto")
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("lang")
+        || template.eq_ignore_ascii_case("in lang")
         || template.eq_ignore_ascii_case("langx")
         || template.eq_ignore_ascii_case("linktext")
         || template.eq_ignore_ascii_case("lang-zh")
@@ -1022,6 +1025,37 @@ fn render_lang_template(params: &str) -> String {
     format!(
         "__WIKIPEDIA_TO_EPUB_LANG_START__{language}__WIKIPEDIA_TO_EPUB_LANG_VALUE__{text}__WIKIPEDIA_TO_EPUB_LANG_END__"
     )
+}
+
+fn render_in_lang_template(params: &str) -> String {
+    let languages = template_positional_params(params)
+        .into_iter()
+        .map(|language| language_name_for_in_lang(&language).to_string())
+        .filter(|language| !language.is_empty())
+        .collect::<Vec<_>>();
+
+    match languages.as_slice() {
+        [] => String::new(),
+        [language] => format!("(in {language})"),
+        languages => format!("(in {})", join_plain_items(languages)),
+    }
+}
+
+fn language_name_for_in_lang(language: &str) -> &str {
+    match language.trim().to_ascii_lowercase().as_str() {
+        "ar" => "Arabic",
+        "de" => "German",
+        "en" => "English",
+        "es" => "Spanish",
+        "fa" => "Persian",
+        "fr" => "French",
+        "he" => "Hebrew",
+        "ja" => "Japanese",
+        "ko" => "Korean",
+        "ru" => "Russian",
+        "zh" | "zh-cn" | "zh-hans" | "zh-hant" | "zh-tw" => "Chinese",
+        _ => language.trim(),
+    }
 }
 
 fn render_linktext_template(params: &str) -> String {
@@ -2499,13 +2533,17 @@ fn join_template_articles(articles: &[String]) -> String {
         .map(|article| format!("[[{article}]]"))
         .collect::<Vec<_>>();
 
-    match links.as_slice() {
+    join_plain_items(&links)
+}
+
+fn join_plain_items(items: &[String]) -> String {
+    match items {
         [] => String::new(),
-        [link] => link.clone(),
+        [link] => link.to_string(),
         [first, second] => format!("{first} and {second}"),
         _ => {
-            let last = links.last().cloned().unwrap_or_default();
-            let leading = &links[..links.len() - 1];
+            let last = items.last().cloned().unwrap_or_default();
+            let leading = &items[..items.len() - 1];
             format!("{}, and {last}", leading.join(", "))
         }
     }
