@@ -189,6 +189,43 @@ fn render_wikitext_formats_historical_populations_templates() {
 }
 
 #[test]
+fn render_wikitext_silently_skips_unknown_templates() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        r#"Before
+{{Other uses}}
+{{Some template name}}
+{{Some template|with|parameters}}
+Visible text."#,
+        &InternalLinks::new(),
+        "en",
+    );
+    assert_eq!(
+        rendered,
+        r#"<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <title>Sample</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <h1>Sample</h1>
+    <p>Before</p>
+    <p>Visible text.</p>
+  </body>
+</html>
+"#
+    );
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 0,
+            unknown: 3
+        }
+    );
+}
+
+#[test]
 fn render_wikitext_silently_skips_metadata_templates() {
     let (rendered, counts) = render_wikitext_with_template_counts(
         "Sample",
@@ -196,7 +233,6 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{About|the sample|other uses|Sample (disambiguation)}}
 {{Distinguish|Example}}
 {{ISBN?}}
-{{Other uses}}
 {{Pp-move}}
 {{Protection padlock|small=yes}}
 {{Redirect|Sample}}
@@ -295,7 +331,7 @@ Visible text."#,
         counts,
         TemplateSkipCounts {
             recognized: 75,
-            unknown: 1
+            unknown: 0
         }
     );
 }
