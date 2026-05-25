@@ -167,7 +167,7 @@ fn render_wikitext_formats_historical_populations_templates() {
 
 #[test]
 fn render_wikitext_silently_skips_metadata_templates() {
-    let rendered = render_wikitext(
+    let (rendered, counts) = render_wikitext_with_template_counts(
         "Sample",
         r#"{{Short description|Sample page}}
 {{About|the sample|other uses|Sample (disambiguation)}}
@@ -267,6 +267,13 @@ Visible text."#,
   </body>
 </html>
 "#
+    );
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 75,
+            unknown: 1
+        }
     );
 }
 

@@ -308,7 +308,7 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `src/tests.rs`
   * Added unit coverage for `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, `Wikisource`, `Nihongo`, `nbsp`, `cvt`, and `osmrelation-inline`.
   * Extended silent-template coverage for the newly observed Busan maintenance, layout, and navigation templates.
-  * Added unit coverage for skipped-template counts.
+  * Added unit coverage for skipped-template counts and extended the silent-template test to verify its recognized and unknown skip totals.
 * `tests/books.rs`
   * Updated CLI stdout assertions to allow the final skipped-template totals line.
 * `README.md`
