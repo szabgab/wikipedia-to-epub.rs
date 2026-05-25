@@ -710,6 +710,8 @@ fn render_template(content: &str) -> String {
         render_wiktionary_template(params)
     } else if template.eq_ignore_ascii_case("wikivoyage") {
         render_wikivoyage_template(params)
+    } else if template.eq_ignore_ascii_case("official website") {
+        render_official_website_template(params)
     } else if template.eq_ignore_ascii_case("sclass") {
         render_ship_class_template(params)
     } else if template.eq_ignore_ascii_case("ill") {
@@ -786,6 +788,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("further")
         || template.eq_ignore_ascii_case("wiktionary")
         || template.eq_ignore_ascii_case("wikivoyage")
+        || template.eq_ignore_ascii_case("official website")
         || template.eq_ignore_ascii_case("sclass")
         || template.eq_ignore_ascii_case("ill")
         || template.eq_ignore_ascii_case("reign")
@@ -1882,6 +1885,28 @@ fn render_wikivoyage_template(params: &str) -> String {
     format!("Wikivoyage: [[{target}|{label}]]")
 }
 
+fn render_official_website_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let url = positional
+        .first()
+        .map(String::as_str)
+        .or_else(|| template_param(&named, &["url", "website"]))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(url) = url else {
+        return String::new();
+    };
+
+    let label = template_param(&named, &["name", "title"])
+        .or_else(|| positional.get(1).map(String::as_str).map(str::trim))
+        .filter(|value| !value.is_empty())
+        .unwrap_or("Official website");
+
+    format!("[[official-url:{url}|{}]]", render_templates(label))
+}
+
 fn render_ship_class_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
@@ -2405,6 +2430,14 @@ fn wikipedia_link_html(
     internal_links: &InternalLinks,
     language: &str,
 ) -> String {
+    if let Some(href) = target.strip_prefix("official-url:") {
+        return format!(
+            r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
+            encode_double_quoted_attribute(&normalize_external_url(href)),
+            format_inline_text(label)
+        );
+    }
+
     if let Some(href) = wiktionary_article_url(target) {
         return format!(
             r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
@@ -2434,6 +2467,17 @@ fn wikipedia_link_html(
         encode_double_quoted_attribute(&wikipedia_article_url(target, language)),
         format_inline_text(label)
     )
+}
+
+fn normalize_external_url(url: &str) -> String {
+    let url = url.trim();
+    if let Some(url) = url.strip_prefix("//") {
+        format!("https://{url}")
+    } else if url.starts_with("http://") || url.starts_with("https://") {
+        url.to_string()
+    } else {
+        format!("https://{url}")
+    }
 }
 
 fn internal_article_url(target: &str, internal_links: &InternalLinks) -> Option<String> {
