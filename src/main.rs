@@ -702,6 +702,8 @@ fn render_template(content: &str) -> String {
         render_convert_template(params)
     } else if template.eq_ignore_ascii_case("for timeline") {
         render_for_timeline_template(params)
+    } else if template.eq_ignore_ascii_case("excerpt") {
+        render_excerpt_template(params)
     } else if template.eq_ignore_ascii_case("main") {
         render_main_template(params)
     } else if template.eq_ignore_ascii_case("see also") {
@@ -788,6 +790,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("UN_Population")
         || template.eq_ignore_ascii_case("convert")
         || template.eq_ignore_ascii_case("for timeline")
+        || template.eq_ignore_ascii_case("excerpt")
         || template.eq_ignore_ascii_case("main")
         || template.eq_ignore_ascii_case("see also")
         || template.eq_ignore_ascii_case("further")
@@ -1829,6 +1832,16 @@ fn render_for_timeline_template(params: &str) -> String {
         [] => String::new(),
         [article] => format!("For a timeline, see: [[{article}]]"),
         articles => format!("For timelines, see: {}", join_template_articles(articles)),
+    }
+}
+
+fn render_excerpt_template(params: &str) -> String {
+    let articles = template_article_params(params);
+
+    match articles.as_slice() {
+        [] => String::new(),
+        [article] => format!("Excerpt from: [[{article}]]"),
+        articles => format!("Excerpts from: {}", join_template_articles(articles)),
     }
 }
 

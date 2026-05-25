@@ -75,6 +75,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * Wikipedia succession-box templates such as `{{Succession box}}` or those whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are treated as navigation/metadata and skipped silently.
 * `sclass` is rendered as a ship-class link helper, including italic class names and supported format parameters.
 * `For timeline` renders as visible hatnote-style prose: `For a timeline, see:` plus article links.
+* `Excerpt` renders as visible hatnote-style prose: `Excerpt from:` plus article links.
 * `Reflist`, `notelist`, `Refbegin`, and `Refend` are reference/bibliography layout wrappers; they are skipped silently while preserving surrounding reference-list contents.
 * `refn` is treated like other footnote wrappers such as `efn`; it is skipped silently so note text does not appear inline in the EPUB body.
 * `flagicon` is treated as decorative image markup and skipped silently; nearby country/city prose remains visible.
@@ -132,7 +133,7 @@ Latest verification passed:
 
 ### Summary
 
-This session added rendering for the `Official website`, `Largest cities`, and `linktext` Wikipedia templates, updated README conversion notes, refreshed affected Korea EPUB fixtures, and verified the full test suite.
+This session added rendering for the `Official website`, `Largest cities`, `linktext`, and `Excerpt` Wikipedia templates, updated README conversion notes, refreshed affected Korea EPUB fixtures, and verified the full test suite.
 
 ### Decisions Made
 
@@ -140,15 +141,16 @@ This session added rendering for the `Official website`, `Largest cities`, and `
 * `Largest cities` renders as a compact visible list of city links instead of keeping table/navigation markup.
 * `linktext` concatenates positional parameters as inline text and renders nested handled templates or links inside those parameters.
 * `lang` template text is passed through template rendering before the final language span is emitted, so nested content like `{{lang|zh-hant|{{linktext|漢}}}}` becomes `<span lang="zh-hant">漢</span>`.
+* `Excerpt` renders as visible hatnote-style prose: `Excerpt from:` plus article links.
 
 ### Files Changed
 
 * `src/main.rs`
-  * Added `Official website`, `Largest cities`, and `linktext` template rendering.
+  * Added `Official website`, `Largest cities`, `linktext`, and `Excerpt` template rendering.
   * Added external URL link support for official-site rendering.
   * Updated `lang` rendering to resolve nested handled templates in the text parameter.
 * `src/tests.rs`
-  * Added unit coverage for `Official website`, `Largest cities`, and `linktext`.
+  * Added unit coverage for `Official website`, `Largest cities`, `linktext`, and `Excerpt`.
 * `README.md`
   * Added conversion-rule examples for the new template rendering.
 * `expected/korea/OEBPS/chapter-1.xhtml`
@@ -159,6 +161,7 @@ This session added rendering for the `Official website`, `Largest cities`, and `
 ### Tests Run
 
 * `cargo test render_wikitext_formats_linktext_templates`
+* `cargo test render_wikitext_formats_excerpt_templates`
 * `cargo test --test books`
 * `cargo test`
 

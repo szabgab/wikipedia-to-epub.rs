@@ -57,6 +57,18 @@ fn render_wikitext_formats_for_timeline_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_excerpt_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Excerpt|Korean literature|templates=no}}",
+        &InternalLinks::new(),
+        "en",
+    );
+
+    assert!(rendered.contains("Excerpt from: <a href=\"https://en.wikipedia.org/wiki/Korean_literature\">Korean literature</a>"));
+}
+
+#[test]
 fn render_wikitext_silently_skips_metadata_templates() {
     let rendered = render_wikitext(
         "Sample",
