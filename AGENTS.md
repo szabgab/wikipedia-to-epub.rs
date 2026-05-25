@@ -5,7 +5,7 @@
 * Before exiting codex do the following:
     * Update docs/codex-notes.md with a concise summary of this Codex session, including decisions made, files changed, tests run, and any pending follow-ups.
 
-* Keep `src/navigations.csv` and `src/silent.csv` sorted.
+* Keep `src/navigations.csv` and `src/silent.csv` sorted by running `./sort.sh`.
 
 
 # wikipedia-to-epub.rs Codex Instructions
