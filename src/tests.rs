@@ -1014,6 +1014,34 @@ fn render_wikitext_formats_official_website_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_url_templates() {
+    let cases = [
+        (
+            "{{URL|https://english.seoul.go.kr/|seoul.go.kr}}",
+            r#"<p><a href="https://english.seoul.go.kr/">seoul.go.kr</a><span class="external-link">↗</span></p>"#,
+        ),
+        (
+            "{{URL|1=https://english.seoul.go.kr/|2=Official website}}",
+            r#"<p><a href="https://english.seoul.go.kr/">Official website</a><span class="external-link">↗</span></p>"#,
+        ),
+        (
+            "{{url|example.org}}",
+            r#"<p><a href="https://example.org">example.org</a><span class="external-link">↗</span></p>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "URL template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("URL|"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_largest_cities_templates() {
     let rendered = render_wikitext(
         "Sample",

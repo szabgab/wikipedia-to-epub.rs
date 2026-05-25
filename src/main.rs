@@ -720,6 +720,8 @@ fn render_template(content: &str) -> String {
         render_wikivoyage_template(params)
     } else if template.eq_ignore_ascii_case("official website") {
         render_official_website_template(params)
+    } else if template.eq_ignore_ascii_case("url") {
+        render_url_template(params)
     } else if template.eq_ignore_ascii_case("largest cities") {
         render_largest_cities_template(params)
     } else if template.eq_ignore_ascii_case("historical populations") {
@@ -805,6 +807,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("wiktionary")
         || template.eq_ignore_ascii_case("wikivoyage")
         || template.eq_ignore_ascii_case("official website")
+        || template.eq_ignore_ascii_case("url")
         || template.eq_ignore_ascii_case("largest cities")
         || template.eq_ignore_ascii_case("historical populations")
         || template.eq_ignore_ascii_case("sclass")
@@ -2061,6 +2064,26 @@ fn render_official_website_template(params: &str) -> String {
         .or_else(|| positional.get(1).map(String::as_str).map(str::trim))
         .filter(|value| !value.is_empty())
         .unwrap_or("Official website");
+
+    format!("[[official-url:{url}|{}]]", render_templates(label))
+}
+
+fn render_url_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let url = template_param(&named, &["1", "url"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(url) = url else {
+        return String::new();
+    };
+
+    let label = template_param(&named, &["2", "name", "title"])
+        .or_else(|| positional.get(1).map(String::as_str).map(str::trim))
+        .filter(|value| !value.is_empty())
+        .unwrap_or(url);
 
     format!("[[official-url:{url}|{}]]", render_templates(label))
 }

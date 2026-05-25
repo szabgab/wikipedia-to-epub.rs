@@ -273,7 +273,7 @@ Latest verification passed:
 
 ### Summary
 
-This session added rendering for the `Official website`, `Largest cities`, `linktext`, and `Excerpt` Wikipedia templates, updated README conversion notes, refreshed affected Korea EPUB fixtures, and verified the full test suite.
+This session added rendering for the `Official website`, `Largest cities`, `linktext`, `Excerpt`, and `URL` Wikipedia templates, updated README conversion notes, refreshed affected Korea EPUB fixtures, and verified the full test suite.
 
 ### Decisions Made
 
@@ -282,32 +282,34 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `linktext` concatenates positional parameters as inline text and renders nested handled templates or links inside those parameters.
 * `lang` template text is passed through template rendering before the final language span is emitted, so nested content like `{{lang|zh-hant|{{linktext|漢}}}}` becomes `<span lang="zh-hant">漢</span>`.
 * `Excerpt` renders as visible hatnote-style prose: `Excerpt from:` plus article links.
+* `URL` renders as an external link, using parameter `2` as the visible label when available and normalizing bare domains to `https://`.
 
 ### Files Changed
 
 * `src/main.rs`
-  * Added `Official website`, `Largest cities`, `linktext`, and `Excerpt` template rendering.
+  * Added `Official website`, `Largest cities`, `linktext`, `Excerpt`, and `URL` template rendering.
   * Added external URL link support for official-site rendering.
   * Updated `lang` rendering to resolve nested handled templates in the text parameter.
 * `src/tests.rs`
-  * Added unit coverage for `Official website`, `Largest cities`, `linktext`, and `Excerpt`.
+  * Added unit coverage for `Official website`, `Largest cities`, `linktext`, `Excerpt`, and `URL`.
 * `README.md`
   * Added conversion-rule examples for the new template rendering.
 * `expected/korea/OEBPS/chapter-1.xhtml`
   * Updated expected output for official website, largest-cities, and nested `linktext` rendering.
 * `expected/korea/OEBPS/chapter-2.xhtml`
-  * Updated expected output for nested `linktext` rendering inside a Chinese language span.
+  * Updated expected output for nested `linktext` rendering inside a Chinese language span and visible `URL` links in the Seoul official-sites section.
 
 ### Tests Run
 
 * `cargo test render_wikitext_formats_linktext_templates`
 * `cargo test render_wikitext_formats_excerpt_templates`
+* `cargo test render_wikitext_formats_`
 * `cargo test --test books`
 * `cargo test`
 
 Latest verification passed:
 
-* 53 unit tests passed.
+* 58 unit tests passed.
 * 4 local book integration tests passed.
 * 1 real Wikipedia API test remains ignored by default.
 
