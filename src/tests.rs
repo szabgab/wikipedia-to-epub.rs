@@ -45,6 +45,30 @@ fn render_wikitext_handles_sections_links_and_lists() {
 }
 
 #[test]
+fn render_wikitext_formats_for_templates() {
+    let cases = [
+        (
+            "{{For|histories of the modern Korean countries|History of North Korea|History of South Korea}}",
+            r#"For histories of the modern Korean countries, see: <a href="https://en.wikipedia.org/wiki/History_of_North_Korea">History of North Korea</a><span class="external-link">↗</span> and <a href="https://en.wikipedia.org/wiki/History_of_South_Korea">History of South Korea</a><span class="external-link">↗</span>"#,
+        ),
+        (
+            "{{for|other uses|Korea (disambiguation)}}",
+            r#"For other uses, see: <a href="https://en.wikipedia.org/wiki/Korea_(disambiguation)">Korea (disambiguation)</a><span class="external-link">↗</span>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "For template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("For|"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_for_timeline_templates() {
     let rendered = render_wikitext(
         "Sample",

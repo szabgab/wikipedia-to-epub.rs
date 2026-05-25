@@ -710,6 +710,8 @@ fn render_template(content: &str) -> String {
         render_un_population_template(params)
     } else if template.eq_ignore_ascii_case("convert") {
         render_convert_template(params)
+    } else if template.eq_ignore_ascii_case("for") {
+        render_for_template(params)
     } else if template.eq_ignore_ascii_case("for timeline") {
         render_for_timeline_template(params)
     } else if template.eq_ignore_ascii_case("excerpt") {
@@ -810,6 +812,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("percentage")
         || template.eq_ignore_ascii_case("UN_Population")
         || template.eq_ignore_ascii_case("convert")
+        || template.eq_ignore_ascii_case("for")
         || template.eq_ignore_ascii_case("for timeline")
         || template.eq_ignore_ascii_case("excerpt")
         || template.eq_ignore_ascii_case("main")
@@ -2034,6 +2037,33 @@ fn render_for_timeline_template(params: &str) -> String {
         [] => String::new(),
         [article] => format!("For a timeline, see: [[{article}]]"),
         articles => format!("For timelines, see: {}", join_template_articles(articles)),
+    }
+}
+
+fn render_for_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(topic) = positional
+        .first()
+        .map(String::as_str)
+        .filter(|value| !value.trim().is_empty())
+    else {
+        return String::new();
+    };
+    let articles = positional
+        .iter()
+        .skip(1)
+        .filter(|article| !article.trim().is_empty())
+        .cloned()
+        .collect::<Vec<_>>();
+
+    if articles.is_empty() {
+        render_templates(topic)
+    } else {
+        format!(
+            "For {}, see: {}",
+            render_templates(topic),
+            join_template_articles(&articles)
+        )
     }
 }
 

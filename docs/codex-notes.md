@@ -273,7 +273,7 @@ Latest verification passed:
 
 ### Summary
 
-This session added rendering for the `Official website`, `Largest cities`, `linktext`, `Excerpt`, `URL`, `Webarchive`, `in lang`, `lit`, and `ISBN` Wikipedia templates, updated README conversion notes, refreshed affected Korea EPUB fixtures, and verified the full test suite.
+This session added rendering for the `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, and `ISBN` Wikipedia templates, updated README conversion notes, refreshed affected Korea EPUB fixtures, and verified the full test suite.
 
 ### Decisions Made
 
@@ -282,6 +282,7 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `linktext` concatenates positional parameters as inline text and renders nested handled templates or links inside those parameters.
 * `lang` template text is passed through template rendering before the final language span is emitted, so nested content like `{{lang|zh-hant|{{linktext|漢}}}}` becomes `<span lang="zh-hant">漢</span>`.
 * `Excerpt` renders as visible hatnote-style prose: `Excerpt from:` plus article links.
+* `For` renders as visible hatnote-style prose: `For <topic>, see:` plus article links.
 * `URL` renders as an external link, using parameter `2` as the visible label when available and normalizing bare domains to `https://`.
 * `Webarchive` renders as an external archive link labelled `Archived on <date>` when `date=` is present, otherwise `Archived copy`; older positional URL forms are also supported.
 * `in lang` renders as visible source-language prose such as `(in Korean)`, including joined output for multiple language codes.
@@ -292,12 +293,12 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 ### Files Changed
 
 * `src/main.rs`
-  * Added `Official website`, `Largest cities`, `linktext`, `Excerpt`, `URL`, `Webarchive`, `in lang`, `lit`, and `ISBN` template rendering.
+  * Added `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, and `ISBN` template rendering.
   * Added external URL link support for official-site rendering.
   * Updated `lang` rendering to resolve nested handled templates in the text parameter.
   * Added silent skipping for `columns-list`, `Commons and category`, `Dead link`, `Page needed`, and `History of Asia`.
 * `src/tests.rs`
-  * Added unit coverage for `Official website`, `Largest cities`, `linktext`, `Excerpt`, `URL`, `Webarchive`, `in lang`, `lit`, and `ISBN`.
+  * Added unit coverage for `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, and `ISBN`.
   * Extended silent-template coverage for `columns-list`, `Commons and category`, `Dead link`, `Page needed`, and `History of Asia`.
 * `README.md`
   * Added conversion-rule examples for the new template rendering.
@@ -309,12 +310,13 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `expected/korea/OEBPS/chapter-3.xhtml`
   * Updated expected output for Sejong's `lit` template around `Ŏnmunch'ŏng`.
 * `expected/korea/OEBPS/chapter-4.xhtml`
-  * Updated expected output for History of Korea's inline `ISBN` template in the historiography bibliography and visible `Webarchive` links in external links.
+  * Updated expected output for History of Korea's inline `ISBN` template in the historiography bibliography, visible `Webarchive` links in external links, and the top `For` hatnote.
 
 ### Tests Run
 
 * `cargo test render_wikitext_formats_linktext_templates`
 * `cargo test render_wikitext_formats_excerpt_templates`
+* `cargo test render_wikitext_formats_for_templates`
 * `cargo test render_wikitext_formats_in_lang_templates`
 * `cargo test render_wikitext_formats_literal_templates`
 * `cargo test render_wikitext_formats_isbn_templates`
@@ -326,7 +328,7 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 
 Latest verification passed:
 
-* 62 unit tests passed.
+* 63 unit tests passed.
 * 4 local book integration tests passed.
 * 1 real Wikipedia API test remains ignored by default.
 
