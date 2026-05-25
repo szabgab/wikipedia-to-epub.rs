@@ -271,6 +271,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{notelist}}
 {{Refbegin|30em}}
 {{refend}}
+{{NoteFoot}}
 {{flagicon|US}}
 {{unreferenced section|date=November 2022}}
 {{more citations needed section|date=May 2024}}
@@ -282,6 +283,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Refimprove|date=December 2025}}
 {{FACT|date=December 2025}}
 {{citation needed|date=May 2023}}
+{{cn|date=May 2025}}
 {{anchor|Modern}}
 {{huh|date=August 2025}}
 {{when|date=August 2025}}
@@ -298,6 +300,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{div col|colwidth=20em}}
 {{div col end}}
 {{Portal bar|North Korea|South Korea|Asia|History|Linguistics|Monarchy|Biography}}
+{{TOC limit|4}}
 {{DEFAULTSORT:Sample, Page}}
 {{Self-published|date=May 2026}}
 {{self-published inline|date=May 2026}}
@@ -360,7 +363,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 80,
+            recognized: 83,
             unknown: 0
         }
     );
@@ -761,6 +764,10 @@ fn render_wikitext_formats_ipa_templates() {
             "{{IPA|ko|sʰʌ.uɭ|IPA|ko-Seoul.ogg}}",
             r#"<p><span title="International Phonetic Alphabet">[sʰʌ.uɭ]</span></p>"#,
         ),
+        (
+            "{{IPAc-en|lang|ˈ|tʃ|oʊ|s|ʌ|n}}",
+            r#"<p><span title="International Phonetic Alphabet">[ˈtʃoʊsʌn]</span></p>"#,
+        ),
     ];
 
     for (template, expected) in cases {
@@ -772,6 +779,20 @@ fn render_wikitext_formats_ipa_templates() {
         assert!(!rendered.contains("{{"));
         assert!(!rendered.contains("IPA|"));
     }
+}
+
+#[test]
+fn render_wikitext_formats_respell_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Respell|CHOH|sun}}",
+        &InternalLinks::new(),
+        "en",
+    );
+
+    assert!(rendered.contains("<p>CHOH-sun</p>"), "{rendered}");
+    assert!(!rendered.contains("{{"));
+    assert!(!rendered.contains("Respell"));
 }
 
 #[test]
@@ -931,6 +952,25 @@ fn render_wikitext_formats_cite_report_templates() {
         assert!(!rendered.contains("{{"));
         assert!(!rendered.contains("Cite report"));
     }
+}
+
+#[test]
+fn render_wikitext_formats_cite_eccp_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite ECCP |last=Kennedy |first=George A. |title=Amin |pages=8–9 |date=1943}}",
+        &InternalLinks::new(),
+        "en",
+    );
+
+    assert!(
+        rendered.contains(
+            r#"<p>George A. Kennedy. "Amin". Eminent Chinese of the Ch'ing Period. 1943. pp. 8–9</p>"#
+        ),
+        "{rendered}"
+    );
+    assert!(!rendered.contains("{{"));
+    assert!(!rendered.contains("cite ECCP"));
 }
 
 #[test]

@@ -766,6 +766,10 @@ fn render_template(content: &str) -> String {
         render_isbn_template(params)
     } else if template.eq_ignore_ascii_case("ipa") {
         render_ipa_template(params)
+    } else if template.eq_ignore_ascii_case("IPAc-en") {
+        render_english_ipa_template(params)
+    } else if template.eq_ignore_ascii_case("Respell") {
+        render_respell_template(params)
     } else if template.eq_ignore_ascii_case("abbr") {
         render_abbr_template(params)
     } else if template.eq_ignore_ascii_case("frac") {
@@ -780,6 +784,8 @@ fn render_template(content: &str) -> String {
         render_cite_journal_template(params)
     } else if template.eq_ignore_ascii_case("cite report") {
         render_cite_report_template(params)
+    } else if template.eq_ignore_ascii_case("cite ECCP") {
+        render_cite_eccp_template(params)
     } else if template.eq_ignore_ascii_case("citation") {
         render_citation_template(params)
     } else if template.eq_ignore_ascii_case("harvc") {
@@ -895,6 +901,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("lit")
         || template.eq_ignore_ascii_case("isbn")
         || template.eq_ignore_ascii_case("ipa")
+        || template.eq_ignore_ascii_case("IPAc-en")
+        || template.eq_ignore_ascii_case("Respell")
         || template.eq_ignore_ascii_case("abbr")
         || template.eq_ignore_ascii_case("frac")
         || template.eq_ignore_ascii_case("coord")
@@ -902,6 +910,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("cite book")
         || template.eq_ignore_ascii_case("cite journal")
         || template.eq_ignore_ascii_case("cite report")
+        || template.eq_ignore_ascii_case("cite ECCP")
         || template.eq_ignore_ascii_case("citation")
         || template.eq_ignore_ascii_case("harvc")
         || template.eq_ignore_ascii_case("as of")
@@ -951,6 +960,7 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("refn")
         || template.eq_ignore_ascii_case("reflist")
         || template.eq_ignore_ascii_case("notelist")
+        || template.eq_ignore_ascii_case("NoteFoot")
         || template.eq_ignore_ascii_case("Refbegin")
         || template.eq_ignore_ascii_case("Refend")
         || template.eq_ignore_ascii_case("flagicon")
@@ -960,6 +970,7 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Refimprove")
         || template.eq_ignore_ascii_case("FACT")
         || template.eq_ignore_ascii_case("citation needed")
+        || template.eq_ignore_ascii_case("cn")
         || template.eq_ignore_ascii_case("huh")
         || template.eq_ignore_ascii_case("when")
         || template.eq_ignore_ascii_case("more cn section")
@@ -971,6 +982,7 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("New archival link needed")
         || template.eq_ignore_ascii_case("anchor")
         || template.eq_ignore_ascii_case("cbignore")
+        || template.eq_ignore_ascii_case("TOC limit")
         || template.eq_ignore_ascii_case("clear")
         || template.eq_ignore_ascii_case("div")
         || template.eq_ignore_ascii_case("div col")
@@ -1399,6 +1411,35 @@ fn render_ipa_template(params: &str) -> String {
     )
 }
 
+fn render_english_ipa_template(params: &str) -> String {
+    let ipa = template_positional_params(params)
+        .into_iter()
+        .filter(|param| {
+            !matches!(
+                param.trim().to_ascii_lowercase().as_str(),
+                "lang" | "pron" | "pronunciation"
+            )
+        })
+        .map(|param| render_templates(&param))
+        .collect::<Vec<_>>()
+        .join("");
+
+    if ipa.is_empty() {
+        return String::new();
+    }
+
+    format!("__WIKIPEDIA_TO_EPUB_IPA_START__{ipa}__WIKIPEDIA_TO_EPUB_IPA_END__")
+}
+
+fn render_respell_template(params: &str) -> String {
+    template_positional_params(params)
+        .into_iter()
+        .map(|param| render_templates(&param))
+        .filter(|param| !param.trim().is_empty())
+        .collect::<Vec<_>>()
+        .join("-")
+}
+
 fn render_abbr_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
@@ -1636,6 +1677,32 @@ fn render_cite_report_template(params: &str) -> String {
 
     if let Some(oclc) = template_param(&named, &["oclc"]) {
         parts.push(format!("OCLC {}", render_templates(oclc)));
+    }
+
+    parts.join(". ")
+}
+
+fn render_cite_eccp_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(title) = template_param(&named, &["title"]) {
+        parts.push(format!("\"{}\"", render_templates(title)));
+    }
+
+    parts.push("Eminent Chinese of the Ch'ing Period".to_string());
+
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        parts.push(render_templates(date));
+    }
+
+    if let Some(pages) = template_param(&named, &["pages", "page"]) {
+        parts.push(format!("pp. {}", render_templates(pages)));
     }
 
     parts.join(". ")

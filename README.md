@@ -59,7 +59,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Ko-translit|rr|^한국}}` becomes `Hanguk`
 * `{{lit|Vernacular Script Commission}}` becomes `lit. Vernacular Script Commission`
 * `{{ISBN|0-8248-0673-5}}` becomes `ISBN 0-8248-0673-5`
-* `{{IPA|ko|haːnɡuk|}}` becomes `<span title="International Phonetic Alphabet">[haːnɡuk]</span>`
+* `{{IPA|ko|haːnɡuk|}}` and `{{IPAc-en|lang|ˈ|tʃ|oʊ|s|ʌ|n}}` become International Phonetic Alphabet spans such as `<span title="International Phonetic Alphabet">[haːnɡuk]</span>` and `<span title="International Phonetic Alphabet">[ˈtʃoʊsʌn]</span>`
+* `{{Respell|CHOH|sun}}` becomes `CHOH-sun`
 * `{{Abbr|c.|circa}}` becomes `<abbr title="circa">c.</abbr>`
 * `{{frac|2|3}}` becomes `2/3`; mixed-number forms such as `{{frac|1|1|2}}` become `1 1/2`
 * `{{Coord|37|33|36|N|126|59|24|E|display=inline}}` becomes `37°33′36″N 126°59′24″E`; decimal forms such as `{{Coord|43.65107|-79.347015|display=inline}}` become `43.65107, -79.347015`
@@ -67,6 +68,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Cite book|last=Oberdorfer|first=Don|title=The Two Koreas|year=2001|publisher=Basic Books}}` becomes `Don Oberdorfer. <em>The Two Koreas</em>. Basic Books, 2001`
 * `{{Cite journal|last=Kim|first=Chin W.|title=The Legacy of King Sejong the Great|journal=Studies in the Linguistic Sciences|year=2000}}` becomes `Chin W. Kim. "The Legacy of King Sejong the Great". <em>Studies in the Linguistic Sciences</em>. 2000`
 * `{{Cite report|last=Ledyard|first=Gari Keith|title=The Cultural Work of Sejong the Great|publication-date=November 2002|pages=7–18}}` becomes `Gari Keith Ledyard. <em>The Cultural Work of Sejong the Great</em>. November 2002. p. 7–18`
+* `{{cite ECCP|last=Kennedy|first=George A.|title=Amin|pages=8–9|date=1943}}` becomes `George A. Kennedy. "Amin". Eminent Chinese of the Ch'ing Period. 1943. pp. 8–9`
 * `{{Citation|last=Cumings|first=Bruce|title=Korea's Place in the Sun|publisher=Norton|year=1997}}` becomes `Bruce Cumings. <em>Korea's Place in the Sun</em>. Norton, 1997`
 * `{{harvc|last=Peterson|first=Mark|year=1992|in=Kim-Renaud|c=The Sejong Sillok}}` becomes `Mark Peterson. "The Sejong Sillok". In Kim-Renaud 1992`
 * `{{As of|2023}}` becomes `As of 2023`; `{{As of|2009|lc=y}}` becomes `as of 2009`
@@ -97,8 +99,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * Observed Wikipedia navigation templates such as `{{History of Korea}}`, `{{Korea topics}}`, `{{East Asian topics}}`, `{{History of Asia}}`, `{{Portal bar}}`, `{{Portal}}`, `{{Commons category}}`, `{{Commons and category}}`, `{{Wikisource-inline}}`, `{{Sister project links}}`, `{{Seoul}}`, `{{Seoul weatherbox}}`, `{{Busan}}`, `{{Busan weatherbox}}`, `{{Navboxes}}`, and `{{Authority control}}` are omitted
 * Wikipedia succession-box templates such as `{{Succession box}}` or those whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are omitted
 * Footnote wrappers such as `{{efn|...}}` and `{{refn|...}}` are omitted
-* Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{More citations needed}}`, `{{Refimprove}}`, `{{FACT}}`, `{{citation needed}}`, `{{huh}}`, `{{when}}`, `{{more cn section}}`, `{{prose}}`, `{{Unreliable source?}}`, `{{Better source needed}}`, `{{Dead link}}`, `{{Page needed}}`, `{{New archival link needed}}`, `{{anchor}}`, `{{cbignore}}`, `{{clear}}`, `{{div}}`, `{{columns-list}}`, `{{location map+}}`, `{{Wide image}}`, `{{Pie chart}}`, `{{ahnentafel}}`, and `{{DEFAULTSORT:...}}` are omitted
-* Reference-list wrappers such as `{{Reflist}}`, `{{notelist}}`, `{{Refbegin}}`, and `{{Refend}}` are omitted while surrounding list contents are preserved
+* Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{More citations needed}}`, `{{Refimprove}}`, `{{FACT}}`, `{{citation needed}}`, `{{cn}}`, `{{huh}}`, `{{when}}`, `{{more cn section}}`, `{{prose}}`, `{{Unreliable source?}}`, `{{Better source needed}}`, `{{Dead link}}`, `{{Page needed}}`, `{{New archival link needed}}`, `{{anchor}}`, `{{cbignore}}`, `{{TOC limit}}`, `{{clear}}`, `{{div}}`, `{{columns-list}}`, `{{location map+}}`, `{{Wide image}}`, `{{Pie chart}}`, `{{ahnentafel}}`, and `{{DEFAULTSORT:...}}` are omitted
+* Reference-list wrappers such as `{{Reflist}}`, `{{notelist}}`, `{{NoteFoot}}`, `{{Refbegin}}`, and `{{Refend}}` are omitted while surrounding list contents are preserved
 * Decorative flag image templates such as `{{flagicon|US}}` are omitted
 * `== History ==` becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings
 * Lines starting with `*` become unordered list items

@@ -273,7 +273,7 @@ Latest verification passed:
 
 ### Summary
 
-This session added rendering for the `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, `Wikisource`, `Nihongo`, `nbsp`, `cvt`, `osmrelation-inline`, and `climate chart` Wikipedia templates, added per-article and total skipped-template logging, updated README conversion notes, refreshed affected Korea EPUB fixtures, and verified the full test suite.
+This session added rendering for the `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, `Wikisource`, `Nihongo`, `nbsp`, `cvt`, `osmrelation-inline`, `climate chart`, `IPAc-en`, `Respell`, and `cite ECCP` Wikipedia templates, added per-article and total skipped-template logging, updated README conversion notes, refreshed affected Korea EPUB fixtures, and verified the full test suite.
 
 ### Decisions Made
 
@@ -294,21 +294,24 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `cvt` renders as an alias of `convert`.
 * `osmrelation-inline` renders as a visible external OpenStreetMap relation link.
 * `climate chart` renders as a compact monthly list of low/high temperatures and precipitation values for EPUB readability.
+* `IPAc-en` renders as an International Phonetic Alphabet span, joining IPA component parameters while ignoring control words such as `lang`.
+* `Respell` renders positional syllables joined with hyphens.
+* `cite ECCP` renders compact bibliography text for entries from `Eminent Chinese of the Ch'ing Period`.
 * Template skip counting tracks recognized skipped templates separately from unknown skipped templates; per-article and total counts are logged at `info` level, and the final totals are printed after EPUB creation.
-* `columns-list`, `Commons and category`, `Dead link`, `Page needed`, `More citations needed`, `Refimprove`, `FACT`, `citation needed`, `anchor`, `huh`, `when`, `more cn section`, `cbignore`, `prose`, `New archival link needed`, `clear`, `div`, `Sister project links`, `Busan`, `Busan weatherbox`, and `History of Asia` are layout, maintenance, bot-control, invisible-anchor, or navigation templates and are skipped silently.
+* `columns-list`, `Commons and category`, `Dead link`, `Page needed`, `More citations needed`, `Refimprove`, `FACT`, `citation needed`, `cn`, `anchor`, `huh`, `when`, `more cn section`, `cbignore`, `prose`, `New archival link needed`, `TOC limit`, `NoteFoot`, `clear`, `div`, `Sister project links`, `Busan`, `Busan weatherbox`, and `History of Asia` are layout, maintenance, bot-control, invisible-anchor, or navigation templates and are skipped silently.
 
 ### Files Changed
 
 * `src/main.rs`
-  * Added `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, `Wikisource`, `Nihongo`, `nbsp`, `cvt`, `osmrelation-inline`, and `climate chart` template rendering.
+  * Added `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, `Wikisource`, `Nihongo`, `nbsp`, `cvt`, `osmrelation-inline`, `climate chart`, `IPAc-en`, `Respell`, and `cite ECCP` template rendering.
   * Added external URL link support for official-site rendering.
   * Added OpenStreetMap relation URL support and Japanese interlanguage article URL support.
   * Updated `lang` rendering to resolve nested handled templates in the text parameter.
-  * Added silent skipping for the newly observed Busan maintenance, layout, and navigation templates.
+  * Added silent skipping for the newly observed Busan and Joseon maintenance, layout, and navigation templates.
   * Added skipped-template counters and `info` logs for each article plus aggregate totals.
 * `src/tests.rs`
-  * Added unit coverage for `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, `Wikisource`, `Nihongo`, `nbsp`, `cvt`, `osmrelation-inline`, and `climate chart`.
-  * Extended silent-template coverage for the newly observed Busan maintenance, layout, and navigation templates.
+  * Added unit coverage for `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, `Wikisource`, `Nihongo`, `nbsp`, `cvt`, `osmrelation-inline`, `climate chart`, `IPAc-en`, `Respell`, and `cite ECCP`.
+  * Extended silent-template coverage for the newly observed Busan and Joseon maintenance, layout, and navigation templates.
   * Added unit coverage for skipped-template counts and extended the silent-template test to verify its recognized and unknown skip totals.
 * `tests/books.rs`
   * Updated CLI stdout assertions to allow the final skipped-template totals line.
@@ -325,6 +328,8 @@ This session added rendering for the `Official website`, `Largest cities`, `link
   * Updated expected output for History of Korea's inline `ISBN` template in the historiography bibliography, visible `Webarchive` links in external links, the top `For` hatnote, and the visible `Wikisource` sister-project link.
 * `expected/korea/OEBPS/chapter-5.xhtml`
   * Updated expected output for Busan's `nbsp`, `cvt`, `Nihongo`, `osmrelation-inline`, and `climate chart` rendering.
+* `expected/korea/OEBPS/chapter-6.xhtml`
+  * Updated expected output for Joseon's `IPAc-en`, `Respell`, and `cite ECCP` rendering.
 
 ### Tests Run
 
@@ -347,7 +352,7 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 
 Latest verification passed:
 
-* 70 unit tests passed.
+* 72 unit tests passed.
 * 4 local book integration tests passed.
 * 1 real Wikipedia API test remains ignored by default.
 
