@@ -660,8 +660,11 @@ fn render_template(content: &str) -> String {
 
     if template.eq_ignore_ascii_case("Korean") || template.eq_ignore_ascii_case("Korean/auto") {
         render_korean_template(params)
-    } else if template.eq_ignore_ascii_case("Nihongo4") {
+    } else if template.eq_ignore_ascii_case("Nihongo4") || template.eq_ignore_ascii_case("Nihongo")
+    {
         render_japanese_template(params)
+    } else if template.eq_ignore_ascii_case("nbsp") {
+        render_nonbreaking_space_template()
     } else if template.eq_ignore_ascii_case("lang") {
         render_lang_template(params)
     } else if template.eq_ignore_ascii_case("in lang") {
@@ -708,7 +711,7 @@ fn render_template(content: &str) -> String {
         render_percentage_template(params)
     } else if template.eq_ignore_ascii_case("UN_Population") {
         render_un_population_template(params)
-    } else if template.eq_ignore_ascii_case("convert") {
+    } else if template.eq_ignore_ascii_case("convert") || template.eq_ignore_ascii_case("cvt") {
         render_convert_template(params)
     } else if template.eq_ignore_ascii_case("for") {
         render_for_template(params)
@@ -732,6 +735,8 @@ fn render_template(content: &str) -> String {
         render_official_website_template(params)
     } else if template.eq_ignore_ascii_case("url") {
         render_url_template(params)
+    } else if template.eq_ignore_ascii_case("osmrelation-inline") {
+        render_openstreetmap_relation_template(params)
     } else if template.eq_ignore_ascii_case("webarchive") {
         render_webarchive_template(params)
     } else if template.eq_ignore_ascii_case("largest cities") {
@@ -790,6 +795,8 @@ fn is_handled_template_name(template: &str) -> bool {
     template.eq_ignore_ascii_case("Korean")
         || template.eq_ignore_ascii_case("Korean/auto")
         || template.eq_ignore_ascii_case("Nihongo4")
+        || template.eq_ignore_ascii_case("Nihongo")
+        || template.eq_ignore_ascii_case("nbsp")
         || template.eq_ignore_ascii_case("lang")
         || template.eq_ignore_ascii_case("in lang")
         || template.eq_ignore_ascii_case("langx")
@@ -814,6 +821,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("percentage")
         || template.eq_ignore_ascii_case("UN_Population")
         || template.eq_ignore_ascii_case("convert")
+        || template.eq_ignore_ascii_case("cvt")
         || template.eq_ignore_ascii_case("for")
         || template.eq_ignore_ascii_case("for timeline")
         || template.eq_ignore_ascii_case("excerpt")
@@ -825,6 +833,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("wikisource")
         || template.eq_ignore_ascii_case("official website")
         || template.eq_ignore_ascii_case("url")
+        || template.eq_ignore_ascii_case("osmrelation-inline")
         || template.eq_ignore_ascii_case("webarchive")
         || template.eq_ignore_ascii_case("largest cities")
         || template.eq_ignore_ascii_case("historical populations")
@@ -844,6 +853,7 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Short description")
         || template.eq_ignore_ascii_case("About")
         || template.eq_ignore_ascii_case("Redirect")
+        || template.eq_ignore_ascii_case("redirect-multi")
         || template.eq_ignore_ascii_case("pp-semi-indef")
         || template.eq_ignore_ascii_case("Sfn")
         || template.eq_ignore_ascii_case("sfnm")
@@ -856,17 +866,25 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("flagicon")
         || template.eq_ignore_ascii_case("unreferenced section")
         || template.eq_ignore_ascii_case("Excessive citations inline")
+        || template.eq_ignore_ascii_case("More citations needed")
         || template.eq_ignore_ascii_case("Refimprove")
         || template.eq_ignore_ascii_case("FACT")
+        || template.eq_ignore_ascii_case("citation needed")
         || template.eq_ignore_ascii_case("huh")
         || template.eq_ignore_ascii_case("when")
         || template.eq_ignore_ascii_case("more cn section")
+        || template.eq_ignore_ascii_case("prose")
         || template.eq_ignore_ascii_case("Unreliable source?")
         || template.eq_ignore_ascii_case("Better source needed")
         || template.eq_ignore_ascii_case("Dead link")
         || template.eq_ignore_ascii_case("Page needed")
+        || template.eq_ignore_ascii_case("New archival link needed")
         || template.eq_ignore_ascii_case("anchor")
         || template.eq_ignore_ascii_case("cbignore")
+        || template.eq_ignore_ascii_case("clear")
+        || template.eq_ignore_ascii_case("div")
+        || template.eq_ignore_ascii_case("div col")
+        || template.eq_ignore_ascii_case("div col end")
         || template.eq_ignore_ascii_case("Portal bar")
         || template.eq_ignore_ascii_case("Authority control")
         || template.eq_ignore_ascii_case("Portal")
@@ -874,6 +892,7 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Commons and category")
         || template.eq_ignore_ascii_case("columns-list")
         || template.eq_ignore_ascii_case("location map+")
+        || template.eq_ignore_ascii_case("Sister project links")
         || template.eq_ignore_ascii_case("Wikisource-inline")
         || template.eq_ignore_ascii_case("Wide image")
         || template.eq_ignore_ascii_case("Pie chart")
@@ -905,6 +924,8 @@ fn is_observed_navigation_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Seoul")
         || template.eq_ignore_ascii_case("Seoul weatherbox")
         || template.eq_ignore_ascii_case("Seoul landmarks")
+        || template.eq_ignore_ascii_case("Busan")
+        || template.eq_ignore_ascii_case("Busan weatherbox")
         || template.eq_ignore_ascii_case("Navboxes")
 }
 
@@ -1001,17 +1022,27 @@ fn clean_korean_auto_value(value: &str) -> String {
 }
 
 fn render_japanese_template(params: &str) -> String {
-    let params = split_template_params(params);
-    let term = params.first().map_or("", |value| value.trim());
-    let japanese = params.get(1).map_or("", |value| value.trim());
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let term = positional.first().map_or("", |value| value.trim());
+    let japanese = positional.get(1).map_or("", |value| value.trim());
 
     if japanese.is_empty() {
         return term.to_string();
     }
 
+    let extra = template_param(&named, &["extra"])
+        .map(render_templates)
+        .filter(|value| !value.trim().is_empty());
+    let suffix = extra.map_or(String::new(), |extra| format!("; {extra}"));
+
     format!(
-        "{term}__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_START__ (__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__{japanese}__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__)__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_END__"
+        "{term}__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_START__ (__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__{japanese}__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__{suffix})__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_END__"
     )
+}
+
+fn render_nonbreaking_space_template() -> String {
+    " ".to_string()
 }
 
 fn render_lang_template(params: &str) -> String {
@@ -2214,12 +2245,29 @@ fn render_url_template(params: &str) -> String {
     format!("[[official-url:{url}|{}]]", render_templates(label))
 }
 
+fn render_openstreetmap_relation_template(params: &str) -> String {
+    let params = template_positional_params(params);
+    let Some(relation_id) = params.first().map(String::as_str) else {
+        return String::new();
+    };
+    let relation_id = relation_id.trim();
+    if relation_id.is_empty() {
+        return String::new();
+    }
+
+    format!("[[osmrelation:{relation_id}|OpenStreetMap relation {relation_id}]]")
+}
+
 fn render_webarchive_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let named = template_named_params(params);
 
     let url = template_param(&named, &["url"])
-        .or_else(|| positional.iter().find_map(|param| template_url_value(param)))
+        .or_else(|| {
+            positional
+                .iter()
+                .find_map(|param| template_url_value(param))
+        })
         .map(str::trim)
         .filter(|value| !value.is_empty());
     let Some(url) = url else {
@@ -2912,6 +2960,14 @@ fn wikipedia_link_html(
         );
     }
 
+    if let Some(relation_id) = target.strip_prefix("osmrelation:") {
+        return format!(
+            r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
+            encode_double_quoted_attribute(&openstreetmap_relation_url(relation_id)),
+            format_inline_text(label)
+        );
+    }
+
     if let Some(href) = wiktionary_article_url(target) {
         return format!(
             r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
@@ -2929,6 +2985,14 @@ fn wikipedia_link_html(
     }
 
     if let Some(href) = wikisource_article_url(target) {
+        return format!(
+            r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
+            encode_double_quoted_attribute(&href),
+            format_inline_text(label)
+        );
+    }
+
+    if let Some(href) = interlanguage_article_url(target) {
         return format!(
             r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
             encode_double_quoted_attribute(&href),
@@ -2962,6 +3026,11 @@ fn normalize_external_url(url: &str) -> String {
     }
 }
 
+fn openstreetmap_relation_url(relation_id: &str) -> String {
+    let relation_id = relation_id.trim();
+    format!("https://www.openstreetmap.org/relation/{relation_id}")
+}
+
 fn internal_article_url(target: &str, internal_links: &InternalLinks) -> Option<String> {
     let article = target
         .split_once('#')
@@ -2974,6 +3043,18 @@ fn internal_article_url(target: &str, internal_links: &InternalLinks) -> Option<
 fn wikipedia_article_url(target: &str, language: &str) -> String {
     let target = target.trim().replace(' ', "_");
     format!("https://{language}.wikipedia.org/wiki/{target}")
+}
+
+fn interlanguage_article_url(target: &str) -> Option<String> {
+    let target = target.strip_prefix(':')?;
+    let (language, title) = target.split_once(':')?;
+    if !language
+        .chars()
+        .all(|ch| ch.is_ascii_lowercase() || ch == '-')
+    {
+        return None;
+    }
+    Some(wikipedia_article_url(title, language))
 }
 
 fn wiktionary_article_url(target: &str) -> Option<String> {

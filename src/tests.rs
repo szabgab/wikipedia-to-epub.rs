@@ -175,6 +175,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Pp-move}}
 {{Protection padlock|small=yes}}
 {{Redirect|Sample}}
+{{redirect-multi|3|Pusan|Fusan|Busan Metropolitan City|other uses|Pu San (disambiguation)}}
 {{pp-semi-indef}}
 {{Sfn|Author|2024|p=1}}
 {{sfnm|1a1=Author|1y=2024|1p=1}}
@@ -187,17 +188,25 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{flagicon|US}}
 {{unreferenced section|date=November 2022}}
 {{Excessive citations inline|date=November 2022}}
+{{More citations needed|date=June 2022}}
 {{Refimprove|date=December 2025}}
 {{FACT|date=December 2025}}
+{{citation needed|date=May 2023}}
 {{anchor|Modern}}
 {{huh|date=August 2025}}
 {{when|date=August 2025}}
 {{more cn section|date=August 2025|find=Korea|find2=1951 to present}}
 {{cbignore|bot=medic}}
+{{prose|section|date=August 2019}}
 {{Unreliable source?|date=May 2026}}
 {{Better source needed|date=May 2026}}
 {{Dead link|date=May 2026}}
 {{Page needed|date=May 2026}}
+{{New archival link needed|date=April 2026}}
+{{clear}}
+{{div}}
+{{div col|colwidth=20em}}
+{{div col end}}
 {{Portal bar|North Korea|South Korea|Asia|History|Linguistics|Monarchy|Biography}}
 {{DEFAULTSORT:Sample, Page}}
 {{Self-published|date=May 2026}}
@@ -212,9 +221,12 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Seoul}}
 {{Seoul weatherbox}}
 {{Seoul landmarks}}
+{{Busan}}
+{{Busan weatherbox}}
 {{Navboxes|title=Articles related to Seoul}}
 {{Authority control}}
 {{Portal|Geography|Asia|North Korea|South Korea}}
+{{Sister project links|Busan|voy=Busan|d=Q16520}}
 {{Commons category|Sample page}}
 {{Commons and category|Sample page}}
 {{columns-list|colwidth=23em|
@@ -252,8 +264,10 @@ Visible text."#,
     assert!(!rendered.contains("flagicon"));
     assert!(!rendered.contains("unreferenced section"));
     assert!(!rendered.contains("Excessive citations inline"));
+    assert!(!rendered.contains("More citations needed"));
     assert!(!rendered.contains("Refimprove"));
     assert!(!rendered.contains("FACT"));
+    assert!(!rendered.contains("citation needed"));
     assert!(!rendered.contains("Modern"));
     assert!(!rendered.contains("huh"));
     assert!(!rendered.contains("when"));
@@ -261,10 +275,14 @@ Visible text."#,
     assert!(!rendered.contains("1951 to present"));
     assert!(!rendered.contains("cbignore"));
     assert!(!rendered.contains("medic"));
+    assert!(!rendered.contains("prose"));
     assert!(!rendered.contains("Unreliable source?"));
     assert!(!rendered.contains("Better source needed"));
     assert!(!rendered.contains("Dead link"));
     assert!(!rendered.contains("Page needed"));
+    assert!(!rendered.contains("New archival link needed"));
+    assert!(!rendered.contains("clear"));
+    assert!(!rendered.contains("div col"));
     assert!(!rendered.contains("Portal bar"));
     assert!(!rendered.contains("DEFAULTSORT"));
     assert!(!rendered.contains("Sample, Page"));
@@ -275,6 +293,8 @@ Visible text."#,
     assert!(!rendered.contains("Pp-move"));
     assert!(!rendered.contains("Protection padlock"));
     assert!(!rendered.contains("Redirect"));
+    assert!(!rendered.contains("redirect-multi"));
+    assert!(!rendered.contains("Pu San"));
     assert!(!rendered.contains("pp-semi-indef"));
     assert!(!rendered.contains("Author"));
     assert!(!rendered.contains("Footnote text"));
@@ -285,7 +305,9 @@ Visible text."#,
     assert!(!rendered.contains("East Asian topics"));
     assert!(!rendered.contains("History of Asia"));
     assert!(!rendered.contains("Seoul"));
+    assert!(!rendered.contains("Busan weatherbox"));
     assert!(!rendered.contains("Navboxes"));
+    assert!(!rendered.contains("Sister project links"));
     assert!(!rendered.contains("Authority control"));
     assert!(!rendered.contains("Portal"));
     assert!(!rendered.contains("Commons category"));
@@ -356,7 +378,10 @@ fn template_log_content_is_limited_to_twenty_characters() {
     let res = template_log_content(
         "Unhandled template with a long body that is more than 80 characters long. I think.",
     );
-    assert_eq!(res, "Unhandled template with a long body that is more than 80 characters long. I thin");
+    assert_eq!(
+        res,
+        "Unhandled template with a long body that is more than 80 characters long. I thin"
+    );
     assert_eq!(res.len(), 80);
     assert_eq!(
         template_log_content("短いtemplate content"),
@@ -433,6 +458,25 @@ fn render_wikitext_formats_japanese_nihongo4_templates() {
             ),
             "{rendered}"
         );
+}
+
+#[test]
+fn render_wikitext_formats_japanese_nihongo_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "*{{Nihongo|[[Busan Japanese School]]|[[:ja:釜山日本人学校|釜山日本人学校]] |extra={{lang|ko|부산일본인학교}}}}",
+        &InternalLinks::new(),
+        "en",
+    );
+
+    assert!(
+        rendered.contains(
+            r#"<li><a href="https://en.wikipedia.org/wiki/Busan_Japanese_School">Busan Japanese School</a><span class="external-link">↗</span><span> (<span title="Japanese-language text"><span lang="ja"><a href="https://ja.wikipedia.org/wiki/釜山日本人学校">釜山日本人学校</a><span class="external-link">↗</span></span></span>; <span lang="ko">부산일본인학교</span>)</span></li>"#
+        ),
+        "{rendered}"
+    );
+    assert!(!rendered.contains("{{"));
+    assert!(!rendered.contains("Nihongo|"));
 }
 
 #[test]
@@ -969,6 +1013,8 @@ fn render_wikitext_formats_un_population_templates() {
 fn render_wikitext_formats_convert_templates() {
     let cases = [
         ("{{convert|1100|km|abbr=on}}", "1100 km"),
+        ("{{cvt|314|km|0}}", "314 km"),
+        ("{{Cvt|49.5|km}}", "49.5 km"),
         ("{{convert|30|°C|°F}}", "30 °C"),
         ("{{Convert|24|ug/m3||sp=us}}", "24 ug/m³"),
         ("{{convert|&minus;3|°C|1|disp=or}}", "−3 °C"),
@@ -996,6 +1042,20 @@ fn render_wikitext_formats_convert_templates() {
             "convert template {template:?} rendered unexpectedly:\n{rendered}"
         );
     }
+}
+
+#[test]
+fn render_wikitext_formats_nbsp_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "Mt{{nbsp}}Hwangnyeong and 180&nbsp;km away.",
+        &InternalLinks::new(),
+        "en",
+    );
+
+    assert!(rendered.contains("<p>Mt Hwangnyeong and 180 km away.</p>"));
+    assert!(!rendered.contains("{{"));
+    assert!(!rendered.contains("nbsp"));
 }
 
 #[test]
@@ -1190,6 +1250,25 @@ fn render_wikitext_formats_url_templates() {
         assert!(!rendered.contains("{{"));
         assert!(!rendered.contains("URL|"));
     }
+}
+
+#[test]
+fn render_wikitext_formats_openstreetmap_relation_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "*{{osmrelation-inline|2396450}}",
+        &InternalLinks::new(),
+        "en",
+    );
+
+    assert!(
+        rendered.contains(
+            r#"<li><a href="https://www.openstreetmap.org/relation/2396450">OpenStreetMap relation 2396450</a><span class="external-link">↗</span></li>"#
+        ),
+        "{rendered}"
+    );
+    assert!(!rendered.contains("{{"));
+    assert!(!rendered.contains("osmrelation-inline"));
 }
 
 #[test]

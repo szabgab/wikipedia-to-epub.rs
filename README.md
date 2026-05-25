@@ -48,6 +48,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `[[Seoul|capital city]]` becomes a link with `capital city` as the visible text
 * `{{Korean|hangul=서울|labels=no}}` becomes `<span title="Korean-language text"><span lang="ko-Hang">서울</span></span>`
 * `{{Korean/auto|hangul=^해동_^요순|hanja=海東堯舜|labels=no}}` is rendered like `Korean`, with auto-template markers removed
+* `{{Nihongo|Busan Japanese School|釜山日本人学校|extra={{lang|ko|부산일본인학교}}}}` becomes the English text followed by Japanese-language text and the extra text
 * `{{Nihongo4|''[[Edo (Tokyo)|Edo]]''|[[wikt:江戸|江戸]]}}` becomes an italicized `Edo` article link followed by the Japanese text in a `lang="ja"` span
 * `{{lang|ko|서울}}` becomes `<span lang="ko">서울</span>`
 * `{{in lang|ko}}` becomes `(in Korean)`
@@ -72,7 +73,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Blockquote|text=Quoted text|source=Source}}` becomes `<blockquote><p>Quoted text</p><p class="blockquote-source">Source</p></blockquote>`
 * `{{Percentage|1|4}}` becomes `25%`
 * `{{UN_Population|Dem. People's Republic of Korea}}` becomes `26,100,000`; `{{UN_Population|ref}}` is omitted
-* `{{convert|1100|km|abbr=on}}` becomes `1100 km`; range forms such as `{{convert|10|to|47|km2}}` become `10 to 47 km²`
+* `{{convert|1100|km|abbr=on}}` and `{{cvt|314|km|0}}` become `1100 km` and `314 km`; range forms such as `{{convert|10|to|47|km2}}` become `10 to 47 km²`
 * `{{ill|Ch'ilchŏngsan|ko}}` becomes a link to `Ch'ilchŏngsan` followed by `[ko]`
 * `{{Reign|1400|1418}}` becomes `r. 1400–1418`
 * `{{Open access}}` and `{{Free access}}` become an open-lock marker: `<span title="open access">&#128275;</span>`
@@ -87,14 +88,15 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Wikisource|Korea}}` becomes `Wikisource:` followed by a link to the Wikisource entry
 * `{{Official website|https://example.com|name=Example}}` becomes an external link to `https://example.com` with `Example` as the visible text
 * `{{URL|1=https://english.seoul.go.kr/|2=Official website}}` becomes an external link to `https://english.seoul.go.kr/` with `Official website` as the visible text
+* `{{osmrelation-inline|2396450}}` becomes an external link to the OpenStreetMap relation
 * `{{Webarchive|url=https://web.archive.org/web/20140703095242/http://example.com/report.pdf|date=3 July 2014}}` becomes an external archive link labelled `Archived on 3 July 2014`
 * `{{Largest cities|country=Korea|city_1=Seoul|div_1=Seoul|pop_1=9,904,312}}` becomes `Largest cities in Korea:` followed by a list of linked cities with division and population details
 * `{{Historical populations|5=1949|6=1437670|7=1960|8=2445402}}` becomes `Historical populations:` followed by a list of year/population entries such as `1949: 1,437,670`
 * `{{sclass|Valiant|harbor tug}}` becomes links to the ship-class article and ship type: `[[Valiant-class harbor tug|''Valiant''-class]] [[harbor tug]]`
-* Observed Wikipedia navigation templates such as `{{History of Korea}}`, `{{Korea topics}}`, `{{East Asian topics}}`, `{{History of Asia}}`, `{{Portal bar}}`, `{{Portal}}`, `{{Commons category}}`, `{{Commons and category}}`, `{{Wikisource-inline}}`, `{{Seoul}}`, `{{Navboxes}}`, and `{{Authority control}}` are omitted
+* Observed Wikipedia navigation templates such as `{{History of Korea}}`, `{{Korea topics}}`, `{{East Asian topics}}`, `{{History of Asia}}`, `{{Portal bar}}`, `{{Portal}}`, `{{Commons category}}`, `{{Commons and category}}`, `{{Wikisource-inline}}`, `{{Sister project links}}`, `{{Seoul}}`, `{{Seoul weatherbox}}`, `{{Busan}}`, `{{Busan weatherbox}}`, `{{Navboxes}}`, and `{{Authority control}}` are omitted
 * Wikipedia succession-box templates such as `{{Succession box}}` or those whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are omitted
 * Footnote wrappers such as `{{efn|...}}` and `{{refn|...}}` are omitted
-* Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{Refimprove}}`, `{{FACT}}`, `{{huh}}`, `{{when}}`, `{{more cn section}}`, `{{Unreliable source?}}`, `{{Better source needed}}`, `{{Dead link}}`, `{{Page needed}}`, `{{anchor}}`, `{{cbignore}}`, `{{columns-list}}`, `{{location map+}}`, `{{Wide image}}`, `{{Pie chart}}`, `{{ahnentafel}}`, and `{{DEFAULTSORT:...}}` are omitted
+* Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{More citations needed}}`, `{{Refimprove}}`, `{{FACT}}`, `{{citation needed}}`, `{{huh}}`, `{{when}}`, `{{more cn section}}`, `{{prose}}`, `{{Unreliable source?}}`, `{{Better source needed}}`, `{{Dead link}}`, `{{Page needed}}`, `{{New archival link needed}}`, `{{anchor}}`, `{{cbignore}}`, `{{clear}}`, `{{div}}`, `{{columns-list}}`, `{{location map+}}`, `{{Wide image}}`, `{{Pie chart}}`, `{{ahnentafel}}`, and `{{DEFAULTSORT:...}}` are omitted
 * Reference-list wrappers such as `{{Reflist}}`, `{{notelist}}`, `{{Refbegin}}`, and `{{Refend}}` are omitted while surrounding list contents are preserved
 * Decorative flag image templates such as `{{flagicon|US}}` are omitted
 * `== History ==` becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings
