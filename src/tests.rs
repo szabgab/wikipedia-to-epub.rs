@@ -154,6 +154,42 @@ Visible text."#,
 }
 
 #[test]
+fn render_wikitext_formats_ship_class_templates() {
+    let cases = [
+        (
+            "{{sclass|Valiant|harbor tug}}",
+            r#"<p><a href="https://en.wikipedia.org/wiki/Valiant-class_harbor_tug"><em>Valiant</em>-class</a><span class="external-link">↗</span> <a href="https://en.wikipedia.org/wiki/harbor_tug">harbor tug</a><span class="external-link">↗</span></p>"#,
+        ),
+        (
+            "{{sclass|Valiant|harbor tug|1}}",
+            r#"<p><a href="https://en.wikipedia.org/wiki/Valiant-class_harbor_tug"><em>Valiant</em>-class harbor tug</a><span class="external-link">↗</span></p>"#,
+        ),
+        (
+            "{{sclass|Valiant|harbor tug|2}}",
+            r#"<p><a href="https://en.wikipedia.org/wiki/Valiant-class_harbor_tug"><em>Valiant</em>-class</a><span class="external-link">↗</span> harbor tug</p>"#,
+        ),
+        (
+            "{{sclass|Valiant|harbor tug|4}}",
+            r#"<p><a href="https://en.wikipedia.org/wiki/Valiant-class_harbor_tug"><em>Valiant</em> class</a><span class="external-link">↗</span></p>"#,
+        ),
+        (
+            "{{sclass|Königsberg|cruiser|||1905}}",
+            r#"<p><a href="https://en.wikipedia.org/wiki/Königsberg-class_cruiser_(1905)"><em>Königsberg</em>-class</a><span class="external-link">↗</span> <a href="https://en.wikipedia.org/wiki/cruiser">cruiser</a><span class="external-link">↗</span></p>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "sclass template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("sclass|"));
+    }
+}
+
+#[test]
 fn template_log_content_is_limited_to_twenty_characters() {
     let res = template_log_content(
         "Unhandled template with a long body that is more than 50 characters long",

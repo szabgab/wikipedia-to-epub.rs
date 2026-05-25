@@ -708,6 +708,8 @@ fn render_template(content: &str) -> String {
         render_wiktionary_template(params)
     } else if template.eq_ignore_ascii_case("wikivoyage") {
         render_wikivoyage_template(params)
+    } else if template.eq_ignore_ascii_case("sclass") {
+        render_ship_class_template(params)
     } else if template.eq_ignore_ascii_case("ill") {
         render_interlanguage_link_template(params)
     } else if template.eq_ignore_ascii_case("reign") {
@@ -781,6 +783,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("further")
         || template.eq_ignore_ascii_case("wiktionary")
         || template.eq_ignore_ascii_case("wikivoyage")
+        || template.eq_ignore_ascii_case("sclass")
         || template.eq_ignore_ascii_case("ill")
         || template.eq_ignore_ascii_case("reign")
         || template.eq_ignore_ascii_case("open access")
@@ -1866,6 +1869,51 @@ fn render_wikivoyage_template(params: &str) -> String {
     let target = format!("voy:{title}");
 
     format!("Wikivoyage: [[{target}|{label}]]")
+}
+
+fn render_ship_class_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| render_templates(param.trim()).trim().to_string())
+        .collect::<Vec<_>>();
+
+    let class_name = params.first().map(String::as_str).unwrap_or("").trim();
+    let ship_type = params.get(1).map(String::as_str).unwrap_or("").trim();
+    if class_name.is_empty() || ship_type.is_empty() {
+        return String::new();
+    }
+
+    let format = params.get(2).map(String::as_str).unwrap_or("").trim();
+    let ship_type_disambiguation = params.get(3).map(String::as_str).unwrap_or("").trim();
+    let class_disambiguation = params.get(4).map(String::as_str).unwrap_or("").trim();
+
+    let mut class_target = format!("{class_name}-class {ship_type}");
+    if !class_disambiguation.is_empty() {
+        class_target.push_str(&format!(" ({class_disambiguation})"));
+    }
+
+    let class_label = match format {
+        "1" => format!("''{class_name}''-class {ship_type}"),
+        "4" => format!("''{class_name}'' class"),
+        "5" => format!("''{class_name}''"),
+        _ => format!("''{class_name}''-class"),
+    };
+
+    let class_link = format!("[[{class_target}|{class_label}]]");
+    match format {
+        "0" | "4" | "5" => class_link,
+        "1" => class_link,
+        "2" => format!("{class_link} {ship_type}"),
+        "" | "3" => {
+            let ship_type_link = if ship_type_disambiguation.is_empty() {
+                format!("[[{ship_type}]]")
+            } else {
+                format!("[[{ship_type} ({ship_type_disambiguation})|{ship_type}]]")
+            };
+            format!("{class_link} {ship_type_link}")
+        }
+        _ => class_link,
+    }
 }
 
 fn render_interlanguage_link_template(params: &str) -> String {
