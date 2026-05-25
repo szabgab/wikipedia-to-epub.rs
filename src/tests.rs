@@ -1150,6 +1150,13 @@ fn render_wikitext_formats_nbsp_templates() {
 #[test]
 fn render_wikitext_formats_simple_inline_templates() {
     let cases = [
+        ("healthcare{{mdash}}such as", "<p>healthcare—such as</p>"),
+        ("{{circa}} 10 million", "<p>c. 10 million</p>"),
+        ("{{circa|1950}}", "<p>c. 1950</p>"),
+        (
+            "{{legend|#EF767E|North Korean, Chinese, and Soviet forces}}",
+            "<p>North Korean, Chinese, and Soviet forces</p>",
+        ),
         ("{{sic|was}}", "<p>was [sic]</p>"),
         ("{{sic}}", "<p>[sic]</p>"),
         ("{{Nowrap|June 10}}", "<p>June 10</p>"),
@@ -1172,6 +1179,33 @@ fn render_wikitext_formats_simple_inline_templates() {
         assert!(
             rendered.contains(expected),
             "inline template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+    }
+}
+
+#[test]
+fn render_wikitext_formats_web_source_templates() {
+    let cases = [
+        (
+            "{{cite web |last=Demick|first=Barbara|date=16 July 2010|title=North Korea's giant leap backwards|url=http://www.theguardian.com/world/2010/jul/17/north-korea-famine-fears|website=[[The Guardian]]}}",
+            r#"<p>Barbara Demick. <a href="http://www.theguardian.com/world/2010/jul/17/north-korea-famine-fears">"North Korea's giant leap backwards"</a><span class="external-link">↗</span>. <em><a href="https://en.wikipedia.org/wiki/The_Guardian">The Guardian</a><span class="external-link">↗</span></em>. 16 July 2010</p>"#,
+        ),
+        (
+            "{{cite web |script-title=zh:Korea原名Corea 美國改的名 |trans-title=Is Korea's original name Corea? |url=http://city.udn.com/54543/2933925 |website=[[United Daily News]]|date=5 July 2008|ref={{SfnRef|Country Profile|2007}}}}{{source-attribution}}",
+            r#"<p><a href="http://city.udn.com/54543/2933925">"Is Korea's original name Corea?"</a><span class="external-link">↗</span>. <em><a href="https://en.wikipedia.org/wiki/United_Daily_News">United Daily News</a><span class="external-link">↗</span></em>. 5 July 2008</p>"#,
+        ),
+        (
+            "{{Britannica|322222}}",
+            r#"<p>Britannica: <a href="https://www.britannica.com/EBchecked/topic/322222">Encyclopaedia Britannica</a><span class="external-link">↗</span></p>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "web source template {template:?} rendered unexpectedly:\n{rendered}"
         );
         assert!(!rendered.contains("{{"));
     }

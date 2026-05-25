@@ -63,12 +63,16 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Respell|CHOH|sun}}` becomes `CHOH-sun`
 * `{{Abbr|c.|circa}}` becomes `<abbr title="circa">c.</abbr>`
 * `{{frac|2|3}}` becomes `2/3`; mixed-number forms such as `{{frac|1|1|2}}` become `1 1/2`
+* `{{mdash}}` becomes `—`
+* `{{circa}} 10 million` becomes `c. 10 million`
+* `{{legend|#EF767E|North Korean forces}}` becomes `North Korean forces`
 * `{{sic|was}}` becomes `was [sic]`
 * `{{Nowrap|June 10}}` becomes `June 10`
 * `{{Smaller|note}}` becomes `<small>note</small>`
 * `{{Coord|37|33|36|N|126|59|24|E|display=inline}}` becomes `37°33′36″N 126°59′24″E`; decimal forms such as `{{Coord|43.65107|-79.347015|display=inline}}` become `43.65107, -79.347015`
 * `{{rp|12}}` becomes an inline reference page marker: `p. 12`; multiple values such as `{{rp|12|15}}` become `pp. 12, 15`
 * `{{Cite book|last=Oberdorfer|first=Don|title=The Two Koreas|year=2001|publisher=Basic Books}}` becomes `Don Oberdorfer. <em>The Two Koreas</em>. Basic Books, 2001`
+* `{{cite web|last=Demick|first=Barbara|title=North Korea's giant leap backwards|url=http://example.com|website=The Guardian|date=16 July 2010}}` becomes `Barbara Demick. "North Korea's giant leap backwards". <em>The Guardian</em>. 16 July 2010`, with the title linked when `url=` is present
 * `{{Cite journal|last=Kim|first=Chin W.|title=The Legacy of King Sejong the Great|journal=Studies in the Linguistic Sciences|year=2000}}` becomes `Chin W. Kim. "The Legacy of King Sejong the Great". <em>Studies in the Linguistic Sciences</em>. 2000`
 * `{{Cite report|last=Ledyard|first=Gari Keith|title=The Cultural Work of Sejong the Great|publication-date=November 2002|pages=7–18}}` becomes `Gari Keith Ledyard. <em>The Cultural Work of Sejong the Great</em>. November 2002. p. 7–18`
 * `{{cite ECCP|last=Kennedy|first=George A.|title=Amin|pages=8–9|date=1943}}` becomes `George A. Kennedy. "Amin". Eminent Chinese of the Ch'ing Period. 1943. pp. 8–9`
@@ -91,6 +95,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Wiktionary|Korea}}` becomes `Wiktionary:` followed by a link to the Wiktionary entry
 * `{{Wikivoyage|Korea}}` becomes `Wikivoyage:` followed by a link to the Wikivoyage entry
 * `{{Wikisource|Korea}}` becomes `Wikisource:` followed by a link to the Wikisource entry
+* `{{Britannica|322222}}` becomes `Britannica:` followed by a link to the Britannica article id
 * `{{Official website|https://example.com|name=Example}}` becomes an external link to `https://example.com` with `Example` as the visible text
 * `{{URL|1=https://english.seoul.go.kr/|2=Official website}}` becomes an external link to `https://english.seoul.go.kr/` with `Official website` as the visible text
 * `{{osmrelation-inline|2396450}}` becomes an external link to the OpenStreetMap relation
@@ -104,7 +109,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * Wikipedia succession-box templates such as `{{Succession box}}` or those whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are omitted
 * Footnote wrappers such as `{{efn|...}}` and `{{refn|...}}` are omitted
 * Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{More citations needed}}`, `{{Refimprove}}`, `{{FACT}}`, `{{citation needed}}`, `{{cn}}`, `{{huh}}`, `{{when}}`, `{{more cn section}}`, `{{prose}}`, `{{Unreliable source?}}`, `{{Better source needed}}`, `{{Dead link}}`, `{{Page needed}}`, `{{New archival link needed}}`, `{{anchor}}`, `{{cbignore}}`, `{{TOC limit}}`, `{{clear}}`, `{{div}}`, `{{columns-list}}`, `{{location map+}}`, `{{Wide image}}`, `{{Pie chart}}`, `{{ahnentafel}}`, and `{{DEFAULTSORT:...}}` are omitted
-* Reference-list wrappers such as `{{Reflist}}`, `{{notelist}}`, `{{NoteFoot}}`, `{{Refbegin}}`, and `{{Refend}}` are omitted while surrounding list contents are preserved
+* Reference-list wrappers and source metadata such as `{{Reflist}}`, `{{notelist}}`, `{{NoteFoot}}`, `{{Refbegin}}`, `{{Refend}}`, `{{SfnRef}}`, and `{{source-attribution}}` are omitted while surrounding list contents are preserved
 * Decorative flag image templates such as `{{flagicon|US}}` are omitted
 * `== History ==` becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings
 * Lines starting with `*` become unordered list items

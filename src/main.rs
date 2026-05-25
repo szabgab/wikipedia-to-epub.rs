@@ -746,12 +746,16 @@ fn render_template(content: &str) -> String {
         render_japanese_template(params)
     } else if template.eq_ignore_ascii_case("nbsp") {
         render_nonbreaking_space_template()
+    } else if template.eq_ignore_ascii_case("mdash") {
+        render_emdash_template()
     } else if template.eq_ignore_ascii_case("nowrap") {
         render_passthrough_template(params)
     } else if template.eq_ignore_ascii_case("smaller") {
         render_smaller_template(params)
     } else if template.eq_ignore_ascii_case("sic") {
         render_sic_template(params)
+    } else if template.eq_ignore_ascii_case("circa") {
+        render_circa_template(params)
     } else if template.eq_ignore_ascii_case("lang") {
         render_lang_template(params)
     } else if template.eq_ignore_ascii_case("in lang") {
@@ -784,6 +788,8 @@ fn render_template(content: &str) -> String {
         render_coord_template(params)
     } else if template.eq_ignore_ascii_case("rp") {
         render_reference_page_template(params)
+    } else if template.eq_ignore_ascii_case("cite web") {
+        render_cite_web_template(params)
     } else if template.eq_ignore_ascii_case("cite book") {
         render_cite_book_template(params)
     } else if template.eq_ignore_ascii_case("cite journal") {
@@ -810,6 +816,8 @@ fn render_template(content: &str) -> String {
         render_for_template(params)
     } else if template.eq_ignore_ascii_case("for timeline") {
         render_for_timeline_template(params)
+    } else if template.eq_ignore_ascii_case("legend") {
+        render_legend_template(params)
     } else if template.eq_ignore_ascii_case("excerpt") {
         render_excerpt_template(params)
     } else if template.eq_ignore_ascii_case("main") {
@@ -824,6 +832,8 @@ fn render_template(content: &str) -> String {
         render_wikivoyage_template(params)
     } else if template.eq_ignore_ascii_case("wikisource") {
         render_wikisource_template(params)
+    } else if template.eq_ignore_ascii_case("britannica") {
+        render_britannica_template(params)
     } else if template.eq_ignore_ascii_case("official website") {
         render_official_website_template(params)
     } else if template.eq_ignore_ascii_case("url") {
@@ -899,9 +909,11 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("Nihongo")
         || template.eq_ignore_ascii_case("nbsp")
+        || template.eq_ignore_ascii_case("mdash")
         || template.eq_ignore_ascii_case("nowrap")
         || template.eq_ignore_ascii_case("smaller")
         || template.eq_ignore_ascii_case("sic")
+        || template.eq_ignore_ascii_case("circa")
         || template.eq_ignore_ascii_case("lang")
         || template.eq_ignore_ascii_case("in lang")
         || template.eq_ignore_ascii_case("langx")
@@ -918,6 +930,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("frac")
         || template.eq_ignore_ascii_case("coord")
         || template.eq_ignore_ascii_case("rp")
+        || template.eq_ignore_ascii_case("cite web")
         || template.eq_ignore_ascii_case("cite book")
         || template.eq_ignore_ascii_case("cite journal")
         || template.eq_ignore_ascii_case("cite report")
@@ -932,6 +945,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("cvt")
         || template.eq_ignore_ascii_case("for")
         || template.eq_ignore_ascii_case("for timeline")
+        || template.eq_ignore_ascii_case("legend")
         || template.eq_ignore_ascii_case("excerpt")
         || template.eq_ignore_ascii_case("main")
         || template.eq_ignore_ascii_case("see also")
@@ -939,6 +953,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("wiktionary")
         || template.eq_ignore_ascii_case("wikivoyage")
         || template.eq_ignore_ascii_case("wikisource")
+        || template.eq_ignore_ascii_case("britannica")
         || template.eq_ignore_ascii_case("official website")
         || template.eq_ignore_ascii_case("url")
         || template.eq_ignore_ascii_case("osmrelation-inline")
@@ -1103,6 +1118,10 @@ fn render_nonbreaking_space_template() -> String {
     " ".to_string()
 }
 
+fn render_emdash_template() -> String {
+    "—".to_string()
+}
+
 fn render_passthrough_template(params: &str) -> String {
     template_positional_params(params)
         .into_iter()
@@ -1127,6 +1146,15 @@ fn render_sic_template(params: &str) -> String {
         "[sic]".to_string()
     } else {
         format!("{text} [sic]")
+    }
+}
+
+fn render_circa_template(params: &str) -> String {
+    let text = render_passthrough_template(params);
+    if text.is_empty() {
+        "c.".to_string()
+    } else {
+        format!("c. {text}")
     }
 }
 
@@ -1545,6 +1573,49 @@ fn format_decimal_coordinates(params: &[String]) -> Option<String> {
 
 fn coord_component_is_number(value: &str) -> bool {
     value.trim().parse::<f64>().is_ok()
+}
+
+fn render_cite_web_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(title) = template_param(&named, &["title", "trans-title", "script-title"]) {
+        let title = match template_param(&named, &["url"]) {
+            Some(url) => format!(
+                "[[official-url:{}|\"{}\"]]",
+                render_templates(url),
+                render_templates(title)
+            ),
+            None => format!("\"{}\"", render_templates(title)),
+        };
+        parts.push(title);
+    }
+
+    let website = template_param(&named, &["website", "work"]);
+    let publisher = template_param(&named, &["publisher"]);
+    if let Some(website) = website {
+        parts.push(format!("''{}''", render_templates(website)));
+    }
+    if let Some(publisher) = publisher
+        && website.is_none_or(|website| !website.eq_ignore_ascii_case(publisher))
+    {
+        parts.push(render_templates(publisher));
+    }
+
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        parts.push(render_templates(date));
+    }
+
+    if let Some(pages) = template_param(&named, &["pages", "page"]) {
+        parts.push(format!("p. {}", render_templates(pages)));
+    }
+
+    parts.join(". ")
 }
 
 fn matches_direction(value: &str, allowed: [char; 2]) -> bool {
@@ -2221,6 +2292,15 @@ fn render_for_timeline_template(params: &str) -> String {
     }
 }
 
+fn render_legend_template(params: &str) -> String {
+    let params = template_positional_params(params);
+    let Some(label) = params.get(1).map(String::as_str) else {
+        return String::new();
+    };
+
+    render_templates(label)
+}
+
 fn render_for_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(topic) = positional
@@ -2341,6 +2421,28 @@ fn render_wikisource_template(params: &str) -> String {
     let target = format!("src:{title}");
 
     format!("Wikisource: [[{target}|{label}]]")
+}
+
+fn render_britannica_template(params: &str) -> String {
+    let params = template_positional_params(params);
+    let Some(article_id) = params
+        .first()
+        .map(String::as_str)
+        .filter(|value| !value.trim().is_empty())
+    else {
+        return String::new();
+    };
+    let label = params
+        .get(1)
+        .map(String::as_str)
+        .filter(|value| !value.trim().is_empty())
+        .unwrap_or("Encyclopaedia Britannica");
+    let url = format!("https://www.britannica.com/EBchecked/topic/{article_id}");
+
+    format!(
+        "Britannica: [[official-url:{url}|{}]]",
+        render_templates(label)
+    )
 }
 
 fn render_official_website_template(params: &str) -> String {

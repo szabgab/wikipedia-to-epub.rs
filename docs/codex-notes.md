@@ -4,6 +4,48 @@
 
 ### Summary
 
+This session added handling for the `mdash`, `legend`, `circa`, `cite web`, `SfnRef`, `Britannica`, and `source-attribution` Wikipedia templates observed in `pages/North_Korea.json`, documented the conversion rules, and refreshed the North Korea expected fixture.
+
+### Decisions Made
+
+* `mdash` renders as an em dash so prose no longer loses punctuation.
+* `circa` renders as `c.` with an optional following value.
+* `legend` keeps the visible legend label and omits the color swatch metadata.
+* `cite web` renders as compact bibliography prose with authors, linked title when `url=` is present, website/work, publisher, date, and page details.
+* `SfnRef` and `source-attribution` are non-visible citation/source metadata and are skipped silently.
+* `Britannica` renders as a visible external link using the Britannica article id.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added dispatch, handled-name recognition, and renderers for `mdash`, `legend`, `circa`, `cite web`, and `Britannica`.
+* `src/silent.csv`
+  * Added `SfnRef` and `source-attribution` as recognized silent templates.
+* `src/tests.rs`
+  * Added unit coverage for the new inline and web-source template behavior.
+* `README.md`
+  * Documented the new conversion rules.
+* `expected/korea/OEBPS/chapter-8.xhtml`
+  * Refreshed the North Korea expected output for the newly rendered templates.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo test render_wikitext_formats_web_source_templates`
+* `cargo test render_wikitext_formats_simple_inline_templates`
+* `cargo test --test books`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* Broaden `Britannica` rendering if future pages provide article titles or require modern slug URLs instead of id-based links.
+
+## 2026-05-25
+
+### Summary
+
 This session added handling for the `sic`, `Nowrap`, `Smaller`, and `ROKS` Wikipedia templates observed in `pages/South_Korea.json`, documented the conversion rules, and refreshed the South Korea expected fixture.
 
 ### Decisions Made
