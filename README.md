@@ -77,10 +77,10 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Wiktionary|Korea}}` becomes `Wiktionary:` followed by a link to the Wiktionary entry
 * `{{Wikivoyage|Korea}}` becomes `Wikivoyage:` followed by a link to the Wikivoyage entry
 * `{{sclass|Valiant|harbor tug}}` becomes links to the ship-class article and ship type: `[[Valiant-class harbor tug|''Valiant''-class]] [[harbor tug]]`
-* Observed Wikipedia navigation templates such as `{{History of Korea}}`, `{{Korea topics}}`, `{{East Asian topics}}`, `{{Portal bar}}`, `{{Portal}}`, `{{Commons category}}`, `{{Seoul}}`, `{{Navboxes}}`, and `{{Authority control}}` are omitted
+* Observed Wikipedia navigation templates such as `{{History of Korea}}`, `{{Korea topics}}`, `{{East Asian topics}}`, `{{Portal bar}}`, `{{Portal}}`, `{{Commons category}}`, `{{Wikisource-inline}}`, `{{Seoul}}`, `{{Navboxes}}`, and `{{Authority control}}` are omitted
 * Wikipedia succession-box templates such as `{{Succession box}}` or those whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are omitted
 * Footnote wrappers such as `{{efn|...}}` and `{{refn|...}}` are omitted
-* Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{location map+}}`, and `{{DEFAULTSORT:...}}` are omitted
+* Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{Unreliable source?}}`, `{{Better source needed}}`, `{{location map+}}`, `{{Wide image}}`, `{{Pie chart}}`, `{{ahnentafel}}`, and `{{DEFAULTSORT:...}}` are omitted
 * Reference-list wrappers such as `{{Reflist}}`, `{{notelist}}`, `{{Refbegin}}`, and `{{Refend}}` are omitted while surrounding list contents are preserved
 * Decorative flag image templates such as `{{flagicon|US}}` are omitted
 * `== History ==` becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings

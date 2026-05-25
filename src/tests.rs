@@ -78,6 +78,8 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{flagicon|US}}
 {{unreferenced section|date=November 2022}}
 {{Excessive citations inline|date=November 2022}}
+{{Unreliable source?|date=May 2026}}
+{{Better source needed|date=May 2026}}
 {{Portal bar|North Korea|South Korea|Asia|History|Linguistics|Monarchy|Biography}}
 {{DEFAULTSORT:Sample, Page}}
 {{Self-published|date=May 2026}}
@@ -96,6 +98,10 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Portal|Geography|Asia|North Korea|South Korea}}
 {{Commons category|Sample page}}
 {{location map+|Korea|places={{location map~|Korea|lat=37|long=127|label=Sample marker}}}}
+{{Wikisource-inline|list={{Cite EB1911|wstitle=Sample|short=1}}}}
+{{Wide image|Sample panorama.jpg|800px|Sample panorama}}
+{{Pie chart|value1=40|label1=Hidden slice}}
+{{ahnentafel|1=Hidden ancestor}}
 {{S-start}}
 {{s-hou|[[House of Yi]]|10 April|1397|17 February|1450}}
 {{s-reg}}
@@ -122,6 +128,8 @@ Visible text."#,
     assert!(!rendered.contains("flagicon"));
     assert!(!rendered.contains("unreferenced section"));
     assert!(!rendered.contains("Excessive citations inline"));
+    assert!(!rendered.contains("Unreliable source?"));
+    assert!(!rendered.contains("Better source needed"));
     assert!(!rendered.contains("Portal bar"));
     assert!(!rendered.contains("DEFAULTSORT"));
     assert!(!rendered.contains("Sample, Page"));
@@ -148,6 +156,14 @@ Visible text."#,
     assert!(!rendered.contains("location map+"));
     assert!(!rendered.contains("location map~"));
     assert!(!rendered.contains("Sample marker"));
+    assert!(!rendered.contains("Wikisource-inline"));
+    assert!(!rendered.contains("Cite EB1911"));
+    assert!(!rendered.contains("Wide image"));
+    assert!(!rendered.contains("Sample panorama"));
+    assert!(!rendered.contains("Pie chart"));
+    assert!(!rendered.contains("Hidden slice"));
+    assert!(!rendered.contains("ahnentafel"));
+    assert!(!rendered.contains("Hidden ancestor"));
     assert!(!rendered.contains("S-start"));
     assert!(!rendered.contains("House of Yi"));
     assert!(!rendered.contains("s-reg"));
