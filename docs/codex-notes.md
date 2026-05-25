@@ -4,7 +4,7 @@
 
 ### Summary
 
-Handled Wikipedia `rp` reference-page templates so source page markers are preserved in EPUB output, rendered `Official website` links, skipped additional metadata/layout templates, updated documentation, and refreshed affected expected fixtures.
+Handled Wikipedia `rp` reference-page templates so source page markers are preserved in EPUB output, rendered `Official website` and `Largest cities` templates, skipped additional metadata/layout templates, updated documentation, and refreshed affected expected fixtures.
 
 ### Decisions Made
 
@@ -13,6 +13,7 @@ Handled Wikipedia `rp` reference-page templates so source page markers are prese
 * The renderer includes a leading space so page markers do not stick to the preceding sentence after `<ref>` tags are removed.
 * Nested handled templates inside `rp` parameters are rendered before the page marker text is produced.
 * `Official website` renders as a direct external link, using the first positional or `url=` value as the URL and `name=`, `title=`, or the second positional value as the label.
+* `Largest cities` renders as an EPUB-friendly heading and bullet list, linking each city and including division and population when present.
 * `location map+` is map/layout metadata and is skipped silently, including nested map marker templates inside it.
 * `Wikisource-inline`, `Unreliable source?`, `Wide image`, `Pie chart`, `Better source needed`, and `ahnentafel` are layout, provenance, or metadata templates and are skipped silently.
 
@@ -21,15 +22,17 @@ Handled Wikipedia `rp` reference-page templates so source page markers are prese
 * `src/main.rs`
   * Added `rp` to handled template dispatch and implemented reference-page rendering.
   * Added `Official website` handling and direct external URL link support.
+  * Added `Largest cities` handling that converts city rows into linked list items.
   * Added `location map+`, `Wikisource-inline`, `Unreliable source?`, `Wide image`, `Pie chart`, `Better source needed`, and `ahnentafel` to the silent template list.
 * `src/tests.rs`
   * Added unit coverage for single-page, multi-page, case-insensitive, and nested-template `rp` rendering.
   * Added unit coverage for `Official website` URL, label, and protocol-normalization behavior.
+  * Added unit coverage for `Largest cities` rendering.
   * Extended metadata skip coverage for `location map+`, `Wikisource-inline`, `Unreliable source?`, `Wide image`, `Pie chart`, `Better source needed`, and `ahnentafel`.
 * `README.md`
-  * Documented `rp`, `Official website`, and additional omitted template conversion rules.
+  * Documented `rp`, `Official website`, `Largest cities`, and additional omitted template conversion rules.
 * `expected/korea/OEBPS/chapter-1.xhtml`
-  * Updated the Korea fixture so the official Korea website appears as an external link.
+  * Updated the Korea fixture so the official Korea website appears as an external link and the largest-cities table appears as a city list.
 * `expected/korea/OEBPS/chapter-2.xhtml`
   * Updated the Seoul fixture to include visible `p. 96–111` and `p. 90–100` markers.
 * `docs/codex-notes.md`
@@ -39,6 +42,7 @@ Handled Wikipedia `rp` reference-page templates so source page markers are prese
 
 * `cargo test render_wikitext_formats_reference_page_templates`
 * `cargo test render_wikitext_formats_official_website_templates`
+* `cargo test render_wikitext_formats_largest_cities_templates`
 * `cargo test render_wikitext_silently_skips_metadata_templates`
 * `cargo test --test books`
 * `cargo test`

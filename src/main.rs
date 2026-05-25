@@ -712,6 +712,8 @@ fn render_template(content: &str) -> String {
         render_wikivoyage_template(params)
     } else if template.eq_ignore_ascii_case("official website") {
         render_official_website_template(params)
+    } else if template.eq_ignore_ascii_case("largest cities") {
+        render_largest_cities_template(params)
     } else if template.eq_ignore_ascii_case("sclass") {
         render_ship_class_template(params)
     } else if template.eq_ignore_ascii_case("ill") {
@@ -789,6 +791,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("wiktionary")
         || template.eq_ignore_ascii_case("wikivoyage")
         || template.eq_ignore_ascii_case("official website")
+        || template.eq_ignore_ascii_case("largest cities")
         || template.eq_ignore_ascii_case("sclass")
         || template.eq_ignore_ascii_case("ill")
         || template.eq_ignore_ascii_case("reign")
@@ -1905,6 +1908,70 @@ fn render_official_website_template(params: &str) -> String {
         .unwrap_or("Official website");
 
     format!("[[official-url:{url}|{}]]", render_templates(label))
+}
+
+fn render_largest_cities_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let country = template_param(&named, &["country"])
+        .map(render_templates)
+        .filter(|value| !value.is_empty());
+    let mut lines = Vec::new();
+
+    for index in 1..=100 {
+        let city_key = format!("city_{index}");
+        let Some(city) = named.get(&city_key).map(String::as_str).map(str::trim) else {
+            continue;
+        };
+        if city.is_empty() {
+            continue;
+        }
+
+        let city = render_largest_city_name(city);
+        let division = named
+            .get(&format!("div_{index}"))
+            .map(String::as_str)
+            .map(str::trim)
+            .filter(|value| !value.is_empty())
+            .map(render_templates);
+        let population = named
+            .get(&format!("pop_{index}"))
+            .map(String::as_str)
+            .map(str::trim)
+            .filter(|value| !value.is_empty())
+            .map(render_templates);
+
+        let mut details = Vec::new();
+        if let Some(division) = division {
+            details.push(division);
+        }
+        if let Some(population) = population {
+            details.push(format!("population {population}"));
+        }
+
+        if details.is_empty() {
+            lines.push(format!("* {city}"));
+        } else {
+            lines.push(format!("* {city} ({})", details.join(", ")));
+        }
+    }
+
+    if lines.is_empty() {
+        return String::new();
+    }
+
+    let heading = country
+        .map(|country| format!("Largest cities in {country}:"))
+        .unwrap_or_else(|| "Largest cities:".to_string());
+    format!("\n{heading}\n{}\n", lines.join("\n"))
+}
+
+fn render_largest_city_name(city: &str) -> String {
+    let city = render_templates(city).trim().to_string();
+    if city.contains("[[") {
+        city
+    } else {
+        format!("[[{city}]]")
+    }
 }
 
 fn render_ship_class_template(params: &str) -> String {

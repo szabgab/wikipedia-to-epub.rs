@@ -904,6 +904,28 @@ fn render_wikitext_formats_official_website_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_largest_cities_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Largest cities|country=Korea|city_1=Seoul|div_1=Seoul|pop_1=9,904,312|city_2=[[Busan]]|div_2=Busan|pop_2=3,448,737}}",
+        &InternalLinks::new(),
+        "en",
+    );
+
+    assert!(rendered.contains("<p>Largest cities in Korea:</p>"), "{rendered}");
+    assert!(
+        rendered.contains(r#"<li><a href="https://en.wikipedia.org/wiki/Seoul">Seoul</a><span class="external-link">↗</span> (Seoul, population 9,904,312)</li>"#),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains(r#"<li><a href="https://en.wikipedia.org/wiki/Busan">Busan</a><span class="external-link">↗</span> (Busan, population 3,448,737)</li>"#),
+        "{rendered}"
+    );
+    assert!(!rendered.contains("{{"));
+    assert!(!rendered.contains("Largest cities|"));
+}
+
+#[test]
 fn render_wikitext_formats_interlanguage_link_templates() {
     let rendered = render_wikitext(
         "Sample",
