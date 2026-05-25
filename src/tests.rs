@@ -15,7 +15,7 @@ fn article_candidates_cover_common_file_names() {
 #[test]
 fn render_wikitext_handles_sections_links_and_lists() {
     let internal_links = internal_links(&["Sample".to_string(), "Seoul".to_string()]);
-    let rendered = render_wikitext(
+    let (rendered, counts) = render_wikitext_with_template_counts(
         "Sample",
         r#"Intro with [[Link target|visible text]] and '''bold''' text. See [[Seoul]].
 
@@ -42,6 +42,14 @@ fn render_wikitext_handles_sections_links_and_lists() {
     assert!(!rendered.contains("Category:Hidden"));
     assert!(!rendered.contains("Infobox"));
     assert!(!rendered.contains("omit this"));
+
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 1,
+            unknown: 0
+        }
+    );
 }
 
 #[test]
@@ -58,13 +66,21 @@ fn render_wikitext_formats_for_templates() {
     ];
 
     for (template, expected) in cases {
-        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        let (rendered, counts) =
+            render_wikitext_with_template_counts("Sample", template, &InternalLinks::new(), "en");
         assert!(
             rendered.contains(expected),
             "For template {template:?} rendered unexpectedly:\n{rendered}"
         );
         assert!(!rendered.contains("{{"));
         assert!(!rendered.contains("For|"));
+        assert_eq!(
+            counts,
+            TemplateSkipCounts {
+                recognized: 0,
+                unknown: 0
+            }
+        );
     }
 }
 
