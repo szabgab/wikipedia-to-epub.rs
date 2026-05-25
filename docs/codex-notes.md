@@ -298,6 +298,7 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `Respell` renders positional syllables joined with hyphens.
 * `cite ECCP` renders compact bibliography text for entries from `Eminent Chinese of the Ch'ing Period`.
 * Template skip counting tracks recognized skipped templates separately from unknown skipped templates; per-article and total counts are logged at `info` level, and the final totals are printed after EPUB creation.
+* Exact silent-template and observed-navigation template names are stored in `src/silent.csv` and `src/navigations.csv`, then embedded with `include_str!`; prefix-based rules remain in Rust code.
 * `columns-list`, `Commons and category`, `Dead link`, `Page needed`, `More citations needed`, `Refimprove`, `FACT`, `citation needed`, `cn`, `anchor`, `huh`, `when`, `more cn section`, `cbignore`, `prose`, `New archival link needed`, `TOC limit`, `NoteFoot`, `clear`, `div`, `Sister project links`, `Busan`, `Busan weatherbox`, and `History of Asia` are layout, maintenance, bot-control, invisible-anchor, or navigation templates and are skipped silently.
 
 ### Files Changed
@@ -309,6 +310,11 @@ This session added rendering for the `Official website`, `Largest cities`, `link
   * Updated `lang` rendering to resolve nested handled templates in the text parameter.
   * Added silent skipping for the newly observed Busan and Joseon maintenance, layout, and navigation templates.
   * Added skipped-template counters and `info` logs for each article plus aggregate totals.
+  * Replaced inline exact silent/navigation template lists with CSV-backed lookup via `include_str!`.
+* `src/silent.csv`
+  * Added the exact silent-template names previously hard-coded in `is_silent_template_name`.
+* `src/navigations.csv`
+  * Added the observed navigation-template names previously hard-coded in `is_observed_navigation_template_name`.
 * `src/tests.rs`
   * Added unit coverage for `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, `Wikisource`, `Nihongo`, `nbsp`, `cvt`, `osmrelation-inline`, `climate chart`, `IPAc-en`, `Respell`, and `cite ECCP`.
   * Extended silent-template coverage for the newly observed Busan and Joseon maintenance, layout, and navigation templates.
