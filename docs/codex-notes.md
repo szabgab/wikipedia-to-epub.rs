@@ -4,6 +4,45 @@
 
 ### Summary
 
+This session added handling for the `sic`, `Nowrap`, `Smaller`, and `ROKS` Wikipedia templates observed in `pages/South_Korea.json`, documented the conversion rules, and refreshed the South Korea expected fixture.
+
+### Decisions Made
+
+* `sic` preserves its visible correction text and appends `[sic]`; an empty `sic` renders as `[sic]`.
+* `Nowrap` is rendered as normal inline text for EPUB output.
+* `Smaller` keeps the text visible and wraps it in `<small>...</small>` through the placeholder restore path.
+* `ROKS` renders as a link to the ship article with the visible `ROKS` prefix and italic ship name.
+* Existing raw HTML handling remains unchanged; raw `<sup>` tags in source content are stripped before XHTML output.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added dispatch, handled-name recognition, and renderers for `sic`, `Nowrap`, `Smaller`, and `ROKS`.
+  * Added restoration for the internal small-text placeholder.
+* `src/tests.rs`
+  * Added unit coverage for the new inline template renderers.
+* `README.md`
+  * Documented the new conversion rules.
+* `expected/korea/OEBPS/chapter-7.xhtml`
+  * Refreshed the South Korea expected output for the newly rendered templates.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo test render_wikitext_formats_simple_inline_templates`
+* `cargo test --test books`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* Broaden `ROKS` behavior if future pages need additional display modes beyond the currently observed South Korea usage.
+
+## 2026-05-25
+
+### Summary
+
 This session added support for the Wikipedia `frac` template so common fractions and mixed numbers render as visible inline text instead of disappearing from EPUB output.
 
 ### Decisions Made

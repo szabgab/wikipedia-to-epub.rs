@@ -746,6 +746,12 @@ fn render_template(content: &str) -> String {
         render_japanese_template(params)
     } else if template.eq_ignore_ascii_case("nbsp") {
         render_nonbreaking_space_template()
+    } else if template.eq_ignore_ascii_case("nowrap") {
+        render_passthrough_template(params)
+    } else if template.eq_ignore_ascii_case("smaller") {
+        render_smaller_template(params)
+    } else if template.eq_ignore_ascii_case("sic") {
+        render_sic_template(params)
     } else if template.eq_ignore_ascii_case("lang") {
         render_lang_template(params)
     } else if template.eq_ignore_ascii_case("in lang") {
@@ -834,6 +840,8 @@ fn render_template(content: &str) -> String {
         render_climate_chart_template(params)
     } else if template.eq_ignore_ascii_case("sclass") {
         render_ship_class_template(params)
+    } else if template.eq_ignore_ascii_case("ROKS") {
+        render_republic_of_korea_ship_template(params)
     } else if template.eq_ignore_ascii_case("ill") {
         render_interlanguage_link_template(params)
     } else if template.eq_ignore_ascii_case("reign") {
@@ -891,6 +899,9 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("Nihongo")
         || template.eq_ignore_ascii_case("nbsp")
+        || template.eq_ignore_ascii_case("nowrap")
+        || template.eq_ignore_ascii_case("smaller")
+        || template.eq_ignore_ascii_case("sic")
         || template.eq_ignore_ascii_case("lang")
         || template.eq_ignore_ascii_case("in lang")
         || template.eq_ignore_ascii_case("langx")
@@ -936,6 +947,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("historical populations")
         || template.eq_ignore_ascii_case("climate chart")
         || template.eq_ignore_ascii_case("sclass")
+        || template.eq_ignore_ascii_case("ROKS")
         || template.eq_ignore_ascii_case("ill")
         || template.eq_ignore_ascii_case("reign")
         || template.eq_ignore_ascii_case("open access")
@@ -1089,6 +1101,33 @@ fn render_japanese_template(params: &str) -> String {
 
 fn render_nonbreaking_space_template() -> String {
     " ".to_string()
+}
+
+fn render_passthrough_template(params: &str) -> String {
+    template_positional_params(params)
+        .into_iter()
+        .map(|param| render_templates(&param))
+        .filter(|param| !param.trim().is_empty())
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn render_smaller_template(params: &str) -> String {
+    let text = render_passthrough_template(params);
+    if text.is_empty() {
+        return String::new();
+    }
+
+    format!("__WIKIPEDIA_TO_EPUB_SMALL_START__{text}__WIKIPEDIA_TO_EPUB_SMALL_END__")
+}
+
+fn render_sic_template(params: &str) -> String {
+    let text = render_passthrough_template(params);
+    if text.is_empty() {
+        "[sic]".to_string()
+    } else {
+        format!("{text} [sic]")
+    }
 }
 
 fn render_lang_template(params: &str) -> String {
@@ -2610,6 +2649,33 @@ fn render_ship_class_template(params: &str) -> String {
     }
 }
 
+fn render_republic_of_korea_ship_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| render_templates(&param).trim().to_string())
+        .filter(|param| !param.contains('='))
+        .collect::<Vec<_>>();
+
+    let Some(name) = params
+        .first()
+        .map(String::as_str)
+        .filter(|name| !name.is_empty())
+    else {
+        return "ROKS".to_string();
+    };
+
+    let disambiguator = params
+        .get(1)
+        .map(String::as_str)
+        .filter(|value| !value.is_empty());
+    let target = match disambiguator {
+        Some(disambiguator) => format!("ROKS {name} ({disambiguator})"),
+        None => format!("ROKS {name}"),
+    };
+
+    format!("[[{target}|ROKS ''{name}'']]")
+}
+
 fn render_interlanguage_link_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
@@ -2998,6 +3064,8 @@ fn format_inline_text(text: &str) -> String {
         .replace("__WIKIPEDIA_TO_EPUB_BOLD_END__", "</strong>")
         .replace("__WIKIPEDIA_TO_EPUB_ITALIC_START__", "<em>")
         .replace("__WIKIPEDIA_TO_EPUB_ITALIC_END__", "</em>")
+        .replace("__WIKIPEDIA_TO_EPUB_SMALL_START__", "<small>")
+        .replace("__WIKIPEDIA_TO_EPUB_SMALL_END__", "</small>")
         .replace(
             "__WIKIPEDIA_TO_EPUB_KOREAN_TEXT_START__",
             r#"<span title="Korean-language text">"#,

@@ -63,6 +63,9 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Respell|CHOH|sun}}` becomes `CHOH-sun`
 * `{{Abbr|c.|circa}}` becomes `<abbr title="circa">c.</abbr>`
 * `{{frac|2|3}}` becomes `2/3`; mixed-number forms such as `{{frac|1|1|2}}` become `1 1/2`
+* `{{sic|was}}` becomes `was [sic]`
+* `{{Nowrap|June 10}}` becomes `June 10`
+* `{{Smaller|note}}` becomes `<small>note</small>`
 * `{{Coord|37|33|36|N|126|59|24|E|display=inline}}` becomes `37°33′36″N 126°59′24″E`; decimal forms such as `{{Coord|43.65107|-79.347015|display=inline}}` become `43.65107, -79.347015`
 * `{{rp|12}}` becomes an inline reference page marker: `p. 12`; multiple values such as `{{rp|12|15}}` become `pp. 12, 15`
 * `{{Cite book|last=Oberdorfer|first=Don|title=The Two Koreas|year=2001|publisher=Basic Books}}` becomes `Don Oberdorfer. <em>The Two Koreas</em>. Basic Books, 2001`
@@ -96,6 +99,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Historical populations|5=1949|6=1437670|7=1960|8=2445402}}` becomes `Historical populations:` followed by a list of year/population entries such as `1949: 1,437,670`
 * `{{climate chart|Busan|−0.1|8.2|34.5|...}}` becomes `Climate chart for Busan:` followed by monthly low/high temperature and precipitation entries
 * `{{sclass|Valiant|harbor tug}}` becomes links to the ship-class article and ship type: `[[Valiant-class harbor tug|''Valiant''-class]] [[harbor tug]]`
+* `{{ROKS|Sejong the Great||2}}` becomes a link to `ROKS Sejong the Great` with the visible label `ROKS Sejong the Great`
 * Observed Wikipedia navigation templates such as `{{History of Korea}}`, `{{Korea topics}}`, `{{East Asian topics}}`, `{{History of Asia}}`, `{{Portal bar}}`, `{{Portal}}`, `{{Commons category}}`, `{{Commons and category}}`, `{{Wikisource-inline}}`, `{{Sister project links}}`, `{{Seoul}}`, `{{Seoul weatherbox}}`, `{{Busan}}`, `{{Busan weatherbox}}`, `{{Navboxes}}`, and `{{Authority control}}` are omitted
 * Wikipedia succession-box templates such as `{{Succession box}}` or those whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are omitted
 * Footnote wrappers such as `{{efn|...}}` and `{{refn|...}}` are omitted

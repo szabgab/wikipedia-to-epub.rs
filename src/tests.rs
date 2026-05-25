@@ -1148,6 +1148,36 @@ fn render_wikitext_formats_nbsp_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_simple_inline_templates() {
+    let cases = [
+        ("{{sic|was}}", "<p>was [sic]</p>"),
+        ("{{sic}}", "<p>[sic]</p>"),
+        ("{{Nowrap|June 10}}", "<p>June 10</p>"),
+        (
+            "{{Nowrap|[[Seoul]] and [[Busan]]}}",
+            r#"<p><a href="https://en.wikipedia.org/wiki/Seoul">Seoul</a><span class="external-link">↗</span> and <a href="https://en.wikipedia.org/wiki/Busan">Busan</a><span class="external-link">↗</span></p>"#,
+        ),
+        (
+            "{{Smaller|<sup>a</sup> [[Revised Romanisation of Korean|Revised Romanisation]]}}",
+            r#"<p><small>a <a href="https://en.wikipedia.org/wiki/Revised_Romanisation_of_Korean">Revised Romanisation</a><span class="external-link">↗</span></small></p>"#,
+        ),
+        (
+            "{{ROKS|Sejong the Great||2}}",
+            r#"<p><a href="https://en.wikipedia.org/wiki/ROKS_Sejong_the_Great">ROKS <em>Sejong the Great</em></a><span class="external-link">↗</span></p>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "inline template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_main_templates() {
     let mut internal_links = InternalLinks::new();
     internal_links.insert("namesofkorea".to_string(), "chapter-2.xhtml".to_string());
