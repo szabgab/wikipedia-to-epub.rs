@@ -189,6 +189,32 @@ fn render_wikitext_formats_historical_populations_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_climate_chart_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{climate chart|Busan|−0.1|8.2|34.5|1.5|10.2|49.6|5.3|13.8|89.7|10.1|18.2|140.9|14.6|22.0|155.9|18.3|24.6|188.4|22.1|27.5|326.8|23.7|29.5|266.5|19.8|26.4|160.6|14.5|22.5|79.6|8.3|16.6|50.4|2.0|10.4|33.8|float=Right}}",
+        &InternalLinks::new(),
+        "en",
+    );
+
+    assert!(
+        rendered.contains("<p>Climate chart for Busan:</p>"),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains("<li>Jan: −0.1 to 8.2 °C, 34.5 mm</li>"),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains("<li>Dec: 2.0 to 10.4 °C, 33.8 mm</li>"),
+        "{rendered}"
+    );
+    assert!(!rendered.contains("{{"));
+    assert!(!rendered.contains("climate chart"));
+    assert!(!rendered.contains("float=Right"));
+}
+
+#[test]
 fn render_wikitext_silently_skips_unknown_templates() {
     let (rendered, counts) = render_wikitext_with_template_counts(
         "Sample",

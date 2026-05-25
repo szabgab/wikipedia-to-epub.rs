@@ -824,6 +824,8 @@ fn render_template(content: &str) -> String {
         render_largest_cities_template(params)
     } else if template.eq_ignore_ascii_case("historical populations") {
         render_historical_populations_template(params)
+    } else if template.eq_ignore_ascii_case("climate chart") {
+        render_climate_chart_template(params)
     } else if template.eq_ignore_ascii_case("sclass") {
         render_ship_class_template(params)
     } else if template.eq_ignore_ascii_case("ill") {
@@ -923,6 +925,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("webarchive")
         || template.eq_ignore_ascii_case("largest cities")
         || template.eq_ignore_ascii_case("historical populations")
+        || template.eq_ignore_ascii_case("climate chart")
         || template.eq_ignore_ascii_case("sclass")
         || template.eq_ignore_ascii_case("ill")
         || template.eq_ignore_ascii_case("reign")
@@ -2450,6 +2453,45 @@ fn render_historical_populations_template(params: &str) -> String {
         .map(|(year, population)| format!("* {year}: {population}"))
         .collect::<Vec<_>>();
     format!("\nHistorical populations:\n{}\n", lines.join("\n"))
+}
+
+fn render_climate_chart_template(params: &str) -> String {
+    let params = template_positional_params(params)
+        .into_iter()
+        .map(|param| render_templates(&param).trim().to_string())
+        .filter(|param| !param.is_empty())
+        .collect::<Vec<_>>();
+
+    let Some(location) = params.first() else {
+        return String::new();
+    };
+
+    let entries = params.iter().skip(1).take(36).collect::<Vec<_>>();
+    if entries.len() < 36 {
+        return String::new();
+    }
+
+    let month_names = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    ];
+    let lines = month_names
+        .iter()
+        .zip(entries.chunks_exact(3))
+        .map(|(month, values)| {
+            format!(
+                "* {month}: {} to {} °C, {} mm",
+                format_convert_value(values[0]),
+                format_convert_value(values[1]),
+                format_convert_value(values[2])
+            )
+        })
+        .collect::<Vec<_>>();
+
+    format!(
+        "\nClimate chart for {}:\n{}\n",
+        render_templates(location),
+        lines.join("\n")
+    )
 }
 
 fn historical_population_entries(params: &str) -> Vec<(String, String)> {
