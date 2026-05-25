@@ -86,7 +86,7 @@ fn render_wikitext_formats_for_templates() {
 
 #[test]
 fn render_wikitext_formats_for_timeline_templates() {
-    let rendered = render_wikitext(
+    let (rendered, counts) = render_wikitext_with_template_counts(
         "Sample",
         "{{For timeline|Timeline of Sample}}",
         &InternalLinks::new(),
@@ -94,6 +94,13 @@ fn render_wikitext_formats_for_timeline_templates() {
     );
 
     assert!(rendered.contains("For a timeline, see: <a href=\"https://en.wikipedia.org/wiki/Timeline_of_Sample\">Timeline of Sample</a>"));
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 0,
+            unknown: 0
+        }
+    );
 }
 
 #[test]
