@@ -7,6 +7,7 @@ use std::{
 };
 
 use regex::Regex;
+use similar::{DiffTag, TextDiff};
 use zip::ZipArchive;
 
 #[test]
@@ -78,7 +79,7 @@ fn assert_generated_book_matches_expected(book: &str) {
             &entry_name,
             &fs::read_to_string(&expected_path).expect("expected epub entry reads"),
         );
-        assert_eq!(generated, expected, "EPUB entry differs: {entry_name}");
+        assert_text_matches_expected(&entry_name, &generated, &expected);
     }
 
     fs::remove_dir_all(&work_dir).expect("test output directory is cleaned up");
@@ -177,6 +178,68 @@ fn normalize_epub_entry(name: &str, content: &str) -> String {
     }
 
     content.to_string()
+}
+
+fn assert_text_matches_expected(entry_name: &str, generated: &str, expected: &str) {
+    if generated == expected {
+        return;
+    }
+
+    panic!(
+        "EPUB entry differs: {entry_name}\n{}",
+        first_difference_report(generated, expected)
+    );
+}
+
+fn first_difference_report(generated: &str, expected: &str) -> String {
+    let diff = TextDiff::from_chars(expected, generated);
+    let first_change = diff
+        .ops()
+        .iter()
+        .find(|op| !matches!(op.tag(), DiffTag::Equal))
+        .expect("strings differ, so a changed diff op must exist");
+
+    let expected_index = first_change.old_range().start;
+    let generated_index = first_change.new_range().start;
+    let shared_index = expected_index.min(generated_index);
+    let (line, column) = line_column_at(expected, shared_index);
+    let expected_char = expected.chars().nth(expected_index);
+    let generated_char = generated.chars().nth(generated_index);
+
+    format!(
+        "first difference at line {line}, column {column}\nexpected char: {:?}\ngenerated char: {:?}\nexpected context:\n{:?}\ngenerated context:\n{:?}\nexpected length: {} chars\ngenerated length: {} chars",
+        expected_char,
+        generated_char,
+        snippet_at(expected, expected_index),
+        snippet_at(generated, generated_index),
+        expected.chars().count(),
+        generated.chars().count(),
+    )
+}
+
+fn line_column_at(text: &str, char_index: usize) -> (usize, usize) {
+    let mut line = 1;
+    let mut column = 1;
+
+    for ch in text.chars().take(char_index) {
+        if ch == '\n' {
+            line += 1;
+            column = 1;
+        } else {
+            column += 1;
+        }
+    }
+
+    (line, column)
+}
+
+fn snippet_at(text: &str, char_index: usize) -> String {
+    let chars = text.chars().collect::<Vec<_>>();
+    let before_start = char_index.saturating_sub(200);
+    let after_end = (char_index + 200).min(chars.len());
+    let before: String = chars[before_start..char_index].iter().collect();
+    let after: String = chars[char_index..after_end].iter().collect();
+    format!("{before}<HERE>{after}")
 }
 
 fn collect_expected_epub_entries(root: &Path, dir: &Path, entries: &mut Vec<String>) {

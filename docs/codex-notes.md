@@ -4,6 +4,42 @@
 
 ### Summary
 
+This session improved the local-book integration test failure output so EPUB fixture mismatches report the first differing location with short context instead of a huge full-string diff.
+
+### Decisions Made
+
+* Use the `similar` crate as a dev-only dependency to locate the first changed character span instead of maintaining custom diff logic.
+* Keep the integration assertion focused on the first differing area, including line, column, nearby context, and total string lengths.
+* Leave the underlying Korea fixture mismatch unchanged; the goal here was to make the failure easier to inspect.
+* Leave the existing `cargo fmt --check` failure in `src/tests.rs` untouched because it predates this change.
+
+### Files Changed
+
+* `Cargo.toml`
+  * Added `similar` as a test-only dependency.
+* `Cargo.lock`
+  * Recorded the new dev dependency.
+* `tests/books.rs`
+  * Replaced the raw string equality assertion with a helper that reports the first mismatch location and surrounding context for EPUB entry comparisons.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `cargo fmt --check` *(fails on a pre-existing formatting diff in `src/tests.rs`)*
+* `rustfmt tests/books.rs`
+* `cargo test render_wikitext_formats_excerpt_templates`
+* `cargo test generate_korea_book_from_local_page_dumps -- --exact --nocapture`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* Investigate the remaining Korea fixture mismatch now that the failure points to line 41 in `OEBPS/chapter-1.xhtml` near the `Goryeo dynasty` section.
+
+## 2026-05-25
+
+### Summary
+
 Handled Wikipedia `rp` reference-page templates so source page markers are preserved in EPUB output, rendered `Official website` and `Largest cities` templates, skipped additional metadata/layout templates, updated documentation, and refreshed affected expected fixtures.
 
 ### Decisions Made
