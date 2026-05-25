@@ -1,4 +1,5 @@
 use std::{
+    cell::RefCell,
     collections::HashMap,
     env,
     error::Error,
@@ -140,6 +141,17 @@ struct Chapter {
     file_name: String,
     title: String,
     content: String,
+    template_skip_counts: TemplateSkipCounts,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+struct TemplateSkipCounts {
+    recognized: usize,
+    unknown: usize,
+}
+
+thread_local! {
+    static TEMPLATE_SKIP_COUNTS: RefCell<Option<TemplateSkipCounts>> = const { RefCell::new(None) };
 }
 
 #[derive(Debug, Parser)]
@@ -288,9 +300,26 @@ fn run(args: CliArgs) -> AppResult<()> {
             )
         })
         .collect::<AppResult<Vec<_>>>()?;
+    let total_template_skip_counts =
+        chapters
+            .iter()
+            .fold(TemplateSkipCounts::default(), |mut total, chapter| {
+                total.recognized += chapter.template_skip_counts.recognized;
+                total.unknown += chapter.template_skip_counts.unknown;
+                total
+            });
+    info!(
+        recognized_skipped_templates = total_template_skip_counts.recognized,
+        unknown_skipped_templates = total_template_skip_counts.unknown,
+        "template skip totals"
+    );
 
     write_epub(&config, &chapters, &wikipedia_language)?;
     println!("Created {}", config.output_file.display());
+    println!(
+        "Skipped templates: recognized={}, unknown={}",
+        total_template_skip_counts.recognized, total_template_skip_counts.unknown
+    );
 
     Ok(())
 }
@@ -343,17 +372,25 @@ fn load_chapter(
 ) -> AppResult<Chapter> {
     info!(article = article, "fetching article");
     let page = page_source.load_page(article)?;
-    let rendered = render_wikitext(
+    let (rendered, template_skip_counts) = render_wikitext_with_template_counts(
         &page.parse.title,
         &page.parse.wikitext.text,
         internal_links,
         language,
+    );
+    info!(
+        article = article,
+        title = page.parse.title,
+        recognized_skipped_templates = template_skip_counts.recognized,
+        unknown_skipped_templates = template_skip_counts.unknown,
+        "article template skip counts"
     );
 
     Ok(Chapter {
         file_name: format!("chapter-{index}.xhtml"),
         title: page.parse.title,
         content: rendered,
+        template_skip_counts,
     })
 }
 
@@ -438,7 +475,51 @@ fn http_failure_detail(headers: &HeaderMap, body: &str) -> Option<String> {
         .map(|value| format!("retry-after: {value}"))
 }
 
+#[cfg(test)]
 fn render_wikitext(
+    title: &str,
+    wikitext: &str,
+    internal_links: &InternalLinks,
+    language: &str,
+) -> String {
+    render_wikitext_with_template_counts(title, wikitext, internal_links, language).0
+}
+
+fn render_wikitext_with_template_counts(
+    title: &str,
+    wikitext: &str,
+    internal_links: &InternalLinks,
+    language: &str,
+) -> (String, TemplateSkipCounts) {
+    with_template_skip_counts(|| render_wikitext_impl(title, wikitext, internal_links, language))
+}
+
+fn with_template_skip_counts(render: impl FnOnce() -> String) -> (String, TemplateSkipCounts) {
+    TEMPLATE_SKIP_COUNTS.with(|counts| {
+        let previous = counts.replace(Some(TemplateSkipCounts::default()));
+        let rendered = render();
+        let current = counts.replace(previous).unwrap_or_default();
+        (rendered, current)
+    })
+}
+
+fn increment_recognized_skipped_template_count() {
+    TEMPLATE_SKIP_COUNTS.with(|counts| {
+        if let Some(counts) = counts.borrow_mut().as_mut() {
+            counts.recognized += 1;
+        }
+    });
+}
+
+fn increment_unknown_skipped_template_count() {
+    TEMPLATE_SKIP_COUNTS.with(|counts| {
+        if let Some(counts) = counts.borrow_mut().as_mut() {
+            counts.unknown += 1;
+        }
+    });
+}
+
+fn render_wikitext_impl(
     title: &str,
     wikitext: &str,
     internal_links: &InternalLinks,
@@ -754,18 +835,20 @@ fn render_template(content: &str) -> String {
     {
         render_open_access_template()
     } else if is_silent_template_name(template) {
+        increment_recognized_skipped_template_count();
         String::new()
     } else {
+        increment_unknown_skipped_template_count();
         debug!(
             content = template_log_content(content),
             "removing unhandled wikitext template"
         );
-        log_unhandled_nested_template_instructions(params);
+        log_and_count_nested_skipped_templates(params);
         String::new()
     }
 }
 
-fn log_unhandled_nested_template_instructions(text: &str) {
+fn log_and_count_nested_skipped_templates(text: &str) {
     let mut offset = 0;
 
     while let Some(start) = text[offset..].find("{{").map(|index| offset + index) {
@@ -773,12 +856,15 @@ fn log_unhandled_nested_template_instructions(text: &str) {
             let content = &text[start + 2..end];
             let (template, params) = split_template_name(content);
             let template = template.trim();
-            if !is_handled_template_name(template) {
+            if is_silent_template_name(template) {
+                increment_recognized_skipped_template_count();
+            } else if !is_handled_template_name(template) {
+                increment_unknown_skipped_template_count();
                 debug!(
                     content = template_log_content(content),
                     "removing nested unhandled wikitext template"
                 );
-                log_unhandled_nested_template_instructions(params);
+                log_and_count_nested_skipped_templates(params);
             }
             offset = end + 2;
         } else {

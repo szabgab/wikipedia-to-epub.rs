@@ -273,7 +273,7 @@ Latest verification passed:
 
 ### Summary
 
-This session added rendering for the `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, `Wikisource`, `Nihongo`, `nbsp`, `cvt`, and `osmrelation-inline` Wikipedia templates, updated README conversion notes, refreshed affected Korea EPUB fixtures, and verified the full test suite.
+This session added rendering for the `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, `Wikisource`, `Nihongo`, `nbsp`, `cvt`, and `osmrelation-inline` Wikipedia templates, added per-article and total skipped-template logging, updated README conversion notes, refreshed affected Korea EPUB fixtures, and verified the full test suite.
 
 ### Decisions Made
 
@@ -293,6 +293,7 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `nbsp` renders as a space so adjacent words are not joined after template removal.
 * `cvt` renders as an alias of `convert`.
 * `osmrelation-inline` renders as a visible external OpenStreetMap relation link.
+* Template skip counting tracks recognized skipped templates separately from unknown skipped templates; per-article and total counts are logged at `info` level, and the final totals are printed after EPUB creation.
 * `columns-list`, `Commons and category`, `Dead link`, `Page needed`, `More citations needed`, `Refimprove`, `FACT`, `citation needed`, `anchor`, `huh`, `when`, `more cn section`, `cbignore`, `prose`, `New archival link needed`, `clear`, `div`, `Sister project links`, `Busan`, `Busan weatherbox`, and `History of Asia` are layout, maintenance, bot-control, invisible-anchor, or navigation templates and are skipped silently.
 
 ### Files Changed
@@ -303,9 +304,13 @@ This session added rendering for the `Official website`, `Largest cities`, `link
   * Added OpenStreetMap relation URL support and Japanese interlanguage article URL support.
   * Updated `lang` rendering to resolve nested handled templates in the text parameter.
   * Added silent skipping for the newly observed Busan maintenance, layout, and navigation templates.
+  * Added skipped-template counters and `info` logs for each article plus aggregate totals.
 * `src/tests.rs`
   * Added unit coverage for `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, `Wikisource`, `Nihongo`, `nbsp`, `cvt`, and `osmrelation-inline`.
   * Extended silent-template coverage for the newly observed Busan maintenance, layout, and navigation templates.
+  * Added unit coverage for skipped-template counts.
+* `tests/books.rs`
+  * Updated CLI stdout assertions to allow the final skipped-template totals line.
 * `README.md`
   * Added conversion-rule examples for the new template rendering.
   * Documented that the newly observed Busan maintenance, layout, and navigation templates are omitted.
@@ -333,12 +338,14 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `cargo test render_wikitext_formats_`
 * `cargo test render_wikitext_formats`
 * `cargo test render_wikitext_silently_skips_metadata_templates`
+* `cargo test render_wikitext_reports_template_skip_counts`
 * `cargo test --test books`
+* `target/debug/wikipedia-to-epub examples/korea.yaml --local pages --log INFO`
 * `cargo test`
 
 Latest verification passed:
 
-* 67 unit tests passed.
+* 68 unit tests passed.
 * 4 local book integration tests passed.
 * 1 real Wikipedia API test remains ignored by default.
 

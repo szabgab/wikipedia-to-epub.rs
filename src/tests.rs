@@ -271,6 +271,26 @@ Visible text."#,
 }
 
 #[test]
+fn render_wikitext_reports_template_skip_counts() {
+    let (_rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        r#"{{Short description|Sample}}
+{{Unknown template|{{Nested unknown|value}}|{{Dead link|date=May 2026}}}}
+Visible text."#,
+        &InternalLinks::new(),
+        "en",
+    );
+
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 2,
+            unknown: 2
+        }
+    );
+}
+
+#[test]
 fn render_wikitext_formats_ship_class_templates() {
     let cases = [
         (

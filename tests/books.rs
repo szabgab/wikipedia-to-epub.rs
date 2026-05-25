@@ -59,10 +59,7 @@ fn assert_generated_book_matches_expected(book: &str) {
         String::from_utf8_lossy(&output.stdout),
         String::from_utf8_lossy(&output.stderr)
     );
-    assert_eq!(
-        String::from_utf8_lossy(&output.stdout),
-        format!("Created {output_file_name}\n")
-    );
+    assert_cli_stdout(&output.stdout, &output_file_name);
 
     let output_file = work_dir.join(output_file_name);
     assert!(output_file.is_file());
@@ -105,10 +102,7 @@ fn assert_real_api_generates_book(book: &str, chapter_titles: &[&str]) {
         String::from_utf8_lossy(&output.stdout),
         String::from_utf8_lossy(&output.stderr)
     );
-    assert_eq!(
-        String::from_utf8_lossy(&output.stdout),
-        format!("Created {output_file_name}\n")
-    );
+    assert_cli_stdout(&output.stdout, &output_file_name);
 
     let output_file = work_dir.join(output_file_name);
     assert!(output_file.is_file());
@@ -137,6 +131,20 @@ fn assert_real_api_generates_book(book: &str, chapter_titles: &[&str]) {
 
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+}
+
+fn assert_cli_stdout(stdout: &[u8], output_file_name: &str) {
+    let stdout = String::from_utf8_lossy(stdout);
+    assert!(
+        stdout.contains(&format!("Created {output_file_name}\n")),
+        "stdout is missing created message:\n{stdout}"
+    );
+    assert!(
+        Regex::new(r"(?m)^Skipped templates: recognized=\d+, unknown=\d+$")
+            .unwrap()
+            .is_match(&stdout),
+        "stdout is missing skipped-template totals:\n{stdout}"
+    );
 }
 
 fn open_epub(path: &Path) -> ZipArchive<File> {
