@@ -50,6 +50,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Korean/auto|hangul=^해동_^요순|hanja=海東堯舜|labels=no}}` is rendered like `Korean`, with auto-template markers removed
 * `{{Nihongo4|''[[Edo (Tokyo)|Edo]]''|[[wikt:江戸|江戸]]}}` becomes an italicized `Edo` article link followed by the Japanese text in a `lang="ja"` span
 * `{{lang|ko|서울}}` becomes `<span lang="ko">서울</span>`
+* `{{linktext|漢|字}}` becomes `漢字`
 * `{{langx|ko|溝樓|lit=Walled City|label=none}}` becomes `<span lang="ko">溝樓</span>, lit. Walled City`
 * `{{Lang-zh|t=朝鮮|p=Cháoxiǎn|labels=no}}` becomes `<span lang="zh">朝鮮</span> (Cháoxiǎn)`
 * `{{Transliteration|zh|pinyin|Zhuāngxiàn}}` becomes `<span lang="zh-Latn">Zhuāngxiàn</span>`

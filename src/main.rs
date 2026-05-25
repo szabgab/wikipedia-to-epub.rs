@@ -666,6 +666,8 @@ fn render_template(content: &str) -> String {
         render_lang_template(params)
     } else if template.eq_ignore_ascii_case("langx") {
         render_langx_template(params)
+    } else if template.eq_ignore_ascii_case("linktext") {
+        render_linktext_template(params)
     } else if template.eq_ignore_ascii_case("lang-zh") {
         render_chinese_lang_template(params)
     } else if template.eq_ignore_ascii_case("transliteration") {
@@ -768,6 +770,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("lang")
         || template.eq_ignore_ascii_case("langx")
+        || template.eq_ignore_ascii_case("linktext")
         || template.eq_ignore_ascii_case("lang-zh")
         || template.eq_ignore_ascii_case("transliteration")
         || template.eq_ignore_ascii_case("ko-translit")
@@ -997,9 +1000,19 @@ fn render_lang_template(params: &str) -> String {
         return text.to_string();
     }
 
+    let text = render_templates(text);
+
     format!(
         "__WIKIPEDIA_TO_EPUB_LANG_START__{language}__WIKIPEDIA_TO_EPUB_LANG_VALUE__{text}__WIKIPEDIA_TO_EPUB_LANG_END__"
     )
+}
+
+fn render_linktext_template(params: &str) -> String {
+    template_positional_params(params)
+        .into_iter()
+        .map(|param| render_templates(&param))
+        .collect::<Vec<_>>()
+        .join("")
 }
 
 fn render_langx_template(params: &str) -> String {

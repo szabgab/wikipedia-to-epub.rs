@@ -323,6 +323,31 @@ fn render_wikitext_formats_lang_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_linktext_templates() {
+    let cases = [
+        (
+            "{{lang|zh-hant|{{linktext|漢}}}}",
+            r#"<p><span lang="zh-hant">漢</span></p>"#,
+        ),
+        ("{{linktext|漢|字}}", "<p>漢字</p>"),
+        (
+            "{{linktext|''[[Seoul]]''}}",
+            r#"<p><em><a href="https://en.wikipedia.org/wiki/Seoul">Seoul</a><span class="external-link">↗</span></em></p>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "linktext template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("linktext|"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_langx_templates() {
     let cases = [
         (
