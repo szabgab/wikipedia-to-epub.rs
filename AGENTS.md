@@ -5,7 +5,3 @@
 * Before exiting codex do the following:
     * Update docs/codex-notes.md with a concise summary of this Codex session, including decisions made, files changed, tests run, and any pending follow-ups.
 
-
-```
-codex resume 019e503f-550d-72a0-8c69-6a9afc9638c0
-```
