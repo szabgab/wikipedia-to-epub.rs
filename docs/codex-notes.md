@@ -283,6 +283,7 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `lang` template text is passed through template rendering before the final language span is emitted, so nested content like `{{lang|zh-hant|{{linktext|漢}}}}` becomes `<span lang="zh-hant">漢</span>`.
 * `Excerpt` renders as visible hatnote-style prose: `Excerpt from:` plus article links.
 * `URL` renders as an external link, using parameter `2` as the visible label when available and normalizing bare domains to `https://`.
+* `columns-list` and `Commons and category` are layout/sister-project templates and are skipped silently.
 
 ### Files Changed
 
@@ -290,10 +291,13 @@ This session added rendering for the `Official website`, `Largest cities`, `link
   * Added `Official website`, `Largest cities`, `linktext`, `Excerpt`, and `URL` template rendering.
   * Added external URL link support for official-site rendering.
   * Updated `lang` rendering to resolve nested handled templates in the text parameter.
+  * Added silent skipping for `columns-list` and `Commons and category`.
 * `src/tests.rs`
   * Added unit coverage for `Official website`, `Largest cities`, `linktext`, `Excerpt`, and `URL`.
+  * Extended silent-template coverage for `columns-list` and `Commons and category`.
 * `README.md`
   * Added conversion-rule examples for the new template rendering.
+  * Documented that `columns-list` and `Commons and category` are omitted.
 * `expected/korea/OEBPS/chapter-1.xhtml`
   * Updated expected output for official website, largest-cities, and nested `linktext` rendering.
 * `expected/korea/OEBPS/chapter-2.xhtml`
@@ -304,6 +308,7 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `cargo test render_wikitext_formats_linktext_templates`
 * `cargo test render_wikitext_formats_excerpt_templates`
 * `cargo test render_wikitext_formats_`
+* `cargo test render_wikitext_silently_skips_metadata_templates`
 * `cargo test --test books`
 * `cargo test`
 

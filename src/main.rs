@@ -844,6 +844,8 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Authority control")
         || template.eq_ignore_ascii_case("Portal")
         || template.eq_ignore_ascii_case("Commons category")
+        || template.eq_ignore_ascii_case("Commons and category")
+        || template.eq_ignore_ascii_case("columns-list")
         || template.eq_ignore_ascii_case("location map+")
         || template.eq_ignore_ascii_case("Wikisource-inline")
         || template.eq_ignore_ascii_case("Wide image")

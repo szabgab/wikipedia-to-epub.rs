@@ -182,6 +182,11 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Authority control}}
 {{Portal|Geography|Asia|North Korea|South Korea}}
 {{Commons category|Sample page}}
+{{Commons and category|Sample page}}
+{{columns-list|colwidth=23em|
+* Hidden first column item
+* Hidden second column item
+}}
 {{location map+|Korea|places={{location map~|Korea|lat=37|long=127|label=Sample marker}}}}
 {{Wikisource-inline|list={{Cite EB1911|wstitle=Sample|short=1}}}}
 {{Wide image|Sample panorama.jpg|800px|Sample panorama}}
@@ -238,6 +243,10 @@ Visible text."#,
     assert!(!rendered.contains("Authority control"));
     assert!(!rendered.contains("Portal"));
     assert!(!rendered.contains("Commons category"));
+    assert!(!rendered.contains("Commons and category"));
+    assert!(!rendered.contains("columns-list"));
+    assert!(!rendered.contains("Hidden first column item"));
+    assert!(!rendered.contains("Hidden second column item"));
     assert!(!rendered.contains("location map+"));
     assert!(!rendered.contains("location map~"));
     assert!(!rendered.contains("Sample marker"));
