@@ -973,6 +973,7 @@ fn is_handled_template_name(template: &str) -> bool {
 fn is_silent_template_name(template: &str) -> bool {
     let template = template.trim();
     template_name_is_in_csv(template, include_str!("silent.csv"))
+        || template.ends_with(" weatherbox")
         || template
             .get(.."DEFAULTSORT".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("DEFAULTSORT"))

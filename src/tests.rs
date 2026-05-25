@@ -340,6 +340,10 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{s-aft|after=[[Munjong of Joseon|Munjong]]}}
 {{s-end}}
 {{Succession box|title=[[Capital of Korea|Capital of Baekje]]|before=|after=[[Gongju|Ungjin]]|years=18 BC – 475 AD}}
+{{Busan weatherbox}}
+{{Seoul weatherbox}}
+{{Jeju City weatherbox}}
+{{Seogwipo weatherbox}}
 Visible text."#,
         &InternalLinks::new(),
         "en",
@@ -363,7 +367,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 83,
+            recognized: 87,
             unknown: 0
         }
     );
