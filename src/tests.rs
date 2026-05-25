@@ -173,6 +173,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{About|the sample|other uses|Sample (disambiguation)}}
 {{Distinguish|Example}}
 {{ISBN?}}
+{{Other uses}}
 {{Pp-move}}
 {{Protection padlock|small=yes}}
 {{Redirect|Sample}}
@@ -252,90 +253,21 @@ Visible text."#,
         "en",
     );
 
-    assert!(rendered.contains("<h1>Sample</h1>"));
-    assert!(rendered.contains("<p>Visible text.</p>"));
-    assert!(!rendered.contains("Short description"));
-    assert!(!rendered.contains("About"));
-    assert!(!rendered.contains("Distinguish"));
-    assert!(!rendered.contains("sfnm"));
-    assert!(!rendered.contains("Reflist"));
-    assert!(!rendered.contains("notelist"));
-    assert!(!rendered.contains("Refbegin"));
-    assert!(!rendered.contains("refend"));
-    assert!(!rendered.contains("flagicon"));
-    assert!(!rendered.contains("unreferenced section"));
-    assert!(!rendered.contains("Excessive citations inline"));
-    assert!(!rendered.contains("More citations needed"));
-    assert!(!rendered.contains("Refimprove"));
-    assert!(!rendered.contains("FACT"));
-    assert!(!rendered.contains("citation needed"));
-    assert!(!rendered.contains("Modern"));
-    assert!(!rendered.contains("huh"));
-    assert!(!rendered.contains("when"));
-    assert!(!rendered.contains("more cn section"));
-    assert!(!rendered.contains("1951 to present"));
-    assert!(!rendered.contains("cbignore"));
-    assert!(!rendered.contains("medic"));
-    assert!(!rendered.contains("prose"));
-    assert!(!rendered.contains("Unreliable source?"));
-    assert!(!rendered.contains("Better source needed"));
-    assert!(!rendered.contains("Dead link"));
-    assert!(!rendered.contains("Page needed"));
-    assert!(!rendered.contains("New archival link needed"));
-    assert!(!rendered.contains("clear"));
-    assert!(!rendered.contains("div col"));
-    assert!(!rendered.contains("Portal bar"));
-    assert!(!rendered.contains("DEFAULTSORT"));
-    assert!(!rendered.contains("Sample, Page"));
-    assert!(!rendered.contains("Self-published"));
-    assert!(!rendered.contains("self-published inline"));
-    assert!(!rendered.contains("Use British English"));
-    assert!(!rendered.contains("Use dmy dates"));
-    assert!(!rendered.contains("Pp-move"));
-    assert!(!rendered.contains("Protection padlock"));
-    assert!(!rendered.contains("Redirect"));
-    assert!(!rendered.contains("redirect-multi"));
-    assert!(!rendered.contains("Pu San"));
-    assert!(!rendered.contains("pp-semi-indef"));
-    assert!(!rendered.contains("Author"));
-    assert!(!rendered.contains("Footnote text"));
-    assert!(!rendered.contains("Reference note text"));
-    assert!(!rendered.contains("Infobox"));
-    assert!(!rendered.contains("History of Korea"));
-    assert!(!rendered.contains("Korea topics"));
-    assert!(!rendered.contains("East Asian topics"));
-    assert!(!rendered.contains("History of Asia"));
-    assert!(!rendered.contains("Seoul"));
-    assert!(!rendered.contains("Busan weatherbox"));
-    assert!(!rendered.contains("Navboxes"));
-    assert!(!rendered.contains("Sister project links"));
-    assert!(!rendered.contains("Authority control"));
-    assert!(!rendered.contains("Portal"));
-    assert!(!rendered.contains("Commons category"));
-    assert!(!rendered.contains("Commons and category"));
-    assert!(!rendered.contains("columns-list"));
-    assert!(!rendered.contains("Hidden first column item"));
-    assert!(!rendered.contains("Hidden second column item"));
-    assert!(!rendered.contains("location map+"));
-    assert!(!rendered.contains("location map~"));
-    assert!(!rendered.contains("Sample marker"));
-    assert!(!rendered.contains("Wikisource-inline"));
-    assert!(!rendered.contains("Cite EB1911"));
-    assert!(!rendered.contains("Wide image"));
-    assert!(!rendered.contains("Sample panorama"));
-    assert!(!rendered.contains("Pie chart"));
-    assert!(!rendered.contains("Hidden slice"));
-    assert!(!rendered.contains("ahnentafel"));
-    assert!(!rendered.contains("Hidden ancestor"));
-    assert!(!rendered.contains("S-start"));
-    assert!(!rendered.contains("House of Yi"));
-    assert!(!rendered.contains("s-reg"));
-    assert!(!rendered.contains("Taejong"));
-    assert!(!rendered.contains("King of Joseon"));
-    assert!(!rendered.contains("Munjong"));
-    assert!(!rendered.contains("s-end"));
-    assert!(!rendered.contains("Succession box"));
-    assert!(!rendered.contains("Capital of Baekje"));
+    assert_eq!(
+        rendered,
+        r#"<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <title>Sample</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <h1>Sample</h1>
+    <p>Visible text.</p>
+  </body>
+</html>
+"#
+    );
 }
 
 #[test]
