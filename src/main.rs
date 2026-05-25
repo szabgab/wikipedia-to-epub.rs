@@ -678,6 +678,8 @@ fn render_template(content: &str) -> String {
         render_ipa_template(params)
     } else if template.eq_ignore_ascii_case("abbr") {
         render_abbr_template(params)
+    } else if template.eq_ignore_ascii_case("frac") {
+        render_frac_template(params)
     } else if template.eq_ignore_ascii_case("coord") {
         render_coord_template(params)
     } else if template.eq_ignore_ascii_case("rp") {
@@ -782,6 +784,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("ko-translit")
         || template.eq_ignore_ascii_case("ipa")
         || template.eq_ignore_ascii_case("abbr")
+        || template.eq_ignore_ascii_case("frac")
         || template.eq_ignore_ascii_case("coord")
         || template.eq_ignore_ascii_case("rp")
         || template.eq_ignore_ascii_case("cite book")
@@ -1201,6 +1204,21 @@ fn render_abbr_template(params: &str) -> String {
         render_templates(title),
         render_templates(text)
     )
+}
+
+fn render_frac_template(params: &str) -> String {
+    let params = template_positional_params(params)
+        .into_iter()
+        .map(|param| render_templates(&param))
+        .collect::<Vec<_>>();
+
+    match params.as_slice() {
+        [] => String::new(),
+        [value] => value.clone(),
+        [numerator, denominator] => format!("{numerator}/{denominator}"),
+        [whole, numerator, denominator] => format!("{whole} {numerator}/{denominator}"),
+        [first, rest @ ..] => format!("{first} {}", rest.join("/")),
+    }
 }
 
 fn render_coord_template(params: &str) -> String {

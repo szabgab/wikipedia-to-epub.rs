@@ -4,6 +4,41 @@
 
 ### Summary
 
+This session added support for the Wikipedia `frac` template so common fractions and mixed numbers render as visible inline text instead of disappearing from EPUB output.
+
+### Decisions Made
+
+* `frac` should render its positional parameters as plain text fractions for EPUB readability.
+* Two-parameter forms render as `numerator/denominator`, and three-parameter forms render as mixed numbers like `1 1/2`.
+* Nested handled templates inside `frac` parameters should be rendered before the fraction text is assembled.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added `frac` to template dispatch and implemented basic positional fraction rendering.
+* `src/tests.rs`
+  * Added unit coverage for simple, mixed-number, and nested-template `frac` forms.
+* `README.md`
+  * Documented the `frac` conversion rule.
+* `expected/korea/OEBPS/chapter-2.xhtml`
+  * Updated the Seoul fixture so `{{frac|2|3}}` now appears as `2/3` in the fortress-wall paragraph.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `rustfmt --edition 2024 src/main.rs src/tests.rs`
+* `cargo test render_wikitext_formats_frac_templates`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* Extend `frac` support if future pages need more specialized formatting than the common positional forms handled here.
+
+## 2026-05-25
+
+### Summary
+
 This session added support for the Wikipedia `Historical populations` template, rendering year/population entries as visible EPUB-friendly list content and updating the Seoul fixture accordingly.
 
 ### Decisions Made

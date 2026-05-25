@@ -106,6 +106,23 @@ fn render_wikitext_formats_coord_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_frac_templates() {
+    let rendered = render_wikitext("Sample", "{{frac|2|3}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<p>2/3</p>"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{frac|1|1|2}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<p>1 1/2</p>"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{frac|{{linktext|2}}|3}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<p>2/3</p>"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_historical_populations_templates() {
     let rendered = render_wikitext(
         "Sample",
