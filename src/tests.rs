@@ -1097,6 +1097,30 @@ fn render_wikitext_formats_wikivoyage_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_wikisource_templates() {
+    let cases = [
+        (
+            "{{Wikisource|Littell's Living Age/Volume 129/Issue 1662/A Glimpse of the Korea|a description of a visit to Korea by a British ship in 1876}}",
+            r#"<p>Wikisource: <a href="https://en.wikisource.org/wiki/Littell's_Living_Age/Volume_129/Issue_1662/A_Glimpse_of_the_Korea">a description of a visit to Korea by a British ship in 1876</a><span class="external-link">↗</span></p>"#,
+        ),
+        (
+            "{{wikisource|Korea}}",
+            r#"<p>Wikisource: <a href="https://en.wikisource.org/wiki/Korea">Korea</a><span class="external-link">↗</span></p>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "Wikisource template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("Wikisource|"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_official_website_templates() {
     let cases = [
         (

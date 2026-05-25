@@ -726,6 +726,8 @@ fn render_template(content: &str) -> String {
         render_wiktionary_template(params)
     } else if template.eq_ignore_ascii_case("wikivoyage") {
         render_wikivoyage_template(params)
+    } else if template.eq_ignore_ascii_case("wikisource") {
+        render_wikisource_template(params)
     } else if template.eq_ignore_ascii_case("official website") {
         render_official_website_template(params)
     } else if template.eq_ignore_ascii_case("url") {
@@ -820,6 +822,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("further")
         || template.eq_ignore_ascii_case("wiktionary")
         || template.eq_ignore_ascii_case("wikivoyage")
+        || template.eq_ignore_ascii_case("wikisource")
         || template.eq_ignore_ascii_case("official website")
         || template.eq_ignore_ascii_case("url")
         || template.eq_ignore_ascii_case("webarchive")
@@ -2146,6 +2149,22 @@ fn render_wikivoyage_template(params: &str) -> String {
     format!("Wikivoyage: [[{target}|{label}]]")
 }
 
+fn render_wikisource_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect::<Vec<_>>();
+
+    let Some(title) = params.first() else {
+        return String::new();
+    };
+    let label = params.get(1).unwrap_or(title);
+    let target = format!("src:{title}");
+
+    format!("Wikisource: [[{target}|{label}]]")
+}
+
 fn render_official_website_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let named = template_named_params(params);
@@ -2902,6 +2921,14 @@ fn wikipedia_link_html(
         );
     }
 
+    if let Some(href) = wikisource_article_url(target) {
+        return format!(
+            r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
+            encode_double_quoted_attribute(&href),
+            format_inline_text(label)
+        );
+    }
+
     if let Some(href) = internal_article_url(target, internal_links) {
         return format!(
             r#"<a href="{}">{}</a>"#,
@@ -2953,6 +2980,18 @@ fn wikivoyage_article_url(target: &str) -> Option<String> {
     let title = target.strip_prefix("voy:")?.trim().replace(' ', "_");
     let mut url = Url::parse("https://en.wikivoyage.org").unwrap();
     url.path_segments_mut().unwrap().push("wiki").push(&title);
+    Some(url.into())
+}
+
+fn wikisource_article_url(target: &str) -> Option<String> {
+    let title = target.strip_prefix("src:")?.trim().replace(' ', "_");
+    let mut url = Url::parse("https://en.wikisource.org").unwrap();
+    let mut segments = url.path_segments_mut().unwrap();
+    segments.push("wiki");
+    for segment in title.split('/') {
+        segments.push(segment);
+    }
+    drop(segments);
     Some(url.into())
 }
 

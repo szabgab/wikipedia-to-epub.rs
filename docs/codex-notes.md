@@ -273,7 +273,7 @@ Latest verification passed:
 
 ### Summary
 
-This session added rendering for the `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, and `ISBN` Wikipedia templates, updated README conversion notes, refreshed affected Korea EPUB fixtures, and verified the full test suite.
+This session added rendering for the `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, and `Wikisource` Wikipedia templates, updated README conversion notes, refreshed affected Korea EPUB fixtures, and verified the full test suite.
 
 ### Decisions Made
 
@@ -288,17 +288,18 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `in lang` renders as visible source-language prose such as `(in Korean)`, including joined output for multiple language codes.
 * `lit` renders as inline literal-translation prose such as `lit. Vernacular Script Commission`, preserving nested inline markup.
 * `ISBN` renders as inline bibliography prose such as `ISBN 0-8248-0673-5`, preserving nested inline markup.
+* `Wikisource` renders as visible sister-project prose: `Wikisource:` plus a link to `https://en.wikisource.org/wiki/...`, preserving subpage slashes in the URL path.
 * `columns-list`, `Commons and category`, `Dead link`, `Page needed`, and `History of Asia` are layout, maintenance, or navigation templates and are skipped silently.
 
 ### Files Changed
 
 * `src/main.rs`
-  * Added `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, and `ISBN` template rendering.
+  * Added `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, and `Wikisource` template rendering.
   * Added external URL link support for official-site rendering.
   * Updated `lang` rendering to resolve nested handled templates in the text parameter.
   * Added silent skipping for `columns-list`, `Commons and category`, `Dead link`, `Page needed`, and `History of Asia`.
 * `src/tests.rs`
-  * Added unit coverage for `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, and `ISBN`.
+  * Added unit coverage for `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, and `Wikisource`.
   * Extended silent-template coverage for `columns-list`, `Commons and category`, `Dead link`, `Page needed`, and `History of Asia`.
 * `README.md`
   * Added conversion-rule examples for the new template rendering.
@@ -310,7 +311,7 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `expected/korea/OEBPS/chapter-3.xhtml`
   * Updated expected output for Sejong's `lit` template around `Ŏnmunch'ŏng`.
 * `expected/korea/OEBPS/chapter-4.xhtml`
-  * Updated expected output for History of Korea's inline `ISBN` template in the historiography bibliography, visible `Webarchive` links in external links, and the top `For` hatnote.
+  * Updated expected output for History of Korea's inline `ISBN` template in the historiography bibliography, visible `Webarchive` links in external links, the top `For` hatnote, and the visible `Wikisource` sister-project link.
 
 ### Tests Run
 
@@ -320,6 +321,7 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `cargo test render_wikitext_formats_in_lang_templates`
 * `cargo test render_wikitext_formats_literal_templates`
 * `cargo test render_wikitext_formats_isbn_templates`
+* `cargo test render_wikitext_formats_wikisource_templates`
 * `cargo test render_wikitext_formats_webarchive_templates`
 * `cargo test render_wikitext_formats_`
 * `cargo test render_wikitext_silently_skips_metadata_templates`
@@ -328,7 +330,7 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 
 Latest verification passed:
 
-* 63 unit tests passed.
+* 64 unit tests passed.
 * 4 local book integration tests passed.
 * 1 real Wikipedia API test remains ignored by default.
 
