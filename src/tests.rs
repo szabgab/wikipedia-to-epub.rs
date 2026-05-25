@@ -172,6 +172,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
         r#"{{Short description|Sample page}}
 {{About|the sample|other uses|Sample (disambiguation)}}
 {{Distinguish|Example}}
+{{ISBN?}}
 {{Pp-move}}
 {{Protection padlock|small=yes}}
 {{Redirect|Sample}}
