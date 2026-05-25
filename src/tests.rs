@@ -587,6 +587,31 @@ fn render_wikitext_formats_literal_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_isbn_templates() {
+    let cases = [
+        ("{{ISBN|0-8248-0673-5}}", "<p>ISBN 0-8248-0673-5</p>"),
+        (
+            "{{isbn|978-0-674-61576-2}}",
+            "<p>ISBN 978-0-674-61576-2</p>",
+        ),
+        (
+            "{{ISBN|''978-0-674-61576-2''}}",
+            "<p>ISBN <em>978-0-674-61576-2</em></p>",
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "ISBN template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("ISBN|"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_ipa_templates() {
     let cases = [
         (

@@ -678,6 +678,8 @@ fn render_template(content: &str) -> String {
         render_korean_transliteration_template(params)
     } else if template.eq_ignore_ascii_case("lit") {
         render_literal_template(params)
+    } else if template.eq_ignore_ascii_case("isbn") {
+        render_isbn_template(params)
     } else if template.eq_ignore_ascii_case("ipa") {
         render_ipa_template(params)
     } else if template.eq_ignore_ascii_case("abbr") {
@@ -790,6 +792,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("transliteration")
         || template.eq_ignore_ascii_case("ko-translit")
         || template.eq_ignore_ascii_case("lit")
+        || template.eq_ignore_ascii_case("isbn")
         || template.eq_ignore_ascii_case("ipa")
         || template.eq_ignore_ascii_case("abbr")
         || template.eq_ignore_ascii_case("frac")
@@ -1219,6 +1222,17 @@ fn render_literal_template(params: &str) -> String {
     };
 
     format!("lit. {}", render_templates(&text))
+}
+
+fn render_isbn_template(params: &str) -> String {
+    let Some(isbn) = template_positional_params(params)
+        .into_iter()
+        .find(|value| !value.trim().is_empty())
+    else {
+        return String::new();
+    };
+
+    format!("ISBN {}", render_templates(&isbn))
 }
 
 fn render_ipa_template(params: &str) -> String {
