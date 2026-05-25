@@ -193,7 +193,6 @@ fn render_wikitext_silently_skips_unknown_templates() {
     let (rendered, counts) = render_wikitext_with_template_counts(
         "Sample",
         r#"Before
-{{Other uses}}
 {{Some template name}}
 {{Some template|with|parameters}}
 Visible text."#,
@@ -220,7 +219,7 @@ Visible text."#,
         counts,
         TemplateSkipCounts {
             recognized: 0,
-            unknown: 3
+            unknown: 2
         }
     );
 }
@@ -283,6 +282,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Seoul weatherbox}}
 {{Seoul landmarks}}
 {{Busan}}
+{{Other uses}}
 {{Busan weatherbox}}
 {{Navboxes|title=Articles related to Seoul}}
 {{Authority control}}
@@ -330,7 +330,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 75,
+            recognized: 76,
             unknown: 0
         }
     );

@@ -1016,6 +1016,7 @@ fn is_observed_navigation_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Busan")
         || template.eq_ignore_ascii_case("Busan weatherbox")
         || template.eq_ignore_ascii_case("Navboxes")
+        || template.eq_ignore_ascii_case("Other uses")
 }
 
 fn is_succession_template_name(template: &str) -> bool {
