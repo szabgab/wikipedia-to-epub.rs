@@ -4,7 +4,7 @@
 
 ### Summary
 
-Handled Wikipedia `rp` reference-page templates so source page markers are preserved in EPUB output, updated documentation, and refreshed the affected Seoul expected fixture.
+Handled Wikipedia `rp` reference-page templates so source page markers are preserved in EPUB output, skipped `location map+` metadata templates, updated documentation, and refreshed the affected Seoul expected fixture.
 
 ### Decisions Made
 
@@ -12,15 +12,18 @@ Handled Wikipedia `rp` reference-page templates so source page markers are prese
 * A single positional page value renders as `p. ...`; multiple positional values render as `pp. ...`.
 * The renderer includes a leading space so page markers do not stick to the preceding sentence after `<ref>` tags are removed.
 * Nested handled templates inside `rp` parameters are rendered before the page marker text is produced.
+* `location map+` is map/layout metadata and is skipped silently, including nested map marker templates inside it.
 
 ### Files Changed
 
 * `src/main.rs`
   * Added `rp` to handled template dispatch and implemented reference-page rendering.
+  * Added `location map+` to the silent template list.
 * `src/tests.rs`
   * Added unit coverage for single-page, multi-page, case-insensitive, and nested-template `rp` rendering.
+  * Extended metadata skip coverage for `location map+` with a nested marker template.
 * `README.md`
-  * Documented `rp` conversion rules.
+  * Documented `rp` conversion rules and `location map+` omission.
 * `expected/korea/OEBPS/chapter-2.xhtml`
   * Updated the Seoul fixture to include visible `p. 96–111` and `p. 90–100` markers.
 * `docs/codex-notes.md`
@@ -29,6 +32,7 @@ Handled Wikipedia `rp` reference-page templates so source page markers are prese
 ### Tests Run
 
 * `cargo test render_wikitext_formats_reference_page_templates`
+* `cargo test render_wikitext_silently_skips_metadata_templates`
 * `cargo test --test books`
 * `cargo test`
 

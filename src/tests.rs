@@ -95,6 +95,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Authority control}}
 {{Portal|Geography|Asia|North Korea|South Korea}}
 {{Commons category|Sample page}}
+{{location map+|Korea|places={{location map~|Korea|lat=37|long=127|label=Sample marker}}}}
 {{S-start}}
 {{s-hou|[[House of Yi]]|10 April|1397|17 February|1450}}
 {{s-reg}}
@@ -144,6 +145,9 @@ Visible text."#,
     assert!(!rendered.contains("Authority control"));
     assert!(!rendered.contains("Portal"));
     assert!(!rendered.contains("Commons category"));
+    assert!(!rendered.contains("location map+"));
+    assert!(!rendered.contains("location map~"));
+    assert!(!rendered.contains("Sample marker"));
     assert!(!rendered.contains("S-start"));
     assert!(!rendered.contains("House of Yi"));
     assert!(!rendered.contains("s-reg"));

@@ -818,6 +818,7 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Authority control")
         || template.eq_ignore_ascii_case("Portal")
         || template.eq_ignore_ascii_case("Commons category")
+        || template.eq_ignore_ascii_case("location map+")
         || template
             .get(.."DEFAULTSORT".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("DEFAULTSORT"))
