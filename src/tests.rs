@@ -1129,6 +1129,34 @@ fn render_wikitext_formats_url_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_webarchive_templates() {
+    let cases = [
+        (
+            "{{Webarchive|url=https://web.archive.org/web/20140703095242/http://example.com/report.pdf|date=3 July 2014}}",
+            r#"<p><a href="https://web.archive.org/web/20140703095242/http://example.com/report.pdf">Archived on 3 July 2014</a><span class="external-link">↗</span></p>"#,
+        ),
+        (
+            "{{webarchive|url=https://web.archive.org/web/20170427003611/http://example.com/report.pdf}}",
+            r#"<p><a href="https://web.archive.org/web/20170427003611/http://example.com/report.pdf">Archived copy</a><span class="external-link">↗</span></p>"#,
+        ),
+        (
+            "{{webarchive|[http://example.com Korean Map]|http://example.com}}",
+            r#"<p><a href="http://example.com">Archived copy</a><span class="external-link">↗</span></p>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "Webarchive template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("Webarchive|"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_largest_cities_templates() {
     let rendered = render_wikitext(
         "Sample",

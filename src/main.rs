@@ -728,6 +728,8 @@ fn render_template(content: &str) -> String {
         render_official_website_template(params)
     } else if template.eq_ignore_ascii_case("url") {
         render_url_template(params)
+    } else if template.eq_ignore_ascii_case("webarchive") {
+        render_webarchive_template(params)
     } else if template.eq_ignore_ascii_case("largest cities") {
         render_largest_cities_template(params)
     } else if template.eq_ignore_ascii_case("historical populations") {
@@ -817,6 +819,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("wikivoyage")
         || template.eq_ignore_ascii_case("official website")
         || template.eq_ignore_ascii_case("url")
+        || template.eq_ignore_ascii_case("webarchive")
         || template.eq_ignore_ascii_case("largest cities")
         || template.eq_ignore_ascii_case("historical populations")
         || template.eq_ignore_ascii_case("sclass")
@@ -2153,6 +2156,34 @@ fn render_url_template(params: &str) -> String {
         .unwrap_or(url);
 
     format!("[[official-url:{url}|{}]]", render_templates(label))
+}
+
+fn render_webarchive_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let url = template_param(&named, &["url"])
+        .or_else(|| positional.iter().find_map(|param| template_url_value(param)))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(url) = url else {
+        return String::new();
+    };
+
+    let label = template_param(&named, &["date"])
+        .map(|date| format!("Archived on {}", render_templates(date)))
+        .unwrap_or_else(|| "Archived copy".to_string());
+
+    format!("[[official-url:{url}|{label}]]")
+}
+
+fn template_url_value(value: &str) -> Option<&str> {
+    let value = value.trim();
+    if value.starts_with("http://") || value.starts_with("https://") || value.starts_with("//") {
+        Some(value)
+    } else {
+        None
+    }
 }
 
 fn render_largest_cities_template(params: &str) -> String {
