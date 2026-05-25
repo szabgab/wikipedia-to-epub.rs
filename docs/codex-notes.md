@@ -4,6 +4,41 @@
 
 ### Summary
 
+This session added support for the Wikipedia `Historical populations` template, rendering year/population entries as visible EPUB-friendly list content and updating the Seoul fixture accordingly.
+
+### Decisions Made
+
+* `Historical populations` should render visible text rather than being dropped with table-like metadata.
+* Numeric parameter pairs are interpreted in order as year/population entries, while layout metadata such as `align=` and empty `source=` values are ignored.
+* Plain integer population values are formatted with thousands separators for readability in EPUB output.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added `Historical populations` to template dispatch and implemented parsing/rendering helpers for year/population entry pairs.
+* `src/tests.rs`
+  * Added unit coverage for `Historical populations` rendering and metadata omission.
+* `README.md`
+  * Documented the `Historical populations` conversion rule.
+* `expected/korea/OEBPS/chapter-2.xhtml`
+  * Updated the Seoul fixture to include the rendered historical population list in the Demographics section.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `rustfmt --edition 2024 src/main.rs src/tests.rs`
+* `cargo test render_wikitext_formats_historical_populations_templates`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* Extend `Historical populations` support if future pages use non-numeric population values or additional labels that should be surfaced in the rendered output.
+
+## 2026-05-25
+
+### Summary
+
 This session added handling for the Wikipedia `Coord` template so common inline coordinate forms render as readable text while title-only and Wikidata `qid=` metadata cases stay omitted.
 
 ### Decisions Made

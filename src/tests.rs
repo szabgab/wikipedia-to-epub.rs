@@ -106,6 +106,25 @@ fn render_wikitext_formats_coord_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_historical_populations_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Historical populations|5=1949|6=1437670|7=1960|8=2445402|align=right|source=ignored}}",
+        &InternalLinks::new(),
+        "en",
+    );
+
+    assert!(
+        rendered.contains("<p>Historical populations:</p>"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("<li>1949: 1,437,670</li>"), "{rendered}");
+    assert!(rendered.contains("<li>1960: 2,445,402</li>"), "{rendered}");
+    assert!(!rendered.contains("align=right"), "{rendered}");
+    assert!(!rendered.contains("source=ignored"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_silently_skips_metadata_templates() {
     let rendered = render_wikitext(
         "Sample",

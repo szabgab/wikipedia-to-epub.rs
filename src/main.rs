@@ -720,6 +720,8 @@ fn render_template(content: &str) -> String {
         render_official_website_template(params)
     } else if template.eq_ignore_ascii_case("largest cities") {
         render_largest_cities_template(params)
+    } else if template.eq_ignore_ascii_case("historical populations") {
+        render_historical_populations_template(params)
     } else if template.eq_ignore_ascii_case("sclass") {
         render_ship_class_template(params)
     } else if template.eq_ignore_ascii_case("ill") {
@@ -801,6 +803,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("wikivoyage")
         || template.eq_ignore_ascii_case("official website")
         || template.eq_ignore_ascii_case("largest cities")
+        || template.eq_ignore_ascii_case("historical populations")
         || template.eq_ignore_ascii_case("sclass")
         || template.eq_ignore_ascii_case("ill")
         || template.eq_ignore_ascii_case("reign")
@@ -2097,6 +2100,77 @@ fn render_largest_cities_template(params: &str) -> String {
         .map(|country| format!("Largest cities in {country}:"))
         .unwrap_or_else(|| "Largest cities:".to_string());
     format!("\n{heading}\n{}\n", lines.join("\n"))
+}
+
+fn render_historical_populations_template(params: &str) -> String {
+    let entries = historical_population_entries(params);
+    if entries.is_empty() {
+        return String::new();
+    }
+
+    let lines = entries
+        .into_iter()
+        .map(|(year, population)| format!("* {year}: {population}"))
+        .collect::<Vec<_>>();
+    format!("\nHistorical populations:\n{}\n", lines.join("\n"))
+}
+
+fn historical_population_entries(params: &str) -> Vec<(String, String)> {
+    let values = split_template_params(params)
+        .into_iter()
+        .filter_map(|param| {
+            let trimmed = param.trim();
+            if trimmed.is_empty() {
+                return None;
+            }
+
+            match trimmed.split_once('=') {
+                Some((key, value)) if key.trim().parse::<usize>().is_ok() => {
+                    Some(value.trim().to_string())
+                }
+                Some(_) => None,
+                None => Some(trimmed.to_string()),
+            }
+        })
+        .map(|value| render_templates(&value).trim().to_string())
+        .filter(|value| !value.is_empty())
+        .collect::<Vec<_>>();
+
+    values
+        .chunks(2)
+        .filter_map(|chunk| {
+            let [year, population] = chunk else {
+                return None;
+            };
+
+            Some((year.to_string(), format_historical_population(population)))
+        })
+        .collect()
+}
+
+fn format_historical_population(value: &str) -> String {
+    let trimmed = value.trim();
+    match trimmed.parse::<i64>() {
+        Ok(number) => format_population_number(number),
+        Err(_) => trimmed.to_string(),
+    }
+}
+
+fn format_population_number(value: i64) -> String {
+    let digits = value.abs().to_string();
+    let grouped = digits
+        .as_bytes()
+        .rchunks(3)
+        .rev()
+        .map(|chunk| std::str::from_utf8(chunk).unwrap_or_default())
+        .collect::<Vec<_>>()
+        .join(",");
+
+    if value < 0 {
+        format!("-{grouped}")
+    } else {
+        grouped
+    }
 }
 
 fn render_largest_city_name(city: &str) -> String {
