@@ -984,6 +984,10 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Wide image")
         || template.eq_ignore_ascii_case("Pie chart")
         || template.eq_ignore_ascii_case("ahnentafel")
+        || template.eq_ignore_ascii_case("more citations needed section")
+        || template.eq_ignore_ascii_case("unbalanced opinion")
+        || template.eq_ignore_ascii_case("disputed section")
+        || template.eq_ignore_ascii_case("Overly detailed")
         || template
             .get(.."DEFAULTSORT".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("DEFAULTSORT"))

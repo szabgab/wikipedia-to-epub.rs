@@ -247,6 +247,10 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{refend}}
 {{flagicon|US}}
 {{unreferenced section|date=November 2022}}
+{{more citations needed section|date=May 2024}}
+{{unbalanced opinion|date=April 2021}}
+{{disputed section|date=April 2021}}
+{{Overly detailed|section|details=not clear why this list is exclusive to the end of the article|date=April 2021}}
 {{Excessive citations inline|date=November 2022}}
 {{More citations needed|date=June 2022}}
 {{Refimprove|date=December 2025}}
@@ -330,7 +334,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 76,
+            recognized: 80,
             unknown: 0
         }
     );
