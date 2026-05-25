@@ -814,6 +814,7 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Portal bar")
         || template.eq_ignore_ascii_case("Authority control")
         || template.eq_ignore_ascii_case("Portal")
+        || template.eq_ignore_ascii_case("Commons category")
         || template
             .get(.."DEFAULTSORT".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("DEFAULTSORT"))
