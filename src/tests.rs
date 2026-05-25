@@ -308,10 +308,10 @@ fn render_wikitext_formats_ship_class_templates() {
 #[test]
 fn template_log_content_is_limited_to_twenty_characters() {
     let res = template_log_content(
-        "Unhandled template with a long body that is more than 50 characters long",
+        "Unhandled template with a long body that is more than 80 characters long. I think.",
     );
-    assert_eq!(res, "Unhandled template with a long body that is more t");
-    assert_eq!(res.len(), 50);
+    assert_eq!(res, "Unhandled template with a long body that is more than 80 characters long. I thin");
+    assert_eq!(res.len(), 80);
     assert_eq!(
         template_log_content("短いtemplate content"),
         "短いtemplate content"
