@@ -454,6 +454,28 @@ fn render_wikitext_formats_abbr_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_reference_page_templates() {
+    let cases = [
+        ("A claim.{{rp|12}}", "<p>A claim. p. 12</p>"),
+        ("A claim.{{Rp|12|15}}", "<p>A claim. pp. 12, 15</p>"),
+        (
+            "A claim.{{rp|{{convert|5|km|abbr=on}}}}",
+            "<p>A claim. p. 5 km</p>",
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "rp template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+        assert!(!rendered.contains("rp|"));
+    }
+}
+
+#[test]
 fn render_wikitext_formats_cite_book_templates() {
     let cases = [
         (

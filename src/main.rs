@@ -676,6 +676,8 @@ fn render_template(content: &str) -> String {
         render_ipa_template(params)
     } else if template.eq_ignore_ascii_case("abbr") {
         render_abbr_template(params)
+    } else if template.eq_ignore_ascii_case("rp") {
+        render_reference_page_template(params)
     } else if template.eq_ignore_ascii_case("cite book") {
         render_cite_book_template(params)
     } else if template.eq_ignore_ascii_case("cite journal") {
@@ -767,6 +769,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("ko-translit")
         || template.eq_ignore_ascii_case("ipa")
         || template.eq_ignore_ascii_case("abbr")
+        || template.eq_ignore_ascii_case("rp")
         || template.eq_ignore_ascii_case("cite book")
         || template.eq_ignore_ascii_case("cite journal")
         || template.eq_ignore_ascii_case("cite report")
@@ -2041,6 +2044,20 @@ fn render_reign_template(params: &str) -> String {
 
 fn render_open_access_template() -> String {
     "__WIKIPEDIA_TO_EPUB_OPEN_ACCESS__".to_string()
+}
+
+fn render_reference_page_template(params: &str) -> String {
+    let pages = split_template_params(params)
+        .into_iter()
+        .map(|param| render_templates(param.trim()).trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect::<Vec<_>>();
+
+    match pages.as_slice() {
+        [] => String::new(),
+        [page] => format!(" p. {page}"),
+        pages => format!(" pp. {}", pages.join(", ")),
+    }
 }
 
 fn reign_label(named: &HashMap<String, String>) -> String {
