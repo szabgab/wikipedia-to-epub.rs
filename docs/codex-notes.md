@@ -289,7 +289,7 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `lit` renders as inline literal-translation prose such as `lit. Vernacular Script Commission`, preserving nested inline markup.
 * `ISBN` renders as inline bibliography prose such as `ISBN 0-8248-0673-5`, preserving nested inline markup.
 * `Wikisource` renders as visible sister-project prose: `Wikisource:` plus a link to `https://en.wikisource.org/wiki/...`, preserving subpage slashes in the URL path.
-* `columns-list`, `Commons and category`, `Dead link`, `Page needed`, and `History of Asia` are layout, maintenance, or navigation templates and are skipped silently.
+* `columns-list`, `Commons and category`, `Dead link`, `Page needed`, `Refimprove`, `FACT`, `anchor`, `huh`, `when`, `more cn section`, `cbignore`, and `History of Asia` are layout, maintenance, bot-control, invisible-anchor, or navigation templates and are skipped silently.
 
 ### Files Changed
 
@@ -297,13 +297,13 @@ This session added rendering for the `Official website`, `Largest cities`, `link
   * Added `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, and `Wikisource` template rendering.
   * Added external URL link support for official-site rendering.
   * Updated `lang` rendering to resolve nested handled templates in the text parameter.
-  * Added silent skipping for `columns-list`, `Commons and category`, `Dead link`, `Page needed`, and `History of Asia`.
+  * Added silent skipping for `columns-list`, `Commons and category`, `Dead link`, `Page needed`, `Refimprove`, `FACT`, `anchor`, `huh`, `when`, `more cn section`, `cbignore`, and `History of Asia`.
 * `src/tests.rs`
   * Added unit coverage for `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, and `Wikisource`.
-  * Extended silent-template coverage for `columns-list`, `Commons and category`, `Dead link`, `Page needed`, and `History of Asia`.
+  * Extended silent-template coverage for `columns-list`, `Commons and category`, `Dead link`, `Page needed`, `Refimprove`, `FACT`, `anchor`, `huh`, `when`, `more cn section`, `cbignore`, and `History of Asia`.
 * `README.md`
   * Added conversion-rule examples for the new template rendering.
-  * Documented that `columns-list`, `Commons and category`, `Dead link`, `Page needed`, and `History of Asia` are omitted.
+  * Documented that `columns-list`, `Commons and category`, `Dead link`, `Page needed`, `Refimprove`, `FACT`, `anchor`, `huh`, `when`, `more cn section`, `cbignore`, and `History of Asia` are omitted.
 * `expected/korea/OEBPS/chapter-1.xhtml`
   * Updated expected output for official website, largest-cities, and nested `linktext` rendering.
 * `expected/korea/OEBPS/chapter-2.xhtml`

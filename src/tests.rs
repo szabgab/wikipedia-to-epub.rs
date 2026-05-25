@@ -187,6 +187,13 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{flagicon|US}}
 {{unreferenced section|date=November 2022}}
 {{Excessive citations inline|date=November 2022}}
+{{Refimprove|date=December 2025}}
+{{FACT|date=December 2025}}
+{{anchor|Modern}}
+{{huh|date=August 2025}}
+{{when|date=August 2025}}
+{{more cn section|date=August 2025|find=Korea|find2=1951 to present}}
+{{cbignore|bot=medic}}
 {{Unreliable source?|date=May 2026}}
 {{Better source needed|date=May 2026}}
 {{Dead link|date=May 2026}}
@@ -245,6 +252,15 @@ Visible text."#,
     assert!(!rendered.contains("flagicon"));
     assert!(!rendered.contains("unreferenced section"));
     assert!(!rendered.contains("Excessive citations inline"));
+    assert!(!rendered.contains("Refimprove"));
+    assert!(!rendered.contains("FACT"));
+    assert!(!rendered.contains("Modern"));
+    assert!(!rendered.contains("huh"));
+    assert!(!rendered.contains("when"));
+    assert!(!rendered.contains("more cn section"));
+    assert!(!rendered.contains("1951 to present"));
+    assert!(!rendered.contains("cbignore"));
+    assert!(!rendered.contains("medic"));
     assert!(!rendered.contains("Unreliable source?"));
     assert!(!rendered.contains("Better source needed"));
     assert!(!rendered.contains("Dead link"));
