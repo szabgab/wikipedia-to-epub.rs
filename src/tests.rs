@@ -838,16 +838,17 @@ fn render_wikitext_formats_reign_templates() {
 fn render_wikitext_formats_open_access_templates() {
     let rendered = render_wikitext(
         "Sample",
-        "A citation. {{Open access}}\nA second citation. {{open access}}",
+        "A citation. {{Open access}}\nA second citation. {{open access}}\nA third citation. {{Free access}}",
         &InternalLinks::new(),
         "en",
     );
 
     assert!(rendered.contains(
-        r#"<p>A citation. <span title="open access">&#128275;</span> A second citation. <span title="open access">&#128275;</span></p>"#
+        r#"<p>A citation. <span title="open access">&#128275;</span> A second citation. <span title="open access">&#128275;</span> A third citation. <span title="open access">&#128275;</span></p>"#
     ));
     assert!(!rendered.contains("{{"));
     assert!(!rendered.contains("Open access"));
+    assert!(!rendered.contains("Free access"));
 }
 
 #[test]

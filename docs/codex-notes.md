@@ -26,12 +26,13 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * `flagicon` is treated as decorative image markup and skipped silently; nearby country/city prose remains visible.
 * `Wiktionary` renders as visible sister-project prose, linking to the requested Wiktionary entry through the existing external-link path.
 * `Wikivoyage` renders as visible sister-project prose, linking to the requested Wikivoyage entry through a dedicated external-link path.
+* `Free access` is treated like `Open access`, rendering as the same open-lock marker.
 * The README should describe conversion rules with concrete before/after examples.
 
 ### Files Changed
 
 * `src/main.rs`
-  * Added or extended rendering for templates including `ill`, `Reign`, `lang`, `langx`, `Percentage`, `UN Population`, `Korean/auto`, `Ko-translit`, `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `For timeline`, `Wiktionary`, and `Wikivoyage`.
+  * Added or extended rendering for templates including `ill`, `Reign`, `lang`, `langx`, `Percentage`, `UN Population`, `Korean/auto`, `Ko-translit`, `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `For timeline`, `Wiktionary`, `Wikivoyage`, and `Free access`.
   * Added block-level handling for rendered blockquote markers so quotes are not flattened into ordinary paragraphs.
   * Updated citation author collection so unnumbered `last`/`first` can combine correctly with numbered coauthors such as `last2`/`first2`.
   * Added silent skipping for templates such as `Redirect`, `pp-semi-indef`, `Sfn`, `efn`, `refn`, `Refbegin`, `Refend`, `flagicon`, `unreferenced section`, `Excessive citations inline`, `Portal bar`, `Portal`, `Authority control`, `Seoul`, `Seoul weatherbox`, `Seoul landmarks`, `Navboxes`, succession templates prefixed with `s-`, and `Succession box`.
@@ -43,9 +44,9 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * `expected/korea/OEBPS/chapter-2.xhtml`
   * Updated the Seoul fixture so visible `As of`, `Further`, blockquote prose, and the external-links Wikvoyage template are preserved.
 * `expected/korea/OEBPS/chapter-3.xhtml`
-  * Updated the Sejong fixture after citation-template and blockquote rendering changed the generated EPUB output.
+  * Updated the Sejong fixture after citation-template, blockquote, and `Free access` rendering changed the generated EPUB output.
 * `src/tests.rs`
-  * Added unit coverage for `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `For timeline`, `Wiktionary`, `Wikivoyage`, `Refbegin`/`Refend`, `efn`/`refn`, `flagicon`, `unreferenced section`, `Excessive citations inline`, `Portal bar`, `Portal`, `Authority control`, `Seoul`, `Navboxes`, silent `s-` template handling, and `Succession box`.
+  * Added unit coverage for `Cite report`, `harvc`, `As of`, `Blockquote`, `Further`, `For timeline`, `Wiktionary`, `Wikivoyage`, `Open access`/`Free access`, `Refbegin`/`Refend`, `efn`/`refn`, `flagicon`, `unreferenced section`, `Excessive citations inline`, `Portal bar`, `Portal`, `Authority control`, `Seoul`, `Navboxes`, silent `s-` template handling, and `Succession box`.
 
 ### Tests Run
 
@@ -56,12 +57,13 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * `cargo test render_wikitext_formats_for_timeline_templates`
 * `cargo test render_wikitext_formats_wiktionary_templates`
 * `cargo test render_wikitext_formats_wikivoyage_templates`
+* `cargo test render_wikitext_formats_open_access_templates`
 * `cargo test --test books`
 * `cargo test`
 
 Latest verification passed:
 
-* 47 unit tests passed.
+* 48 unit tests passed.
 * 4 local book integration tests passed.
 * 1 real Wikipedia API test remains ignored by default.
 

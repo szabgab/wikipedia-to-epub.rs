@@ -712,7 +712,9 @@ fn render_template(content: &str) -> String {
         render_interlanguage_link_template(params)
     } else if template.eq_ignore_ascii_case("reign") {
         render_reign_template(params)
-    } else if template.eq_ignore_ascii_case("open access") {
+    } else if template.eq_ignore_ascii_case("open access")
+        || template.eq_ignore_ascii_case("free access")
+    {
         render_open_access_template()
     } else if is_silent_template_name(template) {
         String::new()
@@ -782,6 +784,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("ill")
         || template.eq_ignore_ascii_case("reign")
         || template.eq_ignore_ascii_case("open access")
+        || template.eq_ignore_ascii_case("free access")
         || is_silent_template_name(template)
 }
 
