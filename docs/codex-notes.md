@@ -286,7 +286,7 @@ This session added rendering for the `Official website`, `Largest cities`, `link
 * `in lang` renders as visible source-language prose such as `(in Korean)`, including joined output for multiple language codes.
 * `lit` renders as inline literal-translation prose such as `lit. Vernacular Script Commission`, preserving nested inline markup.
 * `ISBN` renders as inline bibliography prose such as `ISBN 0-8248-0673-5`, preserving nested inline markup.
-* `columns-list` and `Commons and category` are layout/sister-project templates and are skipped silently.
+* `columns-list`, `Commons and category`, `Dead link`, `Page needed`, and `History of Asia` are layout, maintenance, or navigation templates and are skipped silently.
 
 ### Files Changed
 
@@ -294,13 +294,13 @@ This session added rendering for the `Official website`, `Largest cities`, `link
   * Added `Official website`, `Largest cities`, `linktext`, `Excerpt`, `URL`, `in lang`, `lit`, and `ISBN` template rendering.
   * Added external URL link support for official-site rendering.
   * Updated `lang` rendering to resolve nested handled templates in the text parameter.
-  * Added silent skipping for `columns-list` and `Commons and category`.
+  * Added silent skipping for `columns-list`, `Commons and category`, `Dead link`, `Page needed`, and `History of Asia`.
 * `src/tests.rs`
   * Added unit coverage for `Official website`, `Largest cities`, `linktext`, `Excerpt`, `URL`, `in lang`, `lit`, and `ISBN`.
-  * Extended silent-template coverage for `columns-list` and `Commons and category`.
+  * Extended silent-template coverage for `columns-list`, `Commons and category`, `Dead link`, `Page needed`, and `History of Asia`.
 * `README.md`
   * Added conversion-rule examples for the new template rendering.
-  * Documented that `columns-list` and `Commons and category` are omitted.
+  * Documented that `columns-list`, `Commons and category`, `Dead link`, `Page needed`, and `History of Asia` are omitted.
 * `expected/korea/OEBPS/chapter-1.xhtml`
   * Updated expected output for official website, largest-cities, and nested `linktext` rendering.
 * `expected/korea/OEBPS/chapter-2.xhtml`

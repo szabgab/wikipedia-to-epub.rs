@@ -165,6 +165,8 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Excessive citations inline|date=November 2022}}
 {{Unreliable source?|date=May 2026}}
 {{Better source needed|date=May 2026}}
+{{Dead link|date=May 2026}}
+{{Page needed|date=May 2026}}
 {{Portal bar|North Korea|South Korea|Asia|History|Linguistics|Monarchy|Biography}}
 {{DEFAULTSORT:Sample, Page}}
 {{Self-published|date=May 2026}}
@@ -175,6 +177,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{History of Korea}}
 {{Korea topics}}
 {{East Asian topics}}
+{{History of Asia}}
 {{Seoul}}
 {{Seoul weatherbox}}
 {{Seoul landmarks}}
@@ -220,6 +223,8 @@ Visible text."#,
     assert!(!rendered.contains("Excessive citations inline"));
     assert!(!rendered.contains("Unreliable source?"));
     assert!(!rendered.contains("Better source needed"));
+    assert!(!rendered.contains("Dead link"));
+    assert!(!rendered.contains("Page needed"));
     assert!(!rendered.contains("Portal bar"));
     assert!(!rendered.contains("DEFAULTSORT"));
     assert!(!rendered.contains("Sample, Page"));
@@ -238,6 +243,7 @@ Visible text."#,
     assert!(!rendered.contains("History of Korea"));
     assert!(!rendered.contains("Korea topics"));
     assert!(!rendered.contains("East Asian topics"));
+    assert!(!rendered.contains("History of Asia"));
     assert!(!rendered.contains("Seoul"));
     assert!(!rendered.contains("Navboxes"));
     assert!(!rendered.contains("Authority control"));
