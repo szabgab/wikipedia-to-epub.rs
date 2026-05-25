@@ -46,8 +46,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `'''seoul'''` becomes `<strong>seoul</strong>`
 * `[[Seoul]]` becomes a link to the internal chapter if `Seoul` is listed in `articles`, otherwise it links to the Wikipedia article
 * `[[Seoul|capital city]]` becomes a link with `capital city` as the visible text
-* `{{Korean|hangul=서울|labels=no}}` becomes `<span title="Korean-language text"><span lang="ko-Hang">서울</span></span>`
-* `{{Korean/auto|hangul=^해동_^요순|hanja=海東堯舜|labels=no}}` is rendered like `Korean`, with auto-template markers removed
+* `{{Korean|hangul=서울|labels=no}}` becomes `<span title="Korean-language text">Korean: <span lang="ko-Hang">서울</span></span>`
+* `{{Korean/auto|hangul=부산|hanja=釜山|ko_ipa=pusʰa̠n}}` becomes Korean and Hanja labels followed by `pronounced [pusʰa̠n]`; auto-template markers such as `^` and `_` are removed
 * `{{Nihongo|Busan Japanese School|釜山日本人学校|extra={{lang|ko|부산일본인학교}}}}` becomes the English text followed by Japanese-language text and the extra text
 * `{{Nihongo4|''[[Edo (Tokyo)|Edo]]''|[[wikt:江戸|江戸]]}}` becomes an italicized `Edo` article link followed by the Japanese text in a `lang="ja"` span
 * `{{lang|ko|서울}}` becomes `<span lang="ko">서울</span>`

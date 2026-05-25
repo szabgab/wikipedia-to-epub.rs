@@ -485,13 +485,13 @@ fn render_wikitext_parses_empty_template_inside_italics() {
 fn render_wikitext_formats_korean_templates() {
     let rendered = render_wikitext(
         "Sample",
-        "Traditionally, ''seoul'' ({{Korean|hangul=서울|labels=no}}) meant capital. Earlier {{Korean|labels=no|위례성|慰禮城}} was nearby. He was called {{Korean/auto|hangul=^해동_^요순|hanja=海東堯舜|mr=yes|labels=no}}.",
+        "Traditionally, ''seoul'' ({{Korean|hangul=서울|labels=no}}) meant capital. Earlier {{Korean|labels=no|위례성|慰禮城}} was nearby. He was called {{Korean/auto|hangul=^해동_^요순|hanja=海東堯舜|mr=yes|labels=no}}. Busan is {{Korean/auto|hangul=부산|hanja=釜山|ko_ipa=pusʰa̠n}}.",
         &InternalLinks::new(),
         "en",
     );
 
     assert!(rendered.contains(
-            r#"<p>Traditionally, <em>seoul</em> (<span title="Korean-language text"><span lang="ko-Hang">서울</span></span>) meant capital. Earlier <span title="Korean-language text"><span lang="ko-Hang">위례성</span> / <span lang="ko-Hani">慰禮城</span></span> was nearby. He was called <span title="Korean-language text"><span lang="ko-Hang">해동요순</span> / <span lang="ko-Hani">海東堯舜</span></span>.</p>"#
+            r#"<p>Traditionally, <em>seoul</em> (<span title="Korean-language text">Korean: <span lang="ko-Hang">서울</span></span>) meant capital. Earlier <span title="Korean-language text">Korean: <span lang="ko-Hang">위례성</span> / Hanja: <span lang="ko-Hani">慰禮城</span></span> was nearby. He was called <span title="Korean-language text">Korean: <span lang="ko-Hang">해동요순</span> / Hanja: <span lang="ko-Hani">海東堯舜</span></span>. Busan is <span title="Korean-language text">Korean: <span lang="ko-Hang">부산</span> / Hanja: <span lang="ko-Hani">釜山</span> / pronounced [pusʰa̠n]</span>.</p>"#
         ));
 }
 

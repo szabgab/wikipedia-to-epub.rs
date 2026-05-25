@@ -4,6 +4,42 @@
 
 ### Summary
 
+This session updated Korean template rendering so Hangul/Hanja values are explicitly labelled and `ko_ipa` pronunciation values are shown, then refreshed the affected English Korea expected EPUB fixtures.
+
+### Decisions Made
+
+* `render_korean_template` now prefixes Hangul output with `Korean:` and Hanja output with `Hanja:`.
+* `ko_ipa=` renders as visible pronunciation text such as `pronounced [pusʰa̠n]`.
+* The new labels apply to both `Korean` and `Korean/auto`; existing Korean auto marker cleanup remains in place.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added `ko_ipa` parsing and labelled Korean/Hanja output in `render_korean_template`.
+* `src/tests.rs`
+  * Updated Korean template unit coverage for labels and Busan pronunciation.
+* `README.md`
+  * Updated Korean template conversion rules.
+* `expected/korea/OEBPS/*.xhtml`, `expected/korea/OEBPS/content.opf`, `expected/korea/OEBPS/toc.ncx`
+  * Refreshed the English Korea expected EPUB output after the Korean rendering change.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo test render_wikitext_formats_korean_templates`
+* `cargo test --test books`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* None.
+
+## 2026-05-25
+
+### Summary
+
 This session added handling for the `mdash`, `legend`, `circa`, `cite web`, `SfnRef`, `Britannica`, and `source-attribution` Wikipedia templates observed in `pages/North_Korea.json`, documented the conversion rules, and refreshed the North Korea expected fixture.
 
 ### Decisions Made

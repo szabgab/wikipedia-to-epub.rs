@@ -1038,6 +1038,7 @@ fn split_template_name(content: &str) -> (&str, &str) {
 fn render_korean_template(params: &str) -> String {
     let mut hangul = None;
     let mut hanja = None;
+    let mut ko_ipa = None;
     let mut positional = Vec::new();
 
     for part in split_template_params(params)
@@ -1049,6 +1050,7 @@ fn render_korean_template(params: &str) -> String {
             match key.trim().to_lowercase().as_str() {
                 "hangul" => hangul = Some(clean_korean_auto_value(value)),
                 "hanja" => hanja = Some(clean_korean_auto_value(value)),
+                "ko_ipa" => ko_ipa = Some(value.trim().to_string()),
                 _ => {}
             }
         } else {
@@ -1064,7 +1066,7 @@ fn render_korean_template(params: &str) -> String {
         && !hangul.trim().is_empty()
     {
         values.push(format!(
-            "__WIKIPEDIA_TO_EPUB_KOREAN_HANGUL_START__{hangul}__WIKIPEDIA_TO_EPUB_KOREAN_SCRIPT_END__"
+            "Korean: __WIKIPEDIA_TO_EPUB_KOREAN_HANGUL_START__{hangul}__WIKIPEDIA_TO_EPUB_KOREAN_SCRIPT_END__"
         ));
     }
 
@@ -1072,8 +1074,14 @@ fn render_korean_template(params: &str) -> String {
         && !hanja.trim().is_empty()
     {
         values.push(format!(
-            "__WIKIPEDIA_TO_EPUB_KOREAN_HANJA_START__{hanja}__WIKIPEDIA_TO_EPUB_KOREAN_SCRIPT_END__"
+            "Hanja: __WIKIPEDIA_TO_EPUB_KOREAN_HANJA_START__{hanja}__WIKIPEDIA_TO_EPUB_KOREAN_SCRIPT_END__"
         ));
+    }
+
+    if let Some(ko_ipa) = ko_ipa.as_deref()
+        && !ko_ipa.trim().is_empty()
+    {
+        values.push(format!("pronounced [{}]", render_templates(ko_ipa.trim())));
     }
 
     if values.is_empty() {
