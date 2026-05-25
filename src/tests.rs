@@ -71,6 +71,8 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{sfnm|1a1=Author|1y=2024|1p=1}}
 {{efn|Footnote text}}
 {{refn|Reference note text}}
+{{Reflist|30em}}
+{{notelist}}
 {{Refbegin|30em}}
 {{refend}}
 {{flagicon|US}}
@@ -111,6 +113,8 @@ Visible text."#,
     assert!(!rendered.contains("About"));
     assert!(!rendered.contains("Distinguish"));
     assert!(!rendered.contains("sfnm"));
+    assert!(!rendered.contains("Reflist"));
+    assert!(!rendered.contains("notelist"));
     assert!(!rendered.contains("Refbegin"));
     assert!(!rendered.contains("refend"));
     assert!(!rendered.contains("flagicon"));

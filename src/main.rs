@@ -801,6 +801,8 @@ fn is_silent_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("sfnm")
         || template.eq_ignore_ascii_case("efn")
         || template.eq_ignore_ascii_case("refn")
+        || template.eq_ignore_ascii_case("reflist")
+        || template.eq_ignore_ascii_case("notelist")
         || template.eq_ignore_ascii_case("Refbegin")
         || template.eq_ignore_ascii_case("Refend")
         || template.eq_ignore_ascii_case("flagicon")
