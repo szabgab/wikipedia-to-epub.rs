@@ -5,6 +5,9 @@
 * Before exiting codex do the following:
     * Update docs/codex-notes.md with a concise summary of this Codex session, including decisions made, files changed, tests run, and any pending follow-ups.
 
+* Keep `src/navigations.csv` and `src/silent.csv` sorted.
+
+
 # wikipedia-to-epub.rs Codex Instructions
 
 When adding or changing Wikipedia template handling:
