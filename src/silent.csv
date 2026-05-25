@@ -26,7 +26,10 @@ div col end
 efn
 Excessive citations inline
 FACT
+flag
+flagcountry
 flagicon
+full citation needed
 huh
 ISBN?
 Listen
@@ -60,6 +63,7 @@ reflist
 refn
 Sfn
 sfnm
+sfnp
 SfnRef
 Short description
 Sister project links
@@ -73,3 +77,4 @@ Update inline
 when
 Wide image
 Wikisource-inline
+YouTube
