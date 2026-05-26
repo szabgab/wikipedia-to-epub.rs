@@ -3,7 +3,7 @@ the API of Wikipedia, download the source of the specific pages, and create an `
 
 * The API URL is based on the configuration language, for example: `https://en.wikipedia.org/w/api.php?action=parse&prop=wikitext&redirects=true&format=json&page=`
 * Live API fetches are throttled with a 1-second delay between requests to reduce `429 Too Many Requests` responses.
-* The book does not include any embedded or included files such as style sheets or images.
+* The book includes a generated style sheet. Images are omitted by default and can be embedded with `images: true`.
 
 There are several Wikipedia page dumps in the `pages/` folder to allow tests to run without accessing the API.
 
@@ -33,10 +33,13 @@ metadata:
   edition: First edition
   date: 2026-05-19
 output-file: korea.epub
+images: false
 articles:
   - Korea
   - Seoul
 ```
+
+Set `images: true` to embed resolvable `[[File:...]]` and `[[Image:...]]` links in the EPUB. Live runs download bounded thumbnails from Wikipedia/Commons. Local `--local` runs use image fixtures from `pages/images/manifest.json`; missing fixture images are omitted with a warning.
 
 ## Conversion rules
 
@@ -46,6 +49,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `'''seoul'''` becomes `<strong>seoul</strong>`
 * `[[Seoul]]` becomes a link to the internal chapter if `Seoul` is listed in `articles`, otherwise it links to the Wikipedia article
 * `[[Seoul|capital city]]` becomes a link with `capital city` as the visible text
+* With `images: true`, `[[File:Ships in Busan.jpg|thumb|alt=Shipyard view|Busan port]]` becomes an embedded EPUB image block with `Shipyard view` as the image alt text and `Busan port` as the caption
 * `{{Korean|hangul=서울|labels=no}}` becomes `<span title="Korean-language text">Korean: <span lang="ko-Hang">서울</span></span>`
 * `{{Korean/auto|hangul=부산|hanja=釜山|ko_ipa=pusʰa̠n}}` becomes Korean and Hanja labels followed by `pronounced [pusʰa̠n]`; auto-template markers such as `^` and `_` are removed
 * `{{Nihongo|Busan Japanese School|釜山日本人学校|extra={{lang|ko|부산일본인학교}}}}` becomes the English text followed by Japanese-language text and the extra text
@@ -118,7 +122,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `== History ==` becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings
 * Lines starting with `*` become unordered list items
 * Lines starting with `#` become ordered list items
-* References, unhandled templates, tables, categories, and file/image links are omitted
+* References, unhandled templates, tables, categories, and file/image links are omitted; file/image links are only rendered when `images: true` and the image can be resolved
 
 ## Amazon
 

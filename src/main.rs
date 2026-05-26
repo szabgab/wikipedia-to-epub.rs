@@ -16,7 +16,7 @@ use regex::Regex;
 use reqwest::{
     Url,
     blocking::Client,
-    header::{HeaderMap, RETRY_AFTER},
+    header::{CONTENT_TYPE, HeaderMap, RETRY_AFTER},
 };
 use serde::Deserialize;
 use tracing::{Level, debug, info, warn};
@@ -95,6 +95,8 @@ struct BookConfig {
     metadata: Metadata,
     #[serde(rename = "output-file")]
     output_file: PathBuf,
+    #[serde(default)]
+    images: bool,
     articles: Vec<String>,
 }
 
@@ -142,6 +144,58 @@ struct Chapter {
     title: String,
     content: String,
     template_skip_counts: TemplateSkipCounts,
+}
+
+#[derive(Debug)]
+struct BookImage {
+    title: String,
+    href: String,
+    media_type: String,
+    source: BookImageSource,
+}
+
+#[derive(Debug)]
+enum BookImageSource {
+    Local(PathBuf),
+    Remote { title: String },
+}
+
+#[derive(Debug)]
+struct ResolvedImage {
+    href: String,
+    media_type: String,
+    bytes: Vec<u8>,
+}
+
+#[derive(Debug)]
+struct ImageOccurrence {
+    href: String,
+    alt: String,
+    caption: String,
+}
+
+#[derive(Debug)]
+struct ImageRegistry {
+    availability: ImageAvailability,
+    images: Vec<BookImage>,
+    images_by_title: HashMap<String, usize>,
+    occurrences: Vec<ImageOccurrence>,
+}
+
+#[derive(Debug)]
+enum ImageAvailability {
+    All,
+    Local {
+        root: PathBuf,
+        fixtures: HashMap<String, LocalImageFixture>,
+    },
+}
+
+#[derive(Clone, Debug, Deserialize)]
+struct LocalImageFixture {
+    path: PathBuf,
+    #[serde(rename = "media-type")]
+    media_type: String,
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -279,10 +333,16 @@ fn run(args: CliArgs) -> AppResult<()> {
         ));
     }
 
+    let local_pages_dir = args.local_pages_dir.clone();
     let page_source: Box<dyn PageSource> = if let Some(pages_dir) = args.local_pages_dir {
         Box::new(FixturePageSource::new(pages_dir))
     } else {
         Box::new(WikipediaApiPageSource::new(&wikipedia_language)?)
+    };
+    let mut image_registry = if config.images {
+        Some(ImageRegistry::new(local_pages_dir.as_deref())?)
+    } else {
+        None
     };
 
     let internal_links = internal_links(&config.articles);
@@ -297,6 +357,7 @@ fn run(args: CliArgs) -> AppResult<()> {
                 index + 1,
                 &internal_links,
                 &wikipedia_language,
+                image_registry.as_mut(),
             )
         })
         .collect::<AppResult<Vec<_>>>()?;
@@ -314,7 +375,13 @@ fn run(args: CliArgs) -> AppResult<()> {
         "template skip totals"
     );
 
-    write_epub(&config, &chapters, &wikipedia_language)?;
+    let images = if let Some(image_registry) = image_registry {
+        resolve_images(image_registry, &wikipedia_language)?
+    } else {
+        Vec::new()
+    };
+
+    write_epub(&config, &chapters, &images, &wikipedia_language)?;
     println!("Created {}", config.output_file.display());
     println!(
         "Skipped templates: recognized={}, unknown={}",
@@ -369,6 +436,7 @@ fn load_chapter(
     index: usize,
     internal_links: &InternalLinks,
     language: &str,
+    image_registry: Option<&mut ImageRegistry>,
 ) -> AppResult<Chapter> {
     info!(article = article, "fetching article");
     let page = page_source.load_page(article)?;
@@ -377,6 +445,7 @@ fn load_chapter(
         &page.parse.wikitext.text,
         internal_links,
         language,
+        image_registry,
     );
     info!(
         article = article,
@@ -482,7 +551,7 @@ fn render_wikitext(
     internal_links: &InternalLinks,
     language: &str,
 ) -> String {
-    render_wikitext_with_template_counts(title, wikitext, internal_links, language).0
+    render_wikitext_with_template_counts(title, wikitext, internal_links, language, None).0
 }
 
 fn render_wikitext_with_template_counts(
@@ -490,8 +559,11 @@ fn render_wikitext_with_template_counts(
     wikitext: &str,
     internal_links: &InternalLinks,
     language: &str,
+    image_registry: Option<&mut ImageRegistry>,
 ) -> (String, TemplateSkipCounts) {
-    with_template_skip_counts(|| render_wikitext_impl(title, wikitext, internal_links, language))
+    with_template_skip_counts(|| {
+        render_wikitext_impl(title, wikitext, internal_links, language, image_registry)
+    })
 }
 
 fn with_template_skip_counts(render: impl FnOnce() -> String) -> (String, TemplateSkipCounts) {
@@ -524,6 +596,7 @@ fn render_wikitext_impl(
     wikitext: &str,
     internal_links: &InternalLinks,
     language: &str,
+    mut image_registry: Option<&mut ImageRegistry>,
 ) -> String {
     let mut text = wikitext.replace("\r\n", "\n");
     text = Regex::new(r"(?s)<!--.*?-->")
@@ -551,7 +624,12 @@ fn render_wikitext_impl(
         .into_owned();
     text = render_templates(&text);
     text = strip_balanced_sections(&text, "{|", "|}");
-    text = strip_file_links(&text);
+    text = process_file_links(
+        &text,
+        image_registry.as_deref_mut(),
+        internal_links,
+        language,
+    );
 
     let list_re = Regex::new(r"^([*#]+)\s*(.+?)\s*$").unwrap();
     let mut html = Vec::new();
@@ -572,6 +650,17 @@ fn render_wikitext_impl(
         }
 
         if line.starts_with('|') || line.starts_with('!') || line == "|-" {
+            continue;
+        }
+
+        if let Some(image_id) = image_marker_id(line) {
+            flush_paragraph(&mut html, &mut paragraph_lines);
+            flush_list(&mut html, &mut active_list);
+            if let Some(registry) = image_registry.as_deref()
+                && let Some(image) = registry.occurrence(image_id)
+            {
+                html.push(render_image_html(image));
+            }
             continue;
         }
 
@@ -3587,7 +3676,261 @@ fn strip_balanced_sections(text: &str, open: &str, close: &str) -> String {
     output
 }
 
+impl ImageRegistry {
+    fn new(local_pages_dir: Option<&Path>) -> AppResult<Self> {
+        let availability = match local_pages_dir {
+            Some(pages_dir) => {
+                let manifest_path = pages_dir.join("images").join("manifest.json");
+                let fixtures = if manifest_path.is_file() {
+                    let fixtures = read_json::<HashMap<String, LocalImageFixture>>(&manifest_path)?;
+                    fixtures
+                        .into_iter()
+                        .map(|(title, fixture)| (normalize_image_title(&title), fixture))
+                        .collect::<HashMap<_, _>>()
+                } else {
+                    HashMap::new()
+                };
+                ImageAvailability::Local {
+                    root: pages_dir.join("images"),
+                    fixtures,
+                }
+            }
+            None => ImageAvailability::All,
+        };
+
+        Ok(Self {
+            availability,
+            images: Vec::new(),
+            images_by_title: HashMap::new(),
+            occurrences: Vec::new(),
+        })
+    }
+
+    fn register(&mut self, file_link: ParsedFileLink) -> Option<usize> {
+        let key = normalize_image_title(&file_link.title);
+        let image_index = if let Some(index) = self.images_by_title.get(&key).copied() {
+            index
+        } else {
+            let image = match &self.availability {
+                ImageAvailability::All => {
+                    let href = format!(
+                        "images/image-{}.{}",
+                        self.images.len() + 1,
+                        image_extension(&file_link.title)
+                    );
+                    BookImage {
+                        title: file_link.title.clone(),
+                        href,
+                        media_type: media_type_from_title(&file_link.title).to_string(),
+                        source: BookImageSource::Remote {
+                            title: file_link.title.clone(),
+                        },
+                    }
+                }
+                ImageAvailability::Local { root, fixtures } => {
+                    let Some(fixture) = fixtures.get(&key) else {
+                        warn!(
+                            image = file_link.title,
+                            "image fixture is missing; omitting image"
+                        );
+                        return None;
+                    };
+                    let href = format!(
+                        "images/image-{}.{}",
+                        self.images.len() + 1,
+                        path_extension(&fixture.path)
+                            .unwrap_or_else(|| image_extension(&file_link.title))
+                    );
+                    BookImage {
+                        title: file_link.title.clone(),
+                        href,
+                        media_type: fixture.media_type.clone(),
+                        source: BookImageSource::Local(root.join(&fixture.path)),
+                    }
+                }
+            };
+
+            let index = self.images.len();
+            self.images.push(image);
+            self.images_by_title.insert(key, index);
+            index
+        };
+
+        let image = &self.images[image_index];
+        let occurrence_id = self.occurrences.len();
+        self.occurrences.push(ImageOccurrence {
+            href: image.href.clone(),
+            alt: file_link.alt,
+            caption: file_link.caption,
+        });
+        Some(occurrence_id)
+    }
+
+    fn occurrence(&self, id: usize) -> Option<&ImageOccurrence> {
+        self.occurrences.get(id)
+    }
+}
+
+fn normalize_image_title(title: &str) -> String {
+    title.trim().replace('_', " ").to_ascii_lowercase()
+}
+
+fn image_extension(title: &str) -> String {
+    title
+        .rsplit_once('.')
+        .map(|(_, extension)| sanitize_extension(extension))
+        .filter(|extension| !extension.is_empty())
+        .unwrap_or_else(|| "img".to_string())
+}
+
+fn path_extension(path: &Path) -> Option<String> {
+    path.extension()
+        .and_then(|extension| extension.to_str())
+        .map(sanitize_extension)
+        .filter(|extension| !extension.is_empty())
+}
+
+fn sanitize_extension(extension: &str) -> String {
+    extension
+        .chars()
+        .filter(|ch| ch.is_ascii_alphanumeric())
+        .flat_map(char::to_lowercase)
+        .collect()
+}
+
+fn media_type_from_title(title: &str) -> &'static str {
+    match image_extension(title).as_str() {
+        "jpg" | "jpeg" => "image/jpeg",
+        "png" => "image/png",
+        "gif" => "image/gif",
+        "svg" => "image/svg+xml",
+        "webp" => "image/webp",
+        _ => "application/octet-stream",
+    }
+}
+
+fn resolve_images(
+    registry: ImageRegistry,
+    wikipedia_language: &str,
+) -> AppResult<Vec<ResolvedImage>> {
+    let client = Client::builder().user_agent(USER_AGENT).build()?;
+    let api_url = wikipedia_parse_api_url(wikipedia_language)?;
+    registry
+        .images
+        .into_iter()
+        .filter_map(|image| match resolve_image(image, &client, &api_url) {
+            Ok(image) => Some(Ok(image)),
+            Err(err) => {
+                warn!(error = %err, "image could not be resolved; omitting image asset");
+                None
+            }
+        })
+        .collect()
+}
+
+fn resolve_image(image: BookImage, client: &Client, api_url: &Url) -> AppResult<ResolvedImage> {
+    match image.source {
+        BookImageSource::Local(path) => Ok(ResolvedImage {
+            href: image.href,
+            media_type: image.media_type,
+            bytes: fs::read(path)?,
+        }),
+        BookImageSource::Remote { title } => {
+            let info = load_remote_image_info(client, api_url, &title)?;
+            let response = client.get(&info.url).send()?;
+            if !response.status().is_success() {
+                return Err(AppError::Message(format!(
+                    "image download for '{}' failed with status {}",
+                    image.title,
+                    response.status()
+                )));
+            }
+            let content_type = response
+                .headers()
+                .get(CONTENT_TYPE)
+                .and_then(|value| value.to_str().ok())
+                .and_then(|value| value.split(';').next())
+                .map(str::trim)
+                .filter(|value| !value.is_empty())
+                .unwrap_or(&info.media_type)
+                .to_string();
+            let bytes = response.bytes()?.to_vec();
+            Ok(ResolvedImage {
+                href: image.href,
+                media_type: content_type,
+                bytes,
+            })
+        }
+    }
+}
+
+#[derive(Debug)]
+struct RemoteImageInfo {
+    url: String,
+    media_type: String,
+}
+
+fn load_remote_image_info(
+    client: &Client,
+    api_url: &Url,
+    title: &str,
+) -> AppResult<RemoteImageInfo> {
+    let title_param = format!("File:{title}");
+    let response = client
+        .get(api_url.clone())
+        .query(&[
+            ("action", "query"),
+            ("prop", "imageinfo"),
+            ("iiprop", "url|mime"),
+            ("iiurlwidth", "800"),
+            ("format", "json"),
+            ("titles", title_param.as_str()),
+        ])
+        .send()?;
+    if !response.status().is_success() {
+        return Err(AppError::Message(format!(
+            "image metadata request for '{title}' failed with status {}",
+            response.status()
+        )));
+    }
+    let value = response.json::<serde_json::Value>()?;
+    let pages = value
+        .get("query")
+        .and_then(|query| query.get("pages"))
+        .and_then(|pages| pages.as_object())
+        .ok_or_else(|| AppError::Message(format!("image metadata for '{title}' is missing")))?;
+    let imageinfo = pages
+        .values()
+        .find_map(|page| page.get("imageinfo"))
+        .and_then(|imageinfo| imageinfo.as_array())
+        .and_then(|imageinfo| imageinfo.first())
+        .ok_or_else(|| AppError::Message(format!("image metadata for '{title}' is missing")))?;
+    let url = imageinfo
+        .get("thumburl")
+        .or_else(|| imageinfo.get("url"))
+        .and_then(|url| url.as_str())
+        .ok_or_else(|| AppError::Message(format!("image URL for '{title}' is missing")))?
+        .to_string();
+    let media_type = imageinfo
+        .get("thumbmime")
+        .or_else(|| imageinfo.get("mime"))
+        .and_then(|mime| mime.as_str())
+        .unwrap_or_else(|| media_type_from_title(title))
+        .to_string();
+
+    Ok(RemoteImageInfo { url, media_type })
+}
+
 fn strip_file_links(text: &str) -> String {
+    process_file_links(text, None, &InternalLinks::new(), "en")
+}
+
+fn process_file_links(
+    text: &str,
+    mut image_registry: Option<&mut ImageRegistry>,
+    internal_links: &InternalLinks,
+    language: &str,
+) -> String {
     let mut output = String::with_capacity(text.len());
     let mut index = 0usize;
 
@@ -3596,6 +3939,15 @@ fn strip_file_links(text: &str) -> String {
 
         if remaining.starts_with("[[") && is_file_link_start(&text[index + 2..]) {
             if let Some(end) = balanced_wiki_link_end(text, index) {
+                let content = &text[index + 2..end - 2];
+                if let Some(registry) = image_registry.as_deref_mut()
+                    && let Some(file_link) = parse_file_link(content, internal_links, language)
+                    && let Some(image_id) = registry.register(file_link)
+                {
+                    output.push('\n');
+                    output.push_str(&format!("__WIKIPEDIA_TO_EPUB_IMAGE_{image_id}__"));
+                    output.push('\n');
+                }
                 index = end;
                 continue;
             }
@@ -3607,6 +3959,142 @@ fn strip_file_links(text: &str) -> String {
     }
 
     output
+}
+
+#[derive(Debug)]
+struct ParsedFileLink {
+    title: String,
+    caption: String,
+    alt: String,
+}
+
+fn parse_file_link(
+    content: &str,
+    internal_links: &InternalLinks,
+    language: &str,
+) -> Option<ParsedFileLink> {
+    let params = split_template_params(content)
+        .into_iter()
+        .map(|part| part.trim().to_string())
+        .collect::<Vec<_>>();
+    let first = params.first()?;
+    let title = file_link_title(first)?.trim().to_string();
+    if title.is_empty() {
+        return None;
+    }
+
+    let mut alt = None;
+    let mut caption = None;
+    for param in params.iter().skip(1).filter(|param| !param.is_empty()) {
+        if let Some((key, value)) = param.split_once('=')
+            && key.trim().eq_ignore_ascii_case("alt")
+        {
+            alt = Some(cleanup_inline_markup(
+                &render_templates(value.trim()),
+                internal_links,
+                language,
+            ));
+            continue;
+        }
+
+        if file_link_param_is_option(param) {
+            continue;
+        }
+
+        caption = Some(cleanup_inline_markup(
+            &render_templates(param),
+            internal_links,
+            language,
+        ));
+    }
+
+    let caption = caption.unwrap_or_default();
+    let alt = alt
+        .filter(|value| !value.trim().is_empty())
+        .unwrap_or_else(|| {
+            if caption.trim().is_empty() {
+                title.clone()
+            } else {
+                caption.clone()
+            }
+        });
+
+    Some(ParsedFileLink {
+        title,
+        caption,
+        alt,
+    })
+}
+
+fn file_link_title(value: &str) -> Option<&str> {
+    let value = value.trim();
+    value
+        .strip_prefix("File:")
+        .or_else(|| value.strip_prefix("file:"))
+        .or_else(|| value.strip_prefix("Image:"))
+        .or_else(|| value.strip_prefix("image:"))
+}
+
+fn file_link_param_is_option(value: &str) -> bool {
+    let value = value.trim();
+    let lowercase = value.to_ascii_lowercase();
+    matches!(
+        lowercase.as_str(),
+        "thumb"
+            | "thumbnail"
+            | "frame"
+            | "frameless"
+            | "border"
+            | "right"
+            | "left"
+            | "center"
+            | "centre"
+            | "none"
+            | "baseline"
+            | "middle"
+            | "sub"
+            | "super"
+            | "text-top"
+            | "text-bottom"
+            | "top"
+            | "bottom"
+    ) || lowercase.ends_with("px")
+        || lowercase.starts_with("upright")
+        || lowercase.starts_with("link=")
+        || lowercase.starts_with("class=")
+        || lowercase.starts_with("lang=")
+        || lowercase.starts_with("page=")
+}
+
+fn image_marker_id(line: &str) -> Option<usize> {
+    line.strip_prefix("__WIKIPEDIA_TO_EPUB_IMAGE_")?
+        .strip_suffix("__")?
+        .parse()
+        .ok()
+}
+
+fn render_image_html(image: &ImageOccurrence) -> String {
+    let caption = if image.caption.trim().is_empty() {
+        String::new()
+    } else {
+        format!(r#"<p class="caption">{}</p>"#, image.caption)
+    };
+
+    format!(
+        r#"<div class="image"><img src="{}" alt="{}" />{caption}</div>"#,
+        encode_double_quoted_attribute(&image.href),
+        encode_double_quoted_attribute(&plain_text_from_html(&image.alt)),
+    )
+}
+
+fn plain_text_from_html(value: &str) -> String {
+    let value = Regex::new(r#"(?is)<span class="external-link">.*?</span>"#)
+        .unwrap()
+        .replace_all(value, "");
+    Regex::new(r"(?is)<[^>]+>")
+        .unwrap()
+        .replace_all(&value, "")
+        .into_owned()
 }
 
 fn is_file_link_start(text: &str) -> bool {
@@ -3647,6 +4135,7 @@ fn balanced_wiki_link_end(text: &str, start: usize) -> Option<usize> {
 fn write_epub(
     config: &BookConfig,
     chapters: &[Chapter],
+    images: &[ResolvedImage],
     wikipedia_language: &str,
 ) -> AppResult<()> {
     if let Some(parent) = config.output_file.parent()
@@ -3681,6 +4170,11 @@ fn write_epub(
         zip.write_all(chapter.content.as_bytes())?;
     }
 
+    for image in images {
+        zip.start_file(format!("OEBPS/{}", image.href), deflated)?;
+        zip.write_all(&image.bytes)?;
+    }
+
     let nav = nav_xhtml(chapters, wikipedia_language);
     zip.start_file("OEBPS/nav.xhtml", deflated)?;
     zip.write_all(nav.as_bytes())?;
@@ -3689,7 +4183,7 @@ fn write_epub(
     zip.start_file("OEBPS/toc.ncx", deflated)?;
     zip.write_all(toc.as_bytes())?;
 
-    let package = content_opf(&identifier, config, chapters);
+    let package = content_opf(&identifier, config, chapters, images);
     zip.start_file("OEBPS/content.opf", deflated)?;
     zip.write_all(package.as_bytes())?;
 
@@ -3720,6 +4214,21 @@ h1, h2, h3, h4, h5, h6 {
 .external-link {
   font-size: 0.8em;
   vertical-align: super;
+}
+
+.image {
+  margin: 1em 0;
+  text-align: center;
+}
+
+.image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.caption {
+  font-size: 0.9em;
+  margin-top: 0.25em;
 }
 "#
 }
@@ -3807,7 +4316,12 @@ fn nav_xhtml(chapters: &[Chapter], language: &str) -> String {
     )
 }
 
-fn content_opf(identifier: &str, config: &BookConfig, chapters: &[Chapter]) -> String {
+fn content_opf(
+    identifier: &str,
+    config: &BookConfig,
+    chapters: &[Chapter],
+    images: &[ResolvedImage],
+) -> String {
     let mut manifest_items = vec![
         r#"<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>"#
             .to_string(),
@@ -3825,6 +4339,15 @@ fn content_opf(identifier: &str, config: &BookConfig, chapters: &[Chapter]) -> S
             encode_text(&chapter.file_name)
         ));
         spine_items.push(format!(r#"<itemref idref="{id}"/>"#));
+    }
+
+    for (index, image) in images.iter().enumerate() {
+        manifest_items.push(format!(
+            r#"<item id="image-{}" href="{}" media-type="{}"/>"#,
+            index + 1,
+            encode_text(&image.href),
+            encode_text(&image.media_type)
+        ));
     }
 
     let rights = config

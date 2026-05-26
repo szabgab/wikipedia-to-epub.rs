@@ -6,6 +6,7 @@ metadata:
   edition: מהדורה ראשונה
   date: 2026-05-22
 output-file: he-korea.epub
+images: false
 articles:
   - קוריאה
   - שלוש הממלכות של קוריאה

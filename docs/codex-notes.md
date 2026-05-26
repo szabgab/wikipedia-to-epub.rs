@@ -427,6 +427,48 @@ Latest verification passed:
 
 * Broaden template support as new unhandled templates appear in source pages.
 * Keep expected EPUB fixtures synchronized whenever rendering behavior intentionally changes.
+
+## 2026-05-26 Image Embedding Session
+
+### Decisions Made
+
+* Added a top-level YAML `images` field, defaulting to `false`, so existing configs continue omitting `[[File:...]]` and `[[Image:...]]` links unless image embedding is explicitly enabled.
+* When `images: true`, resolvable file/image links render as XHTML image blocks with optional captions; missing images are warned about and omitted.
+* Live runs resolve image metadata through the Wikipedia API and download bounded thumbnails; local `--local` runs use `pages/images/manifest.json` fixture mappings to avoid network access in tests.
+* EPUB image assets are written under `OEBPS/images/` and added to the OPF manifest, while chapter XHTML references them with relative `images/...` paths.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added image config parsing, image registry/resolution, file-link rendering, EPUB asset writing, OPF manifest entries, and image CSS.
+* `src/tests.rs`
+  * Added unit coverage for `images` config defaults/explicit enablement and enabled image rendering from local fixtures.
+* `tests/books.rs`
+  * Added a Busan image-embedding integration test.
+* `examples/*.yaml`
+  * Added explicit `images: false` to existing examples and added `examples/busan-images.yaml`.
+* `pages/images/`
+  * Added a local image fixture manifest and small SVG fixtures for Busan integration coverage.
+* `expected/busan-images/`
+  * Added the new expected EPUB fixture with embedded image assets.
+* `expected/*/OEBPS/style.css`
+  * Updated expected CSS fixtures for the shared image styles.
+* `README.md`
+  * Documented the `images` field and the file/image conversion rule.
+
+### Tests Run
+
+* `cargo test render_wikitext_embeds_resolved_file_links_when_images_are_enabled -- --nocapture`
+* `cargo test book_config -- --nocapture`
+* `cargo test --test books -- --nocapture`
+* `cargo test`
+
+Latest verification passed: 78 unit tests passed, 5 local book integration tests passed, and 1 real Wikipedia API integration test remains ignored by default.
+
+### Pending Follow-Ups
+
+* Consider expanding `pages/images/manifest.json` with more fixture images if broader image coverage is useful.
+* Remote thumbnail downloads are implemented but are not exercised by default tests because the real Wikipedia API test remains ignored.
 * Consider adding more README examples for newly supported templates when their behavior becomes user-visible.
 
 ## 2026-05-25

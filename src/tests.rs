@@ -28,6 +28,7 @@ fn render_wikitext_handles_sections_links_and_lists() {
 "#,
         &internal_links,
         "en",
+        None,
     );
 
     assert!(
@@ -66,8 +67,13 @@ fn render_wikitext_formats_for_templates() {
     ];
 
     for (template, expected) in cases {
-        let (rendered, counts) =
-            render_wikitext_with_template_counts("Sample", template, &InternalLinks::new(), "en");
+        let (rendered, counts) = render_wikitext_with_template_counts(
+            "Sample",
+            template,
+            &InternalLinks::new(),
+            "en",
+            None,
+        );
         assert!(
             rendered.contains(expected),
             "For template {template:?} rendered unexpectedly:\n{rendered}"
@@ -91,6 +97,7 @@ fn render_wikitext_formats_for_timeline_templates() {
         "{{For timeline|Timeline of Sample}}",
         &InternalLinks::new(),
         "en",
+        None,
     );
 
     assert!(rendered.contains("For a timeline, see: <a href=\"https://en.wikipedia.org/wiki/Timeline_of_Sample\">Timeline of Sample</a>"));
@@ -224,6 +231,7 @@ fn render_wikitext_silently_skips_unknown_templates() {
 Visible text."#,
         &InternalLinks::new(),
         "en",
+        None,
     );
     assert_eq!(
         rendered,
@@ -352,6 +360,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 Visible text."#,
         &InternalLinks::new(),
         "en",
+        None,
     );
 
     assert_eq!(
@@ -387,6 +396,7 @@ fn render_wikitext_reports_template_skip_counts() {
 Visible text."#,
         &InternalLinks::new(),
         "en",
+        None,
     );
 
     assert_eq!(
@@ -1611,6 +1621,68 @@ fn render_wikitext_omits_file_links_without_leaking_closing_markup() {
     assert!(!rendered.contains("[[File:"));
     assert!(!rendered.contains("]]"));
     assert!(!rendered.contains("Gimjang"));
+}
+
+#[test]
+fn render_wikitext_embeds_resolved_file_links_when_images_are_enabled() {
+    let internal_links = InternalLinks::new();
+    let mut image_registry =
+        ImageRegistry::new(Some(std::path::Path::new("pages"))).expect("image registry loads");
+    let rendered = render_wikitext_with_template_counts(
+        "Sample",
+        "[[File:Ships in Busan.jpg|thumb|alt=Shipyard view|[[HJ Shipbuilding & Construction|Hanjin Heavy Industries]] shipyard]] Text.",
+        &internal_links,
+        "en",
+        Some(&mut image_registry),
+    )
+    .0;
+
+    assert!(
+        rendered.contains(
+            r#"<div class="image"><img src="images/image-1.svg" alt="Shipyard view" /><p class="caption"><a href="https://en.wikipedia.org/wiki/HJ_Shipbuilding_&amp;_Construction">Hanjin Heavy Industries</a><span class="external-link">↗</span> shipyard</p></div>"#
+        ),
+        "{rendered}"
+    );
+    assert!(rendered.contains("<p>Text.</p>"));
+    assert_eq!(image_registry.images.len(), 1);
+    assert_eq!(image_registry.occurrences.len(), 1);
+}
+
+#[test]
+fn book_config_defaults_images_to_false() {
+    let config = serde_yaml::from_str::<BookConfig>(
+        r#"metadata:
+  title: Sample
+  author: Wikipedia contributors
+  language: en
+  edition: First edition
+output-file: sample.epub
+articles:
+  - Sample
+"#,
+    )
+    .expect("config parses");
+
+    assert!(!config.images);
+}
+
+#[test]
+fn book_config_accepts_images_true() {
+    let config = serde_yaml::from_str::<BookConfig>(
+        r#"metadata:
+  title: Sample
+  author: Wikipedia contributors
+  language: en
+  edition: First edition
+output-file: sample.epub
+images: true
+articles:
+  - Sample
+"#,
+    )
+    .expect("config parses");
+
+    assert!(config.images);
 }
 
 #[test]
