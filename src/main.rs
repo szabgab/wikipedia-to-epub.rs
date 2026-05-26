@@ -151,6 +151,7 @@ struct BookImage {
     title: String,
     href: String,
     media_type: String,
+    source_pages: Vec<String>,
     source: BookImageSource,
 }
 
@@ -629,6 +630,7 @@ fn render_wikitext_impl(
         image_registry.as_deref_mut(),
         internal_links,
         language,
+        title,
     );
 
     let list_re = Regex::new(r"^([*#]+)\s*(.+?)\s*$").unwrap();
@@ -3706,9 +3708,13 @@ impl ImageRegistry {
         })
     }
 
-    fn register(&mut self, file_link: ParsedFileLink) -> Option<usize> {
+    fn register(&mut self, file_link: ParsedFileLink, source_page: &str) -> Option<usize> {
         let key = normalize_image_title(&file_link.title);
         let image_index = if let Some(index) = self.images_by_title.get(&key).copied() {
+            let image = &mut self.images[index];
+            if !image.source_pages.iter().any(|page| page == source_page) {
+                image.source_pages.push(source_page.to_string());
+            }
             index
         } else {
             let image = match &self.availability {
@@ -3722,6 +3728,7 @@ impl ImageRegistry {
                         title: file_link.title.clone(),
                         href,
                         media_type: media_type_from_title(&file_link.title).to_string(),
+                        source_pages: vec![source_page.to_string()],
                         source: BookImageSource::Remote {
                             title: file_link.title.clone(),
                         },
@@ -3745,6 +3752,7 @@ impl ImageRegistry {
                         title: file_link.title.clone(),
                         href,
                         media_type: fixture.media_type.clone(),
+                        source_pages: vec![source_page.to_string()],
                         source: BookImageSource::Local(root.join(&fixture.path)),
                     }
                 }
@@ -3837,6 +3845,11 @@ fn resolve_image(image: BookImage, client: &Client, api_url: &Url) -> AppResult<
         }),
         BookImageSource::Remote { title } => {
             let info = load_remote_image_info(client, api_url, &title)?;
+            info!(
+                image_url = %info.url,
+                source_pages = %image.source_pages.join(", "),
+                "downloading image"
+            );
             let response = client.get(&info.url).send()?;
             if !response.status().is_success() {
                 return Err(AppError::Message(format!(
@@ -3922,7 +3935,7 @@ fn load_remote_image_info(
 }
 
 fn strip_file_links(text: &str) -> String {
-    process_file_links(text, None, &InternalLinks::new(), "en")
+    process_file_links(text, None, &InternalLinks::new(), "en", "")
 }
 
 fn process_file_links(
@@ -3930,6 +3943,7 @@ fn process_file_links(
     mut image_registry: Option<&mut ImageRegistry>,
     internal_links: &InternalLinks,
     language: &str,
+    source_page: &str,
 ) -> String {
     let mut output = String::with_capacity(text.len());
     let mut index = 0usize;
@@ -3942,7 +3956,7 @@ fn process_file_links(
                 let content = &text[index + 2..end - 2];
                 if let Some(registry) = image_registry.as_deref_mut()
                     && let Some(file_link) = parse_file_link(content, internal_links, language)
-                    && let Some(image_id) = registry.register(file_link)
+                    && let Some(image_id) = registry.register(file_link, source_page)
                 {
                     output.push('\n');
                     output.push_str(&format!("__WIKIPEDIA_TO_EPUB_IMAGE_{image_id}__"));

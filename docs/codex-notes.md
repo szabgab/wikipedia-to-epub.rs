@@ -471,6 +471,33 @@ Latest verification passed: 78 unit tests passed, 5 local book integration tests
 * Remote thumbnail downloads are implemented but are not exercised by default tests because the real Wikipedia API test remains ignored.
 * Consider adding more README examples for newly supported templates when their behavior becomes user-visible.
 
+## 2026-05-26 Image Download Logging Session
+
+### Decisions Made
+
+* Image registry entries now track the source article titles that referenced each image, including repeated use from multiple articles.
+* Remote image downloads now emit an `info` level log immediately before the HTTP download request, including the resolved image URL and comma-separated source page titles.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added `source_pages` tracking to `BookImage`.
+  * Passed the chapter title through file-link processing into image registration.
+  * Added the pre-download `info` log with `image_url` and `source_pages`.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `cargo test render_wikitext_embeds_resolved_file_links_when_images_are_enabled -- --nocapture`
+* `cargo test`
+
+Latest verification passed: 78 unit tests passed, 5 local book integration tests passed, and 1 real Wikipedia API integration test remains ignored by default.
+
+### Pending Follow-Ups
+
+* No known pending follow-ups for this logging change.
+
 ## 2026-05-25
 
 ### Summary
