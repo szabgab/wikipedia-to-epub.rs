@@ -56,6 +56,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{langx|ko|溝樓|lit=Walled City|label=none}}` becomes `<span lang="ko">溝樓</span>, lit. Walled City`
 * `{{Lang-zh|t=朝鮮|p=Cháoxiǎn|labels=no}}` becomes `<span lang="zh">朝鮮</span> (Cháoxiǎn)`
 * `{{Transliteration|zh|pinyin|Zhuāngxiàn}}` becomes `<span lang="zh-Latn">Zhuāngxiàn</span>`
+* `{{tlit|ko|mr|Chosŏn'gŭl}}` becomes `<span lang="ko-Latn">Chosŏn'gŭl</span>`
 * `{{Ko-translit|rr|^한국}}` becomes `Hanguk`
 * `{{lit|Vernacular Script Commission}}` becomes `lit. Vernacular Script Commission`
 * `{{ISBN|0-8248-0673-5}}` becomes `ISBN 0-8248-0673-5`
@@ -91,6 +92,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Further|Joseon dynasty|Downtown Seoul}}` becomes `Further information:` followed by links to those articles
 * `{{For|histories of the modern Korean countries|History of North Korea|History of South Korea}}` becomes `For histories of the modern Korean countries, see:` followed by links to those articles
 * `{{For timeline|Timeline of Korean history}}` becomes `For a timeline, see:` followed by a link to `Timeline of Korean history`
+* `{{crossreference|See {{slink|#Letter counts}}.}}` becomes visible cross-reference text with a section link
+* `{{Arrow|r}}` becomes `→`
 * `{{Excerpt|Korean literature|templates=no}}` becomes `Excerpt from:` followed by a link to `Korean literature`
 * `{{Wiktionary|Korea}}` becomes `Wiktionary:` followed by a link to the Wiktionary entry
 * `{{Wikivoyage|Korea}}` becomes `Wikivoyage:` followed by a link to the Wikivoyage entry
@@ -107,9 +110,10 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{ROKS|Sejong the Great||2}}` becomes a link to `ROKS Sejong the Great` with the visible label `ROKS Sejong the Great`
 * Observed Wikipedia navigation templates such as `{{History of Korea}}`, `{{Korea topics}}`, `{{East Asian topics}}`, `{{History of Asia}}`, `{{Portal bar}}`, `{{Portal}}`, `{{Commons category}}`, `{{Commons and category}}`, `{{Wikisource-inline}}`, `{{Sister project links}}`, `{{Seoul}}`, `{{Seoul weatherbox}}`, `{{Busan}}`, `{{Busan weatherbox}}`, `{{Navboxes}}`, and `{{Authority control}}` are omitted
 * Wikipedia succession-box templates such as `{{Succession box}}` or those whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are omitted
-* Footnote wrappers such as `{{efn|...}}` and `{{refn|...}}` are omitted
 * Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{More citations needed}}`, `{{Refimprove}}`, `{{FACT}}`, `{{citation needed}}`, `{{cn}}`, `{{huh}}`, `{{when}}`, `{{more cn section}}`, `{{prose}}`, `{{Unreliable source?}}`, `{{Better source needed}}`, `{{Dead link}}`, `{{Page needed}}`, `{{New archival link needed}}`, `{{anchor}}`, `{{cbignore}}`, `{{TOC limit}}`, `{{clear}}`, `{{div}}`, `{{columns-list}}`, `{{location map+}}`, `{{Wide image}}`, `{{Pie chart}}`, `{{ahnentafel}}`, and `{{DEFAULTSORT:...}}` are omitted
-* Reference-list wrappers and source metadata such as `{{Reflist}}`, `{{notelist}}`, `{{NoteFoot}}`, `{{Refbegin}}`, `{{Refend}}`, `{{SfnRef}}`, and `{{source-attribution}}` are omitted while surrounding list contents are preserved
+* Reference-list wrappers and source metadata such as `{{Reflist}}`, `{{notelist}}`, `{{notelist-ua}}`, `{{NoteFoot}}`, `{{Refbegin}}`, `{{Refend}}`, `{{SfnRef}}`, and `{{source-attribution}}` are omitted while surrounding list contents are preserved
+* Footnote wrappers such as `{{efn|...}}`, `{{efn-ua|...}}`, and `{{refn|...}}` are omitted
+* Layout-only column templates such as `{{col-begin}}`, `{{col-break}}`, and `{{col-end}}` are omitted
 * Decorative flag image templates such as `{{flagicon|US}}` are omitted
 * `== History ==` becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings
 * Lines starting with `*` become unordered list items

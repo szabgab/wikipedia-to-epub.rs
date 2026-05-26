@@ -1,5 +1,48 @@
 # Codex Session Notes
 
+## 2026-05-26
+
+### Summary
+
+This session added handling for Hangul-page templates `tlit`, `crossreference`, `slink`, `nobold`, `Arrow`, `efn-ua`, `notelist-ua`, `col-begin`, `col-break`, and `col-end`, then refreshed the Hangul expected EPUB fixture.
+
+### Decisions Made
+
+* `tlit` renders transliterated text as a Latin-script language span using the first parameter as the language code and the final positional parameter as the visible text.
+* `crossreference` renders its inline content, including nested `slink` section links.
+* `slink` renders section links for current-page and article-section forms.
+* `nobold` is treated as a passthrough wrapper so visible nested content is preserved.
+* `Arrow` renders directional arrow glyphs, with `r` rendering as `→`.
+* `efn-ua` and `notelist-ua` are footnote/reference-list wrappers and are skipped silently.
+* `col-begin`, `col-break`, and `col-end` are layout-only column templates and are skipped silently.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added dispatch, handled-name recognition, and renderers for `tlit`, `crossreference`, `slink`, `nobold`, and `Arrow`.
+* `src/silent.csv`
+  * Added `efn-ua`, `notelist-ua`, `col-begin`, `col-break`, and `col-end`.
+* `src/tests.rs`
+  * Added unit coverage for Hangul inline templates and extended silent-template coverage.
+* `README.md`
+  * Documented the new conversion and omission rules.
+* `expected/korea/OEBPS/chapter-9.xhtml`
+  * Refreshed the Hangul expected output after the new template rendering.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo test render_wikitext_formats_hangul_inline_templates`
+* `cargo test render_wikitext_silently_skips_metadata_templates`
+* `cargo test --test books`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-25
 
 ### Summary

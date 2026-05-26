@@ -266,9 +266,11 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Sfn|Author|2024|p=1}}
 {{sfnm|1a1=Author|1y=2024|1p=1}}
 {{efn|Footnote text}}
+{{efn-ua|Footnote text}}
 {{refn|Reference note text}}
 {{Reflist|30em}}
 {{notelist}}
+{{notelist-ua}}
 {{Refbegin|30em}}
 {{refend}}
 {{NoteFoot}}
@@ -299,6 +301,9 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{div}}
 {{div col|colwidth=20em}}
 {{div col end}}
+{{col-begin|width=auto}}
+{{col-break|gap=1em}}
+{{col-end}}
 {{Portal bar|North Korea|South Korea|Asia|History|Linguistics|Monarchy|Biography}}
 {{TOC limit|4}}
 {{DEFAULTSORT:Sample, Page}}
@@ -367,7 +372,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 87,
+            recognized: 92,
             unknown: 0
         }
     );
@@ -559,6 +564,39 @@ fn render_wikitext_formats_lang_templates() {
         );
         assert!(!rendered.contains("{{"));
         assert!(!rendered.contains("lang|"));
+    }
+}
+
+#[test]
+fn render_wikitext_formats_hangul_inline_templates() {
+    let cases = [
+        (
+            "{{tlit|ko|mr|Chosŏn'gŭl}}",
+            r#"<p><span lang="ko-Latn">Chosŏn'gŭl</span></p>"#,
+        ),
+        (
+            "{{tlit|ko|Hangul}}",
+            r#"<p><span lang="ko-Latn">Hangul</span></p>"#,
+        ),
+        (
+            "{{crossreference|See {{slink|#Letter counts}}.}}",
+            r#"<p>See <a href="https://en.wikipedia.org/wiki/#Letter_counts">Letter counts</a><span class="external-link">↗</span>.</p>"#,
+        ),
+        (
+            "{{crossreference|(see {{slink|Hangul orthography|Buncheol vs. yeoncheol debate}})}}",
+            r#"<p>(see <a href="https://en.wikipedia.org/wiki/Hangul_orthography#Buncheol_vs._yeoncheol_debate">Buncheol vs. yeoncheol debate</a><span class="external-link">↗</span>)</p>"#,
+        ),
+        ("{{nobold|{{cn|date=November 2025}}}}", "<h1>Sample</h1>"),
+        ("{{Arrow|r}}", "<p>→</p>"),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "Hangul inline template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
     }
 }
 

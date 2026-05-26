@@ -11,6 +11,9 @@ citation needed
 clear
 Closed access
 cn
+col-begin
+col-break
+col-end
 columns-list
 Commons
 Commons and category
@@ -24,6 +27,7 @@ div
 div col
 div col end
 efn
+efn-ua
 Excessive citations inline
 FACT
 flag
@@ -42,6 +46,7 @@ Needs update
 New archival link needed
 NoteFoot
 notelist
+notelist-ua
 Overly detailed
 Page needed
 Pie chart

@@ -768,6 +768,8 @@ fn render_template(content: &str) -> String {
         render_chinese_lang_template(params)
     } else if template.eq_ignore_ascii_case("transliteration") {
         render_transliteration_template(params)
+    } else if template.eq_ignore_ascii_case("tlit") {
+        render_transliteration_like_template(params)
     } else if template.eq_ignore_ascii_case("ko-translit") {
         render_korean_transliteration_template(params)
     } else if template.eq_ignore_ascii_case("lit") {
@@ -816,6 +818,10 @@ fn render_template(content: &str) -> String {
         render_for_template(params)
     } else if template.eq_ignore_ascii_case("for timeline") {
         render_for_timeline_template(params)
+    } else if template.eq_ignore_ascii_case("crossreference") {
+        render_passthrough_template(params)
+    } else if template.eq_ignore_ascii_case("slink") {
+        render_section_link_template(params)
     } else if template.eq_ignore_ascii_case("legend") {
         render_legend_template(params)
     } else if template.eq_ignore_ascii_case("excerpt") {
@@ -850,6 +856,10 @@ fn render_template(content: &str) -> String {
         render_climate_chart_template(params)
     } else if template.eq_ignore_ascii_case("sclass") {
         render_ship_class_template(params)
+    } else if template.eq_ignore_ascii_case("nobold") {
+        render_passthrough_template(params)
+    } else if template.eq_ignore_ascii_case("Arrow") {
+        render_arrow_template(params)
     } else if template.eq_ignore_ascii_case("ROKS") {
         render_republic_of_korea_ship_template(params)
     } else if template.eq_ignore_ascii_case("ill") {
@@ -920,6 +930,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("linktext")
         || template.eq_ignore_ascii_case("lang-zh")
         || template.eq_ignore_ascii_case("transliteration")
+        || template.eq_ignore_ascii_case("tlit")
         || template.eq_ignore_ascii_case("ko-translit")
         || template.eq_ignore_ascii_case("lit")
         || template.eq_ignore_ascii_case("isbn")
@@ -945,6 +956,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("cvt")
         || template.eq_ignore_ascii_case("for")
         || template.eq_ignore_ascii_case("for timeline")
+        || template.eq_ignore_ascii_case("crossreference")
+        || template.eq_ignore_ascii_case("slink")
         || template.eq_ignore_ascii_case("legend")
         || template.eq_ignore_ascii_case("excerpt")
         || template.eq_ignore_ascii_case("main")
@@ -962,6 +975,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("historical populations")
         || template.eq_ignore_ascii_case("climate chart")
         || template.eq_ignore_ascii_case("sclass")
+        || template.eq_ignore_ascii_case("nobold")
+        || template.eq_ignore_ascii_case("Arrow")
         || template.eq_ignore_ascii_case("ROKS")
         || template.eq_ignore_ascii_case("ill")
         || template.eq_ignore_ascii_case("reign")
@@ -1343,6 +1358,39 @@ fn render_transliteration_template(params: &str) -> String {
         .last()
         .map(String::as_str)
         .filter(|value| !value.is_empty() && params.len() > 1)
+    else {
+        return String::new();
+    };
+
+    let language = language
+        .chars()
+        .filter(|ch| ch.is_ascii_alphanumeric() || *ch == '-')
+        .collect::<String>();
+
+    if language.is_empty() {
+        return render_templates(text);
+    }
+
+    format!(
+        "__WIKIPEDIA_TO_EPUB_LANG_START__{language}-Latn__WIKIPEDIA_TO_EPUB_LANG_VALUE__{}__WIKIPEDIA_TO_EPUB_LANG_END__",
+        render_templates(text)
+    )
+}
+
+fn render_transliteration_like_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect::<Vec<_>>();
+
+    let Some(language) = params.first().map(String::as_str) else {
+        return String::new();
+    };
+    let Some(text) = params
+        .last()
+        .map(String::as_str)
+        .filter(|_| params.len() > 1)
     else {
         return String::new();
     };
@@ -2367,6 +2415,33 @@ fn render_see_also_template(params: &str) -> String {
     }
 }
 
+fn render_section_link_template(params: &str) -> String {
+    let params = template_positional_params(params);
+    let Some(first) = params.first().map(String::as_str) else {
+        return String::new();
+    };
+
+    if let Some(section) = first.strip_prefix('#') {
+        let label = params
+            .get(1)
+            .map(String::as_str)
+            .filter(|value| !value.trim().is_empty())
+            .unwrap_or(section);
+        return format!("[[#{section}|{label}]]");
+    }
+
+    let Some(section) = params.get(1).map(String::as_str) else {
+        return format!("[[{first}]]");
+    };
+    let label = params
+        .get(2)
+        .map(String::as_str)
+        .filter(|value| !value.trim().is_empty())
+        .unwrap_or(section);
+
+    format!("[[{first}#{section}|{label}]]")
+}
+
 fn render_further_template(params: &str) -> String {
     let named = template_named_params(params);
     let articles = template_article_params(params);
@@ -2757,6 +2832,24 @@ fn render_ship_class_template(params: &str) -> String {
             format!("{class_link} {ship_type_link}")
         }
         _ => class_link,
+    }
+}
+
+fn render_arrow_template(params: &str) -> String {
+    let params = template_positional_params(params);
+    match params
+        .first()
+        .map(|value| value.trim().to_ascii_lowercase())
+        .as_deref()
+    {
+        Some("l" | "left" | "w") => "←".to_string(),
+        Some("u" | "up" | "n") => "↑".to_string(),
+        Some("d" | "down" | "s") => "↓".to_string(),
+        Some("ne") => "↗".to_string(),
+        Some("nw") => "↖".to_string(),
+        Some("se") => "↘".to_string(),
+        Some("sw") => "↙".to_string(),
+        _ => "→".to_string(),
     }
 }
 
