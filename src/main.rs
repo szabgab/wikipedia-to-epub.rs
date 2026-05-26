@@ -1,5 +1,5 @@
 use std::{
-    cell::RefCell,
+    cell::{Cell, RefCell},
     collections::HashMap,
     env,
     error::Error,
@@ -7,6 +7,7 @@ use std::{
     fs::{self, File},
     io::Write,
     path::{Path, PathBuf},
+    rc::Rc,
     time::{SystemTime, UNIX_EPOCH},
 };
 
@@ -299,9 +300,12 @@ impl WikipediaApiPageSource {
 impl PageSource for WikipediaApiPageSource {
     fn load_page(&self, article: &str) -> AppResult<PageResponse> {
         let cache_path = self.cache.page_json_path(&self.language, article);
-        let (payload, source) = read_or_fetch_text(&cache_path, self.cache.refresh, || {
-            self.fetch_page_payload(article)
-        })?;
+        let (payload, source) = read_or_fetch_text_with_stats(
+            &cache_path,
+            self.cache.refresh,
+            Some(&self.cache.stats.json),
+            || self.fetch_page_payload(article),
+        )?;
         match Self::parse_page_payload(article, &payload) {
             Ok(page) => Ok(page),
             Err(err) if source == CacheSource::Hit => {
@@ -311,8 +315,11 @@ impl PageSource for WikipediaApiPageSource {
                     error = %err,
                     "cached page JSON could not be parsed; refreshing cache"
                 );
-                let payload = self.fetch_page_payload(article)?;
-                write_cache_text(&cache_path, &payload)?;
+                let payload = fetch_and_write_text_with_stats(
+                    &cache_path,
+                    Some(&self.cache.stats.json),
+                    || self.fetch_page_payload(article),
+                )?;
                 Self::parse_page_payload(article, &payload)
             }
             Err(err) => Err(err),
@@ -324,11 +331,16 @@ impl PageSource for WikipediaApiPageSource {
 struct DownloadCache {
     root: PathBuf,
     refresh: bool,
+    stats: DownloadStats,
 }
 
 impl DownloadCache {
-    fn new(root: PathBuf, refresh: bool) -> Self {
-        Self { root, refresh }
+    fn new(root: PathBuf, refresh: bool, stats: DownloadStats) -> Self {
+        Self {
+            root,
+            refresh,
+            stats,
+        }
     }
 
     fn page_json_path(&self, language: &str, article: &str) -> PathBuf {
@@ -351,6 +363,39 @@ impl DownloadCache {
             .join("images")
             .join("files")
             .join(format!("{}.{}", cache_key(url), extension))
+    }
+}
+
+#[derive(Clone, Debug, Default)]
+struct DownloadStats {
+    json: Rc<FileDownloadStats>,
+    images: Rc<FileDownloadStats>,
+}
+
+#[derive(Debug, Default)]
+struct FileDownloadStats {
+    needed: Cell<usize>,
+    from_cache: Cell<usize>,
+    downloaded: Cell<usize>,
+    failed: Cell<usize>,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+struct FileDownloadSnapshot {
+    needed: usize,
+    from_cache: usize,
+    downloaded: usize,
+    failed: usize,
+}
+
+impl FileDownloadStats {
+    fn snapshot(&self) -> FileDownloadSnapshot {
+        FileDownloadSnapshot {
+            needed: self.needed.get(),
+            from_cache: self.from_cache.get(),
+            downloaded: self.downloaded.get(),
+            failed: self.failed.get(),
+        }
     }
 }
 
@@ -408,12 +453,14 @@ fn run(args: CliArgs) -> AppResult<()> {
     }
 
     let local_pages_dir = args.local_pages_dir.clone();
+    let download_stats = DownloadStats::default();
     let download_cache = if local_pages_dir.is_some() {
         None
     } else {
         Some(DownloadCache::new(
             default_cache_root()?,
             args.refresh_cache,
+            download_stats.clone(),
         ))
     };
     let page_source: Box<dyn PageSource> = if let Some(pages_dir) = args.local_pages_dir {
@@ -474,6 +521,7 @@ fn run(args: CliArgs) -> AppResult<()> {
         "Skipped templates: recognized={}, unknown={}",
         total_template_skip_counts.recognized, total_template_skip_counts.unknown
     );
+    log_download_stats(&download_stats);
 
     Ok(())
 }
@@ -517,32 +565,121 @@ fn default_cache_root() -> AppResult<PathBuf> {
         })
 }
 
+#[cfg(test)]
 fn read_or_fetch_text(
     cache_path: &Path,
     refresh: bool,
     fetch: impl FnOnce() -> AppResult<String>,
 ) -> AppResult<(String, CacheSource)> {
+    read_or_fetch_text_with_stats(cache_path, refresh, None, fetch)
+}
+
+fn read_or_fetch_text_with_stats(
+    cache_path: &Path,
+    refresh: bool,
+    stats: Option<&FileDownloadStats>,
+    fetch: impl FnOnce() -> AppResult<String>,
+) -> AppResult<(String, CacheSource)> {
+    if let Some(stats) = stats {
+        stats.needed.set(stats.needed.get() + 1);
+    }
     if !refresh && cache_path.is_file() {
+        if let Some(stats) = stats {
+            stats.from_cache.set(stats.from_cache.get() + 1);
+        }
         return Ok((fs::read_to_string(cache_path)?, CacheSource::Hit));
     }
 
-    let content = fetch()?;
-    write_cache_text(cache_path, &content)?;
+    let content = fetch_and_write_text_with_stats(cache_path, stats, fetch)?;
     Ok((content, CacheSource::Refreshed))
 }
 
+fn fetch_and_write_text_with_stats(
+    cache_path: &Path,
+    stats: Option<&FileDownloadStats>,
+    fetch: impl FnOnce() -> AppResult<String>,
+) -> AppResult<String> {
+    let content = match fetch() {
+        Ok(content) => content,
+        Err(err) => {
+            if let Some(stats) = stats {
+                stats.failed.set(stats.failed.get() + 1);
+            }
+            return Err(err);
+        }
+    };
+    if let Err(err) = write_cache_text(cache_path, &content) {
+        if let Some(stats) = stats {
+            stats.failed.set(stats.failed.get() + 1);
+        }
+        return Err(err);
+    }
+    if let Some(stats) = stats {
+        stats.downloaded.set(stats.downloaded.get() + 1);
+    }
+    Ok(content)
+}
+
+#[cfg(test)]
 fn read_or_fetch_bytes(
     cache_path: &Path,
     refresh: bool,
     fetch: impl FnOnce() -> AppResult<Vec<u8>>,
 ) -> AppResult<(Vec<u8>, CacheSource)> {
+    read_or_fetch_bytes_with_stats(cache_path, refresh, None, fetch)
+}
+
+fn read_or_fetch_bytes_with_stats(
+    cache_path: &Path,
+    refresh: bool,
+    stats: Option<&FileDownloadStats>,
+    fetch: impl FnOnce() -> AppResult<Vec<u8>>,
+) -> AppResult<(Vec<u8>, CacheSource)> {
+    if let Some(stats) = stats {
+        stats.needed.set(stats.needed.get() + 1);
+    }
     if !refresh && cache_path.is_file() {
+        if let Some(stats) = stats {
+            stats.from_cache.set(stats.from_cache.get() + 1);
+        }
         return Ok((fs::read(cache_path)?, CacheSource::Hit));
     }
 
-    let content = fetch()?;
-    write_cache_bytes(cache_path, &content)?;
+    let content = match fetch() {
+        Ok(content) => content,
+        Err(err) => {
+            if let Some(stats) = stats {
+                stats.failed.set(stats.failed.get() + 1);
+            }
+            return Err(err);
+        }
+    };
+    if let Err(err) = write_cache_bytes(cache_path, &content) {
+        if let Some(stats) = stats {
+            stats.failed.set(stats.failed.get() + 1);
+        }
+        return Err(err);
+    }
+    if let Some(stats) = stats {
+        stats.downloaded.set(stats.downloaded.get() + 1);
+    }
     Ok((content, CacheSource::Refreshed))
+}
+
+fn log_download_stats(stats: &DownloadStats) {
+    let json = stats.json.snapshot();
+    let images = stats.images.snapshot();
+    info!(
+        json_needed = json.needed,
+        json_from_cache = json.from_cache,
+        json_downloaded = json.downloaded,
+        json_failed = json.failed,
+        image_needed = images.needed,
+        image_from_cache = images.from_cache,
+        image_downloaded = images.downloaded,
+        image_failed = images.failed,
+        "download cache report"
+    );
 }
 
 fn write_cache_text(cache_path: &Path, content: &str) -> AppResult<()> {
@@ -4018,10 +4155,14 @@ fn resolve_image(
                 )
             });
             let bytes = if let Some(cache_path) = cache_path {
-                let (bytes, source) = read_or_fetch_bytes(
+                let image_download_request_count = cache.map_or(1, |cache| {
+                    cache.stats.images.downloaded.get() + cache.stats.images.failed.get() + 1
+                });
+                let (bytes, source) = read_or_fetch_bytes_with_stats(
                     &cache_path,
                     cache.is_some_and(|cache| cache.refresh),
-                    || download_image_bytes(client, &image, &info),
+                    cache.map(|cache| cache.stats.images.as_ref()),
+                    || download_image_bytes(client, &image, &info, image_download_request_count),
                 )?;
                 if source == CacheSource::Hit {
                     info!(
@@ -4032,7 +4173,7 @@ fn resolve_image(
                 }
                 bytes
             } else {
-                download_image_bytes(client, &image, &info)?
+                download_image_bytes(client, &image, &info, 1)?
             };
             Ok(ResolvedImage {
                 href: image.href,
@@ -4047,10 +4188,12 @@ fn download_image_bytes(
     client: &Client,
     image: &BookImage,
     info: &RemoteImageInfo,
+    image_download_request_count: usize,
 ) -> AppResult<Vec<u8>> {
     info!(
         image_url = %info.url,
         source_pages = %image.source_pages.join(", "),
+        image_download_request_count = image_download_request_count,
         "downloading image"
     );
     let response = client.get(&info.url).send()?;
@@ -4079,9 +4222,12 @@ fn load_remote_image_info(
 ) -> AppResult<RemoteImageInfo> {
     let cache_path = cache.map(|cache| cache.image_metadata_path(wikipedia_language, title));
     let (payload, source) = if let Some(cache_path) = cache_path.as_deref() {
-        read_or_fetch_text(cache_path, cache.is_some_and(|cache| cache.refresh), || {
-            fetch_remote_image_metadata_payload(client, api_url, title)
-        })?
+        read_or_fetch_text_with_stats(
+            cache_path,
+            cache.is_some_and(|cache| cache.refresh),
+            cache.map(|cache| cache.stats.json.as_ref()),
+            || fetch_remote_image_metadata_payload(client, api_url, title),
+        )?
     } else {
         (
             fetch_remote_image_metadata_payload(client, api_url, title)?,
@@ -4098,8 +4244,11 @@ fn load_remote_image_info(
                 error = %err,
                 "cached image metadata JSON could not be parsed; refreshing cache"
             );
-            let payload = fetch_remote_image_metadata_payload(client, api_url, title)?;
-            write_cache_text(&cache_path, &payload)?;
+            let payload = fetch_and_write_text_with_stats(
+                &cache_path,
+                cache.map(|cache| cache.stats.json.as_ref()),
+                || fetch_remote_image_metadata_payload(client, api_url, title),
+            )?;
             parse_remote_image_info(title, &payload)
         }
         Err(err) => Err(err),

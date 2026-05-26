@@ -507,6 +507,8 @@ Latest verification passed: 78 unit tests passed, 5 local book integration tests
 * Local `--local` fixture mode ignores the live download cache.
 * Cache entry filenames use fixed-length deterministic hash keys so long image URLs cannot exceed filesystem filename limits.
 * Cached image hits log the original image URL and the cache filename before returning the cached bytes.
+* Live runs log final JSON-file and image-file counts for needed, cache hit, downloaded, and failed files.
+* The `downloading image` log includes the running image download request count.
 
 ### Files Changed
 
@@ -516,12 +518,15 @@ Latest verification passed: 78 unit tests passed, 5 local book integration tests
   * Refreshes cached JSON when it exists but cannot be parsed.
   * Switched cache keys from full hex-encoded input strings to fixed-length hashes after long image URLs produced `File name too long`.
   * Added `info` logging for cached image hits with `image_url` and `cached_filename`.
+  * Added download statistics for JSON files and image files, including the final `download cache report`.
+  * Added `image_download_request_count` to the `downloading image` log.
 * `src/tests.rs`
   * Added CLI and cache helper tests for miss, hit, refresh, bytes, and non-ASCII cache keys.
   * Added long-image-URL cache path coverage.
   * Extended byte-cache tests to verify hit/refreshed source reporting.
+  * Added download-stat counter coverage for cache miss, cache hit, and failed download paths.
 * `README.md`
-  * Documented the cache location, refresh flag, and local-mode behavior.
+  * Documented the cache location, refresh flag, local-mode behavior, and final cache report.
 * `docs/codex-notes.md`
   * Added this session summary.
 
@@ -529,10 +534,11 @@ Latest verification passed: 78 unit tests passed, 5 local book integration tests
 
 * `cargo test cache -- --nocapture`
 * `cargo test download_cache_paths_are_safe_for_non_ascii_titles -- --nocapture`
+* `cargo test read_or_fetch_helpers_update_download_stats -- --nocapture`
 * `cargo test --test books -- --nocapture`
 * `cargo test`
 
-Latest verification passed: 84 unit tests passed, 5 local book integration tests passed, and 1 real Wikipedia API integration test remains ignored by default.
+Latest verification passed: 85 unit tests passed, 5 local book integration tests passed, and 1 real Wikipedia API integration test remains ignored by default.
 
 ### Pending Follow-Ups
 

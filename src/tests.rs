@@ -1847,8 +1847,66 @@ fn read_or_fetch_bytes_uses_cache_and_refreshes() {
 }
 
 #[test]
+fn read_or_fetch_helpers_update_download_stats() {
+    let text_stats = FileDownloadStats::default();
+    let text_path = test_cache_path("text-stats").join("value.txt");
+    let (_content, source) =
+        read_or_fetch_text_with_stats(&text_path, false, Some(&text_stats), || {
+            Ok("fresh text".to_string())
+        })
+        .expect("text cache miss fetches");
+    assert_eq!(source, CacheSource::Refreshed);
+    assert_eq!(
+        text_stats.snapshot(),
+        FileDownloadSnapshot {
+            needed: 1,
+            from_cache: 0,
+            downloaded: 1,
+            failed: 0,
+        }
+    );
+
+    let (_content, source) =
+        read_or_fetch_text_with_stats(&text_path, false, Some(&text_stats), || {
+            Ok("unused".to_string())
+        })
+        .expect("text cache hit reads");
+    assert_eq!(source, CacheSource::Hit);
+    assert_eq!(
+        text_stats.snapshot(),
+        FileDownloadSnapshot {
+            needed: 2,
+            from_cache: 1,
+            downloaded: 1,
+            failed: 0,
+        }
+    );
+
+    let bytes_stats = FileDownloadStats::default();
+    let bytes_path = test_cache_path("bytes-stats").join("value.bin");
+    let err = read_or_fetch_bytes_with_stats(&bytes_path, false, Some(&bytes_stats), || {
+        Err(AppError::Message("download failed".to_string()))
+    })
+    .expect_err("byte download failure is returned");
+    assert!(err.to_string().contains("download failed"));
+    assert_eq!(
+        bytes_stats.snapshot(),
+        FileDownloadSnapshot {
+            needed: 1,
+            from_cache: 0,
+            downloaded: 0,
+            failed: 1,
+        }
+    );
+}
+
+#[test]
 fn download_cache_paths_are_safe_for_non_ascii_titles() {
-    let cache = DownloadCache::new(PathBuf::from("/tmp/cache-root"), false);
+    let cache = DownloadCache::new(
+        PathBuf::from("/tmp/cache-root"),
+        false,
+        DownloadStats::default(),
+    );
     let long_url = format!(
         "https://upload.wikimedia.org/wikipedia/commons/thumb/{}",
         "very-long-path-segment/".repeat(40)
