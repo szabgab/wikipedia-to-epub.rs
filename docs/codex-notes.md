@@ -498,6 +498,46 @@ Latest verification passed: 78 unit tests passed, 5 local book integration tests
 
 * No known pending follow-ups for this logging change.
 
+## 2026-05-26 Download Cache Session
+
+### Decisions Made
+
+* Live Wikipedia downloads are cached in the OS user cache directory under `wikipedia-to-epub/`.
+* `--refresh-cache` forces live page JSON, image metadata JSON, and image file downloads to refresh existing cache entries.
+* Local `--local` fixture mode ignores the live download cache.
+* Cache entry filenames use fixed-length deterministic hash keys so long image URLs cannot exceed filesystem filename limits.
+* Cached image hits log the original image URL and the cache filename before returning the cached bytes.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added `--refresh-cache`, download cache path helpers, and read/fetch/write helpers for text and byte cache entries.
+  * Cached live article JSON, image metadata JSON, and remote image bytes.
+  * Refreshes cached JSON when it exists but cannot be parsed.
+  * Switched cache keys from full hex-encoded input strings to fixed-length hashes after long image URLs produced `File name too long`.
+  * Added `info` logging for cached image hits with `image_url` and `cached_filename`.
+* `src/tests.rs`
+  * Added CLI and cache helper tests for miss, hit, refresh, bytes, and non-ASCII cache keys.
+  * Added long-image-URL cache path coverage.
+  * Extended byte-cache tests to verify hit/refreshed source reporting.
+* `README.md`
+  * Documented the cache location, refresh flag, and local-mode behavior.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `cargo test cache -- --nocapture`
+* `cargo test download_cache_paths_are_safe_for_non_ascii_titles -- --nocapture`
+* `cargo test --test books -- --nocapture`
+* `cargo test`
+
+Latest verification passed: 84 unit tests passed, 5 local book integration tests passed, and 1 real Wikipedia API integration test remains ignored by default.
+
+### Pending Follow-Ups
+
+* No known pending follow-ups for this cache change.
+
 ## 2026-05-25
 
 ### Summary

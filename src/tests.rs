@@ -1729,7 +1729,16 @@ fn parse_args_accepts_local_pages_dir() {
 
     assert_eq!(args.config_path, PathBuf::from("books/korea.yaml"));
     assert_eq!(args.local_pages_dir, Some(PathBuf::from("pages")));
+    assert!(!args.refresh_cache);
     assert_eq!(args.log_level, Level::INFO);
+}
+
+#[test]
+fn parse_args_accepts_refresh_cache() {
+    let args = parse_args_from(["wikipedia-to-epub", "books/korea.yaml", "--refresh-cache"])
+        .expect("args should parse");
+
+    assert!(args.refresh_cache);
 }
 
 #[test]
@@ -1748,6 +1757,129 @@ fn parse_args_rejects_unknown_flags() {
     let err_message = err.to_string();
     assert!(err_message.contains("unexpected argument"));
     assert!(err_message.contains("--bogus"));
+}
+
+#[test]
+fn read_or_fetch_text_writes_cache_on_miss() {
+    let cache_path = test_cache_path("text-miss").join("value.txt");
+    let calls = std::cell::Cell::new(0);
+
+    let (content, source) = read_or_fetch_text(&cache_path, false, || {
+        calls.set(calls.get() + 1);
+        Ok("fresh text".to_string())
+    })
+    .expect("cache miss fetches");
+
+    assert_eq!(content, "fresh text");
+    assert_eq!(source, CacheSource::Refreshed);
+    assert_eq!(calls.get(), 1);
+    assert_eq!(fs::read_to_string(cache_path).unwrap(), "fresh text");
+}
+
+#[test]
+fn read_or_fetch_text_uses_cache_hit_without_fetching() {
+    let cache_path = test_cache_path("text-hit").join("value.txt");
+    write_cache_text(&cache_path, "cached text").expect("cache writes");
+    let calls = std::cell::Cell::new(0);
+
+    let (content, source) = read_or_fetch_text(&cache_path, false, || {
+        calls.set(calls.get() + 1);
+        Ok("fresh text".to_string())
+    })
+    .expect("cache hit reads");
+
+    assert_eq!(content, "cached text");
+    assert_eq!(source, CacheSource::Hit);
+    assert_eq!(calls.get(), 0);
+}
+
+#[test]
+fn read_or_fetch_text_refreshes_existing_cache() {
+    let cache_path = test_cache_path("text-refresh").join("value.txt");
+    write_cache_text(&cache_path, "cached text").expect("cache writes");
+    let calls = std::cell::Cell::new(0);
+
+    let (content, source) = read_or_fetch_text(&cache_path, true, || {
+        calls.set(calls.get() + 1);
+        Ok("fresh text".to_string())
+    })
+    .expect("cache refresh fetches");
+
+    assert_eq!(content, "fresh text");
+    assert_eq!(source, CacheSource::Refreshed);
+    assert_eq!(calls.get(), 1);
+    assert_eq!(fs::read_to_string(cache_path).unwrap(), "fresh text");
+}
+
+#[test]
+fn read_or_fetch_bytes_uses_cache_and_refreshes() {
+    let cache_path = test_cache_path("bytes").join("value.bin");
+    let miss_calls = std::cell::Cell::new(0);
+    let (bytes, source) = read_or_fetch_bytes(&cache_path, false, || {
+        miss_calls.set(miss_calls.get() + 1);
+        Ok(vec![1, 2, 3])
+    })
+    .expect("cache miss fetches bytes");
+    assert_eq!(bytes, vec![1, 2, 3]);
+    assert_eq!(source, CacheSource::Refreshed);
+    assert_eq!(miss_calls.get(), 1);
+
+    let hit_calls = std::cell::Cell::new(0);
+    let (bytes, source) = read_or_fetch_bytes(&cache_path, false, || {
+        hit_calls.set(hit_calls.get() + 1);
+        Ok(vec![4, 5, 6])
+    })
+    .expect("cache hit reads bytes");
+    assert_eq!(bytes, vec![1, 2, 3]);
+    assert_eq!(source, CacheSource::Hit);
+    assert_eq!(hit_calls.get(), 0);
+
+    let refresh_calls = std::cell::Cell::new(0);
+    let (bytes, source) = read_or_fetch_bytes(&cache_path, true, || {
+        refresh_calls.set(refresh_calls.get() + 1);
+        Ok(vec![7, 8, 9])
+    })
+    .expect("cache refresh fetches bytes");
+    assert_eq!(bytes, vec![7, 8, 9]);
+    assert_eq!(source, CacheSource::Refreshed);
+    assert_eq!(refresh_calls.get(), 1);
+    assert_eq!(fs::read(cache_path).unwrap(), vec![7, 8, 9]);
+}
+
+#[test]
+fn download_cache_paths_are_safe_for_non_ascii_titles() {
+    let cache = DownloadCache::new(PathBuf::from("/tmp/cache-root"), false);
+    let long_url = format!(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/{}",
+        "very-long-path-segment/".repeat(40)
+    );
+
+    assert_eq!(
+        cache.page_json_path("ko", "서울").file_name().unwrap(),
+        "2761d049a3924bf7.json"
+    );
+    assert_eq!(
+        cache
+            .image_metadata_path("en", "Busan Port (1).jpg")
+            .file_name()
+            .unwrap(),
+        "1ebe8870dbb0cdee.json"
+    );
+    assert_eq!(
+        cache
+            .image_file_path("https://upload.wikimedia.org/example image.jpg", "jpg")
+            .file_name()
+            .unwrap(),
+        "77b8aaaf434fea44.jpg"
+    );
+    assert_eq!(
+        cache
+            .image_file_path(&long_url, "jpg")
+            .file_name()
+            .unwrap()
+            .len(),
+        "77b8aaaf434fea44.jpg".len()
+    );
 }
 
 #[test]
@@ -1775,4 +1907,15 @@ fn user_agent_includes_contact_information() {
     assert!(USER_AGENT.contains('/'));
     assert!(USER_AGENT.contains("github.com/szabgab/wikipedia-to-epub.rs"));
     assert!(USER_AGENT.contains("contact:"));
+}
+
+fn test_cache_path(name: &str) -> PathBuf {
+    let nanos = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("system clock is after Unix epoch")
+        .as_nanos();
+    env::temp_dir().join(format!(
+        "wikipedia-to-epub-cache-test-{name}-{}-{nanos}",
+        std::process::id()
+    ))
 }

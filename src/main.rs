@@ -16,7 +16,7 @@ use regex::Regex;
 use reqwest::{
     Url,
     blocking::Client,
-    header::{CONTENT_TYPE, HeaderMap, RETRY_AFTER},
+    header::{HeaderMap, RETRY_AFTER},
 };
 use serde::Deserialize;
 use tracing::{Level, debug, info, warn};
@@ -216,6 +216,8 @@ struct CliArgs {
     config_path: PathBuf,
     #[arg(long = "local", value_name = "pages-dir")]
     local_pages_dir: Option<PathBuf>,
+    #[arg(long = "refresh-cache")]
+    refresh_cache: bool,
     #[arg(long = "log", value_name = "level", default_value_t = Level::INFO)]
     log_level: Level,
 }
@@ -227,18 +229,23 @@ trait PageSource {
 struct WikipediaApiPageSource {
     client: Client,
     api_url: Url,
+    language: String,
+    cache: DownloadCache,
 }
 
 impl WikipediaApiPageSource {
-    fn new(language: &str) -> AppResult<Self> {
+    fn new(language: &str, cache: DownloadCache) -> AppResult<Self> {
         let client = Client::builder().user_agent(USER_AGENT).build()?;
         let api_url = wikipedia_parse_api_url(language)?;
-        Ok(Self { client, api_url })
+        Ok(Self {
+            client,
+            api_url,
+            language: language.to_string(),
+            cache,
+        })
     }
-}
 
-impl PageSource for WikipediaApiPageSource {
-    fn load_page(&self, article: &str) -> AppResult<PageResponse> {
+    fn fetch_page_payload(&self, article: &str) -> AppResult<String> {
         let response = self
             .client
             .get(self.api_url.clone())
@@ -276,15 +283,81 @@ impl PageSource for WikipediaApiPageSource {
             return Err(AppError::Message(message));
         }
 
-        let page = serde_json::from_str::<PageResponse>(&payload).map_err(|err| {
+        info!(article = article, "downloaded page");
+        Ok(payload)
+    }
+
+    fn parse_page_payload(article: &str, payload: &str) -> AppResult<PageResponse> {
+        serde_json::from_str::<PageResponse>(payload).map_err(|err| {
             AppError::Message(format!(
                 "failed to parse Wikipedia response for '{article}': {err}"
             ))
-        })?;
-        info!(article = article, "downloaded page");
-
-        Ok(page)
+        })
     }
+}
+
+impl PageSource for WikipediaApiPageSource {
+    fn load_page(&self, article: &str) -> AppResult<PageResponse> {
+        let cache_path = self.cache.page_json_path(&self.language, article);
+        let (payload, source) = read_or_fetch_text(&cache_path, self.cache.refresh, || {
+            self.fetch_page_payload(article)
+        })?;
+        match Self::parse_page_payload(article, &payload) {
+            Ok(page) => Ok(page),
+            Err(err) if source == CacheSource::Hit => {
+                warn!(
+                    article = article,
+                    cache_path = %cache_path.display(),
+                    error = %err,
+                    "cached page JSON could not be parsed; refreshing cache"
+                );
+                let payload = self.fetch_page_payload(article)?;
+                write_cache_text(&cache_path, &payload)?;
+                Self::parse_page_payload(article, &payload)
+            }
+            Err(err) => Err(err),
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
+struct DownloadCache {
+    root: PathBuf,
+    refresh: bool,
+}
+
+impl DownloadCache {
+    fn new(root: PathBuf, refresh: bool) -> Self {
+        Self { root, refresh }
+    }
+
+    fn page_json_path(&self, language: &str, article: &str) -> PathBuf {
+        self.root
+            .join("pages")
+            .join(language)
+            .join(format!("{}.json", cache_key(article)))
+    }
+
+    fn image_metadata_path(&self, language: &str, title: &str) -> PathBuf {
+        self.root
+            .join("images")
+            .join("metadata")
+            .join(language)
+            .join(format!("{}.json", cache_key(title)))
+    }
+
+    fn image_file_path(&self, url: &str, extension: &str) -> PathBuf {
+        self.root
+            .join("images")
+            .join("files")
+            .join(format!("{}.{}", cache_key(url), extension))
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum CacheSource {
+    Hit,
+    Refreshed,
 }
 
 struct FixturePageSource {
@@ -335,10 +408,23 @@ fn run(args: CliArgs) -> AppResult<()> {
     }
 
     let local_pages_dir = args.local_pages_dir.clone();
+    let download_cache = if local_pages_dir.is_some() {
+        None
+    } else {
+        Some(DownloadCache::new(
+            default_cache_root()?,
+            args.refresh_cache,
+        ))
+    };
     let page_source: Box<dyn PageSource> = if let Some(pages_dir) = args.local_pages_dir {
         Box::new(FixturePageSource::new(pages_dir))
     } else {
-        Box::new(WikipediaApiPageSource::new(&wikipedia_language)?)
+        Box::new(WikipediaApiPageSource::new(
+            &wikipedia_language,
+            download_cache
+                .clone()
+                .expect("download cache is present for live API mode"),
+        )?)
     };
     let mut image_registry = if config.images {
         Some(ImageRegistry::new(local_pages_dir.as_deref())?)
@@ -377,7 +463,7 @@ fn run(args: CliArgs) -> AppResult<()> {
     );
 
     let images = if let Some(image_registry) = image_registry {
-        resolve_images(image_registry, &wikipedia_language)?
+        resolve_images(image_registry, &wikipedia_language, download_cache.as_ref())?
     } else {
         Vec::new()
     };
@@ -407,6 +493,77 @@ where
 fn read_json<T: for<'de> Deserialize<'de>>(path: &Path) -> AppResult<T> {
     let content = fs::read_to_string(path)?;
     Ok(serde_json::from_str(&content)?)
+}
+
+fn default_cache_root() -> AppResult<PathBuf> {
+    let cache_dir = if cfg!(target_os = "windows") {
+        env::var_os("LOCALAPPDATA").map(PathBuf::from)
+    } else if cfg!(target_os = "macos") {
+        env::var_os("HOME")
+            .map(PathBuf::from)
+            .map(|home| home.join("Library").join("Caches"))
+    } else {
+        env::var_os("XDG_CACHE_HOME")
+            .map(PathBuf::from)
+            .or_else(|| env::var_os("HOME").map(|home| PathBuf::from(home).join(".cache")))
+    };
+
+    cache_dir
+        .map(|path| path.join("wikipedia-to-epub"))
+        .ok_or_else(|| {
+            AppError::Message(
+                "could not determine the user cache directory for live downloads".to_string(),
+            )
+        })
+}
+
+fn read_or_fetch_text(
+    cache_path: &Path,
+    refresh: bool,
+    fetch: impl FnOnce() -> AppResult<String>,
+) -> AppResult<(String, CacheSource)> {
+    if !refresh && cache_path.is_file() {
+        return Ok((fs::read_to_string(cache_path)?, CacheSource::Hit));
+    }
+
+    let content = fetch()?;
+    write_cache_text(cache_path, &content)?;
+    Ok((content, CacheSource::Refreshed))
+}
+
+fn read_or_fetch_bytes(
+    cache_path: &Path,
+    refresh: bool,
+    fetch: impl FnOnce() -> AppResult<Vec<u8>>,
+) -> AppResult<(Vec<u8>, CacheSource)> {
+    if !refresh && cache_path.is_file() {
+        return Ok((fs::read(cache_path)?, CacheSource::Hit));
+    }
+
+    let content = fetch()?;
+    write_cache_bytes(cache_path, &content)?;
+    Ok((content, CacheSource::Refreshed))
+}
+
+fn write_cache_text(cache_path: &Path, content: &str) -> AppResult<()> {
+    write_cache_bytes(cache_path, content.as_bytes())
+}
+
+fn write_cache_bytes(cache_path: &Path, content: &[u8]) -> AppResult<()> {
+    if let Some(parent) = cache_path.parent() {
+        fs::create_dir_all(parent)?;
+    }
+    fs::write(cache_path, content)?;
+    Ok(())
+}
+
+fn cache_key(value: &str) -> String {
+    let mut hash = 0xcbf29ce484222325u64;
+    for byte in value.as_bytes() {
+        hash ^= u64::from(*byte);
+        hash = hash.wrapping_mul(0x100000001b3);
+    }
+    format!("{hash:016x}")
 }
 
 fn read_config(path: &Path) -> AppResult<BookConfig> {
@@ -3820,61 +3977,91 @@ fn media_type_from_title(title: &str) -> &'static str {
 fn resolve_images(
     registry: ImageRegistry,
     wikipedia_language: &str,
+    cache: Option<&DownloadCache>,
 ) -> AppResult<Vec<ResolvedImage>> {
     let client = Client::builder().user_agent(USER_AGENT).build()?;
     let api_url = wikipedia_parse_api_url(wikipedia_language)?;
     registry
         .images
         .into_iter()
-        .filter_map(|image| match resolve_image(image, &client, &api_url) {
-            Ok(image) => Some(Ok(image)),
-            Err(err) => {
-                warn!(error = %err, "image could not be resolved; omitting image asset");
-                None
+        .filter_map(|image| {
+            match resolve_image(image, &client, &api_url, wikipedia_language, cache) {
+                Ok(image) => Some(Ok(image)),
+                Err(err) => {
+                    warn!(error = %err, "image could not be resolved; omitting image asset");
+                    None
+                }
             }
         })
         .collect()
 }
 
-fn resolve_image(image: BookImage, client: &Client, api_url: &Url) -> AppResult<ResolvedImage> {
+fn resolve_image(
+    image: BookImage,
+    client: &Client,
+    api_url: &Url,
+    wikipedia_language: &str,
+    cache: Option<&DownloadCache>,
+) -> AppResult<ResolvedImage> {
     match image.source {
         BookImageSource::Local(path) => Ok(ResolvedImage {
             href: image.href,
             media_type: image.media_type,
             bytes: fs::read(path)?,
         }),
-        BookImageSource::Remote { title } => {
-            let info = load_remote_image_info(client, api_url, &title)?;
-            info!(
-                image_url = %info.url,
-                source_pages = %image.source_pages.join(", "),
-                "downloading image"
-            );
-            let response = client.get(&info.url).send()?;
-            if !response.status().is_success() {
-                return Err(AppError::Message(format!(
-                    "image download for '{}' failed with status {}",
-                    image.title,
-                    response.status()
-                )));
-            }
-            let content_type = response
-                .headers()
-                .get(CONTENT_TYPE)
-                .and_then(|value| value.to_str().ok())
-                .and_then(|value| value.split(';').next())
-                .map(str::trim)
-                .filter(|value| !value.is_empty())
-                .unwrap_or(&info.media_type)
-                .to_string();
-            let bytes = response.bytes()?.to_vec();
+        BookImageSource::Remote { ref title } => {
+            let info = load_remote_image_info(client, api_url, &title, wikipedia_language, cache)?;
+            let cache_path = cache.map(|cache| {
+                cache.image_file_path(
+                    &info.url,
+                    &image_cache_extension(&info.url, &info.media_type, &image.title),
+                )
+            });
+            let bytes = if let Some(cache_path) = cache_path {
+                let (bytes, source) = read_or_fetch_bytes(
+                    &cache_path,
+                    cache.is_some_and(|cache| cache.refresh),
+                    || download_image_bytes(client, &image, &info),
+                )?;
+                if source == CacheSource::Hit {
+                    info!(
+                        image_url = %info.url,
+                        cached_filename = %cache_path.display(),
+                        "using cached image"
+                    );
+                }
+                bytes
+            } else {
+                download_image_bytes(client, &image, &info)?
+            };
             Ok(ResolvedImage {
                 href: image.href,
-                media_type: content_type,
+                media_type: info.media_type,
                 bytes,
             })
         }
     }
+}
+
+fn download_image_bytes(
+    client: &Client,
+    image: &BookImage,
+    info: &RemoteImageInfo,
+) -> AppResult<Vec<u8>> {
+    info!(
+        image_url = %info.url,
+        source_pages = %image.source_pages.join(", "),
+        "downloading image"
+    );
+    let response = client.get(&info.url).send()?;
+    if !response.status().is_success() {
+        return Err(AppError::Message(format!(
+            "image download for '{}' failed with status {}",
+            image.title,
+            response.status()
+        )));
+    }
+    Ok(response.bytes()?.to_vec())
 }
 
 #[derive(Debug)]
@@ -3887,7 +4074,43 @@ fn load_remote_image_info(
     client: &Client,
     api_url: &Url,
     title: &str,
+    wikipedia_language: &str,
+    cache: Option<&DownloadCache>,
 ) -> AppResult<RemoteImageInfo> {
+    let cache_path = cache.map(|cache| cache.image_metadata_path(wikipedia_language, title));
+    let (payload, source) = if let Some(cache_path) = cache_path.as_deref() {
+        read_or_fetch_text(cache_path, cache.is_some_and(|cache| cache.refresh), || {
+            fetch_remote_image_metadata_payload(client, api_url, title)
+        })?
+    } else {
+        (
+            fetch_remote_image_metadata_payload(client, api_url, title)?,
+            CacheSource::Refreshed,
+        )
+    };
+    match parse_remote_image_info(title, &payload) {
+        Ok(info) => Ok(info),
+        Err(err) if source == CacheSource::Hit => {
+            let cache_path = cache_path.expect("cache path is present for cache hit");
+            warn!(
+                image = title,
+                cache_path = %cache_path.display(),
+                error = %err,
+                "cached image metadata JSON could not be parsed; refreshing cache"
+            );
+            let payload = fetch_remote_image_metadata_payload(client, api_url, title)?;
+            write_cache_text(&cache_path, &payload)?;
+            parse_remote_image_info(title, &payload)
+        }
+        Err(err) => Err(err),
+    }
+}
+
+fn fetch_remote_image_metadata_payload(
+    client: &Client,
+    api_url: &Url,
+    title: &str,
+) -> AppResult<String> {
     let title_param = format!("File:{title}");
     let response = client
         .get(api_url.clone())
@@ -3906,7 +4129,11 @@ fn load_remote_image_info(
             response.status()
         )));
     }
-    let value = response.json::<serde_json::Value>()?;
+    Ok(response.text()?)
+}
+
+fn parse_remote_image_info(title: &str, payload: &str) -> AppResult<RemoteImageInfo> {
+    let value = serde_json::from_str::<serde_json::Value>(payload)?;
     let pages = value
         .get("query")
         .and_then(|query| query.get("pages"))
@@ -3932,6 +4159,31 @@ fn load_remote_image_info(
         .to_string();
 
     Ok(RemoteImageInfo { url, media_type })
+}
+
+fn image_cache_extension(url: &str, media_type: &str, fallback_title: &str) -> String {
+    Url::parse(url)
+        .ok()
+        .and_then(|url| {
+            Path::new(url.path())
+                .extension()
+                .and_then(|extension| extension.to_str())
+                .map(sanitize_extension)
+        })
+        .filter(|extension| !extension.is_empty())
+        .or_else(|| image_extension_from_media_type(media_type).map(str::to_string))
+        .unwrap_or_else(|| image_extension(fallback_title))
+}
+
+fn image_extension_from_media_type(media_type: &str) -> Option<&'static str> {
+    match media_type.split(';').next().map(str::trim) {
+        Some("image/jpeg") => Some("jpg"),
+        Some("image/png") => Some("png"),
+        Some("image/gif") => Some("gif"),
+        Some("image/svg+xml") => Some("svg"),
+        Some("image/webp") => Some("webp"),
+        _ => None,
+    }
 }
 
 fn strip_file_links(text: &str) -> String {

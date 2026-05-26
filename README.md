@@ -4,6 +4,7 @@ the API of Wikipedia, download the source of the specific pages, and create an `
 * The API URL is based on the configuration language, for example: `https://en.wikipedia.org/w/api.php?action=parse&prop=wikitext&redirects=true&format=json&page=`
 * Live API fetches are throttled with a 1-second delay between requests to reduce `429 Too Many Requests` responses.
 * The book includes a generated style sheet. Images are omitted by default and can be embedded with `images: true`.
+* Live downloads are cached in the OS user cache directory under `wikipedia-to-epub/`.
 
 There are several Wikipedia page dumps in the `pages/` folder to allow tests to run without accessing the API.
 
@@ -20,6 +21,12 @@ Use local page dumps instead of downloading from Wikipedia:
 
 ```bash
 cargo run -- examples/korea.yaml --local pages
+```
+
+Refresh cached live downloads:
+
+```bash
+cargo run -- examples/korea.yaml --refresh-cache
 ```
 
 The configuration file contains:
@@ -39,7 +46,7 @@ articles:
   - Seoul
 ```
 
-Set `images: true` to embed resolvable `[[File:...]]` and `[[Image:...]]` links in the EPUB. Live runs download bounded thumbnails from Wikipedia/Commons. Local `--local` runs use image fixtures from `pages/images/manifest.json`; missing fixture images are omitted with a warning.
+Set `images: true` to embed resolvable `[[File:...]]` and `[[Image:...]]` links in the EPUB. Live runs download bounded thumbnails from Wikipedia/Commons and cache article JSON, image metadata JSON, and image files. Local `--local` runs use image fixtures from `pages/images/manifest.json` and ignore the live download cache; missing fixture images are omitted with a warning.
 
 ## Conversion rules
 
