@@ -26,6 +26,22 @@ fn generate_korea_book_from_local_page_dumps() {
 }
 
 #[test]
+fn generate_south_korea_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("south-korea");
+}
+
+#[test]
+fn generate_north_korea_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("north-korea");
+}
+
+
+#[test]
+fn generate_hangul_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("hangul");
+}
+
+#[test]
 fn generate_korean_war_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("korean-war");
 }
