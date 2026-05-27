@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
   <head>
-    <meta name="dtb:uid" content="urn:wikipedia-to-epub:normalized"/>
+    <meta name="dtb:uid" content="urn:wikipedia-to-epub:1779912563235602247"/>
     <meta name="dtb:depth" content="1"/>
     <meta name="dtb:totalPageCount" content="0"/>
     <meta name="dtb:maxPageNumber" content="0"/>
@@ -47,18 +47,6 @@
     <navPoint id="chapter-9" playOrder="10">
       <navLabel><text>Hangul</text></navLabel>
       <content src="chapter-9.xhtml"/>
-    </navPoint>
-    <navPoint id="chapter-10" playOrder="11">
-      <navLabel><text>Han dynasty</text></navLabel>
-      <content src="chapter-10.xhtml"/>
-    </navPoint>
-    <navPoint id="chapter-11" playOrder="12">
-      <navLabel><text>Korean War</text></navLabel>
-      <content src="chapter-11.xhtml"/>
-    </navPoint>
-    <navPoint id="chapter-12" playOrder="13">
-      <navLabel><text>Parhae</text></navLabel>
-      <content src="chapter-12.xhtml"/>
     </navPoint>
   </navMap>
 </ncx>

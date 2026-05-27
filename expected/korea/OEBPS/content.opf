@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package version="2.0" unique-identifier="bookid" xmlns="http://www.idpf.org/2007/opf">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
-    <dc:identifier id="bookid">urn:wikipedia-to-epub:normalized</dc:identifier>
+    <dc:identifier id="bookid">urn:wikipedia-to-epub:1779912563235602247</dc:identifier>
     <dc:title>Korea</dc:title>
     <dc:creator>Wikipedia contributors</dc:creator>
     <dc:language>en</dc:language>
@@ -22,9 +22,6 @@
     <item id="chapter-7" href="chapter-7.xhtml" media-type="application/xhtml+xml"/>
     <item id="chapter-8" href="chapter-8.xhtml" media-type="application/xhtml+xml"/>
     <item id="chapter-9" href="chapter-9.xhtml" media-type="application/xhtml+xml"/>
-    <item id="chapter-10" href="chapter-10.xhtml" media-type="application/xhtml+xml"/>
-    <item id="chapter-11" href="chapter-11.xhtml" media-type="application/xhtml+xml"/>
-    <item id="chapter-12" href="chapter-12.xhtml" media-type="application/xhtml+xml"/>
   </manifest>
   <spine toc="ncx">
     <itemref idref="nav" linear="no"/>
@@ -38,8 +35,5 @@
     <itemref idref="chapter-7"/>
     <itemref idref="chapter-8"/>
     <itemref idref="chapter-9"/>
-    <itemref idref="chapter-10"/>
-    <itemref idref="chapter-11"/>
-    <itemref idref="chapter-12"/>
   </spine>
 </package>

@@ -1,19 +1,11 @@
 metadata:
-  title: Korea
+  title: Han dynasty
   author: Wikipedia contributors
   license: Creative Commons Attribution-ShareAlike 4.0 License
   language: en
   edition: First edition
   date: 2026-05-19
-output-file: korea.epub
+output-file: han-dynasty.epub
 images: false
 articles:
-  - Korea
-  - Seoul
-  - Sejong the Great
-  - History of Korea
-  - Busan
-  - Joseon
-  - South Korea
-  - North Korea
-  - Hangul
+  - Han dynasty
