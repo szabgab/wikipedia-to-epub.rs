@@ -1,11 +1,10 @@
 
-* Always run cargo test before finalizing code changes.
+* Always run `cargo test`, `cargo fmt`, `cargo check` before finalizing code changes.
+* Always run `./sort.sh` to keep `src/navigations.csv` and `src/silent.csv` sorted.
 * When adding a new wikipedia template always write a unit-test for each template separately and also update the README.md file.
 
 * Before exiting codex do the following:
     * Update docs/codex-notes.md with a concise summary of this Codex session, including decisions made, files changed, tests run, and any pending follow-ups.
-
-* Keep `src/navigations.csv` and `src/silent.csv` sorted by running `./sort.sh`.
 
 * Always report the skills (the name of the skill) when you use one and report also if you could not find any skill when you searched for one.
 
