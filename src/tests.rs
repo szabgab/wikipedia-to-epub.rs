@@ -243,7 +243,10 @@ fn render_wikitext_silently_skips_contains_special_characters_template() {
         "en",
         None,
     );
-    assert!(!rendered.contains("Contains special characters"), "{rendered}");
+    assert!(
+        !rendered.contains("Contains special characters"),
+        "{rendered}"
+    );
     assert_eq!(
         counts,
         TemplateSkipCounts {
@@ -261,7 +264,10 @@ fn render_wikitext_formats_cite_conference_template() {
         &InternalLinks::new(),
         "en",
     );
-    assert!(rendered.contains("Smith. <em>Ancient Borders</em>. 2010"), "{rendered}");
+    assert!(
+        rendered.contains("Smith. <em>Ancient Borders</em>. 2010"),
+        "{rendered}"
+    );
 }
 
 #[test]
@@ -293,7 +299,6 @@ fn render_wikitext_silently_skips_tree_chart_and_hyphen_templates() {
         }
     );
 }
-
 
 #[test]
 fn render_wikitext_formats_korean_war_templates() {
