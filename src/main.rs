@@ -1304,6 +1304,10 @@ fn render_template(content: &str) -> String {
         render_collapsible_list_template(params)
     } else if template.eq_ignore_ascii_case("Internet Archive short film") {
         render_internet_archive_short_film_template(params)
+    } else if template.eq_ignore_ascii_case("okina") {
+        "ʻ".to_string()
+    } else if template.eq_ignore_ascii_case("'s") {
+        "'s".to_string()
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -1435,6 +1439,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("HMS")
         || template.eq_ignore_ascii_case("Collapsible list")
         || template.eq_ignore_ascii_case("Internet Archive short film")
+        || template.eq_ignore_ascii_case("okina")
+        || template.eq_ignore_ascii_case("'s")
         || is_silent_template_name(template)
 }
 

@@ -759,3 +759,38 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * Keep monitoring and implementing more templates as the book contents evolve.
+
+## Session Note: 2026-05-27 - Hangul & Han Dynasty Template Handling
+
+### Decisions Made
+
+* Implemented handling for three templates requested from `pages/Hangul.json` and `pages/Han_dynasty.json`:
+  * `Contains special characters`: Added to `src/silent.csv` to suppress warnings and skip silently. Sorted the CSV using `./sort.sh`.
+  * `okina`: Renders Polynesian glottal stop character `ʻ` (U+02BB).
+  * `'s`: Renders `'s`.
+* Verified and updated expected integration fixtures:
+  * `expected/korea/OEBPS/chapter-9.xhtml`: Now renders `University of Hawaiʻi Press` instead of `University of Hawaii Press`.
+  * `expected/korea/OEBPS/chapter-10.xhtml`: Now renders `Shiji's` instead of `Shiji` account.
+
+### Files Changed
+
+* `src/main.rs`
+  * Handled rendering of `okina` as `ʻ` and `'s` as `'s`, and registered them as handled.
+* `src/silent.csv`
+  * Added `Contains special characters` to the ignored templates list.
+* `src/tests.rs`
+  * Added unit test assertions inside `render_wikitext_formats_han_dynasty_templates` covering all three templates.
+* `README.md`
+  * Documented `okina`, `'s` under inline conversion rules, and `Contains special characters` under maintenance and metadata templates.
+* `expected/korea/OEBPS/chapter-9.xhtml`
+  * Updated with correct ʻokina character rendering.
+* `expected/korea/OEBPS/chapter-10.xhtml`
+  * Updated with possessive `'s` template rendering.
+
+### Tests Run
+
+* `cargo test` (Run twice: once with `UPDATE_FIXTURES=1` to update expected integration fixtures, and once normally to verify all 87 unit tests and 5 integration tests pass successfully).
+
+### Pending Follow-Ups
+
+* Continue monitoring pages for unrecognized templates.

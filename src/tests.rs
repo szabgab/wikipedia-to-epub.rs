@@ -220,6 +220,31 @@ fn render_wikitext_formats_han_dynasty_templates() {
         "en",
     );
     assert!(!rendered.contains("Spoken Wikipedia"), "{rendered}");
+
+    // okina
+    let rendered = render_wikitext("Sample", "{{okina}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("ʻ"), "{rendered}");
+
+    // 's
+    let rendered = render_wikitext("Sample", "''Han''{{'s}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<em>Han</em>'s"), "{rendered}");
+
+    // Contains special characters
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{Contains special characters|Old Hangul|section=section}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("Contains special characters"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 1,
+            unknown: 0
+        }
+    );
 }
 
 #[test]
