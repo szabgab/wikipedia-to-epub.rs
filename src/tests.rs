@@ -248,6 +248,44 @@ fn render_wikitext_formats_han_dynasty_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_parhae_templates() {
+    // 1. cite conference
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite conference|author=Smith|title=Ancient Borders|book-title=Proceedings of Archaeology|year=2010}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Smith. <em>Ancient Borders</em>. 2010"), "{rendered}");
+
+    // 2. worldhistory
+    let rendered = render_wikitext(
+        "Sample",
+        "{{worldhistory|section=378|quote=the state of Parhae (or Bohai in Chinese)}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("\"the state of Parhae (or Bohai in Chinese)\". <em>The Encyclopedia of World History</em> (6th ed.)"), "{rendered}");
+
+    // 3. tree chart, tree chart/start, tree chart/end, -
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{tree chart/start}}\n{{tree chart|KNG}}\n{{-}}\n{{tree chart/end}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("tree chart"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 4,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
 fn render_wikitext_formats_korean_war_templates() {
     // 1. For-multi
     let rendered = render_wikitext(

@@ -794,3 +794,36 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * Continue monitoring pages for unrecognized templates.
+
+## Session Note: 2026-05-27 - Parhae Template Handling
+
+### Decisions Made
+
+* Implemented handling for four templates from `pages/Parhae.json`:
+  * `tree chart`, `tree chart/start`, `tree chart/end`: Added to `src/silent.csv` as silent templates to skip visual tree layouts.
+  * `-`: Added to `src/silent.csv` as a layout clearing redirect template to skip silently.
+  * `cite conference`: Rendered using the robust generic `render_citation_template` function.
+  * `worldhistory`: Rendered using `render_worldhistory_template` to output formatted quotes with book citation references.
+* Kept `silent.csv` sorted alphabetically via `./sort.sh`.
+* Verified and updated expected integration fixture `expected/korea/OEBPS/chapter-12.xhtml` to account for the newly rendered conference bibliography items.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added rendering of `cite conference` using `render_citation_template` and defined the `render_worldhistory_template` function. Registered both as handled templates.
+* `src/silent.csv`
+  * Added `tree chart`, `tree chart/start`, `tree chart/end`, and `-` to the ignored templates.
+* `src/tests.rs`
+  * Added `render_wikitext_formats_parhae_templates` unit test.
+* `README.md`
+  * Documented all new conversion rules and omitted templates.
+* `expected/korea/OEBPS/chapter-12.xhtml`
+  * Updated with correctly formatted conference publication details.
+
+### Tests Run
+
+* `cargo test` (88 unit tests and 5 integration tests pass successfully).
+
+### Pending Follow-Ups
+
+* Continue monitoring pages for unrecognized templates.

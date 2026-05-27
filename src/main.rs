@@ -1210,6 +1210,8 @@ fn render_template(content: &str) -> String {
         render_cite_report_template(params)
     } else if template.eq_ignore_ascii_case("cite ECCP") {
         render_cite_eccp_template(params)
+    } else if template.eq_ignore_ascii_case("cite conference") {
+        render_citation_template(params)
     } else if template.eq_ignore_ascii_case("citation") {
         render_citation_template(params)
     } else if template.eq_ignore_ascii_case("harvc") {
@@ -1304,6 +1306,8 @@ fn render_template(content: &str) -> String {
         render_collapsible_list_template(params)
     } else if template.eq_ignore_ascii_case("Internet Archive short film") {
         render_internet_archive_short_film_template(params)
+    } else if template.eq_ignore_ascii_case("worldhistory") {
+        render_worldhistory_template(params)
     } else if template.eq_ignore_ascii_case("okina") {
         "ʻ".to_string()
     } else if template.eq_ignore_ascii_case("'s") {
@@ -1391,6 +1395,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("cite journal")
         || template.eq_ignore_ascii_case("cite report")
         || template.eq_ignore_ascii_case("cite ECCP")
+        || template.eq_ignore_ascii_case("cite conference")
         || template.eq_ignore_ascii_case("citation")
         || template.eq_ignore_ascii_case("harvc")
         || template.eq_ignore_ascii_case("as of")
@@ -1439,6 +1444,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("HMS")
         || template.eq_ignore_ascii_case("Collapsible list")
         || template.eq_ignore_ascii_case("Internet Archive short film")
+        || template.eq_ignore_ascii_case("worldhistory")
         || template.eq_ignore_ascii_case("okina")
         || template.eq_ignore_ascii_case("'s")
         || is_silent_template_name(template)
@@ -2281,6 +2287,20 @@ fn render_cite_eccp_template(params: &str) -> String {
         parts.push(format!("pp. {}", render_templates(pages)));
     }
 
+    parts.join(". ")
+}
+
+fn render_worldhistory_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    if let Some(quote) = template_param(&named, &["quote"]) {
+        parts.push(format!("\"{}\"", render_templates(quote)));
+    } else {
+        parts.push("Citation".to_string());
+    }
+
+    parts.push("''The Encyclopedia of World History'' (6th ed.)".to_string());
     parts.join(". ")
 }
 
