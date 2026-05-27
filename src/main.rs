@@ -1210,9 +1210,9 @@ fn render_template(content: &str) -> String {
         render_cite_report_template(params)
     } else if template.eq_ignore_ascii_case("cite ECCP") {
         render_cite_eccp_template(params)
-    } else if template.eq_ignore_ascii_case("cite conference") {
-        render_citation_template(params)
-    } else if template.eq_ignore_ascii_case("citation") {
+    } else if template.eq_ignore_ascii_case("cite conference")
+        || template.eq_ignore_ascii_case("citation")
+    {
         render_citation_template(params)
     } else if template.eq_ignore_ascii_case("harvc") {
         render_harvc_template(params)
@@ -3442,10 +3442,11 @@ fn render_for_multi_template(params: &str) -> String {
     let mut chunks = Vec::new();
     let mut iter = positional.into_iter();
     while let Some(topic) = iter.next() {
-        if let Some(article) = iter.next() {
-            if !topic.trim().is_empty() && !article.trim().is_empty() {
-                chunks.push(format!("{}, see [[{}]]", render_templates(&topic), article));
-            }
+        if let Some(article) = iter.next()
+            && !topic.trim().is_empty()
+            && !article.trim().is_empty()
+        {
+            chunks.push(format!("{}, see [[{}]]", render_templates(&topic), article));
         }
     }
 
@@ -3852,8 +3853,7 @@ fn format_convert_unit(unit: &str) -> String {
 fn parse_template_number(value: &str) -> Option<f64> {
     let number = value
         .trim()
-        .replace(',', "")
-        .replace(' ', "")
+        .replace([',', ' '], "")
         .replace("&minus;", "-")
         .replace('−', "-");
 
@@ -4490,7 +4490,7 @@ fn resolve_image(
             bytes: fs::read(path)?,
         }),
         BookImageSource::Remote { ref title } => {
-            let info = load_remote_image_info(client, api_url, &title, wikipedia_language, cache)?;
+            let info = load_remote_image_info(client, api_url, title, wikipedia_language, cache)?;
             let cache_path = cache.map(|cache| {
                 cache.image_file_path(
                     &info.url,
@@ -4699,20 +4699,21 @@ fn process_file_links(
     while index < text.len() {
         let remaining = &text[index..];
 
-        if remaining.starts_with("[[") && is_file_link_start(&text[index + 2..]) {
-            if let Some(end) = balanced_wiki_link_end(text, index) {
-                let content = &text[index + 2..end - 2];
-                if let Some(registry) = image_registry.as_deref_mut()
-                    && let Some(file_link) = parse_file_link(content, internal_links, language)
-                    && let Some(image_id) = registry.register(file_link, source_page)
-                {
-                    output.push('\n');
-                    output.push_str(&format!("__WIKIPEDIA_TO_EPUB_IMAGE_{image_id}__"));
-                    output.push('\n');
-                }
-                index = end;
-                continue;
+        if remaining.starts_with("[[")
+            && is_file_link_start(&text[index + 2..])
+            && let Some(end) = balanced_wiki_link_end(text, index)
+        {
+            let content = &text[index + 2..end - 2];
+            if let Some(registry) = image_registry.as_deref_mut()
+                && let Some(file_link) = parse_file_link(content, internal_links, language)
+                && let Some(image_id) = registry.register(file_link, source_page)
+            {
+                output.push('\n');
+                output.push_str(&format!("__WIKIPEDIA_TO_EPUB_IMAGE_{image_id}__"));
+                output.push('\n');
             }
+            index = end;
+            continue;
         }
 
         let ch = remaining.chars().next().unwrap();

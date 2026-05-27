@@ -847,3 +847,27 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * Keep tests granular and specific when adding new templates in future sessions.
+
+## Session Note: 2026-05-27 - Cargo Clippy Lint Fixes
+
+### Decisions Made
+
+* Resolved all 5 `cargo clippy` compiler warnings/errors under `-D warnings` to clean up the codebase and prevent regressions:
+  * Collapsed identical if blocks for `cite conference` and `citation` using the `||` operator.
+  * Collapsed nested if blocks using the `let_chains` feature in `render_for_multi_template` and `strip_file_links`.
+  * Replaced consecutive `replace` calls in `parse_template_number` with a single `replace([',', ' '], "")` call.
+  * Removed needless borrow of `title` in remote image processing.
+
+### Files Changed
+
+* `src/main.rs`
+  * Applied all clippy changes to clean up borrows, collapsible if blocks, replace calls, and identical arms.
+
+### Tests Run
+
+* `cargo clippy --all-targets -- -D warnings` (Successfully passed with 0 warnings/errors).
+* `cargo test` (93 unit tests and 5 integration tests pass successfully with 100% success rate).
+
+### Pending Follow-Ups
+
+* Keep code clean and continue running cargo clippy regularly to verify lint rules are followed.
