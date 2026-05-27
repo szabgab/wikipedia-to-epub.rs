@@ -1288,6 +1288,22 @@ fn render_template(content: &str) -> String {
         || template.eq_ignore_ascii_case("free access")
     {
         render_open_access_template()
+    } else if template.eq_ignore_ascii_case("For-multi") {
+        render_for_multi_template(params)
+    } else if template.eq_ignore_ascii_case("Inflation") {
+        render_inflation_template(params)
+    } else if template.eq_ignore_ascii_case("Inflation/year") {
+        render_inflation_year_template(params)
+    } else if template.eq_ignore_ascii_case("stack") {
+        render_passthrough_template(params)
+    } else if template.eq_ignore_ascii_case("USS") {
+        render_ship_template("USS", params)
+    } else if template.eq_ignore_ascii_case("HMS") {
+        render_ship_template("HMS", params)
+    } else if template.eq_ignore_ascii_case("Collapsible list") {
+        render_collapsible_list_template(params)
+    } else if template.eq_ignore_ascii_case("Internet Archive short film") {
+        render_internet_archive_short_film_template(params)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -1411,6 +1427,14 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("reign")
         || template.eq_ignore_ascii_case("open access")
         || template.eq_ignore_ascii_case("free access")
+        || template.eq_ignore_ascii_case("For-multi")
+        || template.eq_ignore_ascii_case("Inflation")
+        || template.eq_ignore_ascii_case("Inflation/year")
+        || template.eq_ignore_ascii_case("stack")
+        || template.eq_ignore_ascii_case("USS")
+        || template.eq_ignore_ascii_case("HMS")
+        || template.eq_ignore_ascii_case("Collapsible list")
+        || template.eq_ignore_ascii_case("Internet Archive short film")
         || is_silent_template_name(template)
 }
 
@@ -3385,6 +3409,157 @@ fn render_republic_of_korea_ship_template(params: &str) -> String {
     };
 
     format!("[[{target}|ROKS ''{name}'']]")
+}
+
+fn render_for_multi_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let mut chunks = Vec::new();
+    let mut iter = positional.into_iter();
+    while let Some(topic) = iter.next() {
+        if let Some(article) = iter.next() {
+            if !topic.trim().is_empty() && !article.trim().is_empty() {
+                chunks.push(format!("{}, see [[{}]]", render_templates(&topic), article));
+            }
+        }
+    }
+
+    if chunks.is_empty() {
+        return String::new();
+    }
+
+    format!("For {}.", chunks.join("; for "))
+}
+
+fn render_inflation_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.len() < 3 {
+        return String::new();
+    }
+    let index = &positional[0];
+    let value_str = &positional[1];
+    let year_str = &positional[2];
+
+    let value: f64 = value_str.trim().parse().unwrap_or(0.0);
+    let year: i32 = year_str.trim().parse().unwrap_or(0);
+
+    if index.eq_ignore_ascii_case("US") {
+        let cpi_1950 = 24.1;
+        let cpi_2023 = 304.7;
+
+        let cpi_start = match year {
+            1950 => cpi_1950,
+            _ => 24.1,
+        };
+
+        let inflated = value * (cpi_2023 / cpi_start);
+
+        if inflated >= 100.0 {
+            format!("{:.0}", inflated)
+        } else {
+            format!("{:.2}", inflated)
+        }
+    } else {
+        value_str.clone()
+    }
+}
+
+fn render_inflation_year_template(_params: &str) -> String {
+    "2023".to_string()
+}
+
+fn render_ship_template(prefix: &str, params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(name) = positional
+        .first()
+        .map(String::as_str)
+        .filter(|name| !name.is_empty())
+    else {
+        return prefix.to_string();
+    };
+
+    let id = positional
+        .get(1)
+        .map(String::as_str)
+        .filter(|val| !val.is_empty());
+
+    let format_val = positional
+        .get(2)
+        .map(String::as_str)
+        .filter(|val| !val.is_empty())
+        .and_then(|val| val.parse::<i32>().ok())
+        .unwrap_or(0);
+
+    let target = match id {
+        Some(id_val) => format!("{prefix} {name} ({id_val})"),
+        None => format!("{prefix} {name}"),
+    };
+
+    let display = match format_val {
+        6 => format!("''{name}''"),
+        2 => match id {
+            Some(id_val) => format!("''{name}'' ({id_val})"),
+            None => format!("''{name}''"),
+        },
+        3 => format!("{prefix} ''{name}''"),
+        _ => match id {
+            Some(id_val) => format!("{prefix} ''{name}'' ({id_val})"),
+            None => format!("{prefix} ''{name}''"),
+        },
+    };
+
+    format!("[[{target}|{display}]]")
+}
+
+fn render_collapsible_list_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let title = template_param(&named, &["title"]);
+    let positional = template_positional_params(params);
+
+    let mut parts = Vec::new();
+    if let Some(t) = title {
+        let t_rendered = render_templates(t);
+        if !t_rendered.trim().is_empty() {
+            parts.push(t_rendered.trim().to_string());
+        }
+    }
+
+    for item in positional {
+        let item_rendered = render_templates(&item);
+        if !item_rendered.trim().is_empty() {
+            parts.push(format!("* {}", item_rendered.trim()));
+        }
+    }
+
+    if parts.is_empty() {
+        return String::new();
+    }
+
+    format!("\n{}\n", parts.join("\n"))
+}
+
+fn render_internet_archive_short_film_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let id = template_param(&named, &["1", "id"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(id) = id else {
+        return String::new();
+    };
+
+    let name = template_param(&named, &["2", "name"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("Internet Archive short film");
+
+    let url = format!("https://archive.org/details/{id}");
+    format!(
+        "[[official-url:{url}|''{}'']] at the Internet Archive",
+        render_templates(name)
+    )
 }
 
 fn render_interlanguage_link_template(params: &str) -> String {

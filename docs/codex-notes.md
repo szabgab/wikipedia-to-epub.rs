@@ -721,3 +721,41 @@ Latest verification passed:
 
 * Broaden template support as new unhandled templates appear in source pages.
 * Keep expected EPUB fixtures synchronized whenever rendering behavior intentionally changes.
+
+## Session Note: 2026-05-27 - Korean War Template Handling
+
+### Decisions Made
+
+* Implemented handling for 7 templates observed in the `pages/Korean_War.json` dump:
+  * `For-multi`: alternating topic/link parameters to display clean hatnotes.
+  * `Inflation`: calculating US CPI adjustments from 1950 to 2023.
+  * `Inflation/year`: returning "2023" to align with our CPI calculations.
+  * `stack`: generic passthrough wrapper preserving nested wikitext/links.
+  * `USS` / `HMS`: formatted and italicized ship names with links to Wikipedia articles.
+  * `Collapsible list`: structured title followed by bulleted items on newlines.
+  * `Internet Archive short film`: external link to the Internet Archive short film details.
+* Added 8 silent templates to `src/silent.csv` to suppress warning noise: `very long`, `additional citations needed`, `long`, `who`, `R`, `Explain`, `Ref`, and `Pd-notice`. Kept CSVs alphabetically sorted via `./sort.sh`.
+* Verified and updated expected integration fixture `expected/korea/OEBPS/chapter-11.xhtml` to account for calculated inflation values, fully resolved ship names, bulleted UN casualties, and film archive links.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added handlings, dispatch matches, and robust renderers for `For-multi`, `Inflation`, `Inflation/year`, `stack`, `USS`/`HMS`, `Collapsible list`, and `Internet Archive short film`.
+* `src/silent.csv`
+  * Added 8 silent templates.
+* `src/tests.rs`
+  * Implemented a focused unit test `render_wikitext_formats_korean_war_templates` verifying all new rendered and silent templates.
+* `README.md`
+  * Documented all 7 rendered and 8 silent templates.
+* `expected/korea/OEBPS/chapter-11.xhtml`
+  * Updated with generated CPI calculations, ship links, lists, and external links.
+
+### Tests Run
+
+* `cargo test render_wikitext_formats_korean_war_templates` (Focused unit test covering all new templates).
+* `cargo test --test books` (Integration book test suite).
+* `cargo test` (Full test suite of 87 unit tests and 6 integration tests, all passed successfully).
+
+### Pending Follow-Ups
+
+* Keep monitoring and implementing more templates as the book contents evolve.

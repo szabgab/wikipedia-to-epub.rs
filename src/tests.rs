@@ -186,12 +186,7 @@ fn render_wikitext_formats_han_dynasty_templates() {
     );
     assert!(rendered.contains("fl. 6th century BC"), "{rendered}");
 
-    let rendered = render_wikitext(
-        "Sample",
-        "{{floruit}}",
-        &InternalLinks::new(),
-        "en",
-    );
+    let rendered = render_wikitext("Sample", "{{floruit}}", &InternalLinks::new(), "en");
     assert!(rendered.contains("fl."), "{rendered}");
 
     let rendered = render_wikitext(
@@ -225,6 +220,93 @@ fn render_wikitext_formats_han_dynasty_templates() {
         "en",
     );
     assert!(!rendered.contains("Spoken Wikipedia"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_korean_war_templates() {
+    // 1. For-multi
+    let rendered = render_wikitext(
+        "Sample",
+        "{{For-multi|other conflicts and wars involving Korea|List of Korean battles|the conflict from 1945 to the present|Korean conflict}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("For other conflicts and wars involving Korea, see <a href=\"https://en.wikipedia.org/wiki/List_of_Korean_battles\">List of Korean battles</a><span class=\"external-link\">↗</span>; for the conflict from 1945 to the present, see <a href=\"https://en.wikipedia.org/wiki/Korean_conflict\">Korean conflict</a><span class=\"external-link\">↗</span>."), "{rendered}");
+
+    // 2. Inflation & Inflation/year
+    let rendered = render_wikitext(
+        "Sample",
+        "equivalent to ${{Inflation|US|12|1950|fmt=c}}&nbsp;billion in {{Inflation/year|US}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("equivalent to $152 billion in 2023"),
+        "{rendered}"
+    );
+
+    // 3. stack (passthrough)
+    let rendered = render_wikitext(
+        "Sample",
+        "{{stack|Some stacked text}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<p>Some stacked text</p>"), "{rendered}");
+
+    // 4. USS & HMS
+    let rendered = render_wikitext(
+        "Sample",
+        "{{USS|Missouri|BB-63|6}} and {{HMS|Jamaica|44|6}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<a href=\"https://en.wikipedia.org/wiki/USS_Missouri_(BB-63)\"><em>Missouri</em></a><span class=\"external-link\">↗</span> and <a href=\"https://en.wikipedia.org/wiki/HMS_Jamaica_(44)\"><em>Jamaica</em></a><span class=\"external-link\">↗</span>"), "{rendered}");
+
+    // 5. Collapsible list
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Collapsible list|bullets=yes|title=Breakdown of UN casualties|Item A|Item B}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Breakdown of UN casualties"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("<li>Item A</li>"), "{rendered}");
+    assert!(rendered.contains("<li>Item B</li>"), "{rendered}");
+
+    // 6. Internet Archive short film
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Internet Archive short film|id=gov.archives.li.263.927|name=Film No. 927}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<a href=\"https://archive.org/details/gov.archives.li.263.927\"><em>Film No. 927</em></a><span class=\"external-link\">↗</span> at the Internet Archive"), "{rendered}");
+
+    // 7. Silent templates
+    for t in &[
+        "{{very long|date=December 2024|words=15,400}}",
+        "{{additional citations needed|date=September 2025}}",
+        "{{long|section|words=7,000|date=September 2025}}",
+        "{{who|date=January 2026}}",
+        "{{R|jstor2538736}}",
+        "{{Explain|date=February 2026}}",
+        "{{Ref|25|map}}",
+        "{{PD-notice}}",
+    ] {
+        let rendered = render_wikitext("Sample", t, &InternalLinks::new(), "en");
+        assert!(
+            !rendered.contains("very long")
+                && !rendered.contains("additional citations")
+                && !rendered.contains("Explain"),
+            "Failed on silent {}: {}",
+            t,
+            rendered
+        );
+    }
 }
 
 #[test]
