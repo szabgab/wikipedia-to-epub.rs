@@ -827,3 +827,23 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * Continue monitoring pages for unrecognized templates.
+
+## Session Note: 2026-05-27 - Unit Test Refactoring
+
+### Decisions Made
+
+* Refactored unit tests in `src/tests.rs` to break apart file-based grouped test functions (like `render_wikitext_formats_parhae_templates` and the Han Dynasty additions) into separate, template-specific, and granular unit tests.
+* Kept all existing assertions completely preserved but separated them into dedicated test cases with names reflecting the exact templates they test.
+
+### Files Changed
+
+* `src/tests.rs`
+  * Extracted grouped tests into `render_wikitext_formats_okina_template`, `render_wikitext_formats_possessive_s_template`, `render_wikitext_silently_skips_contains_special_characters_template`, `render_wikitext_formats_cite_conference_template`, `render_wikitext_formats_worldhistory_template`, and `render_wikitext_silently_skips_tree_chart_and_hyphen_templates`.
+
+### Tests Run
+
+* `cargo test` (93 unit tests and 5 integration tests pass successfully with 100% success rate).
+
+### Pending Follow-Ups
+
+* Keep tests granular and specific when adding new templates in future sessions.

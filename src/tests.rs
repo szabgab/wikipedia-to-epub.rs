@@ -220,16 +220,22 @@ fn render_wikitext_formats_han_dynasty_templates() {
         "en",
     );
     assert!(!rendered.contains("Spoken Wikipedia"), "{rendered}");
+}
 
-    // okina
+#[test]
+fn render_wikitext_formats_okina_template() {
     let rendered = render_wikitext("Sample", "{{okina}}", &InternalLinks::new(), "en");
     assert!(rendered.contains("ʻ"), "{rendered}");
+}
 
-    // 's
+#[test]
+fn render_wikitext_formats_possessive_s_template() {
     let rendered = render_wikitext("Sample", "''Han''{{'s}}", &InternalLinks::new(), "en");
     assert!(rendered.contains("<em>Han</em>'s"), "{rendered}");
+}
 
-    // Contains special characters
+#[test]
+fn render_wikitext_silently_skips_contains_special_characters_template() {
     let (rendered, counts) = render_wikitext_with_template_counts(
         "Sample",
         "{{Contains special characters|Old Hangul|section=section}}",
@@ -248,8 +254,7 @@ fn render_wikitext_formats_han_dynasty_templates() {
 }
 
 #[test]
-fn render_wikitext_formats_parhae_templates() {
-    // 1. cite conference
+fn render_wikitext_formats_cite_conference_template() {
     let rendered = render_wikitext(
         "Sample",
         "{{cite conference|author=Smith|title=Ancient Borders|book-title=Proceedings of Archaeology|year=2010}}",
@@ -257,8 +262,10 @@ fn render_wikitext_formats_parhae_templates() {
         "en",
     );
     assert!(rendered.contains("Smith. <em>Ancient Borders</em>. 2010"), "{rendered}");
+}
 
-    // 2. worldhistory
+#[test]
+fn render_wikitext_formats_worldhistory_template() {
     let rendered = render_wikitext(
         "Sample",
         "{{worldhistory|section=378|quote=the state of Parhae (or Bohai in Chinese)}}",
@@ -266,8 +273,10 @@ fn render_wikitext_formats_parhae_templates() {
         "en",
     );
     assert!(rendered.contains("\"the state of Parhae (or Bohai in Chinese)\". <em>The Encyclopedia of World History</em> (6th ed.)"), "{rendered}");
+}
 
-    // 3. tree chart, tree chart/start, tree chart/end, -
+#[test]
+fn render_wikitext_silently_skips_tree_chart_and_hyphen_templates() {
     let (rendered, counts) = render_wikitext_with_template_counts(
         "Sample",
         "{{tree chart/start}}\n{{tree chart|KNG}}\n{{-}}\n{{tree chart/end}}",
@@ -284,6 +293,7 @@ fn render_wikitext_formats_parhae_templates() {
         }
     );
 }
+
 
 #[test]
 fn render_wikitext_formats_korean_war_templates() {
