@@ -1308,6 +1308,20 @@ fn render_template(content: &str) -> String {
         render_internet_archive_short_film_template(params)
     } else if template.eq_ignore_ascii_case("worldhistory") {
         render_worldhistory_template(params)
+    } else if template.eq_ignore_ascii_case("nihongo2") {
+        render_nihongo2_template(params)
+    } else if template.eq_ignore_ascii_case("gloss") {
+        render_gloss_template(params)
+    } else if template.eq_ignore_ascii_case("xref") {
+        render_passthrough_template(params)
+    } else if template.eq_ignore_ascii_case("Shy") {
+        render_soft_hyphen_template(params)
+    } else if template.eq_ignore_ascii_case("color box") {
+        render_color_box_template(params)
+    } else if template.eq_ignore_ascii_case("pb") {
+        "__WIKIPEDIA_TO_EPUB_PB__".to_string()
+    } else if template.eq_ignore_ascii_case("OSM relation") {
+        render_openstreetmap_relation_template(params)
     } else if template.eq_ignore_ascii_case("okina") {
         "ʻ".to_string()
     } else if template.eq_ignore_ascii_case("'s") {
@@ -1445,6 +1459,13 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Collapsible list")
         || template.eq_ignore_ascii_case("Internet Archive short film")
         || template.eq_ignore_ascii_case("worldhistory")
+        || template.eq_ignore_ascii_case("nihongo2")
+        || template.eq_ignore_ascii_case("gloss")
+        || template.eq_ignore_ascii_case("xref")
+        || template.eq_ignore_ascii_case("Shy")
+        || template.eq_ignore_ascii_case("color box")
+        || template.eq_ignore_ascii_case("pb")
+        || template.eq_ignore_ascii_case("OSM relation")
         || template.eq_ignore_ascii_case("okina")
         || template.eq_ignore_ascii_case("'s")
         || is_silent_template_name(template)
@@ -2302,6 +2323,49 @@ fn render_worldhistory_template(params: &str) -> String {
 
     parts.push("''The Encyclopedia of World History'' (6th ed.)".to_string());
     parts.join(". ")
+}
+
+fn render_nihongo2_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(text) = positional.first().filter(|t| !t.trim().is_empty()) else {
+        return String::new();
+    };
+    let text = render_templates(text);
+    format!(
+        "__WIKIPEDIA_TO_EPUB_LANG_START__ja__WIKIPEDIA_TO_EPUB_LANG_VALUE__{text}__WIKIPEDIA_TO_EPUB_LANG_END__"
+    )
+}
+
+fn render_gloss_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let Some(text) = positional.first().filter(|t| !t.trim().is_empty()) else {
+        return String::new();
+    };
+    let text = render_templates(text);
+    if template_param(&named, &["mode"]).is_some_and(|mode| mode.trim() == "def") {
+        format!("({text})")
+    } else {
+        format!("'{text}'")
+    }
+}
+
+fn render_soft_hyphen_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let parts = positional
+        .into_iter()
+        .filter(|t| !t.trim().is_empty())
+        .collect::<Vec<_>>();
+    parts.join("\u{00ad}")
+}
+
+fn render_color_box_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(color) = positional.first().filter(|c| !c.trim().is_empty()) else {
+        return "■".to_string();
+    };
+    let color = color.trim();
+    format!("__WIKIPEDIA_TO_EPUB_COLOR_BOX_START__{color}__WIKIPEDIA_TO_EPUB_COLOR_BOX_END__")
 }
 
 fn render_citation_template(params: &str) -> String {
@@ -4000,9 +4064,27 @@ fn format_inline_text(text: &str) -> String {
         )
         .replace("__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__", "</span></span>");
 
-    restore_open_access_spans(&restore_ipa_template_spans(&restore_abbr_template_spans(
-        &restore_lang_template_spans(&html),
+    restore_pb_spans(&restore_color_box_spans(&restore_open_access_spans(
+        &restore_ipa_template_spans(&restore_abbr_template_spans(&restore_lang_template_spans(
+            &html,
+        ))),
     )))
+}
+
+fn restore_color_box_spans(html: &str) -> String {
+    Regex::new(r"__WIKIPEDIA_TO_EPUB_COLOR_BOX_START__(.*?)__WIKIPEDIA_TO_EPUB_COLOR_BOX_END__")
+        .unwrap()
+        .replace_all(html, |captures: &regex::Captures| {
+            format!(
+                r#"<span style="color: {};">■</span>"#,
+                encode_double_quoted_attribute(&captures[1])
+            )
+        })
+        .into_owned()
+}
+
+fn restore_pb_spans(html: &str) -> String {
+    html.replace("__WIKIPEDIA_TO_EPUB_PB__", "<br /><br />")
 }
 
 fn restore_open_access_spans(html: &str) -> String {

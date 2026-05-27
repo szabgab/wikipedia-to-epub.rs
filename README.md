@@ -78,6 +78,12 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{frac|2|3}}` and `{{fraction|365|385|1539}}` become `2/3` and `365 385/1539`; mixed-number forms such as `{{frac|1|1|2}}` become `1 1/2`
 * `{{mdash}}` becomes `—`
 * `{{snd}}` becomes a spaced en dash: ` – `
+* `{{nihongo2|日本}}` becomes `<span lang="ja">日本</span>`
+* `{{gloss|sun origin}}` becomes `'sun origin'`; definition mode such as `{{gloss|mode=def|ensemble drumming}}` becomes `(ensemble drumming)`
+* `{{xref|(see [[Nanban trade]])}}` becomes visible cross-reference text with links
+* `{{Shy|Pre|fec|tures}}` becomes `Pre\u00adfec\u00adtures` using a soft hyphen
+* `{{color box|#EF7979}}` becomes `<span style="color: #EF7979;">■</span>`
+* `{{pb}}` becomes a paragraph/line break: `<br /><br />`
 * `{{okina}}` becomes `ʻ`
 * `{{'s}}` becomes `'s`
 * `{{circa}} 10 million` becomes `c. 10 million`
@@ -124,7 +130,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Britannica|322222}}` becomes `Britannica:` followed by a link to the Britannica article id
 * `{{Official website|https://example.com|name=Example}}` becomes an external link to `https://example.com` with `Example` as the visible text
 * `{{URL|1=https://english.seoul.go.kr/|2=Official website}}` becomes an external link to `https://english.seoul.go.kr/` with `Official website` as the visible text
-* `{{osmrelation-inline|2396450}}` becomes an external link to the OpenStreetMap relation
+* `{{osmrelation-inline|2396450}}` and `{{OSM relation|382313}}` become an external link to the OpenStreetMap relation
 * `{{Webarchive|url=https://web.archive.org/web/20140703095242/http://example.com/report.pdf|date=3 July 2014}}` becomes an external archive link labelled `Archived on 3 July 2014`
 * `{{Largest cities|country=Korea|city_1=Seoul|div_1=Seoul|pop_1=9,904,312}}` becomes `Largest cities in Korea:` followed by a list of linked cities with division and population details
 * `{{Historical populations|5=1949|6=1437670|7=1960|8=2445402}}` becomes `Historical populations:` followed by a list of year/population entries such as `1949: 1,437,670`
@@ -139,7 +145,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Internet Archive short film|id=id|name=Name}}` renders as an external link to the Internet Archive short film details page
 * Observed Wikipedia navigation templates such as `{{History of Korea}}`, `{{Korea topics}}`, `{{East Asian topics}}`, `{{History of Asia}}`, `{{Portal bar}}`, `{{Portal}}`, `{{Commons category}}`, `{{Commons and category}}`, `{{Wikisource-inline}}`, `{{Sister project links}}`, `{{Seoul}}`, `{{Seoul weatherbox}}`, `{{Busan}}`, `{{Busan weatherbox}}`, `{{Navboxes}}`, `{{Library resources box}}`, and `{{Authority control}}` are omitted
 * Wikipedia succession-box templates such as `{{Succession box}}` or those whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are omitted
-* Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{More citations needed}}`, `{{additional citations needed}}`, `{{Refimprove}}`, `{{FACT}}`, `{{citation needed}}`, `{{cn}}`, `{{huh}}`, `{{when}}`, `{{who}}`, `{{more cn section}}`, `{{prose}}`, `{{Unreliable source?}}`, `{{Better source needed}}`, `{{Dead link}}`, `{{Page needed}}`, `{{New archival link needed}}`, `{{anchor}}`, `{{cbignore}}`, `{{TOC limit}}`, `{{clear}}`, `{{div}}`, `{{columns-list}}`, `{{location map+}}`, `{{Wide image}}`, `{{Pie chart}}`, `{{ahnentafel}}`, `{{Spoken Wikipedia}}`, `{{very long}}`, `{{long}}`, `{{Explain}}`, `{{Ref}}`, `{{R}}`, `{{Pd-notice}}`, `{{Contains special characters}}`, `{{tree chart}}`, `{{tree chart/start}}`, `{{tree chart/end}}`, `{{-}}`, and `{{DEFAULTSORT:...}}` are omitted
+* Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{More citations needed}}`, `{{additional citations needed}}`, `{{Refimprove}}`, `{{FACT}}`, `{{citation needed}}`, `{{cn}}`, `{{huh}}`, `{{when}}`, `{{who}}`, `{{more cn section}}`, `{{prose}}`, `{{Unreliable source?}}`, `{{Better source needed}}`, `{{Dead link}}`, `{{Page needed}}`, `{{New archival link needed}}`, `{{anchor}}`, `{{cbignore}}`, `{{TOC limit}}`, `{{TOClimit}}`, `{{clear}}`, `{{div}}`, `{{columns-list}}`, `{{location map+}}`, `{{Wide image}}`, `{{Pie chart}}`, `{{ahnentafel}}`, `{{Spoken Wikipedia}}`, `{{very long}}`, `{{long}}`, `{{Explain}}`, `{{Ref}}`, `{{R}}`, `{{Pd-notice}}`, `{{Contains special characters}}`, `{{tree chart}}`, `{{tree chart/start}}`, `{{tree chart/end}}`, `{{-}}`, `{{redirect-several}}`, `{{bots}}`, and `{{DEFAULTSORT:...}}` are omitted
 * Reference-list wrappers and source metadata such as `{{Reflist}}`, `{{notelist}}`, `{{notelist-ua}}`, `{{NoteFoot}}`, `{{Refbegin}}`, `{{Refend}}`, `{{SfnRef}}`, and `{{source-attribution}}` are omitted while surrounding list contents are preserved
 * Footnote wrappers such as `{{efn|...}}`, `{{efn-ua|...}}`, and `{{refn|...}}` are omitted
 * Layout-only column templates such as `{{col-begin}}`, `{{col-break}}`, and `{{col-end}}` are omitted

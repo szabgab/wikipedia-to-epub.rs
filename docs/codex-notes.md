@@ -1,5 +1,46 @@
 # Codex Session Notes
 
+## 2026-05-27 Japan page templates handling and fixture updates
+
+### Summary
+
+This session completed the handling of templates used in the Japan page: `"redirect-several"`, `"bots"`, `"TOClimit"`, `"nihongo2"`, `"gloss"`, `"xref"`, `"Shy"`, `"color box"`, `"pb"`, and `"OSM relation"`. This included addressing tag-stripping bugs by implementing secure placeholder markers and custom post-stripping restoration logic.
+
+### Decisions Made
+
+* `redirect-several`, `bots`, and `TOClimit` are page-level or control-flow templates and are skipped silently.
+* `nihongo2` is rendered using the existing `__WIKIPEDIA_TO_EPUB_LANG_START__` Japanese lang placeholder, ensuring the `<span lang="ja">` block is not stripped during post-processing.
+* `gloss` is rendered to wrap text in single quotes, or in parentheses in definition mode (`mode=def`).
+* `xref` is processed as a passthrough template.
+* `Shy` renders discretionary soft hyphens (`\u{00ad}`) to guide hyphenation behavior.
+* `color box` is rendered using a custom `__WIKIPEDIA_TO_EPUB_COLOR_BOX_START__` placeholder that is restored to `<span style="color: {color};">■</span>` after standard tag stripping.
+* `pb` (paragraph break) is rendered using a custom `__WIKIPEDIA_TO_EPUB_PB__` placeholder, restored to `<br /><br />` after standard tag stripping.
+* `OSM relation` renders OpenStreetMap relation link text using existing OpenStreetMap relation rendering helpers.
+
+### Files Changed
+
+* `src/main.rs`
+  * Registered and implemented dispatchers/renderers for `nihongo2`, `gloss`, `Shy`, `color box`, `pb`, `xref`, and `OSM relation`.
+  * Added custom `restore_color_box_spans` and `restore_pb_spans` post-stripping restorers.
+* `src/silent.csv`
+  * Registered `redirect-several`, `bots`, and `TOClimit` as recognized silent templates.
+* `expected/japan/`
+  * Updated integration expected fixtures (e.g., `OEBPS/chapter-1.xhtml`) using a temporary `UPDATE_FIXTURES` helper injection in the integration test suite.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `./sort.sh`
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-27 Han Dynasty templates handling and file logging
 
 ### Summary

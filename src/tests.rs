@@ -301,6 +301,110 @@ fn render_wikitext_silently_skips_tree_chart_and_hyphen_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_nihongo2_template() {
+    let rendered = render_wikitext("Sample", "{{nihongo2|日本}}", &InternalLinks::new(), "en");
+    assert!(
+        rendered.contains("<span lang=\"ja\">日本</span>"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_gloss_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{gloss|His Majesty's Reign}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("'His Majesty's Reign'"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{gloss|mode=def|ensemble drumming}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("(ensemble drumming)"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_xref_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{xref|(see [[Nanban trade]])}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("(see <a href=\"https://en.wikipedia.org/wiki/Nanban_trade\">Nanban trade</a><span class=\"external-link\">↗</span>)"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_shy_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Shy|Pre|fec|tures}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Pre\u{ad}fec\u{ad}tures"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_color_box_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{color box|#EF7979}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<span style=\"color: #EF7979;\">■</span>"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_pb_template() {
+    let rendered = render_wikitext("Sample", "first{{pb}}second", &InternalLinks::new(), "en");
+    assert!(rendered.contains("first<br /><br />second"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_osm_relation_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{OSM relation|382313}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("OpenStreetMap relation 382313"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_japan_metadata_templates() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{redirect-several|Japan|Nihon}}\n{{bots|deny=OAbot}}\n{{TOClimit|3}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("redirect-several"), "{rendered}");
+    assert!(!rendered.contains("bots"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 3,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
 fn render_wikitext_formats_korean_war_templates() {
     // 1. For-multi
     let rendered = render_wikitext(
