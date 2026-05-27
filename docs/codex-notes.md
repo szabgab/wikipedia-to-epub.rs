@@ -1,5 +1,41 @@
 # Codex Session Notes
 
+## 2026-05-27 Han Dynasty templates handling
+
+### Summary
+
+This session added handling for templates used in Han Dynasty page: `floruit`, `fraction`, `Library resources box`, and `Spoken Wikipedia`.
+
+### Decisions Made
+
+* `floruit` renders as `fl. <text>` using the first parameter. An empty `floruit` renders as `fl.`.
+* `fraction` works as an alias to `frac` rendering positional parameters as reader friendly fractions.
+* `Library resources box` and `Spoken Wikipedia` are page-level resources or media metadata templates and are skipped silently.
+
+### Files Changed
+
+* `src/main.rs`
+  * Registered `floruit` and `fraction` in `is_handled_template_name` and dispatched them.
+  * Implemented `render_floruit_template`.
+* `src/silent.csv`
+  * Added `Library resources box` and `Spoken Wikipedia`.
+* `src/tests.rs`
+  * Added `render_wikitext_formats_han_dynasty_templates` test.
+* `README.md`
+  * Documented the new template conversion and omission rules.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `./sort.sh`
+* `cargo test render_wikitext_formats_han_dynasty_templates`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-26
 
 ### Summary

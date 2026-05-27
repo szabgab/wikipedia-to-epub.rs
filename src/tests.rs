@@ -177,6 +177,57 @@ fn render_wikitext_formats_frac_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_han_dynasty_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{floruit|6th century&nbsp;BC}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("fl. 6th century BC"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{floruit}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("fl."), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{fraction|365|385|1539}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<p>365 385/1539</p>"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{fraction|29|43|81}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<p>29 43/81</p>"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Library resources box|onlinebooks=yes}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(!rendered.contains("Library resources box"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Spoken Wikipedia|EN-Han_dynasty-article.ogg|date=2016-04-27}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(!rendered.contains("Spoken Wikipedia"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_historical_populations_templates() {
     let rendered = render_wikitext(
         "Sample",

@@ -1177,8 +1177,10 @@ fn render_template(content: &str) -> String {
         render_respell_template(params)
     } else if template.eq_ignore_ascii_case("abbr") {
         render_abbr_template(params)
-    } else if template.eq_ignore_ascii_case("frac") {
+    } else if template.eq_ignore_ascii_case("frac") || template.eq_ignore_ascii_case("fraction") {
         render_frac_template(params)
+    } else if template.eq_ignore_ascii_case("floruit") {
+        render_floruit_template(params)
     } else if template.eq_ignore_ascii_case("coord") {
         render_coord_template(params)
     } else if template.eq_ignore_ascii_case("rp") {
@@ -1345,6 +1347,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Respell")
         || template.eq_ignore_ascii_case("abbr")
         || template.eq_ignore_ascii_case("frac")
+        || template.eq_ignore_ascii_case("fraction")
+        || template.eq_ignore_ascii_case("floruit")
         || template.eq_ignore_ascii_case("coord")
         || template.eq_ignore_ascii_case("rp")
         || template.eq_ignore_ascii_case("cite web")
@@ -1948,6 +1952,15 @@ fn render_frac_template(params: &str) -> String {
         [numerator, denominator] => format!("{numerator}/{denominator}"),
         [whole, numerator, denominator] => format!("{whole} {numerator}/{denominator}"),
         [first, rest @ ..] => format!("{first} {}", rest.join("/")),
+    }
+}
+
+fn render_floruit_template(params: &str) -> String {
+    let text = render_passthrough_template(params);
+    if text.is_empty() {
+        "fl.".to_string()
+    } else {
+        format!("fl. {text}")
     }
 }
 
