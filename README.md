@@ -66,6 +66,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{linktext|漢|字}}` becomes `漢字`
 * `{{langx|ko|溝樓|lit=Walled City|label=none}}` becomes `<span lang="ko">溝樓</span>, lit. Walled City`
 * `{{Lang-zh|t=朝鮮|p=Cháoxiǎn|labels=no}}` becomes `<span lang="zh">朝鮮</span> (Cháoxiǎn)`
+* `{{zh|t=西漢|p=Xīhàn}}` and `{{zhi|c=比}}` are rendered like Chinese-language text spans, including pinyin when present
 * `{{Transliteration|zh|pinyin|Zhuāngxiàn}}` becomes `<span lang="zh-Latn">Zhuāngxiàn</span>`
 * `{{tlit|ko|mr|Chosŏn'gŭl}}` becomes `<span lang="ko-Latn">Chosŏn'gŭl</span>`
 * `{{Ko-translit|rr|^한국}}` becomes `Hanguk`
@@ -76,8 +77,11 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Abbr|c.|circa}}` becomes `<abbr title="circa">c.</abbr>`
 * `{{frac|2|3}}` becomes `2/3`; mixed-number forms such as `{{frac|1|1|2}}` become `1 1/2`
 * `{{mdash}}` becomes `—`
+* `{{snd}}` becomes a spaced en dash: ` – `
 * `{{circa}} 10 million` becomes `c. 10 million`
+* `{{c.|115 BC}}` and `{{cx|150 AD}}` become `c. 115 BC` and `c. 150 AD`
 * `{{legend|#EF767E|North Korean forces}}` becomes `North Korean forces`
+* `{{numero|3}}` becomes `No. 3`
 * `{{sic|was}}` becomes `was [sic]`
 * `{{Nowrap|June 10}}` becomes `June 10`
 * `{{Smaller|note}}` becomes `<small>note</small>`
@@ -91,6 +95,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Citation|last=Cumings|first=Bruce|title=Korea's Place in the Sun|publisher=Norton|year=1997}}` becomes `Bruce Cumings. <em>Korea's Place in the Sun</em>. Norton, 1997`
 * `{{harvc|last=Peterson|first=Mark|year=1992|in=Kim-Renaud|c=The Sejong Sillok}}` becomes `Mark Peterson. "The Sejong Sillok". In Kim-Renaud 1992`
 * `{{As of|2023}}` becomes `As of 2023`; `{{As of|2009|lc=y}}` becomes `as of 2009`
+* `{{died-in|202 BC}}` becomes `d. 202 BC`
 * `{{Blockquote|text=Quoted text|source=Source}}` becomes `<blockquote><p>Quoted text</p><p class="blockquote-source">Source</p></blockquote>`
 * `{{Percentage|1|4}}` becomes `25%`
 * `{{UN_Population|Dem. People's Republic of Korea}}` becomes `26,100,000`; `{{UN_Population|ref}}` is omitted
@@ -104,11 +109,13 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{For|histories of the modern Korean countries|History of North Korea|History of South Korea}}` becomes `For histories of the modern Korean countries, see:` followed by links to those articles
 * `{{For timeline|Timeline of Korean history}}` becomes `For a timeline, see:` followed by a link to `Timeline of Korean history`
 * `{{crossreference|See {{slink|#Letter counts}}.}}` becomes visible cross-reference text with a section link
+* `{{anl|Battle of Jushi}}` becomes a link to `Battle of Jushi`
 * `{{Arrow|r}}` becomes `→`
 * `{{Excerpt|Korean literature|templates=no}}` becomes `Excerpt from:` followed by a link to `Korean literature`
 * `{{Wiktionary|Korea}}` becomes `Wiktionary:` followed by a link to the Wiktionary entry
 * `{{Wikivoyage|Korea}}` becomes `Wikivoyage:` followed by a link to the Wikivoyage entry
 * `{{Wikisource|Korea}}` becomes `Wikisource:` followed by a link to the Wikisource entry
+* `{{Wikibooks|1=Book title|2=Chapter title|3=label}}` becomes `Wikibooks:` followed by a link to the Wikibooks chapter
 * `{{Britannica|322222}}` becomes `Britannica:` followed by a link to the Britannica article id
 * `{{Official website|https://example.com|name=Example}}` becomes an external link to `https://example.com` with `Example` as the visible text
 * `{{URL|1=https://english.seoul.go.kr/|2=Official website}}` becomes an external link to `https://english.seoul.go.kr/` with `Official website` as the visible text

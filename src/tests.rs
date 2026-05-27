@@ -267,6 +267,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Distinguish|Example}}
 {{ISBN?}}
 {{Pp-move}}
+{{Pp-pc|small=yes}}
 {{Protection padlock|small=yes}}
 {{Redirect|Sample}}
 {{redirect-multi|3|Pusan|Fusan|Busan Metropolitan City|other uses|Pu San (disambiguation)}}
@@ -381,7 +382,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 92,
+            recognized: 93,
             unknown: 0
         }
     );
@@ -693,6 +694,11 @@ fn render_wikitext_formats_chinese_lang_templates() {
             "{{Lang-zh|t=朝鮮|p=Cháoxiǎn|labels=no}}",
             r#"<p><span lang="zh">朝鮮</span> (Cháoxiǎn)</p>"#,
         ),
+        (
+            "{{zh|t=西漢|s=西汉|p=Xīhàn|first=t}}",
+            r#"<p><span lang="zh">西漢</span> (Xīhàn)</p>"#,
+        ),
+        ("{{zhi|c=比}}", r#"<p><span lang="zh">比</span></p>"#),
         (
             "{{lang-zh|s=汉字|p=Hànzì}}",
             r#"<p><span lang="zh">汉字</span> (Hànzì)</p>"#,
@@ -1203,8 +1209,17 @@ fn render_wikitext_formats_nbsp_templates() {
 fn render_wikitext_formats_simple_inline_templates() {
     let cases = [
         ("healthcare{{mdash}}such as", "<p>healthcare—such as</p>"),
+        ("202 BC{{snd}}9 AD", "<p>202 BC – 9 AD</p>"),
         ("{{circa}} 10 million", "<p>c. 10 million</p>"),
         ("{{circa|1950}}", "<p>c. 1950</p>"),
+        ("{{c.|115 BC}}", "<p>c. 115 BC</p>"),
+        ("{{cx|150 AD}}", "<p>c. 150 AD</p>"),
+        ("{{died-in|202 BC}}", "<p>d. 202 BC</p>"),
+        ("Mawangdui tomb {{numero|3}}", "<p>Mawangdui tomb No. 3</p>"),
+        (
+            "{{anl|Battle of Jushi}}",
+            r#"<p><a href="https://en.wikipedia.org/wiki/Battle_of_Jushi">Battle of Jushi</a><span class="external-link">↗</span></p>"#,
+        ),
         (
             "{{legend|#EF767E|North Korean, Chinese, and Soviet forces}}",
             "<p>North Korean, Chinese, and Soviet forces</p>",
@@ -1387,6 +1402,10 @@ fn render_wikitext_formats_wikisource_templates() {
         (
             "{{wikisource|Korea}}",
             r#"<p>Wikisource: <a href="https://en.wikisource.org/wiki/Korea">Korea</a><span class="external-link">↗</span></p>"#,
+        ),
+        (
+            "{{Wikibooks|1=Saylor.org's Ancient Civilizations of the World|2=The Han dynasty and China's Classical Age|3=the Han Dynasty}}",
+            r#"<p>Wikibooks: <a href="https://en.wikibooks.org/wiki/Saylor.org's_Ancient_Civilizations_of_the_World/The_Han_dynasty_and_China's_Classical_Age">the Han Dynasty</a><span class="external-link">↗</span></p>"#,
         ),
     ];
 

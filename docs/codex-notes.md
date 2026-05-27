@@ -544,6 +544,46 @@ Latest verification passed: 85 unit tests passed, 5 local book integration tests
 
 * No known pending follow-ups for this cache change.
 
+## 2026-05-27 Han Dynasty Template Session
+
+### Decisions Made
+
+* `Pp-pc` is a protection metadata template and is skipped silently.
+* `snd` renders as a spaced en dash.
+* `died-in` renders compact biographical text such as `d. 202 BC`.
+* `zh` and `zhi` reuse the Chinese-language renderer, including pinyin when present.
+* `c.` and `cx` are aliases of the existing circa renderer.
+* `numero` renders as `No. N`, `anl` renders as a normal article link, and `Wikibooks` renders as a Wikibooks sister-project link.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added dispatch, handled-template recognition, and renderers for the Han Dynasty templates.
+  * Added Wikibooks URL handling for `b:` links.
+* `src/silent.csv`
+  * Added `Pp-pc`.
+* `src/tests.rs`
+  * Added unit coverage for the new inline and sister-project rendering and extended silent-template coverage.
+* `README.md`
+  * Documented the new conversion rules.
+* `expected/korea/OEBPS/chapter-10.xhtml`
+  * Refreshed Han Dynasty expected output after the new template rendering.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `cargo test render_wikitext_formats -- --nocapture`
+* `cargo test render_wikitext_silently_skips_metadata_templates -- --nocapture`
+* `cargo test --test books -- --nocapture`
+* `cargo test`
+
+Latest verification passed: 85 unit tests passed, 5 local book integration tests passed, and 1 real Wikipedia API integration test remains ignored by default.
+
+### Pending Follow-Ups
+
+* No known pending follow-ups for this template change.
+
 ## 2026-05-25
 
 ### Summary

@@ -1131,6 +1131,8 @@ fn render_template(content: &str) -> String {
         render_japanese_template(params)
     } else if template.eq_ignore_ascii_case("nbsp") {
         render_nonbreaking_space_template()
+    } else if template.eq_ignore_ascii_case("snd") {
+        render_spaced_endash_template()
     } else if template.eq_ignore_ascii_case("mdash") {
         render_emdash_template()
     } else if template.eq_ignore_ascii_case("nowrap") {
@@ -1139,7 +1141,10 @@ fn render_template(content: &str) -> String {
         render_smaller_template(params)
     } else if template.eq_ignore_ascii_case("sic") {
         render_sic_template(params)
-    } else if template.eq_ignore_ascii_case("circa") {
+    } else if template.eq_ignore_ascii_case("circa")
+        || template.eq_ignore_ascii_case("c.")
+        || template.eq_ignore_ascii_case("cx")
+    {
         render_circa_template(params)
     } else if template.eq_ignore_ascii_case("lang") {
         render_lang_template(params)
@@ -1149,7 +1154,10 @@ fn render_template(content: &str) -> String {
         render_langx_template(params)
     } else if template.eq_ignore_ascii_case("linktext") {
         render_linktext_template(params)
-    } else if template.eq_ignore_ascii_case("lang-zh") {
+    } else if template.eq_ignore_ascii_case("lang-zh")
+        || template.eq_ignore_ascii_case("zh")
+        || template.eq_ignore_ascii_case("zhi")
+    {
         render_chinese_lang_template(params)
     } else if template.eq_ignore_ascii_case("transliteration") {
         render_transliteration_template(params)
@@ -1191,6 +1199,8 @@ fn render_template(content: &str) -> String {
         render_harvc_template(params)
     } else if template.eq_ignore_ascii_case("as of") {
         render_as_of_template(params)
+    } else if template.eq_ignore_ascii_case("died-in") {
+        render_died_in_template(params)
     } else if template.eq_ignore_ascii_case("blockquote") {
         render_blockquote_template(params)
     } else if template.eq_ignore_ascii_case("percentage") {
@@ -1209,6 +1219,10 @@ fn render_template(content: &str) -> String {
         render_section_link_template(params)
     } else if template.eq_ignore_ascii_case("legend") {
         render_legend_template(params)
+    } else if template.eq_ignore_ascii_case("numero") {
+        render_numero_template(params)
+    } else if template.eq_ignore_ascii_case("anl") {
+        render_article_link_template(params)
     } else if template.eq_ignore_ascii_case("excerpt") {
         render_excerpt_template(params)
     } else if template.eq_ignore_ascii_case("main") {
@@ -1223,6 +1237,8 @@ fn render_template(content: &str) -> String {
         render_wikivoyage_template(params)
     } else if template.eq_ignore_ascii_case("wikisource") {
         render_wikisource_template(params)
+    } else if template.eq_ignore_ascii_case("wikibooks") {
+        render_wikibooks_template(params)
     } else if template.eq_ignore_ascii_case("britannica") {
         render_britannica_template(params)
     } else if template.eq_ignore_ascii_case("official website") {
@@ -1304,16 +1320,21 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("Nihongo")
         || template.eq_ignore_ascii_case("nbsp")
+        || template.eq_ignore_ascii_case("snd")
         || template.eq_ignore_ascii_case("mdash")
         || template.eq_ignore_ascii_case("nowrap")
         || template.eq_ignore_ascii_case("smaller")
         || template.eq_ignore_ascii_case("sic")
         || template.eq_ignore_ascii_case("circa")
+        || template.eq_ignore_ascii_case("c.")
+        || template.eq_ignore_ascii_case("cx")
         || template.eq_ignore_ascii_case("lang")
         || template.eq_ignore_ascii_case("in lang")
         || template.eq_ignore_ascii_case("langx")
         || template.eq_ignore_ascii_case("linktext")
         || template.eq_ignore_ascii_case("lang-zh")
+        || template.eq_ignore_ascii_case("zh")
+        || template.eq_ignore_ascii_case("zhi")
         || template.eq_ignore_ascii_case("transliteration")
         || template.eq_ignore_ascii_case("tlit")
         || template.eq_ignore_ascii_case("ko-translit")
@@ -1334,6 +1355,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("citation")
         || template.eq_ignore_ascii_case("harvc")
         || template.eq_ignore_ascii_case("as of")
+        || template.eq_ignore_ascii_case("died-in")
         || template.eq_ignore_ascii_case("blockquote")
         || template.eq_ignore_ascii_case("percentage")
         || template.eq_ignore_ascii_case("UN_Population")
@@ -1344,6 +1366,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("crossreference")
         || template.eq_ignore_ascii_case("slink")
         || template.eq_ignore_ascii_case("legend")
+        || template.eq_ignore_ascii_case("numero")
+        || template.eq_ignore_ascii_case("anl")
         || template.eq_ignore_ascii_case("excerpt")
         || template.eq_ignore_ascii_case("main")
         || template.eq_ignore_ascii_case("see also")
@@ -1351,6 +1375,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("wiktionary")
         || template.eq_ignore_ascii_case("wikivoyage")
         || template.eq_ignore_ascii_case("wikisource")
+        || template.eq_ignore_ascii_case("wikibooks")
         || template.eq_ignore_ascii_case("britannica")
         || template.eq_ignore_ascii_case("official website")
         || template.eq_ignore_ascii_case("url")
@@ -1525,6 +1550,10 @@ fn render_japanese_template(params: &str) -> String {
 
 fn render_nonbreaking_space_template() -> String {
     " ".to_string()
+}
+
+fn render_spaced_endash_template() -> String {
+    " – ".to_string()
 }
 
 fn render_emdash_template() -> String {
@@ -2362,6 +2391,15 @@ fn render_as_of_template(params: &str) -> String {
     }
 }
 
+fn render_died_in_template(params: &str) -> String {
+    let date = render_passthrough_template(params);
+    if date.trim().is_empty() {
+        String::new()
+    } else {
+        format!("d. {}", date.trim())
+    }
+}
+
 fn as_of_date(positional: &[String], date_format: Option<&str>) -> String {
     let year = positional.first().map(String::as_str).unwrap_or_default();
     let Some(month) = positional.get(1).map(String::as_str) else {
@@ -2743,6 +2781,33 @@ fn render_legend_template(params: &str) -> String {
     render_templates(label)
 }
 
+fn render_numero_template(params: &str) -> String {
+    let number = render_passthrough_template(params);
+    if number.trim().is_empty() {
+        String::new()
+    } else {
+        format!("No. {}", number.trim())
+    }
+}
+
+fn render_article_link_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(article) = positional
+        .first()
+        .map(String::as_str)
+        .filter(|value| !value.trim().is_empty())
+    else {
+        return String::new();
+    };
+    let label = positional
+        .get(1)
+        .map(String::as_str)
+        .filter(|value| !value.trim().is_empty())
+        .unwrap_or(article);
+
+    format!("[[{article}|{}]]", render_templates(label))
+}
+
 fn render_for_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(topic) = positional
@@ -2890,6 +2955,35 @@ fn render_wikisource_template(params: &str) -> String {
     let target = format!("src:{title}");
 
     format!("Wikisource: [[{target}|{label}]]")
+}
+
+fn render_wikibooks_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let book = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let page = template_param(&named, &["2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+
+    let Some(book) = book else {
+        return String::new();
+    };
+
+    let target = if let Some(page) = page {
+        format!("b:{book}/{page}")
+    } else {
+        format!("b:{book}")
+    };
+    let label = template_param(&named, &["3"])
+        .or_else(|| positional.get(2).map(String::as_str))
+        .or(page)
+        .unwrap_or(book);
+
+    format!("Wikibooks: [[{target}|{}]]", render_templates(label))
 }
 
 fn render_britannica_template(params: &str) -> String {
@@ -3789,6 +3883,14 @@ fn wikipedia_link_html(
         );
     }
 
+    if let Some(href) = wikibooks_article_url(target) {
+        return format!(
+            r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
+            encode_double_quoted_attribute(&href),
+            format_inline_text(label)
+        );
+    }
+
     if let Some(href) = interlanguage_article_url(target) {
         return format!(
             r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
@@ -3871,6 +3973,18 @@ fn wikivoyage_article_url(target: &str) -> Option<String> {
 fn wikisource_article_url(target: &str) -> Option<String> {
     let title = target.strip_prefix("src:")?.trim().replace(' ', "_");
     let mut url = Url::parse("https://en.wikisource.org").unwrap();
+    let mut segments = url.path_segments_mut().unwrap();
+    segments.push("wiki");
+    for segment in title.split('/') {
+        segments.push(segment);
+    }
+    drop(segments);
+    Some(url.into())
+}
+
+fn wikibooks_article_url(target: &str) -> Option<String> {
+    let title = target.strip_prefix("b:")?.trim().replace(' ', "_");
+    let mut url = Url::parse("https://en.wikibooks.org").unwrap();
     let mut segments = url.path_segments_mut().unwrap();
     segments.push("wiki");
     for segment in title.split('/') {
