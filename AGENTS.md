@@ -7,6 +7,10 @@
 
 * Keep `src/navigations.csv` and `src/silent.csv` sorted by running `./sort.sh`.
 
+* Always report the skills (the name of the skill) when you use one and report also if you could not find any skill when you searched for one.
+
+* At the end of each response how much did your work cost.
+
 
 # wikipedia-to-epub.rs Codex Instructions
 
