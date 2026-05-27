@@ -1,5 +1,5 @@
 
-* Always run `cargo test`, `cargo fmt`, `cargo check` before finalizing code changes.
+* Always run `cargo test`, `cargo fmt`, `cargo check`, and `cargo clippy --all-targets -- -D warnings` before finalizing code changes.
 * Always run `./sort.sh` to keep `src/navigations.csv` and `src/silent.csv` sorted.
 * When adding a new wikipedia template always write a unit-test for each template separately and also update the README.md file.
 
