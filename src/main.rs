@@ -8,7 +8,7 @@ use std::{
     io::Write,
     path::{Path, PathBuf},
     rc::Rc,
-    time::{SystemTime, UNIX_EPOCH},
+    time::{Duration, SystemTime, UNIX_EPOCH},
 };
 
 use clap::Parser;
@@ -4190,6 +4190,10 @@ fn download_image_bytes(
     info: &RemoteImageInfo,
     image_download_request_count: usize,
 ) -> AppResult<Vec<u8>> {
+    // Without sleep the rewuests are rate-limited to 10 request then we get 429 Too Many Requests errors.
+    // With 1 sec sleep we did not get such error.
+    // Maybe less sleep time would also work. We can optimize this later if needed.
+    std::thread::sleep(Duration::from_secs(1));
     info!(
         image_url = %info.url,
         source_pages = %image.source_pages.join(", "),
