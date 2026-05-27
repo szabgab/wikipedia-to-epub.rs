@@ -4165,7 +4165,7 @@ fn resolve_image(
                     || download_image_bytes(client, &image, &info, image_download_request_count),
                 )?;
                 if source == CacheSource::Hit {
-                    info!(
+                    debug!(
                         image_url = %info.url,
                         cached_filename = %cache_path.display(),
                         "using cached image"
