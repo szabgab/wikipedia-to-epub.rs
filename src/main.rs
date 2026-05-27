@@ -709,9 +709,24 @@ fn read_config(path: &Path) -> AppResult<BookConfig> {
 }
 
 fn init_logging(level: Level) {
-    let _ = tracing_fmt()
-        .with_max_level(level)
+    use tracing_subscriber::prelude::*;
+    let level_filter = tracing_subscriber::filter::LevelFilter::from_level(level);
+
+    let stdout_layer = tracing_fmt::layer()
         .with_target(false)
+        .with_filter(level_filter);
+
+    let file_layer = std::fs::File::create("report.log").ok().map(|file| {
+        tracing_fmt::layer()
+            .with_ansi(false)
+            .with_target(false)
+            .with_writer(file)
+            .with_filter(level_filter)
+    });
+
+    let _ = tracing_subscriber::registry()
+        .with(stdout_layer)
+        .with(file_layer)
         .try_init();
 }
 

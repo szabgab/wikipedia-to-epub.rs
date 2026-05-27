@@ -1,26 +1,30 @@
 # Codex Session Notes
 
-## 2026-05-27 Han Dynasty templates handling
+## 2026-05-27 Han Dynasty templates handling and file logging
 
 ### Summary
 
-This session added handling for templates used in Han Dynasty page: `floruit`, `fraction`, `Library resources box`, and `Spoken Wikipedia`.
+This session added handling for templates used in Han Dynasty page: `floruit`, `fraction`, `Library resources box`, and `Spoken Wikipedia`. It also updated the tracing configuration to also write all log outputs to a plain-text file called `report.log` without ANSI color escape codes.
 
 ### Decisions Made
 
 * `floruit` renders as `fl. <text>` using the first parameter. An empty `floruit` renders as `fl.`.
 * `fraction` works as an alias to `frac` rendering positional parameters as reader friendly fractions.
 * `Library resources box` and `Spoken Wikipedia` are page-level resources or media metadata templates and are skipped silently.
+* The global logging initialization was updated to configure a layered subscriber: a standard output formatter and a file-writing formatter targeting `report.log` with ANSI formatting disabled (`with_ansi(false)`).
 
 ### Files Changed
 
 * `src/main.rs`
   * Registered `floruit` and `fraction` in `is_handled_template_name` and dispatched them.
   * Implemented `render_floruit_template`.
+  * Updated `init_logging` to write plain-text logs without ANSI escapes to `report.log` using a layered subscriber.
 * `src/silent.csv`
   * Added `Library resources box` and `Spoken Wikipedia`.
 * `src/tests.rs`
   * Added `render_wikitext_formats_han_dynasty_templates` test.
+* `expected/korea/OEBPS/chapter-10.xhtml`
+  * Refreshed Han Dynasty expected output after the new template rendering (`floruit` and `fraction`).
 * `README.md`
   * Documented the new template conversion and omission rules.
 * `docs/codex-notes.md`
