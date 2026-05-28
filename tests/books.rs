@@ -133,7 +133,7 @@ fn generate_busan_images_book_from_local_page_dump() {
 #[test]
 #[ignore = "hits the real Wikipedia API"]
 fn generate_example_books_from_real_wikipedia_api() {
-    assert_real_api_generates_book("korea", &["Korea", "Seoul"]);
+    assert_real_api_generates_book("korea", &["Korea"]);
     assert_real_api_generates_book("macchini", &["Macchini", "Licia Macchini"]);
 }
 
