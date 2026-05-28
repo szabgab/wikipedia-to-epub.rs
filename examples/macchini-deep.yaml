@@ -1,0 +1,12 @@
+metadata:
+  title: Macchini deep
+  author: Wikipedia contributors
+  license: Creative Commons Attribution-ShareAlike 4.0 License
+  language: en
+  edition: First edition
+  date: 2026-05-19
+output-file: macchini-deep.epub
+images: false
+depth: 1
+articles:
+  - Macchini
