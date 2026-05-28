@@ -863,7 +863,6 @@ fn dfs_visit(
     if visited.contains(&norm) {
         return Ok(());
     }
-    visited.insert(norm.clone());
 
     // Load the page
     let page = match page_source.load_page(article) {
@@ -881,10 +880,19 @@ fn dfs_visit(
             }
         }
     };
-    // Store actual title from page.parse.title in ordered_articles
+
     let actual_title = page.parse.title.clone();
+    let actual_norm = normalize_lookup_key(&actual_title);
+    if visited.contains(&actual_norm) {
+        visited.insert(norm);
+        return Ok(());
+    }
+
+    visited.insert(norm);
+    visited.insert(actual_norm.clone());
+
     ordered_articles.push(actual_title);
-    loaded_pages.insert(norm, page.clone());
+    loaded_pages.insert(actual_norm, page.clone());
 
     if current_depth < max_depth {
         // Extract all valid internal links from the page wikitext
