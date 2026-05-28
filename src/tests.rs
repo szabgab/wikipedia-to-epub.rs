@@ -2313,6 +2313,7 @@ fn book_config_defaults_images_to_false() {
   language: en
   edition: First edition
 output-file: sample.epub
+caching: none
 depth: 0
 articles:
   - Sample
@@ -2333,6 +2334,7 @@ fn book_config_accepts_images_true() {
   edition: First edition
 output-file: sample.epub
 images: true
+caching: none
 depth: 0
 articles:
   - Sample
@@ -2509,7 +2511,7 @@ fn read_or_fetch_helpers_update_download_stats() {
     let text_stats = FileDownloadStats::default();
     let text_path = test_cache_path("text-stats").join("value.txt");
     let (_content, source) =
-        read_or_fetch_text_with_stats(&text_path, false, Some(&text_stats), || {
+        read_or_fetch_text_with_stats(&text_path, false, Some(&text_stats), true, || {
             Ok("fresh text".to_string())
         })
         .expect("text cache miss fetches");
@@ -2525,7 +2527,7 @@ fn read_or_fetch_helpers_update_download_stats() {
     );
 
     let (_content, source) =
-        read_or_fetch_text_with_stats(&text_path, false, Some(&text_stats), || {
+        read_or_fetch_text_with_stats(&text_path, false, Some(&text_stats), true, || {
             Ok("unused".to_string())
         })
         .expect("text cache hit reads");
@@ -2542,7 +2544,7 @@ fn read_or_fetch_helpers_update_download_stats() {
 
     let bytes_stats = FileDownloadStats::default();
     let bytes_path = test_cache_path("bytes-stats").join("value.bin");
-    let err = read_or_fetch_bytes_with_stats(&bytes_path, false, Some(&bytes_stats), || {
+    let err = read_or_fetch_bytes_with_stats(&bytes_path, false, Some(&bytes_stats), true, || {
         Err(AppError::Message("download failed".to_string()))
     })
     .expect_err("byte download failure is returned");
@@ -2564,6 +2566,7 @@ fn download_cache_paths_are_safe_for_non_ascii_titles() {
         PathBuf::from("/tmp/cache-root"),
         false,
         DownloadStats::default(),
+        true,
     );
     let long_url = format!(
         "https://upload.wikimedia.org/wikipedia/commons/thumb/{}",
@@ -2787,4 +2790,75 @@ fn test_cache_path(name: &str) -> PathBuf {
         "wikipedia-to-epub-cache-test-{name}-{}-{nanos}",
         std::process::id()
     ))
+}
+
+#[test]
+fn caching_mode_none_bypasses_cache_writes() {
+    let cache_path = test_cache_path("none-bypass").join("value.txt");
+    let calls = std::cell::Cell::new(0);
+
+    let (content, source) = read_or_fetch_text_with_stats(&cache_path, false, None, false, || {
+        calls.set(calls.get() + 1);
+        Ok("fresh text".to_string())
+    })
+    .expect("fetch succeeds");
+
+    assert_eq!(content, "fresh text");
+    assert_eq!(source, CacheSource::Refreshed);
+    assert_eq!(calls.get(), 1);
+    assert!(
+        !cache_path.exists(),
+        "Cache file should not be written when caching is none!"
+    );
+}
+
+#[test]
+fn caching_mode_local_resolves_path() {
+    let config_none = serde_yaml::from_str::<BookConfig>(
+        r#"metadata:
+  title: Sample
+  author: Wikipedia contributors
+  language: en
+  edition: First edition
+output-file: sample.epub
+caching: none
+depth: 0
+articles:
+  - Sample
+"#,
+    )
+    .expect("config parses");
+    assert_eq!(config_none.caching, CachingMode::None);
+
+    let config_local = serde_yaml::from_str::<BookConfig>(
+        r#"metadata:
+  title: Sample
+  author: Wikipedia contributors
+  language: en
+  edition: First edition
+output-file: sample.epub
+caching: local
+depth: 0
+articles:
+  - Sample
+"#,
+    )
+    .expect("config parses");
+    assert_eq!(config_local.caching, CachingMode::Local);
+
+    let config_central = serde_yaml::from_str::<BookConfig>(
+        r#"metadata:
+  title: Sample
+  author: Wikipedia contributors
+  language: en
+  edition: First edition
+output-file: sample.epub
+caching: central
+depth: 0
+articles:
+  - Sample
+"#,
+    )
+    .expect("config parses");
+    assert_eq!(config_central.caching, CachingMode::Central);
 }

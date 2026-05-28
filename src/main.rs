@@ -91,6 +91,14 @@ impl From<zip::result::ZipError> for AppError {
     }
 }
 
+#[derive(Debug, Deserialize, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+enum CachingMode {
+    None,
+    Local,
+    Central,
+}
+
 #[derive(Debug, Deserialize)]
 struct BookConfig {
     metadata: Metadata,
@@ -98,6 +106,7 @@ struct BookConfig {
     output_file: PathBuf,
     #[serde(default)]
     images: bool,
+    caching: CachingMode,
     depth: usize,
     articles: Vec<String>,
 }
@@ -305,6 +314,7 @@ impl PageSource for WikipediaApiPageSource {
             &cache_path,
             self.cache.refresh,
             Some(&self.cache.stats.json),
+            self.cache.enabled,
             || self.fetch_page_payload(article),
         )?;
         match Self::parse_page_payload(article, &payload) {
@@ -319,6 +329,7 @@ impl PageSource for WikipediaApiPageSource {
                 let payload = fetch_and_write_text_with_stats(
                     &cache_path,
                     Some(&self.cache.stats.json),
+                    self.cache.enabled,
                     || self.fetch_page_payload(article),
                 )?;
                 Self::parse_page_payload(article, &payload)
@@ -333,14 +344,16 @@ struct DownloadCache {
     root: PathBuf,
     refresh: bool,
     stats: DownloadStats,
+    enabled: bool,
 }
 
 impl DownloadCache {
-    fn new(root: PathBuf, refresh: bool, stats: DownloadStats) -> Self {
+    fn new(root: PathBuf, refresh: bool, stats: DownloadStats, enabled: bool) -> Self {
         Self {
             root,
             refresh,
             stats,
+            enabled,
         }
     }
 
@@ -458,10 +471,17 @@ fn run(args: CliArgs) -> AppResult<()> {
     let download_cache = if local_pages_dir.is_some() {
         None
     } else {
+        let enabled = config.caching != CachingMode::None;
+        let root = match config.caching {
+            CachingMode::Central => default_cache_root()?,
+            CachingMode::Local => std::env::current_dir()?.join(".cache"),
+            CachingMode::None => default_cache_root()?,
+        };
         Some(DownloadCache::new(
-            default_cache_root()?,
+            root,
             args.refresh_cache,
             download_stats.clone(),
+            enabled,
         ))
     };
     let page_source: Box<dyn PageSource> = if let Some(pages_dir) = args.local_pages_dir {
@@ -589,15 +609,24 @@ fn read_or_fetch_text(
     refresh: bool,
     fetch: impl FnOnce() -> AppResult<String>,
 ) -> AppResult<(String, CacheSource)> {
-    read_or_fetch_text_with_stats(cache_path, refresh, None, fetch)
+    read_or_fetch_text_with_stats(cache_path, refresh, None, true, fetch)
 }
 
 fn read_or_fetch_text_with_stats(
     cache_path: &Path,
     refresh: bool,
     stats: Option<&FileDownloadStats>,
+    enabled: bool,
     fetch: impl FnOnce() -> AppResult<String>,
 ) -> AppResult<(String, CacheSource)> {
+    if !enabled {
+        let content = fetch()?;
+        if let Some(stats) = stats {
+            stats.needed.set(stats.needed.get() + 1);
+            stats.downloaded.set(stats.downloaded.get() + 1);
+        }
+        return Ok((content, CacheSource::Refreshed));
+    }
     if let Some(stats) = stats {
         stats.needed.set(stats.needed.get() + 1);
     }
@@ -608,13 +637,14 @@ fn read_or_fetch_text_with_stats(
         return Ok((fs::read_to_string(cache_path)?, CacheSource::Hit));
     }
 
-    let content = fetch_and_write_text_with_stats(cache_path, stats, fetch)?;
+    let content = fetch_and_write_text_with_stats(cache_path, stats, enabled, fetch)?;
     Ok((content, CacheSource::Refreshed))
 }
 
 fn fetch_and_write_text_with_stats(
     cache_path: &Path,
     stats: Option<&FileDownloadStats>,
+    enabled: bool,
     fetch: impl FnOnce() -> AppResult<String>,
 ) -> AppResult<String> {
     let content = match fetch() {
@@ -626,7 +656,7 @@ fn fetch_and_write_text_with_stats(
             return Err(err);
         }
     };
-    if let Err(err) = write_cache_text(cache_path, &content) {
+    if enabled && let Err(err) = write_cache_text(cache_path, &content) {
         if let Some(stats) = stats {
             stats.failed.set(stats.failed.get() + 1);
         }
@@ -644,15 +674,24 @@ fn read_or_fetch_bytes(
     refresh: bool,
     fetch: impl FnOnce() -> AppResult<Vec<u8>>,
 ) -> AppResult<(Vec<u8>, CacheSource)> {
-    read_or_fetch_bytes_with_stats(cache_path, refresh, None, fetch)
+    read_or_fetch_bytes_with_stats(cache_path, refresh, None, true, fetch)
 }
 
 fn read_or_fetch_bytes_with_stats(
     cache_path: &Path,
     refresh: bool,
     stats: Option<&FileDownloadStats>,
+    enabled: bool,
     fetch: impl FnOnce() -> AppResult<Vec<u8>>,
 ) -> AppResult<(Vec<u8>, CacheSource)> {
+    if !enabled {
+        let content = fetch()?;
+        if let Some(stats) = stats {
+            stats.needed.set(stats.needed.get() + 1);
+            stats.downloaded.set(stats.downloaded.get() + 1);
+        }
+        return Ok((content, CacheSource::Refreshed));
+    }
     if let Some(stats) = stats {
         stats.needed.set(stats.needed.get() + 1);
     }
@@ -5602,6 +5641,7 @@ fn resolve_image(
                     &cache_path,
                     cache.is_some_and(|cache| cache.refresh),
                     cache.map(|cache| cache.stats.images.as_ref()),
+                    cache.is_some_and(|cache| cache.enabled),
                     || download_image_bytes(client, &image, &info, image_download_request_count),
                 )?;
                 if source == CacheSource::Hit {
@@ -5670,6 +5710,7 @@ fn load_remote_image_info(
             cache_path,
             cache.is_some_and(|cache| cache.refresh),
             cache.map(|cache| cache.stats.json.as_ref()),
+            cache.is_some_and(|cache| cache.enabled),
             || fetch_remote_image_metadata_payload(client, api_url, title),
         )?
     } else {
@@ -5691,6 +5732,7 @@ fn load_remote_image_info(
             let payload = fetch_and_write_text_with_stats(
                 &cache_path,
                 cache.map(|cache| cache.stats.json.as_ref()),
+                cache.is_some_and(|cache| cache.enabled),
                 || fetch_remote_image_metadata_payload(client, api_url, title),
             )?;
             parse_remote_image_info(title, &payload)

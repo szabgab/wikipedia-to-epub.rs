@@ -1,5 +1,41 @@
 # Codex Session Notes
 
+## 2026-05-28 Configuration-controlled Caching ("none", "local", "central")
+
+### Summary
+
+Implemented a required `caching` config field in standard book configuration YAML files allowing values `"none"`, `"local"`, and `"central"`. Improved the downloading and file caching mechanism to seamlessly resolve platform-specific central cache directories, local `.cache` current-directory cache repositories, or bypass caching entirely in memory.
+
+### Decisions Made
+
+* Added `CachingMode` enum in `src/main.rs` with variants `None`, `Local`, and `Central`.
+* Added `caching` required config field to `BookConfig` struct.
+* Extended the `DownloadCache` struct with an `enabled` boolean flag indicating whether disk caching should be used.
+* Updated standard cache root resolution in the main `run` function to use central user directories, current-working-directory-relative `.cache` folders, or dummy fallbacks.
+* Extended standard `read_or_fetch` and `fetch_and_write` text/byte cache helpers to support the `enabled` bypass flag, resolving in-memory lookups when disabled.
+* Automatically updated all 24 existing YAML examples inside `examples/` to include `caching: central` to ensure backward compatibility.
+* Fixed legacy unit tests and added exhaustive unit tests validating cache bypassing and path resolution.
+
+### Files Changed
+
+* `src/main.rs`
+  * Implemented `CachingMode`, added caching field to `BookConfig`, updated `DownloadCache` struct, constructor, and resolve behaviors in `run`, and extended all text/byte helper calls.
+* `src/tests.rs`
+  * Added `caching: none` configurations to unit test YAML strings, and added two new caching unit tests (`caching_mode_none_bypasses_cache_writes` and `caching_mode_local_resolves_path`).
+* `examples/*.yaml` (all 24 config files)
+  * Pre-inserted `caching: central` configuration settings.
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test` — all 127 unit tests and 24 integration tests passed successfully.
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-28 Panic diagnostic improvements in tests/books.rs
 
 ### Summary

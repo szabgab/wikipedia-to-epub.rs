@@ -7,6 +7,7 @@ metadata:
   date: 2026-05-19
 output-file: administrative-divisions-of-south-korea.epub
 images: false
+caching: central
 depth: 0
 articles:
   - Administrative divisions of South Korea
