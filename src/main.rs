@@ -503,7 +503,7 @@ fn run(args: CliArgs) -> AppResult<()> {
         .map(|(index, article)| {
             let page = loaded_pages
                 .get(&normalize_lookup_key(article))
-                .expect("page is pre-loaded in resolution phase");
+                .unwrap_or_else(|| panic!("page '{}' is pre-loaded in resolution phase", article));
             load_chapter(
                 page,
                 index + 1,

@@ -140,7 +140,13 @@ fn generate_example_books_from_real_wikipedia_api() {
 fn assert_generated_book_matches_expected(book: &str) {
     let repo = repo_root();
     let work_dir = unique_test_dir(&repo, book);
-    fs::create_dir_all(&work_dir).expect("test output directory is created");
+    fs::create_dir_all(&work_dir).unwrap_or_else(|err| {
+        panic!(
+            "failed to create test output directory {}: {:?}",
+            work_dir.display(),
+            err
+        )
+    });
 
     let output_file_name = format!("{book}.epub");
     let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
@@ -151,7 +157,14 @@ fn assert_generated_book_matches_expected(book: &str) {
         .arg("--log")
         .arg("WARN")
         .output()
-        .expect("wikipedia-to-epub runs");
+        .unwrap_or_else(|err| {
+            panic!(
+                "failed to execute wikipedia-to-epub binary for book '{}' at {}: {:?}",
+                book,
+                work_dir.display(),
+                err
+            )
+        });
 
     assert!(
         output.status.success(),
@@ -174,18 +187,36 @@ fn assert_generated_book_matches_expected(book: &str) {
         let expected_path = expected_dir.join(&entry_name);
         let expected = normalize_epub_entry(
             &entry_name,
-            &fs::read_to_string(&expected_path).expect("expected epub entry reads"),
+            &fs::read_to_string(&expected_path).unwrap_or_else(|err| {
+                panic!(
+                    "expected epub entry '{}' reads: {:?}",
+                    expected_path.display(),
+                    err
+                )
+            }),
         );
         assert_text_matches_expected(&entry_name, &generated, &expected);
     }
 
-    fs::remove_dir_all(&work_dir).expect("test output directory is cleaned up");
+    fs::remove_dir_all(&work_dir).unwrap_or_else(|err| {
+        panic!(
+            "failed to clean up test output directory {}: {:?}",
+            work_dir.display(),
+            err
+        )
+    });
 }
 
 fn assert_real_api_generates_book(book: &str, chapter_titles: &[&str]) {
     let repo = repo_root();
     let work_dir = unique_test_dir(&repo, &format!("{book}-real-api"));
-    fs::create_dir_all(&work_dir).expect("test output directory is created");
+    fs::create_dir_all(&work_dir).unwrap_or_else(|err| {
+        panic!(
+            "failed to create real-api test output directory {}: {:?}",
+            work_dir.display(),
+            err
+        )
+    });
 
     let output_file_name = format!("{book}.epub");
     let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
@@ -194,7 +225,14 @@ fn assert_real_api_generates_book(book: &str, chapter_titles: &[&str]) {
         .arg("--log")
         .arg("WARN")
         .output()
-        .expect("wikipedia-to-epub runs");
+        .unwrap_or_else(|err| {
+            panic!(
+                "failed to execute wikipedia-to-epub binary for real-api book '{}' at {}: {:?}",
+                book,
+                work_dir.display(),
+                err
+            )
+        });
 
     assert!(
         output.status.success(),
@@ -226,7 +264,13 @@ fn assert_real_api_generates_book(book: &str, chapter_titles: &[&str]) {
         );
     }
 
-    fs::remove_dir_all(&work_dir).expect("test output directory is cleaned up");
+    fs::remove_dir_all(&work_dir).unwrap_or_else(|err| {
+        panic!(
+            "failed to clean up real-api test output directory {}: {:?}",
+            work_dir.display(),
+            err
+        )
+    });
 }
 
 fn repo_root() -> PathBuf {
@@ -248,8 +292,15 @@ fn assert_cli_stdout(stdout: &[u8], output_file_name: &str) {
 }
 
 fn open_epub(path: &Path) -> ZipArchive<File> {
-    let file = File::open(path).expect("generated epub opens");
-    ZipArchive::new(file).expect("generated epub is a zip archive")
+    let file = File::open(path)
+        .unwrap_or_else(|err| panic!("generated epub '{}' opens: {:?}", path.display(), err));
+    ZipArchive::new(file).unwrap_or_else(|err| {
+        panic!(
+            "generated epub '{}' is a zip archive: {:?}",
+            path.display(),
+            err
+        )
+    })
 }
 
 fn zip_entries(epub: &ZipArchive<File>) -> Vec<String> {
@@ -268,7 +319,7 @@ fn read_epub_entry<R: std::io::Read + std::io::Seek>(
     let mut content = String::new();
     entry
         .read_to_string(&mut content)
-        .expect("epub entry is valid utf-8");
+        .unwrap_or_else(|err| panic!("epub entry '{}' is valid utf-8: {:?}", name, err));
     content
 }
 
@@ -307,7 +358,13 @@ fn first_difference_report(generated: &str, expected: &str) -> String {
         .ops()
         .iter()
         .find(|op| !matches!(op.tag(), DiffTag::Equal))
-        .expect("strings differ, so a changed diff op must exist");
+        .unwrap_or_else(|| {
+            panic!(
+                "strings differ but no changed diff op found. Expected len: {} chars, generated len: {} chars",
+                expected.chars().count(),
+                generated.chars().count()
+            )
+        });
 
     let expected_index = first_change.old_range().start;
     let generated_index = first_change.new_range().start;
@@ -353,16 +410,31 @@ fn snippet_at(text: &str, char_index: usize) -> String {
 }
 
 fn collect_expected_epub_entries(root: &Path, dir: &Path, entries: &mut Vec<String>) {
-    for entry in
-        fs::read_dir(dir).unwrap_or_else(|_| panic!("expected epub directory reads {dir:?}"))
+    for entry in fs::read_dir(dir)
+        .unwrap_or_else(|err| panic!("expected epub directory reads {dir:?}: {:?}", err))
     {
-        let path = entry.expect("expected epub directory entry reads").path();
+        let path = entry
+            .unwrap_or_else(|err| {
+                panic!(
+                    "expected epub directory entry in {} reads: {:?}",
+                    dir.display(),
+                    err
+                )
+            })
+            .path();
         if path.is_dir() {
             collect_expected_epub_entries(root, &path, entries);
         } else {
             let relative = path
                 .strip_prefix(root)
-                .expect("expected path is under expected root")
+                .unwrap_or_else(|err| {
+                    panic!(
+                        "expected path {} is under expected root {}: {:?}",
+                        path.display(),
+                        root.display(),
+                        err
+                    )
+                })
                 .to_string_lossy()
                 .replace('\\', "/");
             entries.push(relative);
@@ -373,7 +445,7 @@ fn collect_expected_epub_entries(root: &Path, dir: &Path, entries: &mut Vec<Stri
 fn unique_test_dir(repo: &Path, test_name: &str) -> PathBuf {
     let nanos = SystemTime::now()
         .duration_since(UNIX_EPOCH)
-        .expect("system time is after unix epoch")
+        .unwrap_or_else(|err| panic!("system time is before unix epoch: {:?}", err))
         .as_nanos();
     repo.join("target")
         .join("test-output")

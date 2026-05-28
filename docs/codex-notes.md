@@ -1,5 +1,36 @@
 # Codex Session Notes
 
+## 2026-05-28 Panic diagnostic improvements in tests/books.rs
+
+### Summary
+
+Improved the testing panic contexts in `tests/books.rs` by replacing generic `.expect()` calls with informative `unwrap_or_else` blocks. These new panics print full contextual parameters such as directory paths, book identifiers, file names, and underlying OS errors.
+
+### Decisions Made
+
+* Replaced `expect` on `fs::create_dir_all(&work_dir)` with a verbose `unwrap_or_else` panic stating the exact directory that failed to create.
+* Replaced `expect` on running the `wikipedia-to-epub` CLI command with a panic providing the book and the directory context, as well as the CLI execute error.
+* Replaced `expect` on `fs::remove_dir_all(&work_dir)` with a panic reporting cleanup failures.
+* Replaced `expect` in `first_difference_report` with a panic detailing string difference lengths.
+* Replaced `expect` on `SystemTime::now().duration_since(UNIX_EPOCH)` with a descriptive panic message.
+* Replaced `unwrap_or_else` in `collect_expected_epub_entries` with a verbose panic showing the error message during directory reads.
+
+### Files Changed
+
+* `tests/books.rs`
+  * Improved diagnostic panic details inside `assert_generated_book_matches_expected`, `assert_real_api_generates_book`, `first_difference_report`, `collect_expected_epub_entries`, and `unique_test_dir`.
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test` — all 125 unit tests and 24 integration tests passed successfully.
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-28 Wikitext table handling foundation — `strip_wikitext_tables`
 
 ### Summary
