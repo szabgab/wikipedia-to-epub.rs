@@ -7,5 +7,6 @@ metadata:
   date: 2026-05-26
 output-file: busan-images.epub
 images: true
+depth: 0
 articles:
   - Busan

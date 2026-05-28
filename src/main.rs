@@ -98,6 +98,7 @@ struct BookConfig {
     output_file: PathBuf,
     #[serde(default)]
     images: bool,
+    depth: usize,
     articles: Vec<String>,
 }
 
@@ -111,18 +112,18 @@ struct Metadata {
     edition: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 struct PageResponse {
     parse: ParsedPage,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 struct ParsedPage {
     title: String,
     wikitext: WikitextValue,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 struct WikitextValue {
     #[serde(rename = "*")]
     text: String,
@@ -479,15 +480,32 @@ fn run(args: CliArgs) -> AppResult<()> {
         None
     };
 
-    let internal_links = internal_links(&config.articles);
-    let chapters = config
-        .articles
+    let mut visited = std::collections::HashSet::new();
+    let mut ordered_articles = Vec::new();
+    let mut loaded_pages = HashMap::new();
+
+    for article in &config.articles {
+        dfs_visit(
+            article,
+            0,
+            config.depth,
+            page_source.as_ref(),
+            &mut visited,
+            &mut ordered_articles,
+            &mut loaded_pages,
+        )?;
+    }
+
+    let internal_links = internal_links(&ordered_articles);
+    let chapters = ordered_articles
         .iter()
         .enumerate()
         .map(|(index, article)| {
+            let page = loaded_pages
+                .get(&normalize_lookup_key(article))
+                .expect("page is pre-loaded in resolution phase");
             load_chapter(
-                page_source.as_ref(),
-                article,
+                page,
                 index + 1,
                 &internal_links,
                 &wikipedia_language,
@@ -741,15 +759,13 @@ fn internal_links(articles: &[String]) -> InternalLinks {
 }
 
 fn load_chapter(
-    page_source: &dyn PageSource,
-    article: &str,
+    page: &PageResponse,
     index: usize,
     internal_links: &InternalLinks,
     language: &str,
     image_registry: Option<&mut ImageRegistry>,
 ) -> AppResult<Chapter> {
-    info!(article = article, "fetching article");
-    let page = page_source.load_page(article)?;
+    info!(article = page.parse.title, "fetching article");
     let (rendered, template_skip_counts) = render_wikitext_with_template_counts(
         &page.parse.title,
         &page.parse.wikitext.text,
@@ -758,19 +774,135 @@ fn load_chapter(
         image_registry,
     );
     info!(
-        article = article,
+        article = page.parse.title,
         title = page.parse.title,
         recognized_skipped_templates = template_skip_counts.recognized,
         unknown_skipped_templates = template_skip_counts.unknown,
         "article template skip counts"
     );
 
+    let file_name = format!("chapter-{index}.xhtml");
     Ok(Chapter {
-        file_name: format!("chapter-{index}.xhtml"),
-        title: page.parse.title,
+        title: page.parse.title.clone(),
+        file_name,
         content: rendered,
         template_skip_counts,
     })
+}
+
+fn is_valid_internal_article_link(target: &str) -> bool {
+    let target = target.trim();
+    if target.is_empty() {
+        return false;
+    }
+    if target.starts_with(':') {
+        return false;
+    }
+    if let Some((prefix, _)) = target.split_once(':') {
+        let prefix_lower = prefix.to_lowercase();
+        // Check if prefix is a namespace or language code or interwiki
+        let ignored_namespaces = [
+            "category",
+            "file",
+            "image",
+            "talk",
+            "wikipedia",
+            "wp",
+            "template",
+            "help",
+            "portal",
+            "special",
+            "media",
+            "draft",
+            "user",
+            "book",
+            "module",
+        ];
+        if ignored_namespaces.contains(&prefix_lower.as_str()) {
+            return false;
+        }
+        // If the prefix has length 2 or 3 and is all ASCII alphabetic, it is likely a language code
+        if (2..=3).contains(&prefix_lower.len())
+            && prefix_lower.chars().all(|c| c.is_ascii_alphabetic())
+        {
+            return false;
+        }
+        // Interwiki prefixes
+        let interwikis = ["wikt", "voy", "s", "b", "m", "meta", "commons", "wikidata"];
+        if interwikis.contains(&prefix_lower.as_str()) {
+            return false;
+        }
+    }
+    true
+}
+
+fn extract_internal_links(wikitext: &str) -> Vec<String> {
+    let link_re = Regex::new(r"\[\[([^\]|]+)(?:\|[^\]]*)?\]\]").unwrap();
+    let mut targets = Vec::new();
+    for caps in link_re.captures_iter(wikitext) {
+        if let Some(target_match) = caps.get(1) {
+            let target = target_match.as_str();
+            if is_valid_internal_article_link(target) {
+                targets.push(target.to_string());
+            }
+        }
+    }
+    targets
+}
+
+fn dfs_visit(
+    article: &str,
+    current_depth: usize,
+    max_depth: usize,
+    page_source: &dyn PageSource,
+    visited: &mut std::collections::HashSet<String>,
+    ordered_articles: &mut Vec<String>,
+    loaded_pages: &mut HashMap<String, PageResponse>,
+) -> AppResult<()> {
+    let norm = normalize_lookup_key(article);
+    if visited.contains(&norm) {
+        return Ok(());
+    }
+    visited.insert(norm.clone());
+
+    // Load the page
+    let page = match page_source.load_page(article) {
+        Ok(p) => p,
+        Err(err) => {
+            if current_depth > 0 {
+                warn!(
+                    article = article,
+                    error = %err,
+                    "Skipping recursively followed link that failed to load"
+                );
+                return Ok(());
+            } else {
+                return Err(err);
+            }
+        }
+    };
+    // Store actual title from page.parse.title in ordered_articles
+    let actual_title = page.parse.title.clone();
+    ordered_articles.push(actual_title);
+    loaded_pages.insert(norm, page.clone());
+
+    if current_depth < max_depth {
+        // Extract all valid internal links from the page wikitext
+        let targets = extract_internal_links(&page.parse.wikitext.text);
+        for target in targets {
+            dfs_visit(
+                &target,
+                current_depth + 1,
+                max_depth,
+                page_source,
+                visited,
+                ordered_articles,
+                loaded_pages,
+            )?;
+        }
+    }
+
+    Ok(())
 }
 
 fn find_page_path(article: &str, pages_dir: &Path) -> AppResult<PathBuf> {

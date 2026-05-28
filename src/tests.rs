@@ -2313,6 +2313,7 @@ fn book_config_defaults_images_to_false() {
   language: en
   edition: First edition
 output-file: sample.epub
+depth: 0
 articles:
   - Sample
 "#,
@@ -2332,6 +2333,7 @@ fn book_config_accepts_images_true() {
   edition: First edition
 output-file: sample.epub
 images: true
+depth: 0
 articles:
   - Sample
 "#,

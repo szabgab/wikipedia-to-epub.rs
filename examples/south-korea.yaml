@@ -7,5 +7,6 @@ metadata:
   date: 2026-05-19
 output-file: south-korea.epub
 images: false
+depth: 0
 articles:
   - South Korea

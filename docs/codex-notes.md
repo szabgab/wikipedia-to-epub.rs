@@ -1226,3 +1226,51 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * None. Everything is fully completed and successfully verified.
+
+## Session Note: 2026-05-28 - Recursive Page Downloading
+
+### Decisions Made
+
+* Implemented the required `depth` configuration option for YAML configuration files:
+  * Modified the `BookConfig` struct to include a required `depth: usize` field.
+  * Updated all existing example YAML configurations in `examples/` with `depth: 0` for backward compatibility.
+  * Added the new integration test config `examples/macchini-deep.yaml` which specifies `depth: 1`.
+  * Updated `book_config_defaults_images_to_false` and `book_config_accepts_images_true` unit tests in `src/tests.rs` to include `depth: 0` in their parsed configurations.
+* Implemented depth-first recursive article link resolution:
+  * Formulated a recursive Depth-First Search (DFS) resolver starting from the initial articles specified in the YAML configuration.
+  * Prevented duplicate visits and duplicate downloads/chapter insertions by tracking visited articles using a `HashSet<String>` containing the normalized titles.
+  * Constructed `internal_links` map using the full set of resolved recursive articles to ensure all links to recursively downloaded chapters are correctly compiled as local references.
+  * Cleaned up redundant downloads by caching all fetched `PageResponse` results in a `HashMap` during the DFS phase and passing the pre-loaded pages directly to `load_chapter`.
+  * Handled dead links and missing files gracefully for recursively followed links (depth > 0) by skipping them and logging a warning instead of crashing.
+* Implemented `extract_internal_links` and `is_valid_internal_article_link` to parse valid internal Wikipedia article link targets while ignoring namespaces (like `File:`, `Category:`), language-switching links, and other interwiki prefixes.
+* Added `generate_macchini_deep_book_from_local_page_dump` to the integration test suite in `tests/books.rs`, generated its expected fixture outputs, and verified complete assertion compatibility.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added `depth` field to `BookConfig`.
+  * Derived `Clone` for `PageResponse`, `ParsedPage`, and `WikitextValue`.
+  * Modified `run` to perform DFS recursive article resolution and preloaded chapters compilation.
+  * Modified `load_chapter` to receive the preloaded `PageResponse`.
+  * Defined `is_valid_internal_article_link`, `extract_internal_links`, and `dfs_visit`.
+* `src/tests.rs`
+  * Updated unit tests to include `depth: 0`.
+* `tests/books.rs`
+  * Added `generate_macchini_deep_book_from_local_page_dump` integration test.
+* `examples/*.yaml`
+  * Configured required `depth: 0` option across all existing configs.
+* `expected/macchini-deep/`
+  * Generated expected EPUB fixture files for the recursive integration test.
+* `docs/codex-notes.md`
+  * Appended the current session notes.
+
+### Tests Run
+
+* `cargo check` (clean build)
+* `cargo clippy --all-targets -- -D warnings` (zero warnings/errors)
+* `cargo fmt --check` (clean formatting check)
+* `cargo test` (all 125 unit tests and 24 integration tests pass successfully with 100% success rate)
+
+### Pending Follow-Ups
+
+* None. Everything is fully completed and successfully verified.

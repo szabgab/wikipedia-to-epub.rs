@@ -16,6 +16,11 @@ fn generate_macchini_book_from_local_page_dump() {
 }
 
 #[test]
+fn generate_macchini_deep_book_from_local_page_dump() {
+    assert_generated_book_matches_expected("macchini-deep");
+}
+
+#[test]
 fn generate_administrative_divisions_of_south_korea_book_from_local_page_dump() {
     assert_generated_book_matches_expected("macchini");
 }

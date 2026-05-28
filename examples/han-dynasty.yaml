@@ -7,5 +7,6 @@ metadata:
   date: 2026-05-19
 output-file: han-dynasty.epub
 images: false
+depth: 0
 articles:
   - Han dynasty

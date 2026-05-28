@@ -7,5 +7,6 @@ metadata:
   date: 2026-05-27
 output-file: osaka.epub
 images: false
+depth: 0
 articles:
   - Osaka
