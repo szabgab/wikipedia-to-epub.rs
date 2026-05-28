@@ -30,6 +30,15 @@ jobs:
       - name: Test ignored tests
         run: cargo test --locked -- --ignored
 
+      - name: Formatting
+        run: cargo fmt --check
+
+      - name: Check
+        run: cargo check
+
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+
   build-binaries:
     needs: build-and-test
     strategy:
