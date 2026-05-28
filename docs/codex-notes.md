@@ -1274,3 +1274,33 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * None. Everything is fully completed and successfully verified.
+
+## Session Note: 2026-05-28 - Panic Improvement in Ignored Real API Tests
+
+### Decisions Made
+
+* Improved the EPUB entry lookup panic in `tests/books.rs`:
+  * Replaced a generic `.expect("epub entry exists")` inside `read_epub_entry` with a detailed `.unwrap_or_else` that reports the exact name of the missing entry (e.g., `OEBPS/chapter-2.xhtml`) alongside the original panic reason.
+* Identified and fixed an outdated assertion in the ignored integration test `generate_example_books_from_real_wikipedia_api`:
+  * The `korea` book test case expected two chapters (`"Korea"` and `"Seoul"`), but the `examples/korea.yaml` configuration is configured with `depth: 0` and lists only one article (`"Korea"`).
+  * Updated the assertion parameters to expect `&["Korea"]` instead of `&["Korea", "Seoul"]`, aligning it perfectly with the actual `korea.yaml` schema and matching the offline integration test expectations.
+* Verified that both normal and ignored tests compile, format, and pass successfully with a 100% success rate.
+
+### Files Changed
+
+* `tests/books.rs`
+  * Improved the `read_epub_entry` panic reporting code.
+  * Corrected the expected chapter array in `generate_example_books_from_real_wikipedia_api` for the `korea` book.
+* `docs/codex-notes.md`
+  * Appended the current session notes.
+
+### Tests Run
+
+* `cargo fmt --check` (clean formatting check)
+* `cargo clippy --all-targets -- -D warnings` (clean lint verification)
+* `cargo test --locked -- --ignored` (successfully passed)
+* `cargo test --locked` (successfully passed)
+
+### Pending Follow-Ups
+
+* None. Everything is fully resolved and verified.

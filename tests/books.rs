@@ -262,7 +262,9 @@ fn read_epub_entry<R: std::io::Read + std::io::Seek>(
     epub: &mut ZipArchive<R>,
     name: &str,
 ) -> String {
-    let mut entry = epub.by_name(name).expect("epub entry exists");
+    let mut entry = epub
+        .by_name(name)
+        .unwrap_or_else(|err| panic!("epub entry '{}' exists: {:?}", name, err));
     let mut content = String::new();
     entry
         .read_to_string(&mut content)
