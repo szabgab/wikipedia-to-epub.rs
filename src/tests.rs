@@ -2196,6 +2196,65 @@ fn strip_balanced_sections_removes_nested_templates() {
 }
 
 #[test]
+fn strip_wikitext_tables_removes_table_sections() {
+    // Simple table with class attribute is removed, surrounding text preserved.
+    // The surrounding newlines remain after the table block is stripped (a blank
+    // line is the natural result of removing multiple full lines).
+    let cleaned = strip_wikitext_tables("before\n{| class=\"wikitable\"\n|-\n| cell\n|}\nafter");
+    assert!(cleaned.contains("before"));
+    assert!(cleaned.contains("after"));
+    assert!(!cleaned.contains("{|"));
+
+    // Multiple sequential tables are all removed
+    let cleaned = strip_wikitext_tables(
+        "intro\n{| class=\"a\"\n| row\n|}\nmiddle\n{| class=\"b\"\n| row\n|}\nend",
+    );
+    assert!(cleaned.contains("intro"));
+    assert!(cleaned.contains("middle"));
+    assert!(cleaned.contains("end"));
+    assert!(!cleaned.contains("{|"));
+    assert!(!cleaned.contains("|}"));
+
+    // Nested tables are handled by depth tracking
+    let cleaned = strip_wikitext_tables("start\n{| outer\n| {| inner\n|-\n|}\n|}\nfinish");
+    assert!(cleaned.contains("start"));
+    assert!(cleaned.contains("finish"));
+    assert!(!cleaned.contains("{|"));
+
+    // Text with no tables passes through unchanged
+    let no_tables = "plain text without any tables";
+    assert_eq!(strip_wikitext_tables(no_tables), no_tables);
+}
+
+#[test]
+fn render_wikitable_preserves_various_classes_and_skips_unrecognized() {
+    let internal_links = InternalLinks::new();
+
+    // 1. A table with class="wikitable sortable" is rendered with its classes preserved
+    let wikitext_sortable =
+        "before\n{| class=\"wikitable sortable\"\n|-\n! Header\n|-\n| Cell\n|}\nafter";
+    let rendered_sortable = render_wikitext("Sample", wikitext_sortable, &internal_links, "en");
+    assert!(rendered_sortable.contains("<table class=\"wikitable sortable\">"));
+    assert!(rendered_sortable.contains("<th>Header</th>"));
+    assert!(rendered_sortable.contains("<td>Cell</td>"));
+
+    // 2. A table with class="wikitable plainrowheaders" is rendered with its classes preserved
+    let wikitext_plain =
+        "before\n{| class=\"wikitable plainrowheaders\"\n|-\n! Header\n|-\n| Cell\n|}\nafter";
+    let rendered_plain = render_wikitext("Sample", wikitext_plain, &internal_links, "en");
+    assert!(rendered_plain.contains("<table class=\"wikitable plainrowheaders\">"));
+
+    // 3. A table with an unrecognized class is skipped (stripped) entirely
+    let wikitext_unrecognized = "before\n{| class=\"infobox\"\n|-\n| Cell\n|}\nafter";
+    let rendered_unrecognized =
+        render_wikitext("Sample", wikitext_unrecognized, &internal_links, "en");
+    assert!(!rendered_unrecognized.contains("<table"));
+    assert!(!rendered_unrecognized.contains("Cell"));
+    assert!(rendered_unrecognized.contains("before"));
+    assert!(rendered_unrecognized.contains("after"));
+}
+
+#[test]
 fn strip_file_links_removes_nested_caption_links() {
     let cleaned = strip_file_links(
         "before [[File:Hangul.svg|thumb|[[Hangul]], afterwards called [[Korean alphabet]]]] after",

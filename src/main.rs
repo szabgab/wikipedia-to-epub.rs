@@ -933,7 +933,8 @@ fn render_wikitext_impl(
         .replace_all(&text, "\n")
         .into_owned();
     text = render_templates(&text);
-    text = strip_balanced_sections(&text, "{|", "|}");
+    let mut tables = Vec::new();
+    text = render_wikitext_tables(&text, &mut tables, internal_links, language);
     text = process_file_links(
         &text,
         image_registry.as_deref_mut(),
@@ -957,6 +958,15 @@ fn render_wikitext_impl(
         }
 
         if line.starts_with("[[Category:") || line == "__TOC__" || line == "__NOTOC__" {
+            continue;
+        }
+
+        if let Some(table_id) = table_marker_id(line) {
+            flush_paragraph(&mut html, &mut paragraph_lines);
+            flush_list(&mut html, &mut active_list);
+            if let Some(table_html) = tables.get(table_id) {
+                html.push(table_html.clone());
+            }
             continue;
         }
 
@@ -4937,6 +4947,301 @@ fn parse_heading(line: &str) -> Option<(usize, String)> {
     Some((level, inner.to_string()))
 }
 
+fn extract_class_attr(attrs: &str) -> Option<String> {
+    let re = Regex::new(r#"(?i)\bclass\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))"#).unwrap();
+    if let Some(caps) = re.captures(attrs)
+        && let Some(c) = caps.get(1).or_else(|| caps.get(2)).or_else(|| caps.get(3))
+    {
+        return Some(c.as_str().to_string());
+    }
+    None
+}
+
+fn table_marker_id(line: &str) -> Option<usize> {
+    let line = line.trim();
+    if line.starts_with("__WIKIPEDIA_TO_EPUB_TABLE_") && line.ends_with("__") {
+        let number_str = &line["__WIKIPEDIA_TO_EPUB_TABLE_".len()..line.len() - 2];
+        number_str.parse::<usize>().ok()
+    } else {
+        None
+    }
+}
+
+#[cfg(test)]
+fn strip_wikitext_tables(text: &str) -> String {
+    let mut tables = Vec::new();
+    let internal_links = InternalLinks::new();
+    let mut text_with_placeholders =
+        render_wikitext_tables(text, &mut tables, &internal_links, "en");
+    for i in 0..tables.len() {
+        text_with_placeholders =
+            text_with_placeholders.replace(&format!("__WIKIPEDIA_TO_EPUB_TABLE_{}__", i), "");
+    }
+    text_with_placeholders
+}
+
+fn render_wikitext_tables(
+    text: &str,
+    tables: &mut Vec<String>,
+    internal_links: &InternalLinks,
+    language: &str,
+) -> String {
+    let mut output = String::with_capacity(text.len());
+    let mut index = 0usize;
+
+    while index < text.len() {
+        let remaining = &text[index..];
+
+        if let Some(after_open) = remaining.strip_prefix("{|") {
+            // Collect the full balanced table block (depth-track nested tables)
+            let block_start = index;
+            let mut depth = 1usize;
+            let mut scan = index + 2;
+            while scan < text.len() {
+                if text[scan..].starts_with("{|") {
+                    depth += 1;
+                    scan += 2;
+                } else if text[scan..].starts_with("|}") {
+                    depth -= 1;
+                    scan += 2;
+                    if depth == 0 {
+                        break;
+                    }
+                } else {
+                    scan += text[scan..].chars().next().map_or(1, |c| c.len_utf8());
+                }
+            }
+            let block_end = scan; // points to the char after |}
+            index = block_end;
+
+            // Extract the opening attribute string (first line after {|)
+            let attrs_line = after_open.lines().next().unwrap_or("").trim();
+
+            if is_wikitable_attrs(attrs_line) {
+                // Render the wikitable block (everything between {| and |})
+                let inner = &text[block_start + 2..block_end - 2];
+                let rendered = render_wikitable(inner, attrs_line, internal_links, language);
+                let table_id = tables.len();
+                tables.push(rendered);
+                output.push_str(&format!("__WIKIPEDIA_TO_EPUB_TABLE_{}__", table_id));
+                output.push('\n');
+            } else {
+                if let Some(class_str) = extract_class_attr(attrs_line) {
+                    warn!(class = %class_str, "Skipping table with unrecognized class: {}", class_str);
+                } else {
+                    debug!(
+                        attrs = attrs_line,
+                        "skipping non-wikitable table with no class"
+                    );
+                }
+            }
+            continue;
+        }
+
+        let ch = remaining.chars().next().unwrap();
+        output.push(ch);
+        index += ch.len_utf8();
+    }
+
+    output
+}
+
+/// Returns true when the table opening attribute string declares a `wikitable` class.
+fn is_wikitable_attrs(attrs: &str) -> bool {
+    // Match class=wikitable (unquoted) or class="...wikitable..." (quoted)
+    let re = Regex::new(
+        r#"(?i)class\s*=\s*(?:"[^"]*wikitable[^"]*"|'[^']*wikitable[^']*'|wikitable\b)"#,
+    )
+    .unwrap();
+    re.is_match(attrs)
+}
+
+/// Renders the interior of a `{| ... |}` wikitable block as an XHTML `<table>`.
+///
+/// `inner` is everything between the opening `{|attrs` line and the closing `|}`.
+/// Each cell's text content is cleaned through `cleanup_inline_markup`.
+fn render_wikitable(
+    inner: &str,
+    attrs_line: &str,
+    internal_links: &InternalLinks,
+    language: &str,
+) -> String {
+    // Split into lines, skipping the opening attrs line (first line of inner)
+    let lines: Vec<&str> = inner.lines().collect();
+
+    // We build a list of rows; each row is a list of (is_header, content) cells.
+    struct Cell {
+        is_header: bool,
+        content: String,
+    }
+
+    let mut rows: Vec<Vec<Cell>> = Vec::new();
+    let mut current_row: Vec<Cell> = Vec::new();
+    // skip_line_index: first line is the attrs line, skip it
+    let start = if lines.first().map(|l| {
+        !l.trim_start().starts_with('|')
+            && !l.trim_start().starts_with('!')
+            && !l.trim_start().starts_with('{')
+    }) == Some(true)
+    {
+        1
+    } else {
+        0
+    };
+
+    for line in &lines[start..] {
+        let trimmed = line.trim();
+
+        if trimmed.is_empty() || trimmed.starts_with("{|") {
+            // Nested table open — skip (it's inside the block, already depth-tracked)
+            continue;
+        }
+
+        if trimmed.starts_with("|}") {
+            // Nested table close — skip
+            continue;
+        }
+
+        if trimmed == "|-" || trimmed.starts_with("|-") {
+            // Row separator: commit current row if non-empty
+            if !current_row.is_empty() {
+                rows.push(std::mem::take(&mut current_row));
+            }
+            continue;
+        }
+
+        if let Some(rest) = trimmed.strip_prefix("!!") {
+            // Continuation header cells on the same line (rare, but handle it)
+            for cell_raw in rest.split("!!") {
+                let content = extract_cell_content(cell_raw);
+                current_row.push(Cell {
+                    is_header: true,
+                    content: content.to_string(),
+                });
+            }
+            continue;
+        }
+
+        if let Some(rest) = trimmed.strip_prefix('!') {
+            // Header cell(s): split on !!
+            for cell_raw in rest.split("!!") {
+                let content = extract_cell_content(cell_raw);
+                current_row.push(Cell {
+                    is_header: true,
+                    content: content.to_string(),
+                });
+            }
+            continue;
+        }
+
+        if let Some(rest) = trimmed.strip_prefix("||") {
+            // Continuation data cells on the same line
+            for cell_raw in rest.split("||") {
+                let content = extract_cell_content(cell_raw);
+                current_row.push(Cell {
+                    is_header: false,
+                    content: content.to_string(),
+                });
+            }
+            continue;
+        }
+
+        if let Some(rest) = trimmed.strip_prefix('|') {
+            // Data cell(s): split on ||
+            for cell_raw in rest.split("||") {
+                let content = extract_cell_content(cell_raw);
+                current_row.push(Cell {
+                    is_header: false,
+                    content: content.to_string(),
+                });
+            }
+            continue;
+        }
+
+        // Caption or other — skip
+    }
+
+    // Commit the final row
+    if !current_row.is_empty() {
+        rows.push(current_row);
+    }
+
+    if rows.is_empty() {
+        return String::new();
+    }
+
+    // Render to XHTML
+    let class_attr = extract_class_attr(attrs_line).unwrap_or_else(|| "wikitable".to_string());
+    let mut html = String::new();
+    html.push_str(&format!(
+        "<table class=\"{}\">\n",
+        encode_double_quoted_attribute(&class_attr)
+    ));
+
+    // Determine if the first row is all-header to wrap in <thead>
+    let first_all_header = rows
+        .first()
+        .map(|r| r.iter().all(|c| c.is_header))
+        .unwrap_or(false);
+    let (header_rows, body_rows) = if first_all_header {
+        (&rows[..1], &rows[1..])
+    } else {
+        (&rows[..0], &rows[..])
+    };
+
+    if !header_rows.is_empty() {
+        html.push_str("  <thead>\n");
+        for row in header_rows {
+            html.push_str("    <tr>\n");
+            for cell in row {
+                let cleaned = cleanup_inline_markup(&cell.content, internal_links, language);
+                let tag = if cell.is_header { "th" } else { "td" };
+                html.push_str(&format!("      <{tag}>{cleaned}</{tag}>\n"));
+            }
+            html.push_str("    </tr>\n");
+        }
+        html.push_str("  </thead>\n");
+    }
+
+    if !body_rows.is_empty() {
+        html.push_str("  <tbody>\n");
+        for row in body_rows {
+            html.push_str("    <tr>\n");
+            for cell in row {
+                let cleaned = cleanup_inline_markup(&cell.content, internal_links, language);
+                let tag = if cell.is_header { "th" } else { "td" };
+                html.push_str(&format!("      <{tag}>{cleaned}</{tag}>\n"));
+            }
+            html.push_str("    </tr>\n");
+        }
+        html.push_str("  </tbody>\n");
+    }
+
+    html.push_str("</table>");
+    html
+}
+
+/// Extracts the visible cell content from a wikitext cell string.
+///
+/// Wikitext cells can have the form `attrs | content` where `attrs` contains
+/// HTML-like attributes (e.g. `align="right"`, `rowspan=5`).  When a bare `|`
+/// separator is present the part after it is the content; otherwise the whole
+/// string is the content.
+fn extract_cell_content(cell: &str) -> &str {
+    let trimmed = cell.trim();
+    // A cell attribute prefix contains `=` (e.g. `align="right"`, `rowspan=2`).
+    // Split on the FIRST `|`; if the left part looks like attributes (contains `=`)
+    // use the right part as content.  Otherwise treat the whole string as content.
+    if let Some(pipe_pos) = trimmed.find('|') {
+        let possible_attrs = &trimmed[..pipe_pos];
+        if possible_attrs.contains('=') {
+            return trimmed[pipe_pos + 1..].trim();
+        }
+    }
+    trimmed
+}
+
+#[cfg(test)]
 fn strip_balanced_sections(text: &str, open: &str, close: &str) -> String {
     let mut output = String::with_capacity(text.len());
     let mut depth = 0usize;

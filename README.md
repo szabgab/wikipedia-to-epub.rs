@@ -172,7 +172,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `== History ==` becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings
 * Lines starting with `*` become unordered list items
 * Lines starting with `#` become ordered list items
-* References, unhandled templates, tables, categories, and file/image links are omitted; file/image links are only rendered when `images: true` and the image can be resolved
+* References, unhandled templates, non-wikitable tables, categories, and file/image links are omitted; wikitables are converted into XHTML tables; file/image links are only rendered when `images: true` and the image can be resolved
 
 ## Amazon
 

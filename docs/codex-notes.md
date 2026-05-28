@@ -1,6 +1,43 @@
 # Codex Session Notes
 
+## 2026-05-28 Wikitext table handling foundation — `strip_wikitext_tables`
+
+### Summary
+
+Introduced `strip_wikitext_tables`, a dedicated function that replaces the generic `strip_balanced_sections("{|", "|}")` call in `render_wikitext_impl`. The new function uses the same depth-tracking balanced-scan loop but, at every top-level `{|` opener encountered, extracts the table's opening attribute string (everything between `{|` and the first `|` on that same line) and logs it with `debug!`. This is the first step toward proper table rendering.
+
+### Decisions Made
+
+* `strip_wikitext_tables` replicates the same character-by-character scan as `strip_balanced_sections` but specialises it for `{|` / `|}` pairs, enabling future table rendering to be added incrementally inside the same function.
+* The attribute extraction parses only the first line after `{|`, then takes the segment before the first `|` (which isolates the CSS class / style string), and trims whitespace.
+* `strip_prefix("{|")` is used instead of manual `&remaining[2..]` slicing to satisfy `clippy::manual_strip`.
+* `strip_balanced_sections` is now unused in production code; it is annotated with `#[cfg(test)]` so it remains available to the existing unit test without triggering a `dead_code` warning.
+* The table-stripping behavior is otherwise unchanged, so no integration fixture updates were needed.
+
+### Files Changed
+
+* `src/main.rs`
+  * Replaced `strip_balanced_sections(&text, "{|", "|}")` call in `render_wikitext_impl` with `strip_wikitext_tables(&text)`.
+  * Added `fn strip_wikitext_tables` (depth-tracking scan + attribute logging).
+  * Added `#[cfg(test)]` to `fn strip_balanced_sections` to suppress dead_code warning.
+* `src/tests.rs`
+  * Added `strip_wikitext_tables_removes_table_sections` unit test covering simple tables, multiple sequential tables, nested tables, and no-table pass-through.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test` — 124 unit tests passed, 23 integration tests passed, 1 ignored
+
+### Pending Follow-Ups
+
+* Future step: render table content instead of stripping it, using the logged attribute string as the starting point.
+
 ## 2026-05-28 Administrative Divisions of South Korea page — `small` template
+
 
 ### Summary
 
@@ -1152,3 +1189,40 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * Keep code clean and continue running cargo clippy regularly to verify lint rules are followed.
+
+## Session Note: 2026-05-28 - Wikitable Class Preservation & Skip Logging
+
+### Decisions Made
+
+* Implemented handling of various classes with `"wikitable"`:
+  * Extracted the `class` attribute of tables using a robust regex.
+  * Verified if the class contains `"wikitable"`, which correctly matches `"wikitable sortable"`, `"wikitable plainrowheaders"`, etc.
+  * Preserved the class attribute when rendering the XHTML `<table>` tag.
+  * If a class is not recognized (i.e. does not contain `"wikitable"`), skipped rendering the table block and logged a warning `warn!(class = %class_str, "Skipping table with unrecognized class: {}", class_str);`.
+* Isolated the table rendering using a placeholder structure `__WIKIPEDIA_TO_EPUB_TABLE_N__` to ensure the HTML elements are not stripped or mangled by paragraph-wrapping or inline styling post-processors.
+* Updated `tests/books.rs` to temporarily run in fixture-writing mode, regenerated all 23 expected EPUB integration fixtures (which now beautifully contain the formatted tables), and restored `tests/books.rs` back to assertion mode.
+* Updated `README.md` to document the newly-added support for wikitables.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added `extract_class_attr`, `table_marker_id`, and `strip_wikitext_tables`.
+  * Updated `render_wikitext_tables` and `render_wikitable` to parse and format the class list and skip/log unrecognized tables.
+  * Integrated placeholder replacement inside the line processing loop of `render_wikitext_impl`.
+* `src/tests.rs`
+  * Added `render_wikitable_preserves_various_classes_and_skips_unrecognized` unit test.
+* `README.md`
+  * Updated documentation to reflect that wikitables are converted into XHTML tables while non-wikitable tables are omitted.
+* `docs/codex-notes.md`
+  * Appended the current session notes.
+
+### Tests Run
+
+* `cargo check` (clean compile with no warnings)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly with no warnings or errors)
+* `cargo fmt --check` (clean formatting check)
+* `cargo test` (all 125 unit tests and 23 integration tests pass successfully with 100% success rate)
+
+### Pending Follow-Ups
+
+* None. Everything is fully completed and successfully verified.
