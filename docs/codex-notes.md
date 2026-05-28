@@ -1,6 +1,51 @@
 # Codex Session Notes
 
+## 2026-05-28 Goguryeo page templates handling and fixture updates
+
+### Summary
+
+This session completed the handling of five templates used in the Goguryeo page: `"Cleanup"`, `"tone"`, `"GBurl"`, `"cite thesis"`, and `"usurped"`. Page-level maintenance banners (`Cleanup` and `tone`) are silently skipped. `GBurl` builds Google Books URLs from named parameters. `cite thesis` reuses the existing citation renderer. `usurped` renders compromised archive URLs as external links.
+
+### Decisions Made
+
+* `Cleanup` and `tone` are article-scope maintenance banners and are omitted silently by registering them in `src/silent.csv`.
+* `GBurl` parses named parameters (`id`, `p`, `pg`, `page`, `q`, `keywords`, `dq`, `text`) and constructs a clean Google Books external URL (`https://books.google.com/books?id=...`). Numeric page numbers generate `pg=PA{n}`; non-numeric page IDs pass through as `pg={val}`. Keywords are space-replaced with `+` for URL encoding.
+* `cite thesis` routes directly to the existing `render_citation_template`, sharing author/title/publisher/year formatting with other citation templates.
+* `usurped` parses both named (`1=`, `url=`) and positional URL parameters and renders the URL as a wikitext external link to preserve the archive access point.
+* `tests/books.rs` had been temporarily set to overwrite expected fixtures during prior fixture refresh; it is now fully reverted to assertion mode.
+
+### Files Changed
+
+* `src/main.rs`
+  * Registered `GBurl`, `cite thesis`, and `usurped` in `is_handled_template_name` and `render_template`.
+  * Implemented `render_gburl_template` and `render_usurped_template`.
+* `src/silent.csv` (sorted by sort.sh)
+  * Added `Cleanup` and `tone` as recognized silent templates.
+* `src/tests.rs`
+  * Added four new unit tests: `render_wikitext_formats_gburl_template`, `render_wikitext_formats_cite_thesis_template`, `render_wikitext_formats_usurped_template`, and `render_wikitext_silently_skips_goguryeo_metadata_templates`.
+* `tests/books.rs`
+  * Reverted from fixture-writer mode back to standard assertion mode.
+* `expected/goguryeo/` and `expected/korean-language/`
+  * Refreshed EPUB integration fixtures to reflect newly rendered thesis and Google Book citations.
+* `README.md`
+  * Documented `cite thesis`, `GBurl`, and `usurped` conversion rules; added `Cleanup` and `tone` to the maintenance template omission list.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `./sort.sh`
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test` — 122 unit tests passed, 23 integration tests passed, 1 ignored
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-28 Buddhist Temples page templates handling and fixture updates
+
 
 ### Summary
 

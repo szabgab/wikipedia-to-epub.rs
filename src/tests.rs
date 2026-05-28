@@ -2627,6 +2627,68 @@ fn render_wikitext_formats_nihongo3_template() {
     );
 }
 
+#[test]
+fn render_wikitext_formats_gburl_template() {
+    assert_eq!(
+        render_templates("{{GBurl|id=VXj_AQAAQBAJ}}"),
+        "https://books.google.com/books?id=VXj_AQAAQBAJ"
+    );
+    assert_eq!(
+        render_templates("{{GBurl|id=zfMYBQAAQBAJ|p=22}}"),
+        "https://books.google.com/books?id=zfMYBQAAQBAJ&pg=PA22"
+    );
+    assert_eq!(
+        render_templates("{{GBurl|id=zfMYBQAAQBAJ|pg=RA1-PA243}}"),
+        "https://books.google.com/books?id=zfMYBQAAQBAJ&pg=RA1-PA243"
+    );
+    assert_eq!(
+        render_templates("{{GBurl|id=zfMYBQAAQBAJ|q=koguryo powerful em}}"),
+        "https://books.google.com/books?id=zfMYBQAAQBAJ&q=koguryo+powerful+em"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_cite_thesis_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite thesis |last=Byington |first=Mark |title=A History |publisher=Harvard University |year=2003}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Mark Byington. <em>A History</em>. Harvard University, 2003"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_usurped_template() {
+    assert_eq!(
+        render_templates("{{usurped|1=[https://web.archive.org/web/20050403...]}}"),
+        "[https://web.archive.org/web/20050403...]"
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_goguryeo_metadata_templates() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{Cleanup|reason=idiosyncratic}}\n{{tone|section|date=October 2014}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("Cleanup"), "{rendered}");
+    assert!(!rendered.contains("tone"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 2,
+            unknown: 0
+        }
+    );
+}
+
 fn test_cache_path(name: &str) -> PathBuf {
     let nanos = SystemTime::now()
         .duration_since(UNIX_EPOCH)

@@ -1362,6 +1362,12 @@ fn render_template(content: &str) -> String {
         render_formatnum_template(template, params)
     } else if template.eq_ignore_ascii_case("STN") {
         render_stn_template(params)
+    } else if template.eq_ignore_ascii_case("GBurl") {
+        render_gburl_template(params)
+    } else if template.eq_ignore_ascii_case("cite thesis") {
+        render_citation_template(params)
+    } else if template.eq_ignore_ascii_case("usurped") {
+        render_usurped_template(params)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -1523,6 +1529,9 @@ fn is_handled_template_name(template: &str) -> bool {
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("formatnum:"))
         || template.eq_ignore_ascii_case("formatnum")
         || template.eq_ignore_ascii_case("STN")
+        || template.eq_ignore_ascii_case("GBurl")
+        || template.eq_ignore_ascii_case("cite thesis")
+        || template.eq_ignore_ascii_case("usurped")
         || is_silent_template_name(template)
 }
 
@@ -2880,6 +2889,52 @@ fn render_stn_template(params: &str) -> String {
     };
 
     format!("[[{}|{}]]", target, render_templates(&label))
+}
+
+fn render_gburl_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let id = template_param(&named, &["id"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    if id.is_empty() {
+        return String::new();
+    }
+
+    let mut url = format!("https://books.google.com/books?id={id}");
+
+    if let Some(pg) = template_param(&named, &["pg"]) {
+        url.push_str(&format!("&pg={pg}"));
+    } else if let Some(p) = template_param(&named, &["p", "page"]) {
+        if p.chars().all(|c| c.is_ascii_digit()) {
+            url.push_str(&format!("&pg=PA{p}"));
+        } else {
+            url.push_str(&format!("&pg={p}"));
+        }
+    }
+
+    if let Some(q) = template_param(&named, &["q", "keywords"]) {
+        url.push_str(&format!("&q={}", q.replace(' ', "+")));
+    } else if let Some(dq) = template_param(&named, &["dq", "text"]) {
+        url.push_str(&format!("&dq={}", dq.replace(' ', "+")));
+    }
+
+    url
+}
+
+fn render_usurped_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let url = template_param(&named, &["1", "url"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    render_templates(url)
 }
 
 fn render_citation_template(params: &str) -> String {
