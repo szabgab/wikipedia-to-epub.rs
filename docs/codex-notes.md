@@ -1,5 +1,44 @@
 # Codex Session Notes
 
+## 2026-05-28 Kyoto page templates handling and fixture updates
+
+### Summary
+
+This session completed the handling of templates used in the Kyoto page: `"Expand section"`, `"Unreferencedsect"`, `"formatnum"`, `"STN"`, `"Clear left"`, and `"Kyoto"`. This included implementing numeric formatting for `formatnum`, rail station links for `STN`, and registering layout/maintenance templates as silent.
+
+### Decisions Made
+
+* `formatnum` parses numeric strings (both colon-separated and pipe-separated) case-insensitively, formats them with standard thousands separators (commas), and preserves decimal segments.
+* `STN` formats railway station links as `[[StationName Station|Label]]` while supporting disambiguation terms, capitalized "Station" indicators, and custom labels.
+* `Expand section`, `Unreferencedsect`, `Clear left`, `Kyoto`, and `Kyoto Prefecture` are page-level structures, navboxes, or layout components and are skipped silently.
+
+### Files Changed
+
+* `src/main.rs`
+  * Registered and implemented dispatchers/renderers for `formatnum` and `STN` (using clippy-compliant prefix-stripping and collapsible if constructs).
+* `src/silent.csv` (sorted by sort.sh)
+  * Registered `Expand section`, `Unreferencedsect`, `Clear left`, `Kyoto`, and `Kyoto Prefecture` as recognized silent templates.
+* `src/tests.rs`
+  * Added 3 new unit tests for formatnum, STN, and Kyoto silent exclusions.
+* `expected/kyoto/`
+  * Refreshed book integration Expected XHTML fixtures to include the newly rendered Hamaōtsu railway station link.
+* `README.md`
+  * Documented all new template conversion and omission rules.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `./sort.sh`
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-28 Osaka page templates handling and fixture updates
 
 ### Summary

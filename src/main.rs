@@ -1352,6 +1352,14 @@ fn render_template(content: &str) -> String {
         render_issn_template(params)
     } else if template.eq_ignore_ascii_case("Cite NSRW") {
         render_cite_nsrw_template(params)
+    } else if template
+        .get(.."formatnum:".len())
+        .is_some_and(|prefix| prefix.eq_ignore_ascii_case("formatnum:"))
+        || template.eq_ignore_ascii_case("formatnum")
+    {
+        render_formatnum_template(template, params)
+    } else if template.eq_ignore_ascii_case("STN") {
+        render_stn_template(params)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -1507,6 +1515,11 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Easy CSS image crop")
         || template.eq_ignore_ascii_case("ISSN")
         || template.eq_ignore_ascii_case("Cite NSRW")
+        || template
+            .get(.."formatnum:".len())
+            .is_some_and(|prefix| prefix.eq_ignore_ascii_case("formatnum:"))
+        || template.eq_ignore_ascii_case("formatnum")
+        || template.eq_ignore_ascii_case("STN")
         || is_silent_template_name(template)
 }
 
@@ -2710,6 +2723,105 @@ fn render_cite_nsrw_template(params: &str) -> String {
         render_templates(title),
         title
     )
+}
+
+fn format_number_with_commas(s: &str) -> String {
+    let s = s.trim();
+    if s.is_empty() {
+        return String::new();
+    }
+    let (sign, rest) = if let Some(stripped) = s.strip_prefix('-') {
+        ("-", stripped)
+    } else if let Some(stripped) = s.strip_prefix('+') {
+        ("+", stripped)
+    } else {
+        ("", s)
+    };
+
+    let parts: Vec<&str> = rest.split('.').collect();
+    let integer_part = parts[0];
+
+    if !integer_part.chars().all(|c| c.is_ascii_digit()) {
+        return s.to_string();
+    }
+
+    let mut formatted_integer = String::new();
+    let bytes = integer_part.as_bytes();
+    let len = bytes.len();
+    for (i, &byte) in bytes.iter().enumerate() {
+        formatted_integer.push(byte as char);
+        let remaining = len - 1 - i;
+        if remaining > 0 && remaining.is_multiple_of(3) {
+            formatted_integer.push(',');
+        }
+    }
+
+    let mut result = format!("{}{}", sign, formatted_integer);
+    if parts.len() > 1 {
+        result.push('.');
+        result.push_str(&parts[1..].join("."));
+    }
+    result
+}
+
+fn render_formatnum_template(template: &str, params: &str) -> String {
+    let mut num_str = String::new();
+    if let Some(colon_idx) = template.find(':') {
+        num_str = template[colon_idx + 1..].to_string();
+    } else {
+        if let Some(first_param) = template_positional_params(params).first() {
+            num_str = first_param.clone();
+        }
+    }
+    format_number_with_commas(&num_str)
+}
+
+fn render_stn_template(params: &str) -> String {
+    let params = split_template_params(params)
+        .into_iter()
+        .map(|p| p.trim().to_string())
+        .collect::<Vec<_>>();
+    if params.is_empty() {
+        return String::new();
+    }
+    let name = &params[0];
+    if name.is_empty() {
+        return String::new();
+    }
+
+    let mut capitalize = true;
+    let mut disambig = None;
+    let mut custom_label = None;
+
+    if params.len() > 1 {
+        let p1 = &params[1];
+        if p1 == "x" {
+            capitalize = true;
+        } else if !p1.is_empty() && !p1.contains('=') {
+            disambig = Some(p1);
+        }
+    }
+
+    if params.len() > 2 {
+        let p2 = &params[2];
+        if !p2.is_empty() && !p2.contains('=') {
+            custom_label = Some(p2);
+        }
+    }
+
+    let suffix = if capitalize { "Station" } else { "station" };
+
+    let target = match disambig {
+        Some(d) => format!("{} {} ({})", name, suffix, d),
+        None => format!("{} {}", name, suffix),
+    };
+
+    let label = match custom_label {
+        Some(l) => l.to_string(),
+        None => name.to_string(),
+    };
+
+    format!("[[{}|{}]]", target, render_templates(&label))
 }
 
 fn render_citation_template(params: &str) -> String {

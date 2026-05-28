@@ -2536,6 +2536,61 @@ fn user_agent_includes_contact_information() {
     assert!(USER_AGENT.contains("contact:"));
 }
 
+#[test]
+fn render_wikitext_formats_formatnum_template() {
+    assert_eq!(render_templates("{{formatnum:5324}}"), "5,324");
+    assert_eq!(render_templates("{{formatnum:20413}}"), "20,413");
+    assert_eq!(render_templates("{{formatnum|9523}}"), "9,523");
+    assert_eq!(
+        render_templates("{{formatnum:-1234567.89}}"),
+        "-1,234,567.89"
+    );
+    assert_eq!(
+        render_templates("{{formatnum:+987654.321}}"),
+        "+987,654.321"
+    );
+    assert_eq!(render_templates("{{formatnum:abc}}"), "abc");
+}
+
+#[test]
+fn render_wikitext_formats_stn_template() {
+    assert_eq!(render_templates("{{STN|Ginza}}"), "[[Ginza Station|Ginza]]");
+    assert_eq!(
+        render_templates("{{STN|Hamaōtsu|x}}"),
+        "[[Hamaōtsu Station|Hamaōtsu]]"
+    );
+    assert_eq!(
+        render_templates("{{STN|Jiyūgaoka|Tokyo}}"),
+        "[[Jiyūgaoka Station (Tokyo)|Jiyūgaoka]]"
+    );
+    assert_eq!(
+        render_templates("{{STN|Tokyo||Tōkyō}}"),
+        "[[Tokyo Station|Tōkyō]]"
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_kyoto_metadata_templates() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{Expand section|date=July 2012}}\n{{Unreferencedsect|date=July 2012}}\n{{Clear left}}\n{{Kyoto}}\n{{Kyoto Prefecture}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("Expand section"), "{rendered}");
+    assert!(!rendered.contains("Unreferencedsect"), "{rendered}");
+    assert!(!rendered.contains("Clear left"), "{rendered}");
+    assert!(!rendered.contains("Kyoto"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 5,
+            unknown: 0
+        }
+    );
+}
+
 fn test_cache_path(name: &str) -> PathBuf {
     let nanos = SystemTime::now()
         .duration_since(UNIX_EPOCH)
