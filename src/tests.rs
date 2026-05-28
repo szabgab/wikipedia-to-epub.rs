@@ -538,6 +538,88 @@ fn render_wikitext_formats_tooltip_template() {
 }
 
 #[test]
+fn render_wikitext_formats_nihongo_krt_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Nihongo krt||\u{5927}\u{962a}|\u{14c}saka}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<span lang=\"ja\">\u{5927}\u{962a}</span> (<em>\u{14c}saka</em>)"),
+        "{rendered}"
+    );
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Nihongo krt|'knight'|\u{58eb}}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<span lang=\"ja\">\u{58eb}</span> ('knight')"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_easy_css_image_crop_template() {
+    let rendered = render_templates(
+        "{{Easy CSS image crop|Image=Osaka Urban Railway network.svg|desired_width=300|caption=The rail network.}}",
+    );
+    assert_eq!(
+        rendered,
+        "[[File:Osaka Urban Railway network.svg|thumb|The rail network.]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_issn_template() {
+    let rendered = render_wikitext("Sample", "{{ISSN|0268-4160}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("ISSN 0268-4160"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_cite_nsrw_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Cite NSRW|short=x|wstitle=Osaka}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("\"Osaka\""), "{rendered}");
+    assert!(
+        rendered.contains("The New Student's Reference Work"),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains("https://en.wikisource.org/wiki/"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_osaka_metadata_templates() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{Div end}}\n{{Sister bar|auto=y}}\n{{Osaka}}\n{{Osaka Prefecture}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("Div end"), "{rendered}");
+    assert!(!rendered.contains("Sister bar"), "{rendered}");
+    assert!(!rendered.contains("Osaka"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 4,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
 fn render_wikitext_silently_skips_japan_metadata_templates() {
     let (rendered, counts) = render_wikitext_with_template_counts(
         "Sample",

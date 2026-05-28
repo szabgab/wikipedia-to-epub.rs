@@ -1344,6 +1344,14 @@ fn render_template(content: &str) -> String {
         render_fs_interlinear_template(params)
     } else if template.eq_ignore_ascii_case("Tooltip") {
         render_tooltip_template(params)
+    } else if template.eq_ignore_ascii_case("Nihongo krt") {
+        render_nihongo_krt_template(params)
+    } else if template.eq_ignore_ascii_case("Easy CSS image crop") {
+        render_easy_css_image_crop_template(params)
+    } else if template.eq_ignore_ascii_case("ISSN") {
+        render_issn_template(params)
+    } else if template.eq_ignore_ascii_case("Cite NSRW") {
+        render_cite_nsrw_template(params)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -1495,6 +1503,10 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("note")
         || template.eq_ignore_ascii_case("fs interlinear")
         || template.eq_ignore_ascii_case("Tooltip")
+        || template.eq_ignore_ascii_case("Nihongo krt")
+        || template.eq_ignore_ascii_case("Easy CSS image crop")
+        || template.eq_ignore_ascii_case("ISSN")
+        || template.eq_ignore_ascii_case("Cite NSRW")
         || is_silent_template_name(template)
 }
 
@@ -2609,6 +2621,94 @@ fn render_tooltip_template(params: &str) -> String {
     let title = render_templates(title.trim());
     format!(
         "__WIKIPEDIA_TO_EPUB_ABBR_START__{title}__WIKIPEDIA_TO_EPUB_ABBR_VALUE__{text}__WIKIPEDIA_TO_EPUB_ABBR_END__"
+    )
+}
+
+fn render_nihongo_krt_template(params: &str) -> String {
+    let positional = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.contains('='))
+        .collect::<Vec<_>>();
+
+    let english = positional.first().map(|s| s.as_str()).unwrap_or("");
+    let kanji = positional.get(1).map(|s| s.as_str()).unwrap_or("");
+    let romaji = positional.get(2).map(|s| s.as_str()).unwrap_or("");
+
+    if kanji.is_empty() {
+        return render_templates(english);
+    }
+
+    let mut inside = Vec::new();
+    if !romaji.is_empty() {
+        inside.push(format!("''{}''", render_templates(romaji)));
+    }
+    if !english.is_empty() {
+        inside.push(render_templates(english).to_string());
+    }
+
+    let kanji_rendered = format!(
+        "__WIKIPEDIA_TO_EPUB_LANG_START__ja__WIKIPEDIA_TO_EPUB_LANG_VALUE__{kanji}__WIKIPEDIA_TO_EPUB_LANG_END__"
+    );
+
+    if inside.is_empty() {
+        kanji_rendered
+    } else {
+        format!("{kanji_rendered} ({})", inside.join(", "))
+    }
+}
+
+fn render_easy_css_image_crop_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let Some(image) = template_param(&named, &["Image", "image"]) else {
+        return String::new();
+    };
+    let image = image.trim();
+    if image.is_empty() {
+        return String::new();
+    }
+
+    let caption = template_param(&named, &["caption", "Caption"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let alt = template_param(&named, &["alt", "Alt"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    if alt.is_empty() {
+        format!("[[File:{image}|thumb|{caption}]]")
+    } else {
+        format!("[[File:{image}|thumb|alt={alt}|{caption}]]")
+    }
+}
+
+fn render_issn_template(params: &str) -> String {
+    let Some(issn) = template_positional_params(params)
+        .first()
+        .filter(|v| !v.trim().is_empty())
+        .cloned()
+    else {
+        return String::new();
+    };
+    format!("ISSN {}", render_templates(&issn))
+}
+
+fn render_cite_nsrw_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let title = template_param(&named, &["wstitle", "title"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    if title.is_empty() {
+        return "''The New Student's Reference Work'' (1914)".to_string();
+    }
+
+    format!(
+        "\"{}\" in ''[[src:The New Student's Reference Work/{}|The New Student's Reference Work]]'' (1914)",
+        render_templates(title),
+        title
     )
 }
 

@@ -1,5 +1,46 @@
 # Codex Session Notes
 
+## 2026-05-28 Osaka page templates handling and fixture updates
+
+### Summary
+
+This session completed the handling of templates used in the Osaka page: `"Nihongo krt"`, `"Easy CSS image crop"`, `"Div end"`, `"ISSN"`, `"Cite NSRW"`, `"Sister bar"`, and `"Osaka"`. This included resolving empty positional parameter alignment and integrating styled Wikisource and image-registry links.
+
+### Decisions Made
+
+* `Nihongo krt` is rendered as Kanji text in a Japanese language span, followed by Romaji in italics and optional English/translation details inside parentheses. Utilized a robust positional parameters parser that preserves empty strings to ensure perfect alignment.
+* `Easy CSS image crop` converts cropped image definitions seamlessly into standard wikitext image links (`[[File:...]]`), allowing them to be fully compiled and managed by the book's standard `ImageRegistry` and asset downloader.
+* `ISSN` is formatted as standard Serial Number text (`ISSN {number}`) inline, perfectly aligned with the existing `ISBN` renderer.
+* `Cite NSRW` renders structured citations from the public domain *The New Student's Reference Work* including link generation targeting English Wikisource.
+* `Div end`, `Sister bar`, `Osaka`, and `Osaka Prefecture` are page-level structures, navboxes, or layout closures and are skipped silently.
+
+### Files Changed
+
+* `src/main.rs`
+  * Registered and implemented dispatchers/renderers for `Nihongo krt`, `Easy CSS image crop`, `ISSN`, and `Cite NSRW`.
+* `src/silent.csv` (sorted by sort.sh)
+  * Registered `Div end`, `Sister bar`, `Osaka`, and `Osaka Prefecture` as recognized silent templates.
+* `src/tests.rs`
+  * Added 5 new unit tests for all renderers and silent exclusions.
+* `expected/osaka/`
+  * Refreshed book integration Expected XHTML fixtures to include the newly rendered Nihongo and citation output.
+* `README.md`
+  * Documented all four new template conversion rules.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `./sort.sh`
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-28 Korean language page templates handling and clippy updates
 
 ### Summary

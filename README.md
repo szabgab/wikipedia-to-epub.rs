@@ -95,6 +95,10 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{note|ㅏ|[A]}}` renders a bold footnote label: `<strong>[A]</strong>`
 * `{{fs interlinear|lang=ko|...}}` renders aligned linguistic glosses as a cleanly styled `blockquote` block
 * `{{Tooltip|RR|Revised Romanization}}` becomes `<abbr title="Revised Romanization">RR</abbr>`
+* `{{Nihongo krt||\u{5927}\u{962a}|\u{14c}saka}}` becomes `<span lang="ja">大阪</span> (<em>Ōsaka</em>)`
+* `{{Easy CSS image crop|Image=Osaka Urban Railway network.svg|...}}` converts seamlessly to standard image links inside the EPUB book
+* `{{ISSN|0268-4160}}` becomes `ISSN 0268-4160`
+* `{{Cite NSRW|wstitle=Osaka}}` renders as an article citation linking to Wikisource
 * `{{circa}} 10 million` becomes `c. 10 million`
 * `{{c.|115 BC}}` and `{{cx|150 AD}}` become `c. 115 BC` and `c. 150 AD`
 * `{{floruit|6th century BC}}` becomes `fl. 6th century BC`
