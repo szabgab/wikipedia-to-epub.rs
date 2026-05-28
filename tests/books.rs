@@ -26,6 +26,11 @@ fn generate_korea_book_from_local_page_dumps() {
 }
 
 #[test]
+fn generate_korean_language_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("korean-language");
+}
+
+#[test]
 fn generate_busan_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("busan");
 }
@@ -316,7 +321,7 @@ fn snippet_at(text: &str, char_index: usize) -> String {
 }
 
 fn collect_expected_epub_entries(root: &Path, dir: &Path, entries: &mut Vec<String>) {
-    for entry in fs::read_dir(dir).expect(format!("expected epub directory reads {dir:?}").as_str())
+    for entry in fs::read_dir(dir).unwrap_or_else(|_| panic!("expected epub directory reads {dir:?}"))
     {
         let path = entry.expect("expected epub directory entry reads").path();
         if path.is_dir() {

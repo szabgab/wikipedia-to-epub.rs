@@ -1,0 +1,11 @@
+metadata:
+  title: Korean language
+  author: Wikipedia contributors
+  license: Creative Commons Attribution-ShareAlike 4.0 License
+  language: en
+  edition: First edition
+  date: 2026-05-19
+output-file: korean-language.epub
+images: false
+articles:
+  - Korean language

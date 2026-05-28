@@ -86,6 +86,15 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{pb}}` becomes a paragraph/line break: `<br /><br />`
 * `{{okina}}` becomes `ʻ`
 * `{{'s}}` becomes `'s`
+* `{{harvp|Martin|1966}}` becomes `(Martin 1966)`; multi-author and page/location variants are formatted identically to standard Harvard citations, e.g. `(Sohn 2001, loc=Section 1.5.3)` becomes `(Sohn 2001, Section 1.5.3)`
+* `{{IPAslink|m}}` becomes an IPA-styled phonetic alphabet span: `<span title="International Phonetic Alphabet">[m]</span>`
+* `{{angbr|a}}` wraps the text in phonetic angle brackets: `⟨a⟩`
+* `{{angbr IPA|◌̧}}` wraps the IPA text in angle brackets and styles the inner text as IPA: `⟨<span lang="und-fonipa">◌̧</span>⟩`
+* `{{unichar|0348|cwith=◌}}` displays the combined glyph with its code point and name: `◌͈ (U+0348)`
+* `{{xlit|ko|'''r'''odong}}` becomes a transliterated language span: `<span lang="ko-Latn"><strong>r</strong>odong</span>`
+* `{{note|ㅏ|[A]}}` renders a bold footnote label: `<strong>[A]</strong>`
+* `{{fs interlinear|lang=ko|...}}` renders aligned linguistic glosses as a cleanly styled `blockquote` block
+* `{{Tooltip|RR|Revised Romanization}}` becomes `<abbr title="Revised Romanization">RR</abbr>`
 * `{{circa}} 10 million` becomes `c. 10 million`
 * `{{c.|115 BC}}` and `{{cx|150 AD}}` become `c. 115 BC` and `c. 150 AD`
 * `{{floruit|6th century BC}}` becomes `fl. 6th century BC`

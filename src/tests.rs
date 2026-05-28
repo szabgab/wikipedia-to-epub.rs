@@ -385,6 +385,159 @@ fn render_wikitext_formats_osm_relation_template() {
 }
 
 #[test]
+fn render_wikitext_formats_harvp_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{harvp|Martin|1966}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("(Martin 1966)"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{harvp|Whitman|1985|p=232}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("(Whitman 1985, p. 232)"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{harvp|Sohn|2001|loc=Section 1.5.3, pp. 12–13}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("(Sohn 2001, Section 1.5.3, pp. 12–13)"),
+        "{rendered}"
+    );
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{harvp|Kang Yoonjung|Han Sungwoo|2013}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("(Kang Yoonjung &amp; Han Sungwoo 2013)"),
+        "{rendered}"
+    );
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{harvp|Choi Jiyoun|Kim Sahyang|Cho Taehong|2020}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("(Choi Jiyoun, Kim Sahyang, &amp; Cho Taehong 2020)"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_ipa_link_template() {
+    let rendered = render_wikitext("Sample", "{{IPAslink|m}}", &InternalLinks::new(), "en");
+    assert!(
+        rendered.contains(r#"<span title="International Phonetic Alphabet">[m]</span>"#),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_angbr_templates() {
+    let rendered = render_wikitext("Sample", "{{angbr|a}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("⟨a⟩"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{angbr IPA|◌̧}}", &InternalLinks::new(), "en");
+    assert!(
+        rendered.contains("⟨<span lang=\"und-fonipa\">◌̧</span>⟩"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_unichar_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{unichar|0348|cwith=◌}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("◌͈ (U+0348)"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{unichar|0348|COMBINING DOUBLE VERTICAL LINE BELOW|cwith=◌}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("◌͈ (U+0348 COMBINING DOUBLE VERTICAL LINE BELOW)"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_xlit_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{xlit|ko|'''r'''odong}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<span lang=\"ko-Latn\"><strong>r</strong>odong</span>"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_note_template() {
+    let rendered = render_wikitext("Sample", "{{note|ㅏ|[A]}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<strong>[A]</strong>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_fs_interlinear_template() {
+    let wikitext = "{{fs interlinear|lang=ko\n| 가게에 가셨어요?\n| gage-e ga-syeoss-eo-yo\n| store-LOC go-HON.PAST-CONJ-POL\n| 'Did [you] go to the store?'\n}}";
+    let rendered = render_wikitext("Sample", wikitext, &InternalLinks::new(), "en");
+    assert!(rendered.contains("<blockquote>"), "{rendered}");
+    assert!(
+        rendered.contains("<strong><span lang=\"ko\">가게에 가셨어요?</span></strong>"),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains("<em>gage-e ga-syeoss-eo-yo</em>"),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains("<p>store-LOC go-HON.PAST-CONJ-POL</p>"),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains("<em>'Did [you] go to the store?'</em>"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("</blockquote>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_tooltip_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Tooltip|RR|Revised Romanization}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains(r#"<abbr title="Revised Romanization">RR</abbr>"#),
+        "{rendered}"
+    );
+}
+
+#[test]
 fn render_wikitext_silently_skips_japan_metadata_templates() {
     let (rendered, counts) = render_wikitext_with_template_counts(
         "Sample",

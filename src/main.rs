@@ -1326,6 +1326,24 @@ fn render_template(content: &str) -> String {
         "ʻ".to_string()
     } else if template.eq_ignore_ascii_case("'s") {
         "'s".to_string()
+    } else if template.eq_ignore_ascii_case("harvp") {
+        render_harvp_template(params)
+    } else if template.eq_ignore_ascii_case("IPAslink") {
+        render_ipa_link_template(params)
+    } else if template.eq_ignore_ascii_case("angbr") {
+        render_angbr_template(params)
+    } else if template.eq_ignore_ascii_case("angbr IPA") {
+        render_angbr_ipa_template(params)
+    } else if template.eq_ignore_ascii_case("unichar") {
+        render_unichar_template(params)
+    } else if template.eq_ignore_ascii_case("xlit") {
+        render_transliteration_template(params)
+    } else if template.eq_ignore_ascii_case("note") {
+        render_note_template(params)
+    } else if template.eq_ignore_ascii_case("fs interlinear") {
+        render_fs_interlinear_template(params)
+    } else if template.eq_ignore_ascii_case("Tooltip") {
+        render_tooltip_template(params)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -1468,6 +1486,15 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("OSM relation")
         || template.eq_ignore_ascii_case("okina")
         || template.eq_ignore_ascii_case("'s")
+        || template.eq_ignore_ascii_case("harvp")
+        || template.eq_ignore_ascii_case("IPAslink")
+        || template.eq_ignore_ascii_case("angbr")
+        || template.eq_ignore_ascii_case("angbr IPA")
+        || template.eq_ignore_ascii_case("unichar")
+        || template.eq_ignore_ascii_case("xlit")
+        || template.eq_ignore_ascii_case("note")
+        || template.eq_ignore_ascii_case("fs interlinear")
+        || template.eq_ignore_ascii_case("Tooltip")
         || is_silent_template_name(template)
 }
 
@@ -2366,6 +2393,223 @@ fn render_color_box_template(params: &str) -> String {
     };
     let color = color.trim();
     format!("__WIKIPEDIA_TO_EPUB_COLOR_BOX_START__{color}__WIKIPEDIA_TO_EPUB_COLOR_BOX_END__")
+}
+
+fn render_harvp_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params)
+        .into_iter()
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .collect::<Vec<_>>();
+
+    if positional.is_empty() {
+        return String::new();
+    }
+
+    let (authors, year) = if positional.len() > 1 {
+        let (auths, y) = positional.split_at(positional.len() - 1);
+        (auths.to_vec(), Some(y[0].clone()))
+    } else {
+        (positional.clone(), None)
+    };
+
+    let authors_formatted = match authors.len() {
+        0 => String::new(),
+        1 => authors[0].clone(),
+        2 => format!("{} & {}", authors[0], authors[1]),
+        _ => {
+            let prefix = authors[0..authors.len() - 1].join(", ");
+            format!("{}, & {}", prefix, authors.last().unwrap())
+        }
+    };
+
+    let mut parts = Vec::new();
+    let auth_year = if let Some(y) = year {
+        if !authors_formatted.is_empty() {
+            format!("{} {y}", authors_formatted)
+        } else {
+            y
+        }
+    } else {
+        authors_formatted
+    };
+
+    if !auth_year.is_empty() {
+        parts.push(auth_year);
+    }
+
+    if let Some(page) = template_param(&named, &["p"]) {
+        parts.push(format!("p. {}", render_templates(page.trim())));
+    } else if let Some(pages) = template_param(&named, &["pp"]) {
+        parts.push(format!("pp. {}", render_templates(pages.trim())));
+    }
+
+    if let Some(location) = template_param(&named, &["loc"]) {
+        parts.push(render_templates(location.trim()));
+    }
+
+    format!("({})", parts.join(", "))
+}
+
+fn render_ipa_link_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(symbol) = positional.first().filter(|s| !s.trim().is_empty()) else {
+        return String::new();
+    };
+    let label = positional
+        .get(1)
+        .filter(|l| !l.trim().is_empty())
+        .unwrap_or(symbol);
+    format!(
+        "__WIKIPEDIA_TO_EPUB_IPA_START__{}__WIKIPEDIA_TO_EPUB_IPA_END__",
+        render_templates(label.trim())
+    )
+}
+
+fn render_angbr_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(text) = positional.first().filter(|t| !t.trim().is_empty()) else {
+        return String::new();
+    };
+    format!("⟨{}⟩", render_templates(text.trim()))
+}
+
+fn render_angbr_ipa_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(text) = positional.first().filter(|t| !t.trim().is_empty()) else {
+        return String::new();
+    };
+    let text = render_templates(text.trim());
+    format!(
+        "⟨__WIKIPEDIA_TO_EPUB_LANG_START__und-fonipa__WIKIPEDIA_TO_EPUB_LANG_VALUE__{text}__WIKIPEDIA_TO_EPUB_LANG_END__⟩"
+    )
+}
+
+fn render_unichar_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let Some(hex_str) = positional.first().filter(|s| !s.trim().is_empty()) else {
+        return String::new();
+    };
+    let hex_str = hex_str.trim();
+    let ch = u32::from_str_radix(hex_str, 16)
+        .ok()
+        .and_then(char::from_u32);
+
+    let ch_str = match ch {
+        Some(c) => c.to_string(),
+        None => String::new(),
+    };
+
+    let base = template_param(&named, &["cwith"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    let name = positional
+        .get(1)
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty());
+
+    let glyph = format!("{base}{ch_str}");
+
+    let details = match name {
+        Some(n) => format!("U+{} {}", hex_str.to_uppercase(), n),
+        None => format!("U+{}", hex_str.to_uppercase()),
+    };
+
+    format!("{glyph} ({details})")
+}
+
+fn render_note_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(label) = positional.get(1).filter(|l| !l.trim().is_empty()) else {
+        return String::new();
+    };
+    format!("'''{}'''", render_templates(label.trim()))
+}
+
+fn render_fs_interlinear_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let line1 = positional.first().map(|s| s.trim()).unwrap_or("");
+    let line2 = positional.get(1).map(|s| s.trim()).unwrap_or("");
+    let line3 = positional.get(2).map(|s| s.trim()).unwrap_or("");
+    let line4 = positional.get(3).map(|s| s.trim()).unwrap_or("");
+
+    if line1.is_empty() && line2.is_empty() && line3.is_empty() && line4.is_empty() {
+        return String::new();
+    }
+
+    let line1_rendered = render_templates(line1);
+    let line1_html = if let Some(lang) = template_param(&named, &["lang"]) {
+        let lang = lang.trim();
+        format!(
+            "__WIKIPEDIA_TO_EPUB_LANG_START__{lang}__WIKIPEDIA_TO_EPUB_LANG_VALUE__{line1_rendered}__WIKIPEDIA_TO_EPUB_LANG_END__"
+        )
+    } else {
+        line1_rendered
+    };
+
+    let line2_rendered = render_templates(line2);
+    let line3_rendered = render_templates(line3);
+    let line4_rendered = render_templates(line4);
+
+    let mut html = String::new();
+    html.push_str("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_START__\n");
+    if !line1_html.is_empty() {
+        html.push_str(&format!(
+            "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__'''{}'''\n",
+            line1_html
+        ));
+    }
+    if !line2_rendered.is_empty() {
+        html.push_str(&format!(
+            "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__''{}''\n",
+            line2_rendered
+        ));
+    }
+    if !line3_rendered.is_empty() {
+        html.push_str(&format!(
+            "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__{}\n",
+            line3_rendered
+        ));
+    }
+    if !line4_rendered.is_empty() {
+        let line4_formatted = if line4_rendered.starts_with('\'')
+            && line4_rendered.ends_with('\'')
+            && line4_rendered.len() > 1
+        {
+            format!(
+                "''&#39;{}&#39;''",
+                &line4_rendered[1..line4_rendered.len() - 1]
+            )
+        } else {
+            format!("''{}''", line4_rendered)
+        };
+        html.push_str(&format!(
+            "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__{}\n",
+            line4_formatted
+        ));
+    }
+    html.push_str("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_END__");
+    html
+}
+
+fn render_tooltip_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(text) = positional.first().filter(|t| !t.trim().is_empty()) else {
+        return String::new();
+    };
+    let Some(title) = positional.get(1).filter(|t| !t.trim().is_empty()) else {
+        return text.to_string();
+    };
+    let text = render_templates(text.trim());
+    let title = render_templates(title.trim());
+    format!(
+        "__WIKIPEDIA_TO_EPUB_ABBR_START__{title}__WIKIPEDIA_TO_EPUB_ABBR_VALUE__{text}__WIKIPEDIA_TO_EPUB_ABBR_END__"
+    )
 }
 
 fn render_citation_template(params: &str) -> String {

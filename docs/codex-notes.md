@@ -1,5 +1,51 @@
 # Codex Session Notes
 
+## 2026-05-28 Korean language page templates handling and clippy updates
+
+### Summary
+
+This session completed the handling of nine templates used in the Korean Language page: `"IPAslink"`, `"angbr IPA"`, `"unichar"`, `"xlit"`, `"note"`, `"angbr"`, `"fs interlinear"`, `"harvp"`, and `"Tooltip"`. This included addressing potential raw HTML tag-stripping and formatting collisions, and fixing a legacy Clippy warning in the integration test suite.
+
+### Decisions Made
+
+* `harvp` is rendered as a clean, structured Harvard citation wrapped in parentheses supporting page numbers, locations, and multi-author structures.
+* `IPAslink` leverages standard `__WIKIPEDIA_TO_EPUB_IPA_START__` formatting.
+* `angbr` wraps text inside angle brackets `⟨...⟩`.
+* `angbr IPA` wraps the text inside angle brackets and styles the inner text as IPA using the standard `und-fonipa` language tag.
+* `unichar` resolves hexadecimal Unicode code points into combined base/glyph strings and appends hexadecimal representations (e.g. `◌͈ (U+0348)`).
+* `xlit` routes directly to the existing transliteration renderer.
+* `note` renders table footnote labels safely in bold formatting utilizing standard wikitext `'''` notation to avoid raw HTML tag stripping.
+* `fs interlinear` renders Foreign Speech Interlinear blocks inside blockquotes using wikitext bold/italics for high EPUB reader styling compatibility, and resolves single quote collisions by converting them to the HTML entity `&#39;`.
+* `Tooltip` leverages the standard `__WIKIPEDIA_TO_EPUB_ABBR_START__` parser to produce abbreviations with tooltips.
+* Replaced a legacy Clippy expect warning in `tests/books.rs` around line 324 with an explicit `unwrap_or_else` check to ensure strict `clippy --all-targets -- -D warnings` compliance.
+
+### Files Changed
+
+* `src/main.rs`
+  * Registered and implemented dispatchers/renderers for all 9 templates.
+* `src/tests.rs`
+  * Added 9 new exhaustive unit tests for all renderers.
+* `tests/books.rs`
+  * Resolved a legacy expect-fun-call Clippy warning on line 324.
+* `expected/korean-language/`
+  * Refreshed book integration Expected XHTML fixtures to include the newly rendered orthography and vowels output.
+* `README.md`
+  * Documented all nine new template conversion rules.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `./sort.sh`
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-27 Japan page templates handling and fixture updates
 
 ### Summary
