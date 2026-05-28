@@ -321,7 +321,8 @@ fn snippet_at(text: &str, char_index: usize) -> String {
 }
 
 fn collect_expected_epub_entries(root: &Path, dir: &Path, entries: &mut Vec<String>) {
-    for entry in fs::read_dir(dir).unwrap_or_else(|_| panic!("expected epub directory reads {dir:?}"))
+    for entry in
+        fs::read_dir(dir).unwrap_or_else(|_| panic!("expected epub directory reads {dir:?}"))
     {
         let path = entry.expect("expected epub directory entry reads").path();
         if path.is_dir() {
