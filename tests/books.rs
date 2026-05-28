@@ -16,6 +16,16 @@ fn generate_macchini_book_from_local_page_dump() {
 }
 
 #[test]
+fn generate_administrative_divisions_of_south_korea_book_from_local_page_dump() {
+    assert_generated_book_matches_expected("macchini");
+}
+
+#[test]
+fn generate_goguryeo_book_from_local_page_dump() {
+    assert_generated_book_matches_expected("macchini");
+}
+
+#[test]
 fn generate_japan_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("japan");
 }
