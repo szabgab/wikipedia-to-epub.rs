@@ -1,6 +1,40 @@
 # Codex Session Notes
 
+## 2026-05-28 Administrative Divisions of South Korea page — `small` template
+
+### Summary
+
+Added handling for the `{{small}}` template observed in `pages/Administrative_divisions_of_South_Korea.json`. The template is identical in behaviour to the already-handled `{{Smaller}}` — it wraps its text content in `<small>...</small>` tags — so it was registered as a straightforward alias.
+
+### Decisions Made
+
+* `{{small}}` is registered as a case-insensitive alias of `{{Smaller}}` in both the render dispatch and `is_handled_template_name`, sharing the existing `render_smaller_template` function and `__WIKIPEDIA_TO_EPUB_SMALL_START__` / `__WIKIPEDIA_TO_EPUB_SMALL_END__` placeholder path.
+* No new function or placeholder was needed.
+
+### Files Changed
+
+* `src/main.rs`
+  * Added `|| template.eq_ignore_ascii_case("small")` to the `smaller` dispatch branch and to `is_handled_template_name`.
+* `src/tests.rs`
+  * Added `render_wikitext_formats_small_template` with four cases: plain text, Korean-specific text, a nested wiki-link, and an empty-parameter edge case.
+* `README.md`
+  * Updated the `{{Smaller}}` bullet to include `{{small}}` as an alias.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test` — 123 unit tests passed, 23 integration tests passed, 1 ignored
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-28 Goguryeo page templates handling and fixture updates
+
 
 ### Summary
 

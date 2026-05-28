@@ -1152,7 +1152,7 @@ fn render_template(content: &str) -> String {
         render_emdash_template()
     } else if template.eq_ignore_ascii_case("nowrap") {
         render_passthrough_template(params)
-    } else if template.eq_ignore_ascii_case("smaller") {
+    } else if template.eq_ignore_ascii_case("smaller") || template.eq_ignore_ascii_case("small") {
         render_smaller_template(params)
     } else if template.eq_ignore_ascii_case("sic") {
         render_sic_template(params)
@@ -1421,6 +1421,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("mdash")
         || template.eq_ignore_ascii_case("nowrap")
         || template.eq_ignore_ascii_case("smaller")
+        || template.eq_ignore_ascii_case("small")
         || template.eq_ignore_ascii_case("sic")
         || template.eq_ignore_ascii_case("circa")
         || template.eq_ignore_ascii_case("c.")

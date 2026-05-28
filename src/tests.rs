@@ -1802,6 +1802,34 @@ fn render_wikitext_formats_simple_inline_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_small_template() {
+    let cases = [
+        ("{{small|(2014)}}", "<p><small>(2014)</small></p>"),
+        ("{{small|(specific)}}", "<p><small>(specific)</small></p>"),
+        (
+            "{{small|[[Seoul]]}}",
+            r#"<p><small><a href="https://en.wikipedia.org/wiki/Seoul">Seoul</a><span class="external-link">↗</span></small></p>"#,
+        ),
+    ];
+
+    for (template, expected) in cases {
+        let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+        assert!(
+            rendered.contains(expected),
+            "small template {template:?} rendered unexpectedly:\n{rendered}"
+        );
+        assert!(!rendered.contains("{{"));
+    }
+
+    // Empty small template produces no output
+    let empty_rendered = render_wikitext("Sample", "{{small|}}", &InternalLinks::new(), "en");
+    assert!(
+        !empty_rendered.contains("<small>"),
+        "empty small template should produce no small tags, got:\n{empty_rendered}"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_web_source_templates() {
     let cases = [
         (
