@@ -97,6 +97,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{fs interlinear|lang=ko|...}}` renders aligned linguistic glosses as a cleanly styled `blockquote` block
 * `{{Tooltip|RR|Revised Romanization}}` becomes `<abbr title="Revised Romanization">RR</abbr>`
 * `{{Nihongo krt||\u{5927}\u{962a}|\u{14c}saka}}` becomes `<span lang="ja">大阪</span> (<em>Ōsaka</em>)`
+* `{{nihongo3|shrine temple|神宮寺|[[jingū-ji]]}}` displays Rōmaji first, followed by script and translation: `<em>[[jingū-ji]]</em> (<span lang="ja">神宮寺</span>, "shrine temple")`
 * `{{Easy CSS image crop|Image=Osaka Urban Railway network.svg|...}}` converts seamlessly to standard image links inside the EPUB book
 * `{{ISSN|0268-4160}}` becomes `ISSN 0268-4160`
 * `{{Cite NSRW|wstitle=Osaka}}` renders as an article citation linking to Wikisource

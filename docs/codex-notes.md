@@ -1,5 +1,40 @@
 # Codex Session Notes
 
+## 2026-05-28 Buddhist Temples page templates handling and fixture updates
+
+### Summary
+
+This session completed the handling of the `"nihongo3"` template used in the Buddhist temples in Japan page. This included robustly parsing positional parameters (preserving empty fields for alignment) and formatting Japanese text blocks where Rōmaji is displayed first.
+
+### Decisions Made
+
+* `nihongo3` parses positional parameters while preserving empty elements to maintain proper field alignment (Rōmaji, Kanji/Kana, and English translation), recursively rendering inner wikitext templates.
+* The output formats Rōmaji in italics first, followed by the Japanese Kanji script in a title-tagged `lang="ja"` span, and the English translation inside quotes.
+
+### Files Changed
+
+* `src/main.rs`
+  * Registered and implemented dispatcher and renderer for `nihongo3`.
+* `src/tests.rs`
+  * Added a dedicated, comprehensive unit test verifying the different positional parameters variations.
+* `expected/buddhist-temples-in-japan/`
+  * Refreshed book integration Expected XHTML fixtures to include the newly rendered `nihongo3` output.
+* `README.md`
+  * Documented the `nihongo3` conversion rules.
+* `docs/codex-notes.md`
+  * Added this session summary.
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-28 Kyoto page templates handling and fixture updates
 
 ### Summary

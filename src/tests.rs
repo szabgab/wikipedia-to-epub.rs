@@ -2591,6 +2591,42 @@ fn render_wikitext_silently_skips_kyoto_metadata_templates() {
     );
 }
 
+#[test]
+fn render_wikitext_formats_nihongo3_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{nihongo3|shrine temple|神宮寺|[[jingū-ji]]}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains(r#"<span><em><a href="https://en.wikipedia.org/wiki/jingū-ji">jingū-ji</a><span class="external-link">↗</span></em> (<span title="Japanese-language text"><span lang="ja">神宮寺</span></span>, "shrine temple")</span>"#),
+        "{rendered}"
+    );
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{nihongo3|mountain name|山号|sangō|extra text}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains(r#"<span><em>sangō</em> (<span title="Japanese-language text"><span lang="ja">山号</span></span>, "mountain name", extra text)</span>"#),
+        "{rendered}"
+    );
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{nihongo3||宮寺|miya-ji}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains(r#"<span><em>miya-ji</em> (<span title="Japanese-language text"><span lang="ja">宮寺</span></span>)</span>"#),
+        "{rendered}"
+    );
+}
+
 fn test_cache_path(name: &str) -> PathBuf {
     let nanos = SystemTime::now()
         .duration_since(UNIX_EPOCH)

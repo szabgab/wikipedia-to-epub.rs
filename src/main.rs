@@ -1346,6 +1346,8 @@ fn render_template(content: &str) -> String {
         render_tooltip_template(params)
     } else if template.eq_ignore_ascii_case("Nihongo krt") {
         render_nihongo_krt_template(params)
+    } else if template.eq_ignore_ascii_case("nihongo3") {
+        render_nihongo3_template(params)
     } else if template.eq_ignore_ascii_case("Easy CSS image crop") {
         render_easy_css_image_crop_template(params)
     } else if template.eq_ignore_ascii_case("ISSN") {
@@ -1512,6 +1514,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("fs interlinear")
         || template.eq_ignore_ascii_case("Tooltip")
         || template.eq_ignore_ascii_case("Nihongo krt")
+        || template.eq_ignore_ascii_case("nihongo3")
         || template.eq_ignore_ascii_case("Easy CSS image crop")
         || template.eq_ignore_ascii_case("ISSN")
         || template.eq_ignore_ascii_case("Cite NSRW")
@@ -1673,6 +1676,61 @@ fn render_japanese_template(params: &str) -> String {
 
     format!(
         "{term}__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_START__ (__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__{japanese}__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__{suffix})__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_END__"
+    )
+}
+
+fn render_nihongo3_template(params: &str) -> String {
+    let positional = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.contains('='))
+        .collect::<Vec<_>>();
+
+    let english = positional.first().map(|s| s.as_str()).unwrap_or("");
+    let kanji = positional.get(1).map(|s| s.as_str()).unwrap_or("");
+    let romaji = positional.get(2).map(|s| s.as_str()).unwrap_or("");
+    let extra1 = positional.get(3).map(|s| s.as_str()).unwrap_or("");
+    let extra2 = positional.get(4).map(|s| s.as_str()).unwrap_or("");
+
+    let english = render_templates(english);
+    let kanji = render_templates(kanji);
+    let romaji = render_templates(romaji);
+    let extra1 = render_templates(extra1);
+    let extra2 = render_templates(extra2);
+
+    let romaji_part = if !romaji.is_empty() {
+        format!("''{}''", romaji)
+    } else {
+        String::new()
+    };
+
+    let mut paren_elements = Vec::new();
+
+    if !kanji.is_empty() {
+        paren_elements.push(format!(
+            "__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__{kanji}__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__"
+        ));
+    }
+
+    if !english.is_empty() {
+        paren_elements.push(format!("\"{}\"", english));
+    }
+
+    if !extra1.is_empty() {
+        paren_elements.push(extra1);
+    }
+    if !extra2.is_empty() {
+        paren_elements.push(extra2);
+    }
+
+    let paren_str = if !paren_elements.is_empty() {
+        format!(" ({})", paren_elements.join(", "))
+    } else {
+        String::new()
+    };
+
+    format!(
+        "__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_START__{romaji_part}{paren_str}__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_END__"
     )
 }
 
