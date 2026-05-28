@@ -19,6 +19,14 @@ fn generate_macchini_book_from_local_page_dump() {
 fn generate_japan_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("japan");
 }
+#[test]
+fn generate_osaka_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("osaka");
+}
+#[test]
+fn generate_kyoto_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("kyoto");
+}
 
 #[test]
 fn generate_korea_book_from_local_page_dumps() {
