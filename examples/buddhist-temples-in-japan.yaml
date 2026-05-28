@@ -1,0 +1,11 @@
+metadata:
+  title: Buddhist temples in Japan
+  author: Wikipedia contributors
+  license: Creative Commons Attribution-ShareAlike 4.0 License
+  language: en
+  edition: First edition
+  date: 2026-05-27
+output-file: buddhist-temples-in-japan.epub
+images: false
+articles:
+  - Buddhist temples in Japan
