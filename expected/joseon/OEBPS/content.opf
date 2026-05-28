@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package version="2.0" unique-identifier="bookid" xmlns="http://www.idpf.org/2007/opf">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
-    <dc:identifier id="bookid">urn:wikipedia-to-epub:1779945434351813233</dc:identifier>
-    <dc:title>Korea</dc:title>
+    <dc:identifier id="bookid">urn:wikipedia-to-epub:1779945338772916700</dc:identifier>
+    <dc:title>Joseon</dc:title>
     <dc:creator>Wikipedia contributors</dc:creator>
     <dc:language>en</dc:language>
     <dc:date>2026-05-19</dc:date>

@@ -26,6 +26,31 @@ fn generate_korea_book_from_local_page_dumps() {
 }
 
 #[test]
+fn generate_busan_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("busan");
+}
+
+#[test]
+fn generate_history_of_korea_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("history-of-korea");
+}
+
+#[test]
+fn generate_seoul_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("seoul");
+}
+
+#[test]
+fn generate_joseon_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("joseon");
+}
+
+#[test]
+fn generate_sejong_the_great_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("sejong-the-great");
+}
+
+#[test]
 fn generate_south_korea_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("south-korea");
 }
@@ -34,7 +59,6 @@ fn generate_south_korea_book_from_local_page_dumps() {
 fn generate_north_korea_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("north-korea");
 }
-
 
 #[test]
 fn generate_hangul_book_from_local_page_dumps() {
@@ -55,7 +79,6 @@ fn generate_han_dynasty_book_from_local_page_dumps() {
 fn generate_parhae_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("parhae");
 }
-
 
 #[test]
 fn generate_spanish_corea_book_from_local_page_dumps() {
@@ -293,7 +316,8 @@ fn snippet_at(text: &str, char_index: usize) -> String {
 }
 
 fn collect_expected_epub_entries(root: &Path, dir: &Path, entries: &mut Vec<String>) {
-    for entry in fs::read_dir(dir).expect(format!("expected epub directory reads {dir:?}").as_str()) {
+    for entry in fs::read_dir(dir).expect(format!("expected epub directory reads {dir:?}").as_str())
+    {
         let path = entry.expect("expected epub directory entry reads").path();
         if path.is_dir() {
             collect_expected_epub_entries(root, &path, entries);

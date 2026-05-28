@@ -1,11 +1,11 @@
 metadata:
-  title: Korea
+  title: Sejong the Great
   author: Wikipedia contributors
   license: Creative Commons Attribution-ShareAlike 4.0 License
   language: en
   edition: First edition
   date: 2026-05-19
-output-file: korea.epub
+output-file: sejong-the-great.epub
 images: false
 articles:
-  - Korea
+  - Sejong the Great
