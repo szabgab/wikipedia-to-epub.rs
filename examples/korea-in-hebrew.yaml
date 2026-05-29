@@ -5,7 +5,7 @@ metadata:
   language: he
   edition: מהדורה ראשונה
   date: 2026-05-22
-output-file: he-korea.epub
+output-file: korea-in-hebrew.epub
 images: false
 caching: central
 depth: 0
