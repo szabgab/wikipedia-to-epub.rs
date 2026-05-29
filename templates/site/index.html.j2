@@ -3,51 +3,624 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Wikipedia to EPUB</title>
+    <title>Wikipedia to EPUB — Generate eBooks for Amazon Kindle</title>
+    <meta name="description" content="A command-line tool written in Rust to compile Wikipedia articles into gorgeous EPUB books ready for your Amazon Kindle." />
+    
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
     <style>
+      :root {
+        --bg-color: #0b0f19;
+        --bg-gradient: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0b0f19 75%);
+        --text-heading: #f8fafc;
+        --text-body: #94a3b8;
+        --text-muted: #64748b;
+        --card-bg: rgba(17, 24, 39, 0.7);
+        --card-border: rgba(255, 255, 255, 0.08);
+        --accent: #6366f1;
+        --accent-light: #818cf8;
+        --accent-glow: rgba(99, 102, 241, 0.15);
+        --accent-btn: #4f46e5;
+        --accent-btn-hover: #4338ca;
+        --code-bg: #030712;
+        --code-border: rgba(255, 255, 255, 0.05);
+        --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        --success: #10b981;
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg-color: #f8fafc;
+          --bg-gradient: radial-gradient(circle at 50% 0%, #e0e7ff 0%, #f8fafc 75%);
+          --text-heading: #0f172a;
+          --text-body: #475569;
+          --text-muted: #64748b;
+          --card-bg: rgba(255, 255, 255, 0.85);
+          --card-border: rgba(0, 0, 0, 0.08);
+          --accent: #4f46e5;
+          --accent-light: #6366f1;
+          --accent-glow: rgba(79, 70, 229, 0.08);
+          --accent-btn: #4f46e5;
+          --accent-btn-hover: #4338ca;
+          --code-bg: #f1f5f9;
+          --code-border: rgba(0, 0, 0, 0.08);
+          --glass-shadow: 0 8px 32px 0 rgba(148, 163, 184, 0.15);
+          --success: #059669;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         margin: 0;
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-        background: #f6f8fa;
-        color: #24292f;
+        font-family: 'Inter', -apple-system, sans-serif;
+        background: var(--bg-color);
+        background-image: var(--bg-gradient);
+        background-attachment: fixed;
+        color: var(--text-body);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
-      main {
-        max-width: 900px;
+
+      /* Premium Header */
+      header {
+        max-width: 1000px;
         margin: 0 auto;
-        padding: 2rem 1rem 3rem;
+        padding: 1.5rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--card-border);
       }
-      h1,
-      h2 {
-        margin-top: 0;
+
+      .logo-group {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
       }
-      .button {
-        display: inline-block;
-        background: #0969da;
+
+      .logo-group svg {
+        color: var(--accent-light);
+        fill: currentColor;
+      }
+
+      .site-title {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--text-heading);
+        text-decoration: none;
+        letter-spacing: -0.02em;
+        margin: 0;
+      }
+
+      .badge-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.2rem 0.6rem;
+        border-radius: 9999px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .badge-version {
+        background: var(--accent-glow);
+        color: var(--accent-light);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+      }
+
+      .badge-date {
+        background: var(--card-border);
+        color: var(--text-body);
+      }
+
+      .github-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-heading);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--card-border);
+        background: var(--card-bg);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .github-link:hover {
+        border-color: var(--accent-light);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px var(--accent-glow);
+      }
+
+      /* Main container */
+      main {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 3rem 1rem 5rem;
+      }
+
+      /* Hero Section */
+      .hero {
+        text-align: center;
+        margin-bottom: 4rem;
+      }
+
+      .hero h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--text-heading);
+        margin: 0 0 1rem;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+      }
+
+      .hero p.lead {
+        font-size: 1.25rem;
+        max-width: 650px;
+        margin: 0 auto 2rem;
+        line-height: 1.6;
+        color: var(--text-body);
+      }
+
+      /* Downloads Section */
+      .download-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: var(--glass-shadow);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        max-width: 800px;
+        margin: 0 auto 4rem;
+        text-align: center;
+      }
+
+      .download-card h2 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.75rem;
+        color: var(--text-heading);
+        margin: 0 0 0.5rem;
+      }
+
+      .download-subtitle {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .downloads-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .btn-download {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        background: var(--accent-btn);
         color: white;
         text-decoration: none;
-        padding: 0.75rem 1rem;
-        border-radius: 6px;
+        padding: 0.875rem 1.25rem;
+        border-radius: 10px;
         font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       }
-      .downloads {
+
+      .btn-download:hover {
+        background: var(--accent-btn-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px var(--accent-glow), 0 4px 6px -2px var(--accent-glow);
+      }
+
+      /* Sections layout */
+      .section-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin-bottom: 4rem;
+      }
+
+      @media (min-width: 768px) {
+        .section-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .content-box {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: var(--glass-shadow);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+
+      .content-box h2 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.5rem;
+        color: var(--text-heading);
+        margin: 0 0 1.25rem;
         display: flex;
-        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      /* README content styling */
+      .readme-content h1 {
+        display: none; /* Hide duplicate main title */
+      }
+
+      .readme-content h2 {
+        font-size: 1.35rem;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-heading);
+      }
+
+      .readme-content p {
+        line-height: 1.6;
+        margin: 0 0 1rem;
+        color: var(--text-body);
+      }
+
+      .readme-content a {
+        color: var(--accent-light);
+        text-decoration: none;
+        font-weight: 600;
+        border-bottom: 1px dashed var(--accent-light);
+        transition: all 0.2s ease;
+      }
+
+      .readme-content a:hover {
+        color: var(--text-heading);
+        border-bottom-style: solid;
+      }
+
+      /* Examples Box styling */
+      .examples-text {
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+      }
+
+      .examples-list {
+        display: flex;
+        flex-direction: column;
         gap: 0.75rem;
-        margin-bottom: 2rem;
+      }
+
+      .example-card-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+        background: var(--code-bg);
+        border: 1px solid var(--code-border);
+        border-radius: 8px;
+        color: var(--text-heading);
+        text-decoration: none;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+      }
+
+      .example-card-link:hover {
+        border-color: var(--accent);
+        background: rgba(99, 102, 241, 0.05);
+        padding-left: 1.25rem;
+      }
+
+      .example-arrow {
+        color: var(--text-muted);
+        transition: transform 0.2s ease;
+      }
+
+      .example-card-link:hover .example-arrow {
+        color: var(--accent-light);
+        transform: translateX(4px);
+      }
+
+      .btn-more-examples {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--accent-light);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-top: 1.5rem;
+        transition: all 0.2s ease;
+      }
+
+      .btn-more-examples:hover {
+        color: var(--text-heading);
+        gap: 0.75rem;
+      }
+
+      /* Full Width Config Box */
+      .config-box {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: var(--glass-shadow);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        position: relative;
+      }
+
+      .config-box h2 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.75rem;
+        color: var(--text-heading);
+        margin: 0 0 0.5rem;
+      }
+
+      .config-subtitle {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .code-container {
+        position: relative;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--code-border);
+      }
+
+      pre {
+        margin: 0;
+        padding: 1.5rem;
+        background: var(--code-bg);
+        overflow-x: auto;
+        max-height: 450px;
+      }
+
+      code {
+        font-family: 'Fira Code', 'Courier New', monospace;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: #e2e8f0;
+      }
+
+      .btn-copy {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        color: white;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .btn-copy:hover {
+        background: rgba(255, 255, 255, 0.16);
+      }
+
+      /* Premium Footer */
+      footer {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 3rem 1rem;
+        text-align: center;
+        border-top: 1px solid var(--card-border);
+        color: var(--text-muted);
+        font-size: 0.875rem;
+      }
+
+      footer a {
+        color: var(--text-body);
+        text-decoration: none;
+        border-bottom: 1px solid var(--card-border);
+        transition: all 0.2s ease;
+      }
+
+      footer a:hover {
+        color: var(--accent-light);
+        border-color: var(--accent-light);
       }
     </style>
   </head>
   <body>
-    <main>
-      <h1>Wikipedia to EPUB</h1>
-      <p>Download the most recent compiled binaries from CI.</p>
-
-      <h2>Compiled binaries</h2>
-      <div class="downloads">
-        {% for download in binary_downloads %}
-        <a class="button" href="{{ download.href }}">Download for {{ download.label }}</a>
-        {% endfor %}
+    
+    <header>
+      <div class="logo-group">
+        <!-- Premium SVG book icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+          <path d="M6 6h10M6 10h10"></path>
+        </svg>
+        <span class="site-title">wikipedia-to-epub</span>
       </div>
+      
+      <div class="badge-group">
+        <span class="badge badge-version" id="version-badge">v{{ version }}</span>
+        <span class="badge badge-date" id="date-badge">Released: {{ release_date }}</span>
+      </div>
+
+      <a class="github-link" href="https://github.com/szabgab/wikipedia-to-epub.rs" target="_blank" rel="noopener">
+        <!-- SVG GitHub logo -->
+        <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor">
+          <path d="M8 0c4.42 0 8 3.58 8 8 0 3.54-2.29 6.53-5.47 7.59-.4.07-.55-.17-.55-.38 0-.19.01-.82.01-1.49 2.01.37 2.53-.49 2.69-.94.09-.23.48-.94.82-1.13.28-.15.68-.52.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+        GitHub
+      </a>
+    </header>
+
+    <main>
+      
+      <!-- Hero Section -->
+      <section class="hero">
+        <h1>Generate Ebooks from Wikipedia</h1>
+        <p class="lead">A blazing fast CLI tool to compile your favorite Wikipedia articles into clean, readable EPUB books ready for Kindle, Kobo, or Apple Books.</p>
+      </section>
+
+      <!-- Compiled Binaries -->
+      <section class="download-card">
+        <h2>Download Executable</h2>
+        <div class="download-subtitle">Get the latest pre-compiled binaries matching release v{{ version }}</div>
+        
+        <div class="downloads-grid">
+          {% for download in binary_downloads %}
+          <a class="btn-download" href="{{ download.href }}">
+            <!-- Generic download arrow icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            {{ download.label }}
+          </a>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- Two Column Layout: Readme & Examples -->
+      <div class="section-grid">
+        
+        <!-- README section -->
+        <article class="content-box">
+          <h2>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            About & Getting Started
+          </h2>
+          <div class="readme-content">
+            {{ readme_html }}
+          </div>
+        </article>
+
+        <!-- Examples section -->
+        <section class="content-box">
+          <h2>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Example Books
+          </h2>
+          <p class="examples-text">
+            To see real-world usage and compile reference books, explore the configuration files stored in the <strong>examples/</strong> directory of the repository.
+          </p>
+          <div class="examples-list">
+            <a class="example-card-link" href="https://github.com/szabgab/wikipedia-to-epub.rs/blob/main/examples/korea.yaml" target="_blank" rel="noopener">
+              <span>examples/korea.yaml</span>
+              <span class="example-arrow">→</span>
+            </a>
+            <a class="example-card-link" href="https://github.com/szabgab/wikipedia-to-epub.rs/blob/main/examples/japan.yaml" target="_blank" rel="noopener">
+              <span>examples/japan.yaml</span>
+              <span class="example-arrow">→</span>
+            </a>
+            <a class="example-card-link" href="https://github.com/szabgab/wikipedia-to-epub.rs/blob/main/examples/buddhist-temples-in-japan.yaml" target="_blank" rel="noopener">
+              <span>examples/buddhist-temples.yaml</span>
+              <span class="example-arrow">→</span>
+            </a>
+            <a class="example-card-link" href="https://github.com/szabgab/wikipedia-to-epub.rs/blob/main/examples/macchini-deep.yaml" target="_blank" rel="noopener">
+              <span>examples/macchini-deep.yaml</span>
+              <span class="example-arrow">→</span>
+            </a>
+          </div>
+          <a class="btn-more-examples" href="https://github.com/szabgab/wikipedia-to-epub.rs/tree/main/examples" target="_blank" rel="noopener">
+            View examples folder
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </section>
+        
+      </div>
+
+      <!-- Skeleton.yaml Config section -->
+      <section class="config-box">
+        <h2>Configuration Template</h2>
+        <div class="config-subtitle">Copy this template configuration <code>skeleton.yaml</code> to customize your eBook compilations:</div>
+        
+        <div class="code-container">
+          <button class="btn-copy" id="copy-btn" onclick="copyConfig()">
+            <!-- Simple copy icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copy Code
+          </button>
+          <pre><code class="language-yaml" id="skeleton-code">{{ skeleton_yaml }}</code></pre>
+        </div>
+      </section>
+
     </main>
+
+    <footer>
+      <p>&copy; 2026 Wikipedia to EPUB Contributors. Released under the MIT License.</p>
+      <p>
+        <a href="https://github.com/szabgab/wikipedia-to-epub.rs" target="_blank" rel="noopener">GitHub Repository</a> &bull; 
+        <a href="https://github.com/szabgab/wikipedia-to-epub.rs/issues" target="_blank" rel="noopener">Issue Tracker</a>
+      </p>
+    </footer>
+
+    <!-- Copy to Clipboard Logic -->
+    <script>
+      function copyConfig() {
+        const code = document.getElementById('skeleton-code').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+          const btn = document.getElementById('copy-btn');
+          const originalHTML = btn.innerHTML;
+          
+          btn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Copied!
+          `;
+          btn.style.background = 'var(--success)';
+          btn.style.borderColor = 'var(--success)';
+          
+          setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.style.background = '';
+            btn.style.borderColor = '';
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy: ', err);
+        });
+      }
+    </script>
   </body>
 </html>

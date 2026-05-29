@@ -1,5 +1,37 @@
 # Codex Session Notes
 
+## 2026-05-29 Website Improvement (Issue #32)
+
+### Summary
+
+Improved the static website layout and dynamic content generation to fulfill all requirements of Issue #32: embedding skeleton.yaml, linking to repository and examples directory, and displaying release date and version number. Also dynamically rendered README.md content directly into the landing page for better documentation.
+
+### Decisions Made
+
+* Updated `scripts/generate_site.py` to parse Cargo.toml for crate version, generate current date, read skeleton.yaml, and parse README.md as HTML using the python `markdown` module.
+* Completely redesigned `templates/site/index.html.j2` with a premium HSL dark-themed layout (compatible with light mode OS preference), Outfit/Inter custom fonts, copy-to-clipboard javascript script, and clean SVG badges.
+* Integrated the rendered README.md content dynamically to prevent duplication of description and upload guidelines.
+* Verified generated site successfully outputs all embedded templates, badges, and examples correctly.
+
+### Files Changed
+
+* `scripts/generate_site.py` [MODIFY]
+  * Updated dependencies and added parsing for Cargo.toml, date, skeleton.yaml, and README.md.
+* `templates/site/index.html.j2` [MODIFY]
+  * Redesigned site layout with glassmorphism, Google Fonts, badges, examples link, and embedded config copy box.
+
+### Tests Run
+
+* `python3 scripts/generate_site.py` (successfully generated website)
+* `cargo fmt --check` (successful check)
+* `cargo check` (successful check)
+* `cargo clippy --all-targets -- -D warnings` (clean lint passing)
+* `cargo test` (all 127 unit tests and 24 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-29 Added skeleton.yaml config template
 
 ### Summary
