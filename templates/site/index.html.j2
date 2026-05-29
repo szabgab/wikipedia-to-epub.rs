@@ -16,8 +16,8 @@
         --bg-color: #0b0f19;
         --bg-gradient: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0b0f19 75%);
         --text-heading: #f8fafc;
-        --text-body: #94a3b8;
-        --text-muted: #64748b;
+        --text-body: #cbd5e1; /* Lighter slate for much better dark-mode body text contrast */
+        --text-muted: #94a3b8; /* Brighter slate for better secondary text contrast */
         --card-bg: rgba(17, 24, 39, 0.7);
         --card-border: rgba(255, 255, 255, 0.08);
         --accent: #6366f1;
@@ -26,7 +26,15 @@
         --accent-btn: #4f46e5;
         --accent-btn-hover: #4338ca;
         --code-bg: #030712;
+        --code-text: #e2e8f0;
         --code-border: rgba(255, 255, 255, 0.05);
+        --code-block-bg: #030712;
+        --code-block-text: #f1f5f9;
+        --code-block-border: rgba(255, 255, 255, 0.05);
+        --inline-code-bg: rgba(99, 102, 241, 0.12);
+        --inline-code-text: #a5b4fc;
+        --inline-code-border: rgba(99, 102, 241, 0.25);
+        --link-color: #818cf8;
         --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         --success: #10b981;
       }
@@ -36,8 +44,8 @@
           --bg-color: #f8fafc;
           --bg-gradient: radial-gradient(circle at 50% 0%, #e0e7ff 0%, #f8fafc 75%);
           --text-heading: #0f172a;
-          --text-body: #475569;
-          --text-muted: #64748b;
+          --text-body: #334155; /* Slate-700 for extremely readable light-mode body contrast */
+          --text-muted: #475569; /* Slate-600 for highly readable light-mode secondary contrast */
           --card-bg: rgba(255, 255, 255, 0.85);
           --card-border: rgba(0, 0, 0, 0.08);
           --accent: #4f46e5;
@@ -46,7 +54,15 @@
           --accent-btn: #4f46e5;
           --accent-btn-hover: #4338ca;
           --code-bg: #f1f5f9;
+          --code-text: #0f172a;
           --code-border: rgba(0, 0, 0, 0.08);
+          --code-block-bg: #0f172a; /* Premium dark background for the large config block */
+          --code-block-text: #f8fafc;
+          --code-block-border: rgba(0, 0, 0, 0.15);
+          --inline-code-bg: rgba(79, 70, 229, 0.06);
+          --inline-code-text: #4f46e5; /* Indigo-600 for outstanding contrast in light mode */
+          --inline-code-border: rgba(79, 70, 229, 0.15);
+          --link-color: #4f46e5; /* Contrast compliant link color */
           --glass-shadow: 0 8px 32px 0 rgba(148, 163, 184, 0.15);
           --success: #059669;
         }
@@ -287,10 +303,10 @@
       }
 
       .readme-content a {
-        color: var(--accent-light);
+        color: var(--link-color);
         text-decoration: none;
         font-weight: 600;
-        border-bottom: 1px dashed var(--accent-light);
+        border-bottom: 1px dashed var(--link-color);
         transition: all 0.2s ease;
       }
 
@@ -338,7 +354,7 @@
       }
 
       .example-card-link:hover .example-arrow {
-        color: var(--accent-light);
+        color: var(--link-color);
         transform: translateX(4px);
       }
 
@@ -346,7 +362,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        color: var(--accent-light);
+        color: var(--link-color);
         text-decoration: none;
         font-weight: 600;
         font-size: 0.95rem;
@@ -388,22 +404,39 @@
         position: relative;
         border-radius: 10px;
         overflow: hidden;
-        border: 1px solid var(--code-border);
+        border: 1px solid var(--code-block-border);
       }
 
       pre {
         margin: 0;
         padding: 1.5rem;
-        background: var(--code-bg);
+        background: var(--code-block-bg);
         overflow-x: auto;
         max-height: 450px;
       }
 
-      code {
+      /* Inline code block styling */
+      :not(pre) > code {
+        font-family: 'Fira Code', 'Courier New', monospace;
+        font-size: 0.875rem;
+        background: var(--inline-code-bg);
+        color: var(--inline-code-text);
+        border: 1px solid var(--inline-code-border);
+        padding: 0.15rem 0.4rem;
+        border-radius: 6px;
+        font-weight: 500;
+      }
+
+      /* Code block inside pre styling */
+      pre code {
         font-family: 'Fira Code', 'Courier New', monospace;
         font-size: 0.9rem;
         line-height: 1.5;
-        color: #e2e8f0;
+        color: var(--code-block-text);
+        background: transparent;
+        padding: 0;
+        border: none;
+        border-radius: 0;
       }
 
       .btn-copy {
