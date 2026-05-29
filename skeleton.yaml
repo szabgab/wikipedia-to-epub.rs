@@ -1,0 +1,61 @@
+# ==============================================================================
+# skeleton.yaml - Book Configuration Template for wikipedia-to-epub
+# ==============================================================================
+# Use this file as a starting point to compile Wikipedia articles into an EPUB.
+
+# Metadata block for the compiled EPUB book.
+metadata:
+  # The title of the book.
+  # Value: Any descriptive string.
+  title: "My Custom Wikipedia Book"
+
+  # The author or compiler of the book.
+  # Value: Any descriptive string.
+  author: "Wikipedia Contributors & Compiler"
+
+  # (Optional) The license under which the book/content is compiled.
+  # Value: A license string or null/omitted.
+  license: "Creative Commons Attribution-ShareAlike 4.0 License"
+
+  # The language of the Wikipedia articles to download (e.g., "en", "es", "he", "ko").
+  # Value: Any valid ISO 639-1 language code of a live Wikipedia project.
+  language: "en"
+
+  # (Optional) The publication date of the book.
+  # Value: Date string (typically YYYY-MM-DD) or null/omitted.
+  date: "2026-05-29"
+
+  # The edition designation for the compiled book.
+  # Value: Any descriptive string (e.g., "First edition").
+  edition: "First edition"
+
+# The name or path of the output EPUB file to be generated.
+# Value: A valid relative or absolute file path ending in .epub.
+output-file: "my-custom-book.epub"
+
+# Whether to fetch and embed images found in the articles.
+# Valid values:
+#   - true  : Download and embed matching images as high-quality EPUB assets.
+#   - false : Do not embed images (produces a text-only EPUB).
+images: false
+
+# Cache strategy to use for article metadata, wikitext, and images.
+# Valid values:
+#   - "none"    : Disable caching completely. Always fetches fresh data from live Wikipedia APIs.
+#   - "local"   : Uses a relative ".cache/" directory in the current working directory.
+#   - "central" : Uses a platform-specific user cache directory (e.g. "~/.cache/wikipedia-to-epub" on Linux).
+caching: "central"
+
+# Depth level of link recursion to follow.
+# Valid values:
+#   - 0 : Only download and compile the articles explicitly listed under the 'articles' field.
+#   - 1 : Follow links inside the listed articles. Download and add linked pages to the book
+#         (only following links within the same language Wikipedia, without duplicates, depth-first).
+depth: 0
+
+# List of Wikipedia article page titles to compile into the book.
+# Value: An array of article page title strings. The book will be constructed in the
+# order listed (depth-first if depth > 0).
+articles:
+  - "Earth"
+  - "Solar System"

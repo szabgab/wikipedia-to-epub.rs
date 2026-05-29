@@ -1,5 +1,33 @@
 # Codex Session Notes
 
+## 2026-05-29 Added skeleton.yaml config template
+
+### Summary
+
+Created a fully annotated `skeleton.yaml` book configuration template at the root of the workspace. This template details every config field, provides logical default values, and contains inline comments explaining all valid options and settings for standard book generation.
+
+### Decisions Made
+
+* Created `/opt/skeleton.yaml` to serve as a clean starting point for compiling new EPUB books.
+* Included all required and optional parameters: `metadata` (title, author, license, language, date, edition), `output-file`, `images`, `caching`, `depth`, and `articles`.
+* Documented valid options for newly introduced features like `caching` ("none", "local", "central") and `depth`.
+
+### Files Changed
+
+* `skeleton.yaml` [NEW]
+  * Created the configuration template.
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test` — all 127 unit tests and 24 integration tests passed successfully.
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-28 Configuration-controlled Caching ("none", "local", "central")
 
 ### Summary
