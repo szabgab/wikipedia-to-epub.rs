@@ -2,7 +2,20 @@
 
 A command line tool written in Rust that given a configuration file such as `examples/korea.yaml` will generate an `.epub` file that can used on an Amazon Kindle.
 
-To get started copy the content of the `skeleton.yaml` file, adjust the fields to your liking and run the `wikipedia-to-epub` command.
+## Install
+
+Download binaries from [Wikipedia to epub](https://wikipedia-to-epub.code-maven.com/).
+
+If you have Rust on your computer you can also install with:
+
+```
+cargo install wikipedia-to-epub
+```
+
+## First book
+
+To get started copy the content of the `skeleton.yaml` file from the repository or from the web site, adjust the fields to your liking and run the `wikipedia-to-epub` command.
+
 
 ## Amazon
 
