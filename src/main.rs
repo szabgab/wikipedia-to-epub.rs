@@ -231,6 +231,10 @@ struct CliArgs {
     refresh_cache: bool,
     #[arg(long = "log", value_name = "level", default_value_t = Level::INFO)]
     log_level: Level,
+    #[arg(long = "images", conflicts_with = "no_images")]
+    images: bool,
+    #[arg(long = "no-images", conflicts_with = "images")]
+    no_images: bool,
 }
 
 trait PageSource {
@@ -466,6 +470,14 @@ fn run(args: CliArgs) -> AppResult<()> {
         ));
     }
 
+    let images = if args.images {
+        true
+    } else if args.no_images {
+        false
+    } else {
+        config.images
+    };
+
     let local_pages_dir = args.local_pages_dir.clone();
     let download_stats = DownloadStats::default();
     let download_cache = if local_pages_dir.is_some() {
@@ -494,7 +506,7 @@ fn run(args: CliArgs) -> AppResult<()> {
                 .expect("download cache is present for live API mode"),
         )?)
     };
-    let mut image_registry = if config.images {
+    let mut image_registry = if images {
         Some(ImageRegistry::new(local_pages_dir.as_deref())?)
     } else {
         None

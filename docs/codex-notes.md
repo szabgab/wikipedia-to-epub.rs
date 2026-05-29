@@ -1,5 +1,41 @@
 # Codex Session Notes
 
+## 2026-05-29 Command Line Flags Override (`--images`, `--no-images`)
+
+### Summary
+
+Added a pair of mutually exclusive command line flags called `--images` and `--no-images` to override the `images` configuration setting dynamically. Designed, implemented, and fully tested the changes with unit tests and end-to-end integration tests.
+
+### Decisions Made
+
+* Expanded `CliArgs` in `src/main.rs` to include `images` and `no_images` CLI flags, configured with mutually exclusive constraint using `conflicts_with`.
+* Updated the `run` function to calculate an overridden `images` boolean: if `--images` is present, it forces image downloading; if `--no-images` is present, it disables image downloading; otherwise, it defaults to the configuration file value.
+* Added `parse_args_accepts_images`, `parse_args_accepts_no_images`, and `parse_args_rejects_both_images_and_no_images` unit tests to `src/tests.rs` to cover all clap parsing scenarios.
+* Added `cli_no_images_flag_overrides_config_images_true` and `cli_images_flag_overrides_config_images_false` end-to-end integration tests to `tests/books.rs` to compile offline books and verify that image files are correctly included/omitted in the generated EPUB based on command-line argument overrides.
+* Formatted the Rust source code using `cargo fmt`, compiled cleanly, verified with strict linting (`cargo clippy --all-targets -- -D warnings`), and ran the entire test suite successfully.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Updated `CliArgs` struct and implemented dynamic CLI override logic in the `run` function.
+* `src/tests.rs` [MODIFY]
+  * Added unit tests for CLI argument parsing.
+* `tests/books.rs` [MODIFY]
+  * Added end-to-end integration tests using the compiled binary.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended the current session notes.
+
+### Tests Run
+
+* `cargo fmt --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed warning-free)
+* `cargo test` (all 130 unit tests and 26 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-29 Website Improvement (Issue #32)
 
 ### Summary

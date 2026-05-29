@@ -2420,6 +2420,38 @@ fn parse_args_rejects_unknown_flags() {
 }
 
 #[test]
+fn parse_args_accepts_images() {
+    let args = parse_args_from(["wikipedia-to-epub", "books/korea.yaml", "--images"])
+        .expect("args should parse");
+
+    assert!(args.images);
+    assert!(!args.no_images);
+}
+
+#[test]
+fn parse_args_accepts_no_images() {
+    let args = parse_args_from(["wikipedia-to-epub", "books/korea.yaml", "--no-images"])
+        .expect("args should parse");
+
+    assert!(!args.images);
+    assert!(args.no_images);
+}
+
+#[test]
+fn parse_args_rejects_both_images_and_no_images() {
+    let err = parse_args_from([
+        "wikipedia-to-epub",
+        "books/korea.yaml",
+        "--images",
+        "--no-images",
+    ])
+    .expect_err("mutually exclusive flags should fail");
+
+    let err_message = err.to_string();
+    assert!(err_message.contains("cannot be used with"));
+}
+
+#[test]
 fn read_or_fetch_text_writes_cache_on_miss() {
     let cache_path = test_cache_path("text-miss").join("value.txt");
     let calls = std::cell::Cell::new(0);

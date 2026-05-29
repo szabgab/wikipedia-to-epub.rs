@@ -131,6 +131,66 @@ fn generate_busan_images_book_from_local_page_dump() {
 }
 
 #[test]
+fn cli_no_images_flag_overrides_config_images_true() {
+    let repo = repo_root();
+    let work_dir = unique_test_dir(&repo, "busan-images-override");
+    fs::create_dir_all(&work_dir).unwrap();
+
+    let output_file_name = "busan-images.epub";
+    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+        .current_dir(&work_dir)
+        .arg(repo.join("examples/busan-images.yaml"))
+        .arg("--local")
+        .arg(repo.join("pages"))
+        .arg("--no-images")
+        .arg("--log")
+        .arg("WARN")
+        .output()
+        .unwrap();
+
+    assert!(output.status.success(), "run failed: {:?}", output);
+    let output_file = work_dir.join(output_file_name);
+    assert!(output_file.is_file());
+
+    let epub = open_epub(&output_file);
+    let entries = zip_entries(&epub);
+    // Verify that NO images are included in the generated EPUB
+    assert!(!entries.iter().any(|entry| entry.contains("OEBPS/images/")));
+
+    fs::remove_dir_all(&work_dir).unwrap();
+}
+
+#[test]
+fn cli_images_flag_overrides_config_images_false() {
+    let repo = repo_root();
+    let work_dir = unique_test_dir(&repo, "busan-no-images-override");
+    fs::create_dir_all(&work_dir).unwrap();
+
+    let output_file_name = "busan.epub";
+    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+        .current_dir(&work_dir)
+        .arg(repo.join("examples/busan.yaml"))
+        .arg("--local")
+        .arg(repo.join("pages"))
+        .arg("--images")
+        .arg("--log")
+        .arg("WARN")
+        .output()
+        .unwrap();
+
+    assert!(output.status.success(), "run failed: {:?}", output);
+    let output_file = work_dir.join(output_file_name);
+    assert!(output_file.is_file());
+
+    let epub = open_epub(&output_file);
+    let entries = zip_entries(&epub);
+    // Verify that images ARE included in the generated EPUB
+    assert!(entries.iter().any(|entry| entry.contains("OEBPS/images/")));
+
+    fs::remove_dir_all(&work_dir).unwrap();
+}
+
+#[test]
 #[ignore = "hits the real Wikipedia API"]
 fn generate_example_books_from_real_wikipedia_api() {
     assert_real_api_generates_book("korea", &["Korea"]);
