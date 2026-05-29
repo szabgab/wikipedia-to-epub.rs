@@ -48,7 +48,7 @@ def get_skeleton_yaml() -> str:
 
 
 def get_readme_html() -> str:
-    readme_path = Path("README.md")
+    readme_path = Path("WEB.md")
     if not readme_path.exists():
         return ""
     import markdown
