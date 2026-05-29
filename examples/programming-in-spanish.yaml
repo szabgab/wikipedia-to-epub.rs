@@ -1,0 +1,13 @@
+metadata:
+  title: Programación
+  author: Wikipedia contributors
+  license: Creative Commons Attribution-ShareAlike 4.0 License
+  language: es
+  edition: First edition
+  date: 2026-05-19
+output-file: programming-in-spanish.epub
+images: false
+caching: central
+depth: 0
+articles:
+  - Rust (lenguaje de programación)
