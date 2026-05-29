@@ -49,7 +49,7 @@ Important repo context from the docs and code together:
 - The EPUB writer is intentionally minimal and hand-built; if you change packaging, preserve the current structure and the uncompressed `mimetype` entry.
 - Wikitext cleanup is heuristic and regex/string based. Reuse `cleanup_inline_markup()`, `parse_heading()`, and `strip_balanced_sections()` instead of adding parallel ad hoc cleanup paths.
 - Article lookup is designed to tolerate common filename variations (`space`, `_`, `-`, case changes). Keep that behavior when changing how configs map to files.
-- The project currently excludes embedded assets such as images and external stylesheets from the generated book, matching the README’s stated scope.
+- The project currently excludes embedded assets such as images and external stylesheets from the generated book, matching the DEVELOPMENT.md’s stated scope.
 
 ## Documentation
 

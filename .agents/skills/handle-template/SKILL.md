@@ -10,7 +10,7 @@ When adding or changing Wikipedia template handling:
 
 * Add or update the renderer.
 * Add unit tests for each template/case.
-* Update README.md conversion rules.
+* Update DEVELOPMENT.md conversion rules.
 * If integration tests fail because expected XHTML intentionally changed, update expected fixtures.
 * Run:
   * cargo test <focused test if useful>

@@ -121,7 +121,7 @@ Added handling for the `{{small}}` template observed in `pages/Administrative_di
   * Added `|| template.eq_ignore_ascii_case("small")` to the `smaller` dispatch branch and to `is_handled_template_name`.
 * `src/tests.rs`
   * Added `render_wikitext_formats_small_template` with four cases: plain text, Korean-specific text, a nested wiki-link, and an empty-parameter edge case.
-* `README.md`
+* `DEVELOPMENT.md`
   * Updated the `{{Smaller}}` bullet to include `{{small}}` as an alias.
 * `docs/codex-notes.md`
   * Added this session summary.
@@ -165,7 +165,7 @@ This session completed the handling of five templates used in the Goguryeo page:
   * Reverted from fixture-writer mode back to standard assertion mode.
 * `expected/goguryeo/` and `expected/korean-language/`
   * Refreshed EPUB integration fixtures to reflect newly rendered thesis and Google Book citations.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented `cite thesis`, `GBurl`, and `usurped` conversion rules; added `Cleanup` and `tone` to the maintenance template omission list.
 * `docs/codex-notes.md`
   * Added this session summary.
@@ -202,7 +202,7 @@ This session completed the handling of the `"nihongo3"` template used in the Bud
   * Added a dedicated, comprehensive unit test verifying the different positional parameters variations.
 * `expected/buddhist-temples-in-japan/`
   * Refreshed book integration Expected XHTML fixtures to include the newly rendered `nihongo3` output.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented the `nihongo3` conversion rules.
 * `docs/codex-notes.md`
   * Added this session summary.
@@ -240,7 +240,7 @@ This session completed the handling of templates used in the Kyoto page: `"Expan
   * Added 3 new unit tests for formatnum, STN, and Kyoto silent exclusions.
 * `expected/kyoto/`
   * Refreshed book integration Expected XHTML fixtures to include the newly rendered Hamaōtsu railway station link.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented all new template conversion and omission rules.
 * `docs/codex-notes.md`
   * Added this session summary.
@@ -281,7 +281,7 @@ This session completed the handling of templates used in the Osaka page: `"Nihon
   * Added 5 new unit tests for all renderers and silent exclusions.
 * `expected/osaka/`
   * Refreshed book integration Expected XHTML fixtures to include the newly rendered Nihongo and citation output.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented all four new template conversion rules.
 * `docs/codex-notes.md`
   * Added this session summary.
@@ -327,7 +327,7 @@ This session completed the handling of nine templates used in the Korean Languag
   * Resolved a legacy expect-fun-call Clippy warning on line 324.
 * `expected/korean-language/`
   * Refreshed book integration Expected XHTML fixtures to include the newly rendered orthography and vowels output.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented all nine new template conversion rules.
 * `docs/codex-notes.md`
   * Added this session summary.
@@ -410,7 +410,7 @@ This session added handling for templates used in Han Dynasty page: `floruit`, `
   * Added `render_wikitext_formats_han_dynasty_templates` test.
 * `expected/korea/OEBPS/chapter-10.xhtml`
   * Refreshed Han Dynasty expected output after the new template rendering (`floruit` and `fraction`).
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented the new template conversion and omission rules.
 * `docs/codex-notes.md`
   * Added this session summary.
@@ -449,7 +449,7 @@ This session added handling for Hangul-page templates `tlit`, `crossreference`, 
   * Added `efn-ua`, `notelist-ua`, `col-begin`, `col-break`, and `col-end`.
 * `src/tests.rs`
   * Added unit coverage for Hangul inline templates and extended silent-template coverage.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented the new conversion and omission rules.
 * `expected/korea/OEBPS/chapter-9.xhtml`
   * Refreshed the Hangul expected output after the new template rendering.
@@ -486,7 +486,7 @@ This session updated Korean template rendering so Hangul/Hanja values are explic
   * Added `ko_ipa` parsing and labelled Korean/Hanja output in `render_korean_template`.
 * `src/tests.rs`
   * Updated Korean template unit coverage for labels and Busan pronunciation.
-* `README.md`
+* `DEVELOPMENT.md`
   * Updated Korean template conversion rules.
 * `expected/korea/OEBPS/*.xhtml`, `expected/korea/OEBPS/content.opf`, `expected/korea/OEBPS/toc.ncx`
   * Refreshed the English Korea expected EPUB output after the Korean rendering change.
@@ -527,7 +527,7 @@ This session added handling for the `mdash`, `legend`, `circa`, `cite web`, `Sfn
   * Added `SfnRef` and `source-attribution` as recognized silent templates.
 * `src/tests.rs`
   * Added unit coverage for the new inline and web-source template behavior.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented the new conversion rules.
 * `expected/korea/OEBPS/chapter-8.xhtml`
   * Refreshed the North Korea expected output for the newly rendered templates.
@@ -567,7 +567,7 @@ This session added handling for the `sic`, `Nowrap`, `Smaller`, and `ROKS` Wikip
   * Added restoration for the internal small-text placeholder.
 * `src/tests.rs`
   * Added unit coverage for the new inline template renderers.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented the new conversion rules.
 * `expected/korea/OEBPS/chapter-7.xhtml`
   * Refreshed the South Korea expected output for the newly rendered templates.
@@ -603,7 +603,7 @@ This session added support for the Wikipedia `frac` template so common fractions
   * Added `frac` to template dispatch and implemented basic positional fraction rendering.
 * `src/tests.rs`
   * Added unit coverage for simple, mixed-number, and nested-template `frac` forms.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented the `frac` conversion rule.
 * `expected/korea/OEBPS/chapter-2.xhtml`
   * Updated the Seoul fixture so `{{frac|2|3}}` now appears as `2/3` in the fortress-wall paragraph.
@@ -638,7 +638,7 @@ This session added support for the Wikipedia `Historical populations` template, 
   * Added `Historical populations` to template dispatch and implemented parsing/rendering helpers for year/population entry pairs.
 * `src/tests.rs`
   * Added unit coverage for `Historical populations` rendering and metadata omission.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented the `Historical populations` conversion rule.
 * `expected/korea/OEBPS/chapter-2.xhtml`
   * Updated the Seoul fixture to include the rendered historical population list in the Demographics section.
@@ -674,7 +674,7 @@ This session added handling for the Wikipedia `Coord` template so common inline 
   * Added `Coord` to template dispatch and implemented inline coordinate rendering helpers.
 * `src/tests.rs`
   * Added unit coverage for DMS, decimal, title-only, and `qid=` `Coord` forms.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented the new `Coord` conversion behavior.
 * `docs/codex-notes.md`
   * Added this session summary.
@@ -754,7 +754,7 @@ Handled Wikipedia `rp` reference-page templates so source page markers are prese
   * Added unit coverage for `Official website` URL, label, and protocol-normalization behavior.
   * Added unit coverage for `Largest cities` rendering.
   * Extended metadata skip coverage for `location map+`, `Wikisource-inline`, `Unreliable source?`, `Wide image`, `Pie chart`, `Better source needed`, and `ahnentafel`.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented `rp`, `Official website`, `Largest cities`, and additional omitted template conversion rules.
 * `expected/korea/OEBPS/chapter-1.xhtml`
   * Updated the Korea fixture so the official Korea website appears as an external link and the largest-cities table appears as a city list.
@@ -807,7 +807,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
 * `Wiktionary` renders as visible sister-project prose, linking to the requested Wiktionary entry through the existing external-link path.
 * `Wikivoyage` renders as visible sister-project prose, linking to the requested Wikivoyage entry through a dedicated external-link path.
 * `Free access` is treated like `Open access`, rendering as the same open-lock marker.
-* The README should describe conversion rules with concrete before/after examples.
+* The DEVELOPMENT should describe conversion rules with concrete before/after examples.
 
 ### Files Changed
 
@@ -817,7 +817,7 @@ This session focused on expanding Wikipedia template rendering for EPUB output, 
   * Updated citation author collection so unnumbered `last`/`first` can combine correctly with numbered coauthors such as `last2`/`first2`.
   * Added silent skipping for templates such as `Redirect`, `pp-semi-indef`, `Sfn`, `efn`, `refn`, `Reflist`, `notelist`, `Refbegin`, `Refend`, `flagicon`, `unreferenced section`, `Excessive citations inline`, `DEFAULTSORT`, `Commons category`, `Portal bar`, `Portal`, `Authority control`, `Seoul`, `Seoul weatherbox`, `Seoul landmarks`, `Navboxes`, succession templates prefixed with `s-`, and `Succession box`.
   * Added tests for template rendering behavior, including the restored example fixture and Korean transliteration cases.
-* `README.md`
+* `DEVELOPMENT.md`
   * Added notes describing wiki-to-HTML conversion rules and template rendering examples.
 * `expected/korea/OEBPS/chapter-1.xhtml`
   * Updated the Korea fixture so visible `As of 2023` prose is preserved and the external-links Wiktionary/Wikivoyage templates become real links.
@@ -878,7 +878,7 @@ Latest verification passed:
   * Added the new expected EPUB fixture with embedded image assets.
 * `expected/*/OEBPS/style.css`
   * Updated expected CSS fixtures for the shared image styles.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented the `images` field and the file/image conversion rule.
 
 ### Tests Run
@@ -894,7 +894,7 @@ Latest verification passed: 78 unit tests passed, 5 local book integration tests
 
 * Consider expanding `pages/images/manifest.json` with more fixture images if broader image coverage is useful.
 * Remote thumbnail downloads are implemented but are not exercised by default tests because the real Wikipedia API test remains ignored.
-* Consider adding more README examples for newly supported templates when their behavior becomes user-visible.
+* Consider adding more DEVELOPMENT examples for newly supported templates when their behavior becomes user-visible.
 
 ## 2026-05-26 Image Download Logging Session
 
@@ -950,7 +950,7 @@ Latest verification passed: 78 unit tests passed, 5 local book integration tests
   * Added long-image-URL cache path coverage.
   * Extended byte-cache tests to verify hit/refreshed source reporting.
   * Added download-stat counter coverage for cache miss, cache hit, and failed download paths.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented the cache location, refresh flag, local-mode behavior, and final cache report.
 * `docs/codex-notes.md`
   * Added this session summary.
@@ -989,7 +989,7 @@ Latest verification passed: 85 unit tests passed, 5 local book integration tests
   * Added `Pp-pc`.
 * `src/tests.rs`
   * Added unit coverage for the new inline and sister-project rendering and extended silent-template coverage.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented the new conversion rules.
 * `expected/korea/OEBPS/chapter-10.xhtml`
   * Refreshed Han Dynasty expected output after the new template rendering.
@@ -1013,7 +1013,7 @@ Latest verification passed: 85 unit tests passed, 5 local book integration tests
 
 ### Summary
 
-This session added rendering for the `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, `Wikisource`, `Nihongo`, `nbsp`, `cvt`, `osmrelation-inline`, `climate chart`, `IPAc-en`, `Respell`, and `cite ECCP` Wikipedia templates, added per-article and total skipped-template logging, updated README conversion notes, refreshed affected Korea EPUB fixtures, and verified the full test suite.
+This session added rendering for the `Official website`, `Largest cities`, `linktext`, `Excerpt`, `For`, `URL`, `Webarchive`, `in lang`, `lit`, `ISBN`, `Wikisource`, `Nihongo`, `nbsp`, `cvt`, `osmrelation-inline`, `climate chart`, `IPAc-en`, `Respell`, and `cite ECCP` Wikipedia templates, added per-article and total skipped-template logging, updated DEVELOPMENT conversion notes, refreshed affected Korea EPUB fixtures, and verified the full test suite.
 
 ### Decisions Made
 
@@ -1061,7 +1061,7 @@ This session added rendering for the `Official website`, `Largest cities`, `link
   * Added unit coverage for skipped-template counts and extended the silent-template test to verify its recognized and unknown skip totals.
 * `tests/books.rs`
   * Updated CLI stdout assertions to allow the final skipped-template totals line.
-* `README.md`
+* `DEVELOPMENT.md`
   * Added conversion-rule examples for the new template rendering.
   * Documented that the newly observed Busan maintenance, layout, and navigation templates are omitted.
 * `expected/korea/OEBPS/chapter-1.xhtml`
@@ -1130,7 +1130,7 @@ Latest verification passed:
   * Added 8 silent templates.
 * `src/tests.rs`
   * Implemented a focused unit test `render_wikitext_formats_korean_war_templates` verifying all new rendered and silent templates.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented all 7 rendered and 8 silent templates.
 * `expected/korea/OEBPS/chapter-11.xhtml`
   * Updated with generated CPI calculations, ship links, lists, and external links.
@@ -1165,7 +1165,7 @@ Latest verification passed:
   * Added `Contains special characters` to the ignored templates list.
 * `src/tests.rs`
   * Added unit test assertions inside `render_wikitext_formats_han_dynasty_templates` covering all three templates.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented `okina`, `'s` under inline conversion rules, and `Contains special characters` under maintenance and metadata templates.
 * `expected/korea/OEBPS/chapter-9.xhtml`
   * Updated with correct ʻokina character rendering.
@@ -1200,7 +1200,7 @@ Latest verification passed:
   * Added `tree chart`, `tree chart/start`, `tree chart/end`, and `-` to the ignored templates.
 * `src/tests.rs`
   * Added `render_wikitext_formats_parhae_templates` unit test.
-* `README.md`
+* `DEVELOPMENT.md`
   * Documented all new conversion rules and omitted templates.
 * `expected/korea/OEBPS/chapter-12.xhtml`
   * Updated with correctly formatted conference publication details.
@@ -1268,7 +1268,7 @@ Latest verification passed:
   * If a class is not recognized (i.e. does not contain `"wikitable"`), skipped rendering the table block and logged a warning `warn!(class = %class_str, "Skipping table with unrecognized class: {}", class_str);`.
 * Isolated the table rendering using a placeholder structure `__WIKIPEDIA_TO_EPUB_TABLE_N__` to ensure the HTML elements are not stripped or mangled by paragraph-wrapping or inline styling post-processors.
 * Updated `tests/books.rs` to temporarily run in fixture-writing mode, regenerated all 23 expected EPUB integration fixtures (which now beautifully contain the formatted tables), and restored `tests/books.rs` back to assertion mode.
-* Updated `README.md` to document the newly-added support for wikitables.
+* Updated `DEVELOPMENT.md` to document the newly-added support for wikitables.
 
 ### Files Changed
 
@@ -1278,7 +1278,7 @@ Latest verification passed:
   * Integrated placeholder replacement inside the line processing loop of `render_wikitext_impl`.
 * `src/tests.rs`
   * Added `render_wikitable_preserves_various_classes_and_skips_unrecognized` unit test.
-* `README.md`
+* `DEVELOPMENT.md`
   * Updated documentation to reflect that wikitables are converted into XHTML tables while non-wikitable tables are omitted.
 * `docs/codex-notes.md`
   * Appended the current session notes.

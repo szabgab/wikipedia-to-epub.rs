@@ -1,6 +1,6 @@
 
 * Always run `cargo test`, `cargo fmt`, `cargo check`, and `cargo clippy --all-targets -- -D warnings` to make sure they cleanly pass before finishing a task.
-* When adding a new wikipedia template always write a unit-test for each template separately and also update the README.md file.
+* When adding a new wikipedia template always write a unit-test for each template separately and also update the DEVELOPMENT.md file.
 
 * Before exiting codex do the following:
     * Update docs/codex-notes.md with a concise summary of this Codex session, including decisions made, files changed, tests run, and any pending follow-ups.
