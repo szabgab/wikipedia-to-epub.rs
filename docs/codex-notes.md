@@ -1,5 +1,34 @@
 # Codex Session Notes
 
+## 2026-06-01 Extend template finder tool for central cache
+
+### Summary
+
+Updated the `tools/find_template.pl` script to recursively scan the user's central download cache directory as well as the local `pages/` repository. It resolves target OS cache directories (Windows, macOS, and Linux/Unix/XDG) and recursively scans for `.json` files. All tests passed cleanly.
+
+### Decisions Made
+
+* Extended `tools/find_template.pl` with a recursive directory walker `find_json_files`.
+* Implemented cross-platform resolution of standard user cache roots (checking `%LOCALAPPDATA%`, `~/Library/Caches`, `$XDG_CACHE_HOME`, and `~/.cache`).
+* Modified matches to output the descriptive full relative/absolute filepath so the developer knows exactly where each match was located.
+
+### Files Changed
+
+* `tools/find_template.pl` [MODIFY]
+  * Updated with recursive search and cross-platform central cache path resolution.
+* `docs/codex-notes.md` [MODIFY]
+  * Prepended the current session notes.
+
+### Tests Run
+
+* Tested cache search: `./tools/find_template.pl FXConvert` (successfully found match inside `~/.cache/wikipedia-to-epub/...`)
+* Tested local search: `./tools/find_template.pl Nihongo3` (successfully found all local repository matches)
+* `cargo fmt` / `cargo check` / `cargo clippy --all-targets -- -D warnings` / `cargo test` (all passed cleanly and successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Create template finder Perl tool
 
 ### Summary
