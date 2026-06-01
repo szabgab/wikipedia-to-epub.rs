@@ -1,5 +1,35 @@
 # Codex Session Notes
 
+## 2026-06-01 Create template finder Perl tool
+
+### Summary
+
+Created a new folder `tools/` and wrote a robust, UTF-8 compliant Perl program `find_template.pl` that searches all pages JSON files for occurrences of a given template name, correctly extracting the complete template content (even with nested templates) using recursive regular expressions. All tests passed cleanly.
+
+### Decisions Made
+
+* Decided to construct `tools/find_template.pl` to accept a template name as a command-line argument.
+* Used standard core `JSON::PP` for robust UTF-8 JSON parsing.
+* Leveraged standard Perl 5 recursive regex matching `(\{\{(?:[^{}]++|(?1))*\}\})` to perfectly isolate outer template blocks even if they contain nested templates.
+* Configured `STDOUT` to use UTF-8 (`binmode(STDOUT, ':utf8')`) to avoid "Wide character in print" warnings when presenting template content with non-ASCII text.
+
+### Files Changed
+
+* `tools/find_template.pl` [NEW]
+  * Implemented the Perl search tool.
+* `docs/codex-notes.md` [MODIFY]
+  * Prepended the current session notes.
+
+### Tests Run
+
+* Tested script: `./tools/find_template.pl Nihongo3` (printed all 13 matches with files without warning)
+* `cargo fmt` (passed cleanly)
+* `cargo check && cargo test` (all 146 unit tests and 28 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Allow Comma and Comments in CSV files
 
 ### Summary
