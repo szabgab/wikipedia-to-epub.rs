@@ -1,6 +1,50 @@
 # Codex Session Notes
 
+## 2026-06-01 Hungary Page Templates Handling
+
+### Summary
+
+Added template handling for the English Wikipedia "Hungary" article. Implemented rendering for the `{{!}}` magic word (which outputs a vertical pipe `|`) and silently omitted metadata and navigation templates: `{{Wikiatlas}}` and `{{Hungary articles}}`.
+
+### Decisions Made
+
+* Implemented `{{!}}` template rendering to output a literal vertical pipe `|`. Registered it in `is_handled_template_name` and `render_template` in `src/main.rs`.
+* Added `{{!}}` to `render_wikitext_formats_simple_inline_templates` unit tests.
+* Identified page-level metadata template `{{Wikiatlas}}` and registered it in `src/silent.csv`.
+* Identified country navigation template `{{Hungary articles}}` and registered it in `src/navigations.csv`.
+* Sorted `src/silent.csv` and `src/navigations.csv` using `./sort.sh`.
+* Wrote `render_wikitext_silently_skips_hungary_metadata_templates` unit test.
+* Updated `DEVELOPMENT.md` to document the `{{!}}`, `{{Wikiatlas}}`, and `{{Hungary articles}}` rules.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Registered and dispatched `{{!}}` template.
+* `src/silent.csv` [MODIFY]
+  * Added `Wikiatlas` to silently ignored templates.
+* `src/navigations.csv` [MODIFY]
+  * Added `Hungary articles` to silently ignored navigation templates.
+* `src/tests.rs` [MODIFY]
+  * Added unit tests for `{{!}}` and silent skips of Hungary templates.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the template conversion and omission rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session summary.
+
+### Tests Run
+
+* `./sort.sh` (sorted CSVs alphabetically)
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed warning-free)
+* `cargo test` (131 unit tests and 26 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-05-29 Command Line Flags Override (`--images`, `--no-images`)
+
 
 ### Summary
 

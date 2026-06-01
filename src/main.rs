@@ -1342,6 +1342,8 @@ fn render_template(content: &str) -> String {
 
     if template.eq_ignore_ascii_case("Korean") || template.eq_ignore_ascii_case("Korean/auto") {
         render_korean_template(params)
+    } else if template.eq_ignore_ascii_case("!") {
+        "|".to_string()
     } else if template.eq_ignore_ascii_case("Nihongo4") || template.eq_ignore_ascii_case("Nihongo")
     {
         render_japanese_template(params)
@@ -1615,6 +1617,7 @@ fn template_log_content(content: &str) -> String {
 fn is_handled_template_name(template: &str) -> bool {
     template.eq_ignore_ascii_case("Korean")
         || template.eq_ignore_ascii_case("Korean/auto")
+        || template.eq_ignore_ascii_case("!")
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("Nihongo")
         || template.eq_ignore_ascii_case("nbsp")

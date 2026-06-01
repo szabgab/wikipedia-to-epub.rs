@@ -1777,6 +1777,7 @@ fn render_wikitext_formats_simple_inline_templates() {
         ("{{sic|was}}", "<p>was [sic]</p>"),
         ("{{sic}}", "<p>[sic]</p>"),
         ("{{Nowrap|June 10}}", "<p>June 10</p>"),
+        ("some{{!}}text", "<p>some|text</p>"),
         (
             "{{Nowrap|[[Seoul]] and [[Busan]]}}",
             r#"<p><a href="https://en.wikipedia.org/wiki/Seoul">Seoul</a><span class="external-link">↗</span> and <a href="https://en.wikipedia.org/wiki/Busan">Busan</a><span class="external-link">↗</span></p>"#,
@@ -2804,6 +2805,26 @@ fn render_wikitext_silently_skips_goguryeo_metadata_templates() {
     );
     assert!(!rendered.contains("Cleanup"), "{rendered}");
     assert!(!rendered.contains("tone"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 2,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_hungary_metadata_templates() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{Wikiatlas|Hungary}}\n{{Hungary articles}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("Wikiatlas"), "{rendered}");
+    assert!(!rendered.contains("Hungary articles"), "{rendered}");
     assert_eq!(
         counts,
         TemplateSkipCounts {
