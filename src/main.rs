@@ -243,6 +243,7 @@ struct CliArgs {
 
 trait PageSource {
     fn load_page(&self, article: &str) -> AppResult<PageResponse>;
+    fn is_cache_hit(&self, article: &str) -> bool;
 }
 
 struct WikipediaApiPageSource {
@@ -250,6 +251,7 @@ struct WikipediaApiPageSource {
     api_url: Url,
     language: String,
     cache: DownloadCache,
+    cache_hits: std::cell::RefCell<std::collections::HashSet<String>>,
 }
 
 impl WikipediaApiPageSource {
@@ -261,6 +263,7 @@ impl WikipediaApiPageSource {
             api_url,
             language: language.to_string(),
             cache,
+            cache_hits: std::cell::RefCell::new(std::collections::HashSet::new()),
         })
     }
 
@@ -325,6 +328,20 @@ impl PageSource for WikipediaApiPageSource {
             self.cache.enabled,
             || self.fetch_page_payload(article),
         )?;
+        if source == CacheSource::Hit {
+            let filename = cache_path
+                .file_name()
+                .and_then(|name| name.to_str())
+                .unwrap_or("");
+            info!(
+                article = article,
+                filename = filename,
+                "loaded page from cache"
+            );
+            self.cache_hits
+                .borrow_mut()
+                .insert(normalize_lookup_key(article));
+        }
         match Self::parse_page_payload(article, &payload) {
             Ok(page) => Ok(page),
             Err(err) if source == CacheSource::Hit => {
@@ -344,6 +361,12 @@ impl PageSource for WikipediaApiPageSource {
             }
             Err(err) => Err(err),
         }
+    }
+
+    fn is_cache_hit(&self, article: &str) -> bool {
+        self.cache_hits
+            .borrow()
+            .contains(&normalize_lookup_key(article))
     }
 }
 
@@ -444,6 +467,10 @@ impl PageSource for FixturePageSource {
         let page_path = find_page_path(article, &self.pages_dir)?;
         read_json::<PageResponse>(&page_path)
     }
+
+    fn is_cache_hit(&self, _article: &str) -> bool {
+        false
+    }
 }
 
 fn main() {
@@ -541,6 +568,9 @@ fn run(args: CliArgs) -> AppResult<()> {
             let page = loaded_pages
                 .get(&normalize_lookup_key(article))
                 .unwrap_or_else(|| panic!("page '{}' is pre-loaded in resolution phase", article));
+            if !page_source.is_cache_hit(article) {
+                info!(article = page.parse.title, "fetching article");
+            }
             load_chapter(
                 page,
                 index + 1,
@@ -822,7 +852,6 @@ fn load_chapter(
     language: &str,
     image_registry: Option<&mut ImageRegistry>,
 ) -> AppResult<Chapter> {
-    info!(article = page.parse.title, "fetching article");
     let (rendered, template_skip_counts) = render_wikitext_with_template_counts(
         &page.parse.title,
         &page.parse.wikitext.text,

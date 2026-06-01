@@ -1,5 +1,71 @@
 # Codex Session Notes
 
+## 2026-06-01 Caching Log Verification and Investigation
+
+### Summary
+
+Investigated a user query about why page JSON cache hits were counted in statistics (`json_from_cache=1`) but appeared to be missing from the log file (`try.log`) during a run of the "Old Chosŏn" configuration. Also updated the `loaded page from cache` log message to print the cache filename, and refactored the logging sequence so that `fetching article` is omitted when an article is successfully resolved from the cache.
+
+### Decisions Made
+
+* Analyzed the log file `try.log` and traced the execution flow inside `dfs_visit` and `WikipediaApiPageSource::load_page`.
+* Verified that the `info!(article = article, "loaded page from cache")` statement is located inside `load_page`, which is indeed called within `dfs_visit` prior to the chapter loading phase (`fetching article`).
+* Discovered that the binary previously executed to produce `try.log` did not have the uncommitted cache logging modification compiled/saved.
+* Re-ran the compiler and execution test using `examples/korea.yaml` with `--logfile test_korea.log`. The second run (forcing cache utilization) successfully and explicitly logged:
+  `INFO loaded page from cache article="Korea"`
+* Extracted the file name using `cache_path.file_name()` inside `WikipediaApiPageSource::load_page` and updated the `info!` log fields to include `filename`.
+* Verified that the log statement now prints the cache filename:
+  `INFO loaded page from cache article="Korea" filename="8a71d4aaaf5569d5.json"`
+* Added `is_cache_hit(&self, article: &str) -> bool` to the `PageSource` trait, tracking loaded cache hits in a thread-safe / interior-mutable `cache_hits: RefCell<HashSet<String>>` inside `WikipediaApiPageSource`.
+* Removed unconditional `fetching article` logging from `load_chapter`, and placed it conditionally in the main loop of `run()` so that it is only logged if the page was *not* a cache hit.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Added `is_cache_hit` to `PageSource` trait and tracked/implemented it for `WikipediaApiPageSource` and `FixturePageSource`.
+  * Conditionally logged `fetching article` inside `run()` only on cache misses, and removed it from `load_chapter`.
+
+### Tests Run
+
+* `cargo run -- --log debug --logfile test_korea.log examples/korea.yaml` (verified cache hit logs successfully print with the filename field)
+* `cargo fmt --check` (passed)
+* `cargo check` (passed)
+* `cargo clippy --all-targets -- -D warnings` (passed)
+* `cargo test` (all 146 unit tests and 29 integration/book tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
+## 2026-06-01 Log page JSON loads from cache
+
+### Summary
+
+Added explicit logging of page JSON file cache hits during article loading. When an article is loaded from the central cache rather than being fetched from Wikipedia, it now logs `loaded page from cache` at the `INFO` level. All tests passed cleanly.
+
+### Decisions Made
+
+* Intercepted article loading in `WikipediaApiPageSource::load_page` inside `src/main.rs`.
+* Checked if the payload source is `CacheSource::Hit`, and logged `loaded page from cache` at `INFO` level using the `info!` macro.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Implemented cache hit logging inside `load_page`.
+* `docs/codex-notes.md` [MODIFY]
+  * Prepended the current session notes.
+
+### Tests Run
+
+* Verified log output: successfully printed `INFO loaded page from cache article="Beomeosa"` during test generation.
+* `cargo fmt` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed warning-free)
+* `cargo test` (all 146 unit tests and 28 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Extend template finder tool for central cache
 
 ### Summary
