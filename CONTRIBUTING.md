@@ -1,5 +1,12 @@
 # Contributing
 
+
+## Handle templates
+
+* Create a book YAML file with a few pages.
+* Generate the book: `cargo run -- --log debug examples/korea.yaml`
+* `grep "removing unhandled wikitext" report.log`
+
 ## Release and publish
 
 * Update version number in Cargo.toml and in the comment below.
