@@ -1631,6 +1631,8 @@ fn render_template(content: &str) -> String {
         || template.eq_ignore_ascii_case("crlf")
     {
         render_break_template(params)
+    } else if template.eq_ignore_ascii_case("jct") {
+        render_jct_template(params)
     } else if template.eq_ignore_ascii_case("FXConvert") {
         render_fx_convert_template(params)
     } else if is_silent_template_name(template) {
@@ -1814,6 +1816,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("br")
         || template.eq_ignore_ascii_case("brk")
         || template.eq_ignore_ascii_case("crlf")
+        || template.eq_ignore_ascii_case("jct")
         || template.eq_ignore_ascii_case("FXConvert")
         || is_silent_template_name(template)
 }
@@ -1949,6 +1952,50 @@ fn clean_korean_auto_value(value: &str) -> String {
         .chars()
         .filter(|ch| !matches!(ch, '^' | '%' | '_'))
         .collect()
+}
+
+fn render_jct_template(params: &str) -> String {
+    let mut country = None;
+    let mut state = None;
+    let mut positional = Vec::new();
+
+    for part in split_template_params(params)
+        .into_iter()
+        .map(|part| part.trim().to_string())
+        .filter(|part| !part.is_empty())
+    {
+        if let Some((key, value)) = part.split_once('=') {
+            match key.trim().to_lowercase().as_str() {
+                "country" => country = Some(value.trim().to_string()),
+                "state" => state = Some(value.trim().to_string()),
+                _ => {}
+            }
+        } else {
+            positional.push(part);
+        }
+    }
+
+    let country = country.as_deref().unwrap_or("");
+    let state = state.as_deref().unwrap_or("");
+
+    if country == "JPN" && positional.len() >= 2 && positional[0] == "Route" {
+        let route_num = &positional[1];
+        return format!("[[Japan National Route {route_num}|National Route {route_num}]]");
+    }
+
+    if !positional.is_empty() {
+        let route_num = positional.last().unwrap();
+        let prefix = if !state.is_empty() {
+            state
+        } else if !country.is_empty() {
+            country
+        } else {
+            positional.first().unwrap().as_str()
+        };
+        return format!("{prefix} {route_num}");
+    }
+
+    String::new()
 }
 
 fn render_japanese_template(params: &str) -> String {

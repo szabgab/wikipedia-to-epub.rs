@@ -1,5 +1,40 @@
 # Codex Session Notes
 
+## 2026-06-01 Handle templates on en "Takayama, Gifu"
+
+### Summary
+
+Supported all Wikipedia templates on the en "Takayama, Gifu" article. This involved implementing custom road junction (`jct`) template rendering support for highway routes.
+
+### Decisions Made
+
+* Identified that road junction (`jct`) template calls (e.g. `{{jct|country=JPN|Route|41}}`) were reported as unhandled.
+* Designed and implemented `render_jct_template` in `src/main.rs` to format Japanese highway routes as standard page links (e.g., matching the wikitext link `[[Japan National Route 41|National Route 41]]`), with a robust generic prefix/route number fallback for other states/countries.
+* Registered `jct` as a handled template name inside `is_handled_template_name` and `render_template` in `src/main.rs`.
+* Added a new unit test `render_wikitext_formats_jct_template` in `src/tests.rs` to verify that `jct` renders the correct XHTML target links.
+* Ran `./sort.sh` to keep all template configurations properly ordered.
+* Verified that "Takayama, Gifu" compiles cleanly with `unknown_skipped_templates=0`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Handled `jct` template name and implemented `render_jct_template`.
+* `src/tests.rs` [MODIFY]
+  * Added unit test for `jct` template rendering.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the `jct` template conversion rule.
+
+### Tests Run
+
+* `cargo test` (all 149 unit tests and 28 integration tests passed successfully)
+* `cargo fmt --check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* Generated `takayama-gifu.epub` cleanly with zero unhandled templates.
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Handle templates on en "Paekche"
 
 ### Summary

@@ -3189,3 +3189,19 @@ fn render_wikitext_formats_ko_alias_template() {
         "rendered output was: {rendered}"
     );
 }
+
+#[test]
+fn render_wikitext_formats_jct_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "Take {{jct|country=JPN|Route|41}} to Takayama.",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains(
+            r#"<p>Take <a href="https://en.wikipedia.org/wiki/Japan_National_Route_41">National Route 41</a><span class="external-link">↗</span> to Takayama.</p>"#
+        ),
+        "rendered output was: {rendered}"
+    );
+}
