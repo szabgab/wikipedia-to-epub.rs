@@ -1,5 +1,41 @@
 # Codex Session Notes
 
+## 2026-06-01 Handle templates on en "Kiso River"
+
+### Summary
+
+Supported all Wikipedia templates on the en "Kiso River" article. This involved implementing rendering support for `Nb5` (rendering five unicode non-breaking spaces `\u{00A0}`) and `ship` (a generic ship formatting template matching Wikipedia's ship linking guidelines). All tests and static checks passed successfully.
+
+### Decisions Made
+
+* Identified two unhandled template patterns on "Kiso River": `Nb5` and `ship` (specifically `ship|Japanese cruiser|Kiso`).
+* Designed and implemented `render_five_nonbreaking_spaces_template` to return a sequence of five unicode non-breaking spaces `\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}`, which perfectly matches the spacing intent in epub.
+* Designed and implemented `render_generic_ship_template` to dynamically format ship links and names with formatting support (e.g. italicizing names, prefix fallbacks, and IDs).
+* Registered both templates inside `is_handled_template_name` and `render_template` in `src/main.rs`.
+* Added separate unit tests in `src/tests.rs` to verify that `Nb5` and `ship` templates format correctly.
+* Documented both conversion rules in `DEVELOPMENT.md`.
+* Confirmed that "Kiso River" compiles cleanly with `unknown_skipped_templates = 0`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Handled `Nb5` and `ship` templates, implementing both renderers.
+* `src/tests.rs` [MODIFY]
+  * Added unit tests for `Nb5` and generic `ship` template rendering.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the `Nb5` and generic `ship` conversion rules.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 157 unit tests and 28 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Handle templates on en "Gifu Prefecture"
 
 ### Summary

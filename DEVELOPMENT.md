@@ -170,7 +170,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Inflation|US|12|1950}}` and `{{Inflation/year|US}}` adjust values using US CPI table indices (1950 to 2023)
 * `{{FXConvert|KOR|293.823|b|cursign=[[₩]]|year=2020|showdate=no}}` formats and converts historical currency values (e.g. `₩293.82 billion (US$248.95 million)`)
 * `{{stack|content}}` acts as a generic passthrough wrapper preserving inner wikitext
-* `{{USS|Missouri|BB-63|6}}` and `{{HMS|Jamaica|44|6}}` render as formatted, italicized ship names linked to their respective articles
+* `{{USS|Missouri|BB-63|6}}`, `{{HMS|Jamaica|44|6}}`, and `{{ship|Japanese cruiser|Kiso}}` render as formatted, italicized ship names linked to their respective articles
+* `{{Nb5}}` renders as five non-breaking spaces (e.g. `     `)
 * `{{Collapsible list|title=Title|Item A|Item B}}` renders a title followed by bulleted items on newlines
 * `{{Internet Archive short film|id=id|name=Name}}` renders as an external link to the Internet Archive short film details page
 * `{{jct|country=JPN|Route|41}}` renders as a formatted road link (e.g. `National Route 41` linked to the Wikipedia article)

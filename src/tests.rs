@@ -3294,3 +3294,26 @@ fn render_wikitext_formats_wikivoyage_inline_template() {
         "rendered output was: {rendered}"
     );
 }
+
+#[test]
+fn render_wikitext_formats_nb5_template() {
+    let rendered = render_wikitext("Sample", "A{{Nb5}}B", &InternalLinks::new(), "en");
+    assert!(
+        rendered.contains("<p>A B</p>"),
+        "rendered output was: {rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_generic_ship_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "See {{ship|Japanese cruiser|Kiso}}.",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains(r#"<a href="https://en.wikipedia.org/wiki/Japanese_cruiser_Kiso">Japanese cruiser <em>Kiso</em></a>"#),
+        "rendered output was: {rendered}"
+    );
+}

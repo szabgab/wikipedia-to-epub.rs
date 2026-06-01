@@ -1564,6 +1564,10 @@ fn render_template(content: &str) -> String {
         render_ship_template("USS", params)
     } else if template.eq_ignore_ascii_case("HMS") {
         render_ship_template("HMS", params)
+    } else if template.eq_ignore_ascii_case("ship") {
+        render_generic_ship_template(params)
+    } else if template.eq_ignore_ascii_case("Nb5") {
+        render_five_nonbreaking_spaces_template()
     } else if template.eq_ignore_ascii_case("Collapsible list") {
         render_collapsible_list_template(params)
     } else if template.eq_ignore_ascii_case("Internet Archive short film") {
@@ -1789,6 +1793,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("stack")
         || template.eq_ignore_ascii_case("USS")
         || template.eq_ignore_ascii_case("HMS")
+        || template.eq_ignore_ascii_case("ship")
+        || template.eq_ignore_ascii_case("Nb5")
         || template.eq_ignore_ascii_case("Collapsible list")
         || template.eq_ignore_ascii_case("Internet Archive short film")
         || template.eq_ignore_ascii_case("worldhistory")
@@ -4637,6 +4643,61 @@ fn render_ship_template(prefix: &str, params: &str) -> String {
 
     let format_val = positional
         .get(2)
+        .map(String::as_str)
+        .filter(|val| !val.is_empty())
+        .and_then(|val| val.parse::<i32>().ok())
+        .unwrap_or(0);
+
+    let target = match id {
+        Some(id_val) => format!("{prefix} {name} ({id_val})"),
+        None => format!("{prefix} {name}"),
+    };
+
+    let display = match format_val {
+        6 => format!("''{name}''"),
+        2 => match id {
+            Some(id_val) => format!("''{name}'' ({id_val})"),
+            None => format!("''{name}''"),
+        },
+        3 => format!("{prefix} ''{name}''"),
+        _ => match id {
+            Some(id_val) => format!("{prefix} ''{name}'' ({id_val})"),
+            None => format!("{prefix} ''{name}''"),
+        },
+    };
+
+    format!("[[{target}|{display}]]")
+}
+
+fn render_five_nonbreaking_spaces_template() -> String {
+    "\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}".to_string()
+}
+
+fn render_generic_ship_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(prefix) = positional
+        .first()
+        .map(String::as_str)
+        .filter(|p| !p.is_empty())
+    else {
+        return String::new();
+    };
+
+    let Some(name) = positional
+        .get(1)
+        .map(String::as_str)
+        .filter(|name| !name.is_empty())
+    else {
+        return prefix.to_string();
+    };
+
+    let id = positional
+        .get(2)
+        .map(String::as_str)
+        .filter(|val| !val.is_empty());
+
+    let format_val = positional
+        .get(3)
         .map(String::as_str)
         .filter(|val| !val.is_empty())
         .and_then(|val| val.parse::<i32>().ok())
