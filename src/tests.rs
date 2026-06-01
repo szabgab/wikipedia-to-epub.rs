@@ -2834,6 +2834,94 @@ fn render_wikitext_silently_skips_hungary_metadata_templates() {
     );
 }
 
+#[test]
+fn render_wikitext_formats_citation_needed_span_template() {
+    // Positional parameter
+    let rendered = render_wikitext(
+        "Sample",
+        "{{citation needed span|unoccupied western part}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("unoccupied western part"), "{rendered}");
+
+    // Named parameter
+    let rendered = render_wikitext(
+        "Sample",
+        "{{citation needed span|1=which ended in 1991|date=March 2026}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("which ended in 1991"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_ndash_template() {
+    let rendered = render_wikitext("Sample", "Buda{{ndash}}Pest", &InternalLinks::new(), "en");
+    assert!(rendered.contains("Buda–Pest"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_quote_box_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Quote box|width=30%|quote=It is outstanding|source=UNESCO}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("It is outstanding"), "{rendered}");
+    assert!(rendered.contains("UNESCO"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_center_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{center|'''City of Budapest'''}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<strong>City of Budapest</strong>"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_singular_template() {
+    let rendered = render_wikitext("Sample", "{{singular}}", &InternalLinks::new(), "en");
+    assert!(
+        rendered.contains("<abbr title=\"singular form\">sg.</abbr>"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_budapest_metadata_templates() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{update section|date=2018}}\n{{party color|Respect}}\n{{category see also|Parks}}\n{{clarify|reason=explain}}\n{{colbegin}}\n{{colend}}\n{{Geographic location|Centre=Budapest}}\n{{Budapest}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("update section"), "{rendered}");
+    assert!(!rendered.contains("party color"), "{rendered}");
+    assert!(!rendered.contains("category see also"), "{rendered}");
+    assert!(!rendered.contains("clarify"), "{rendered}");
+    assert!(!rendered.contains("colbegin"), "{rendered}");
+    assert!(!rendered.contains("colend"), "{rendered}");
+    assert!(!rendered.contains("Geographic location"), "{rendered}");
+    assert!(!rendered.contains("Budapest"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 8,
+            unknown: 0
+        }
+    );
+}
+
 fn test_cache_path(name: &str) -> PathBuf {
     let nanos = SystemTime::now()
         .duration_since(UNIX_EPOCH)

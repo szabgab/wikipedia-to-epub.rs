@@ -1355,6 +1355,16 @@ fn render_template(content: &str) -> String {
         render_emdash_template()
     } else if template.eq_ignore_ascii_case("nowrap") {
         render_passthrough_template(params)
+    } else if template.eq_ignore_ascii_case("citation needed span") {
+        render_citation_needed_span_template(params)
+    } else if template.eq_ignore_ascii_case("ndash") {
+        render_endash_template()
+    } else if template.eq_ignore_ascii_case("Quote box") {
+        render_blockquote_template(params)
+    } else if template.eq_ignore_ascii_case("center") {
+        render_passthrough_template(params)
+    } else if template.eq_ignore_ascii_case("singular") {
+        render_singular_template()
     } else if template.eq_ignore_ascii_case("smaller") || template.eq_ignore_ascii_case("small") {
         render_smaller_template(params)
     } else if template.eq_ignore_ascii_case("sic") {
@@ -1618,6 +1628,11 @@ fn is_handled_template_name(template: &str) -> bool {
     template.eq_ignore_ascii_case("Korean")
         || template.eq_ignore_ascii_case("Korean/auto")
         || template.eq_ignore_ascii_case("!")
+        || template.eq_ignore_ascii_case("citation needed span")
+        || template.eq_ignore_ascii_case("ndash")
+        || template.eq_ignore_ascii_case("Quote box")
+        || template.eq_ignore_ascii_case("center")
+        || template.eq_ignore_ascii_case("singular")
         || template.eq_ignore_ascii_case("Nihongo4")
         || template.eq_ignore_ascii_case("Nihongo")
         || template.eq_ignore_ascii_case("nbsp")
@@ -1958,6 +1973,30 @@ fn render_spaced_endash_template() -> String {
 
 fn render_emdash_template() -> String {
     "—".to_string()
+}
+
+fn render_endash_template() -> String {
+    "–".to_string()
+}
+
+fn render_citation_needed_span_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let text = named
+        .get("1")
+        .map(|s| s.as_str())
+        .or_else(|| positional.first().map(|s| s.as_str()))
+        .unwrap_or("");
+
+    render_templates(text)
+}
+
+fn render_singular_template() -> String {
+    format!(
+        "__WIKIPEDIA_TO_EPUB_ABBR_START__{}__WIKIPEDIA_TO_EPUB_ABBR_VALUE__{}__WIKIPEDIA_TO_EPUB_ABBR_END__",
+        "singular form", "sg."
+    )
 }
 
 fn render_passthrough_template(params: &str) -> String {

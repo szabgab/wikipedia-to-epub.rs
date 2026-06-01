@@ -1,6 +1,53 @@
 # Codex Session Notes
 
+## 2026-06-01 Budapest Page Templates Handling
+
+### Summary
+
+Added template handling for the English Wikipedia "Budapest" article. Implemented rendering for five templates (`citation needed span`, `ndash`, `Quote box`, `center`, and `singular`) and silently omitted six metadata templates and ten navigation templates.
+
+### Decisions Made
+
+* Implemented `{{citation needed span|text}}` to render its text content while omitting the citation needed warning.
+* Implemented `{{ndash}}` to render as a literal en dash `–`.
+* Routed `{{Quote box}}` to the existing `render_blockquote_template` to render it as a cleanly formatted blockquote block.
+* Implemented `{{center|text}}` to render as normal inline text (passthrough).
+* Implemented `{{singular}}` to render as an abbreviation for singular form (`sg.`).
+* Added `{{update section}}`, `{{party color}}`, `{{category see also}}`, `{{clarify}}`, `{{colbegin}}`, and `{{colend}}` to `src/silent.csv`.
+* Added `{{Geographic location}}`, `{{Budapest}}`, `{{Municipalities in Budapest Metropolitan Area}}`, `{{World Heritage Sites in Hungary}}`, `{{Regional capitals of Hungary}}`, `{{Principal cities of Hungary}}`, `{{European Capital of Sport}}`, `{{Hungary's most flowery settlements}}`, `{{List of European capitals by region}}`, and `{{Danube}}` to `src/navigations.csv`.
+* Sorted `src/silent.csv` and `src/navigations.csv` using `./sort.sh`.
+* Wrote separate unit tests for `citation needed span`, `ndash`, `Quote box`, `center`, `singular`, and the silently omitted/navigation templates.
+* Updated `DEVELOPMENT.md` to document all new conversions and omitted list updates.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Registered, dispatched, and implemented renderers for the new Budapest templates.
+* `src/silent.csv` [MODIFY]
+  * Registered the new silent templates.
+* `src/navigations.csv` [MODIFY]
+  * Registered the new navigation templates.
+* `src/tests.rs` [MODIFY]
+  * Added unit tests for each of the new template renderers and skips.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new conversions and omissions.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session summary.
+
+### Tests Run
+
+* `./sort.sh` (sorted CSVs alphabetically)
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed warning-free)
+* `cargo test` (137 unit tests and 26 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Hungary Page Templates Handling
+
 
 ### Summary
 
