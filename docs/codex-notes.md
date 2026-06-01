@@ -1,6 +1,44 @@
 # Codex Session Notes
 
+## 2026-06-01 Old Chosŏn Page Templates Handling
+
+### Summary
+
+Added template handling for the English Wikipedia "Old Chosŏn" article. Silently omitted page-level warning banner `{{POV}}` and inline warning tag `{{dubious}}` by registering them in `src/silent.csv`, fully verified with unit and integration tests.
+
+### Decisions Made
+
+* Identified page-level neutrality banner `{{POV}}` and registered it in `src/silent.csv`.
+* Identified inline citation warning tag `{{dubious}}` and registered it in `src/silent.csv`.
+* Sorted `src/silent.csv` using `./sort.sh`.
+* Wrote `render_wikitext_silently_skips_old_choson_metadata_templates` unit test.
+* Updated `DEVELOPMENT.md` to document the `{{POV}}` and `{{dubious}}` omission rules.
+
+### Files Changed
+
+* `src/silent.csv` [MODIFY]
+  * Registered `POV` and `dubious` as silently ignored templates.
+* `src/tests.rs` [MODIFY]
+  * Added unit test for skipping `POV` and `dubious` templates.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new omissions.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended the current session notes.
+
+### Tests Run
+
+* `./sort.sh` (sorted CSVs alphabetically)
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed warning-free)
+* `cargo test` (140 unit tests and 28 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Command Line Flag for Caching Override (`--caching`)
+
 
 ### Summary
 

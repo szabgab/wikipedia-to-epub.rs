@@ -2960,6 +2960,26 @@ fn render_wikitext_silently_skips_budapest_metadata_templates() {
     );
 }
 
+#[test]
+fn render_wikitext_silently_skips_old_choson_metadata_templates() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{POV|date=January 2023}}\n{{dubious|reason=discuss}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("POV"), "{rendered}");
+    assert!(!rendered.contains("dubious"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 2,
+            unknown: 0
+        }
+    );
+}
+
 fn test_cache_path(name: &str) -> PathBuf {
     let nanos = SystemTime::now()
         .duration_since(UNIX_EPOCH)
