@@ -3,7 +3,7 @@ name: add-missing-templates-handle
 description: >-
   Add, update, or test custom Wikipedia templates in the wikipedia-to-epub converter.
   Use when the user requests support for Wikipedia templates on a page.
-  Handle templates on LANGUAGE PAGE.
+  Look at the page PAGE on the LANGUAGE wikipedia and add missing templates.
 ---
 
 When adding Wikipedia template handling:
