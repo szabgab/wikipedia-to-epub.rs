@@ -3173,3 +3173,19 @@ fn render_wikitext_skips_silent_templates_with_underscores() {
         }
     );
 }
+
+#[test]
+fn render_wikitext_formats_ko_alias_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "It is called {{ko|hangul=십제|hanja=十濟|lit=Ten Vassals}}.",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains(
+            r#"<p>It is called <span title="Korean-language text">Korean: <span lang="ko-Hang">십제</span> / Hanja: <span lang="ko-Hani">十濟</span></span>.</p>"#
+        ),
+        "rendered output was: {rendered}"
+    );
+}

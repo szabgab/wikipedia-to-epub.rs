@@ -1376,7 +1376,10 @@ fn render_template(content: &str) -> String {
     let template_normalized = template.trim().replace('_', " ");
     let template = template_normalized.as_str();
 
-    if template.eq_ignore_ascii_case("Korean") || template.eq_ignore_ascii_case("Korean/auto") {
+    if template.eq_ignore_ascii_case("Korean")
+        || template.eq_ignore_ascii_case("Korean/auto")
+        || template.eq_ignore_ascii_case("ko")
+    {
         render_korean_template(params)
     } else if template.eq_ignore_ascii_case("!") {
         "|".to_string()
@@ -1677,6 +1680,7 @@ fn template_log_content(content: &str) -> String {
 fn is_handled_template_name(template: &str) -> bool {
     template.eq_ignore_ascii_case("Korean")
         || template.eq_ignore_ascii_case("Korean/auto")
+        || template.eq_ignore_ascii_case("ko")
         || template.eq_ignore_ascii_case("!")
         || template.eq_ignore_ascii_case("citation needed span")
         || template.eq_ignore_ascii_case("ndash")

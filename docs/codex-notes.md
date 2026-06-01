@@ -1,5 +1,39 @@
 # Codex Session Notes
 
+## 2026-06-01 Handle templates on en "Paekche"
+
+### Summary
+
+Supported all Wikipedia templates on the en "Paekche" (redirects to "Baekje") article. This involved implementing template alias matching for `ko`, treating it as a direct alias for the `Korean` inline language template.
+
+### Decisions Made
+
+* Identified that the `ko` template was reported as an unhandled template because it is used as a short alias for the `Korean` inline template on the English Wikipedia.
+* Added `ko` to the list of handled inline templates inside `is_handled_template_name` and `render_template` in `src/main.rs`, rendering it directly using `render_korean_template`.
+* Added a new unit test `render_wikitext_formats_ko_alias_template` in `src/tests.rs` to verify that `ko` renders as inline Korean/Hanja text exactly like `Korean`.
+* Ran `./sort.sh` to keep all template configurations properly ordered.
+* Verified that "Paekche" compiles cleanly with `unknown_skipped_templates=0`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Handled `ko` template as an alias of `Korean`.
+* `src/tests.rs` [MODIFY]
+  * Added unit test for `ko` template alias rendering.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the `ko` template alias next to the `Korean` inline template details.
+
+### Tests Run
+
+* `cargo test` (all 148 unit tests and 28 integration tests passed successfully)
+* `cargo fmt --check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* Generated `paekche.epub` cleanly with zero unhandled templates.
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Handle templates on en "Three Kingdoms of Korea"
 
 ### Summary
