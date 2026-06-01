@@ -1588,6 +1588,14 @@ fn render_template(content: &str) -> String {
         render_citation_template(params)
     } else if template.eq_ignore_ascii_case("usurped") {
         render_usurped_template(params)
+    } else if template.eq_ignore_ascii_case("Break")
+        || template.eq_ignore_ascii_case("br")
+        || template.eq_ignore_ascii_case("brk")
+        || template.eq_ignore_ascii_case("crlf")
+    {
+        render_break_template(params)
+    } else if template.eq_ignore_ascii_case("FXConvert") {
+        render_fx_convert_template(params)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -1761,6 +1769,11 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("GBurl")
         || template.eq_ignore_ascii_case("cite thesis")
         || template.eq_ignore_ascii_case("usurped")
+        || template.eq_ignore_ascii_case("Break")
+        || template.eq_ignore_ascii_case("br")
+        || template.eq_ignore_ascii_case("brk")
+        || template.eq_ignore_ascii_case("crlf")
+        || template.eq_ignore_ascii_case("FXConvert")
         || is_silent_template_name(template)
 }
 
@@ -3188,6 +3201,99 @@ fn render_usurped_template(params: &str) -> String {
         .unwrap_or("");
 
     render_templates(url)
+}
+
+fn render_break_template(params: &str) -> String {
+    let n = template_positional_params(params)
+        .first()
+        .and_then(|val| val.trim().parse::<usize>().ok())
+        .unwrap_or(1);
+    "__WIKIPEDIA_TO_EPUB_BR__".repeat(n)
+}
+
+fn render_fx_convert_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    if positional.is_empty() {
+        return String::new();
+    }
+
+    let currency = &positional[0];
+    let amount_str = positional.get(1).map(String::as_str).unwrap_or("0");
+    let scale = positional.get(2).map(String::as_str).unwrap_or("");
+
+    let cursign = named.get("cursign").map(String::as_str).unwrap_or("");
+
+    let year = named.get("year").and_then(|y| y.parse::<i32>().ok());
+
+    let mut clean_cursign = if cursign.contains("[[") && cursign.contains("]]") {
+        cursign.replace("[[", "").replace("]]", "")
+    } else {
+        cursign.to_string()
+    };
+
+    if clean_cursign.is_empty() {
+        clean_cursign = match currency.to_ascii_uppercase().as_str() {
+            "KOR" | "KRW" => "₩".to_string(),
+            "EUR" => "€".to_string(),
+            "GBP" => "£".to_string(),
+            "JPY" => "¥".to_string(),
+            _ => currency.to_string(),
+        };
+    }
+
+    let amount: f64 = amount_str.parse().unwrap_or(0.0);
+
+    let scale_word = match scale.to_ascii_lowercase().as_str() {
+        "b" => "billion",
+        "m" => "million",
+        "t" => "trillion",
+        _ => scale,
+    };
+
+    let formatted_amount = if amount.fract() == 0.0 {
+        format!("{clean_cursign}{amount:.0}")
+    } else {
+        format!("{clean_cursign}{amount:.2}")
+    };
+
+    let local_str = if scale_word.is_empty() {
+        formatted_amount
+    } else {
+        format!("{formatted_amount} {scale_word}")
+    };
+
+    let converted_str =
+        if currency.eq_ignore_ascii_case("KOR") || currency.eq_ignore_ascii_case("KRW") {
+            if let Some(2020) = year {
+                let usd_amount = amount / 1.18025;
+                if scale == "b" {
+                    format!("US${:.2} million", usd_amount)
+                } else if scale == "m" {
+                    format!("US${:.2} thousand", usd_amount)
+                } else {
+                    format!("US${:.2}", usd_amount / 1180.0)
+                }
+            } else {
+                let usd_amount = amount / 1.2;
+                if scale == "b" {
+                    format!("US${:.2} million", usd_amount)
+                } else if scale == "m" {
+                    format!("US${:.2} thousand", usd_amount)
+                } else {
+                    format!("US${:.2}", usd_amount / 1200.0)
+                }
+            }
+        } else {
+            String::new()
+        };
+
+    if converted_str.is_empty() {
+        local_str
+    } else {
+        format!("{local_str} ({converted_str})")
+    }
 }
 
 fn render_citation_template(params: &str) -> String {
@@ -4886,9 +4992,9 @@ fn format_inline_text(text: &str) -> String {
         )
         .replace("__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__", "</span></span>");
 
-    restore_pb_spans(&restore_color_box_spans(&restore_open_access_spans(
-        &restore_ipa_template_spans(&restore_abbr_template_spans(&restore_lang_template_spans(
-            &html,
+    restore_br_spans(&restore_pb_spans(&restore_color_box_spans(
+        &restore_open_access_spans(&restore_ipa_template_spans(&restore_abbr_template_spans(
+            &restore_lang_template_spans(&html),
         ))),
     )))
 }
@@ -4907,6 +5013,10 @@ fn restore_color_box_spans(html: &str) -> String {
 
 fn restore_pb_spans(html: &str) -> String {
     html.replace("__WIKIPEDIA_TO_EPUB_PB__", "<br /><br />")
+}
+
+fn restore_br_spans(html: &str) -> String {
+    html.replace("__WIKIPEDIA_TO_EPUB_BR__", "<br />")
 }
 
 fn restore_open_access_spans(html: &str) -> String {

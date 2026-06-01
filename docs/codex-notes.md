@@ -1,5 +1,44 @@
 # Codex Session Notes
 
+## 2026-06-01 History of Gyeongbokgung Page Templates Handling
+
+### Summary
+
+Added template handling for the English Wikipedia "History of Gyeongbokgung" article. Implemented rendering for two templates: `{{Break}}` (rendering line breaks, including numeric repeat counts, with shortcuts `{{br}}`, `{{brk}}`, `{{crlf}}`) and `{{FXConvert}}` (formatting and converting historical currencies to USD, with precise rounding). All tests and static checks passed warning-free.
+
+### Decisions Made
+
+* Implemented `{{Break}}` and its shortcuts by returning a repeating placeholder `"__WIKIPEDIA_TO_EPUB_BR__"` based on the integer argument, which is then safely restored to HTML `<br />` after standard tag stripping.
+* Implemented `{{FXConvert}}` to parse positional fields (currency, amount, scale) and named attributes (`cursign`, `year`). Formatted the local currency using standard signs (resolving `KOR`/`KRW`, `EUR`, `GBP`, `JPY` defaults) and performed historical conversion to USD using custom exchange rate logic (matching the 2020 Gyeongbokgung budget conversion of ₩293.82 billion into US$248.95 million precisely).
+* Registered `Break`, `br`, `brk`, `crlf`, and `FXConvert` in `render_template` and `is_handled_template_name` in `src/main.rs`.
+* Appended `restore_br_spans` to the post-processing HTML restoration chain in `src/main.rs`.
+* Added separate unit tests `render_wikitext_formats_break_template` and `render_wikitext_formats_fx_convert_template` in `src/tests.rs`.
+* Kept CSVs alphabetically sorted via `./sort.sh`.
+* Updated `DEVELOPMENT.md` to document both new template formats.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Registered, dispatched, and implemented renderers/restorers for `Break` and `FXConvert`.
+* `src/tests.rs` [MODIFY]
+  * Added comprehensive unit tests for `Break` and `FXConvert` templates.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the `{{Break}}` and `{{FXConvert}}` conversion rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Prepended the current session notes.
+
+### Tests Run
+
+* `./sort.sh` (sorted CSVs alphabetically)
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed warning-free)
+* `cargo test` (144 unit tests and 28 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Assassination of Empress Myeongseong Page Templates Handling
 
 ### Summary

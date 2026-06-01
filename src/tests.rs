@@ -3011,6 +3011,42 @@ fn render_wikitext_formats_quote_template() {
     assert!(rendered.contains("Miura"), "{rendered}");
 }
 
+#[test]
+fn render_wikitext_formats_break_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "Line 1{{Break}}Line 2{{Break|2}}Line 3",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Line 1<br />Line 2<br /><br />Line 3"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_fx_convert_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "Cost: {{FXConvert|KOR|293.823|b|cursign=[[₩]]|year=2020|showdate=no}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Cost: ₩293.82 billion (US$248.95 million)"),
+        "{rendered}"
+    );
+
+    let rendered_simple = render_wikitext(
+        "Sample",
+        "Cost: {{FXConvert|EUR|100}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered_simple.contains("Cost: €100"), "{rendered_simple}");
+}
+
 fn test_cache_path(name: &str) -> PathBuf {
     let nanos = SystemTime::now()
         .duration_since(UNIX_EPOCH)
