@@ -10,13 +10,13 @@ When adding Wikipedia template handling:
 
 Given a LANGUAGE and a PAGE title:
 
-* Create a temporary book (yaml file) based on the `skeleton.yaml`. Set
+* Create a temporary yaml configuration file called `book.yaml` based on the `skeleton.yaml`. Set
     * language: "LANGUAGE"
     * images: false
     * caching: "central"
     * articles: to be PAGE
-* Generate the book using `cargo run -- --log debug book.yaml`
-* Observe the missing templates by running `grep "removing unhandled wikitext template" report.log`.
+* Generate the book using `cargo run -- --log debug --logfile book.log book.yaml`
+* Observe the missing templates by running `grep "removing unhandled wikitext template" book.log`.
 
 * It there are no missing templates, you can finish here.
 
