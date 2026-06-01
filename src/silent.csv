@@ -1,13 +1,13 @@
 -
 '
-About, linking the reader to other meaning of the same word.  https://en.wikipedia.org/wiki/Template:About
-additional citations needed, asks for help
+About,                       Linking the reader to other meaning of the same word.     https://en.wikipedia.org/wiki/Template:About
+additional citations needed, Asks for help                                             https://en.wikipedia.org/wiki/Template:Additional_citation_needed
 ahnentafel
-anchor
-Audio,  Link to an audio file. Not really relevant in epub files.   https://en.wikipedia.org/wiki/Template:Audio
-Authority control
-Better source needed
-bots
+anchor,                      Used for inbound links. Not relevant in epub.             https://en.wikipedia.org/wiki/Template:Anchor
+Audio,                       Link to an audio file. Not really relevant in epub files. https://en.wikipedia.org/wiki/Template:Audio
+Authority control,           Validate formats and values                               https://en.wikipedia.org/wiki/Template:Authority_control
+Better source needed,        Ask for help                                              https://en.wikipedia.org/wiki/Template:Better_source_needed
+bots,                        Control if bots can edit the page                         https://en.wikipedia.org/wiki/Template:Bots
 Campaignbox Korean War
 category see also
 cbignore
