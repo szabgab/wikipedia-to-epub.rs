@@ -3233,3 +3233,22 @@ fn render_wikitext_formats_cite_news_template() {
         "rendered output was: {rendered}"
     );
 }
+
+#[test]
+fn render_wikitext_silently_skips_mount_ena_metadata_templates() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "See {{commonscat|position=left}}.",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("commonscat"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 1,
+            unknown: 0
+        }
+    );
+}

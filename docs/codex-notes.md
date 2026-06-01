@@ -1,5 +1,44 @@
 # Codex Session Notes
 
+## 2026-06-01 Handle templates on en "Mount Ena"
+
+### Summary
+
+Supported all Wikipedia templates on the en "Mount Ena" article. This involved registering the `commonscat` template (alias to `Commons category`) as a silently skipped template in `src/silent.csv`, writing a unit test, and updating documentation. All checks and tests passed cleanly.
+
+### Decisions Made
+
+* Identified that the `commonscat` template was reported as unhandled.
+* Checked that `commonscat` is a redirect alias to the standard `Commons category` template on Wikipedia.
+* Decided to silently omit `commonscat`, consistent with how other `Commons category` and Wikimedia sister-project links are silenced in EPUB books.
+* Registered `commonscat` in `src/silent.csv`.
+* Ran `./sort.sh` to keep `src/silent.csv` and `src/navigations.csv` properly sorted.
+* Added a new unit test `render_wikitext_silently_skips_mount_ena_metadata_templates` in `src/tests.rs` to verify the template is correctly and silently skipped.
+* Documented the `commonscat` omission rule in `DEVELOPMENT.md`.
+* Verified that the "Mount Ena" article compiles cleanly with `unknown_skipped_templates = 0`.
+
+### Files Changed
+
+* `src/silent.csv` [MODIFY]
+  * Registered `commonscat` as a silently omitted template.
+* `src/tests.rs` [MODIFY]
+  * Added `render_wikitext_silently_skips_mount_ena_metadata_templates` unit test.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the `commonscat` omission.
+* `src/navigations.csv` [MODIFY]
+  * Automatically sorted by running `./sort.sh`.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 152 unit tests and 28 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Handle templates on en "Japanese Alps"
 
 ### Summary
