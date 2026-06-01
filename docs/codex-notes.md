@@ -1,5 +1,44 @@
 # Codex Session Notes
 
+## 2026-06-01 Handle templates on en "Japanese Alps"
+
+### Summary
+
+Supported all Wikipedia templates on the en "Japanese Alps" article. This involved mapping `cite magazine` and `cite news` to `render_cite_journal_template` in `src/main.rs`, adding proper parameter lookups for `"magazine"`, `"newspaper"`, and `"periodical"`, and writing standalone unit tests. All checks and tests passed cleanly.
+
+### Decisions Made
+
+* Identified that the `cite magazine` and `cite news` templates were missing handling.
+* Determined that `cite magazine` and `cite news` can be gracefully routed to the robust `render_cite_journal_template` since they share the same underlying citation schema.
+* Modified `render_cite_journal_template` in `src/main.rs` to include `"magazine"`, `"newspaper"`, and `"periodical"` in the param search list.
+* Registered both templates inside `is_handled_template_name` and `render_template` in `src/main.rs`.
+* Added separate unit tests `render_wikitext_formats_cite_magazine_template` and `render_wikitext_formats_cite_news_template` to `src/tests.rs` to assert correct formatting.
+* Documented both conversion rules in `DEVELOPMENT.md`.
+* Sorted configuration CSVs using `./sort.sh`.
+* Verified that the "Japanese Alps" article compiles cleanly with `unknown_skipped_templates = 0`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Handled `cite magazine` and `cite news` in the template routing and extended the citation rendering param search fields.
+* `src/tests.rs` [MODIFY]
+  * Added dedicated unit tests for `cite magazine` and `cite news` formatting.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the `cite magazine` and `cite news` conversion rules.
+* `src/navigations.csv`, `src/silent.csv` [MODIFY]
+  * Automatically sorted by running `./sort.sh`.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 151 unit tests and 28 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Handle templates on en "Takayama, Gifu"
 
 ### Summary

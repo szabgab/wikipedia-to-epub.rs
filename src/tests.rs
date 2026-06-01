@@ -3205,3 +3205,31 @@ fn render_wikitext_formats_jct_template() {
         "rendered output was: {rendered}"
     );
 }
+
+#[test]
+fn render_wikitext_formats_cite_magazine_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "See {{cite magazine|title=The Japan Alps|magazine=National Geographic|date=1910}}.",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains(r#"<p>See "The Japan Alps". <em>National Geographic</em>. 1910.</p>"#),
+        "rendered output was: {rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_cite_news_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "See {{cite news|title=Alpine Explorer|newspaper=The Times|date=1920}}.",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains(r#"<p>See "Alpine Explorer". <em>The Times</em>. 1920.</p>"#),
+        "rendered output was: {rendered}"
+    );
+}

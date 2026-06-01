@@ -1456,7 +1456,10 @@ fn render_template(content: &str) -> String {
         render_cite_web_template(params)
     } else if template.eq_ignore_ascii_case("cite book") {
         render_cite_book_template(params)
-    } else if template.eq_ignore_ascii_case("cite journal") {
+    } else if template.eq_ignore_ascii_case("cite journal")
+        || template.eq_ignore_ascii_case("cite magazine")
+        || template.eq_ignore_ascii_case("cite news")
+    {
         render_cite_journal_template(params)
     } else if template.eq_ignore_ascii_case("cite report") {
         render_cite_report_template(params)
@@ -1726,6 +1729,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("cite web")
         || template.eq_ignore_ascii_case("cite book")
         || template.eq_ignore_ascii_case("cite journal")
+        || template.eq_ignore_ascii_case("cite magazine")
+        || template.eq_ignore_ascii_case("cite news")
         || template.eq_ignore_ascii_case("cite report")
         || template.eq_ignore_ascii_case("cite ECCP")
         || template.eq_ignore_ascii_case("cite conference")
@@ -2682,7 +2687,17 @@ fn render_cite_journal_template(params: &str) -> String {
         parts.push(title);
     }
 
-    if let Some(journal) = template_param(&named, &["journal", "work", "website"]) {
+    if let Some(journal) = template_param(
+        &named,
+        &[
+            "journal",
+            "work",
+            "website",
+            "magazine",
+            "newspaper",
+            "periodical",
+        ],
+    ) {
         parts.push(format!("''{}''", render_templates(journal)));
     }
 

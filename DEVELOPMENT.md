@@ -121,6 +121,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Cite book|last=Oberdorfer|first=Don|title=The Two Koreas|year=2001|publisher=Basic Books}}` becomes `Don Oberdorfer. <em>The Two Koreas</em>. Basic Books, 2001`
 * `{{cite web|last=Demick|first=Barbara|title=North Korea's giant leap backwards|url=http://example.com|website=The Guardian|date=16 July 2010}}` becomes `Barbara Demick. "North Korea's giant leap backwards". <em>The Guardian</em>. 16 July 2010`, with the title linked when `url=` is present
 * `{{Cite journal|last=Kim|first=Chin W.|title=The Legacy of King Sejong the Great|journal=Studies in the Linguistic Sciences|year=2000}}` becomes `Chin W. Kim. "The Legacy of King Sejong the Great". <em>Studies in the Linguistic Sciences</em>. 2000`
+* `{{cite magazine|title=The Japan Alps|magazine=National Geographic|date=1910}}` becomes `"The Japan Alps". <em>National Geographic</em>. 1910`
+* `{{cite news|title=Alpine Explorer|newspaper=The Times|date=1920}}` becomes `"Alpine Explorer". <em>The Times</em>. 1920`
 * `{{Cite report|last=Ledyard|first=Gari Keith|title=The Cultural Work of Sejong the Great|publication-date=November 2002|pages=7–18}}` becomes `Gari Keith Ledyard. <em>The Cultural Work of Sejong the Great</em>. November 2002. p. 7–18`
 * `{{cite ECCP|last=Kennedy|first=George A.|title=Amin|pages=8–9|date=1943}}` becomes `George A. Kennedy. "Amin". Eminent Chinese of the Ch'ing Period. 1943. pp. 8–9`
 * `{{cite conference|author=Smith|title=Ancient Borders|book-title=Proceedings of Archaeology|year=2010}}` becomes `Smith. <em>Ancient Borders</em>. 2010`
