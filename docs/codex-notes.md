@@ -1,5 +1,43 @@
 # Codex Session Notes
 
+## 2026-06-01 Handle templates on en "Three Kingdoms of Korea"
+
+### Summary
+
+Supported all Wikipedia templates on the en "Three Kingdoms of Korea" article. This involved implementing underscore-to-space normalization of template names during parsing/rendering, which automatically matches MediaWiki's normalization engine and resolves issues where navigation/silent templates containing underscores in wikitext (like `History_of_Korea` or `UN_Population`) were previously treated as unhandled.
+
+### Decisions Made
+
+* Identified that `History_of_Korea` was reported as an unhandled template because it contained underscores, which prevented it from matching its matching silent/navigation configuration `History of Korea`.
+* Added general underscore-to-space normalization directly at template parsing/extraction inside `render_template` and `log_and_count_nested_skipped_templates` in `src/main.rs`.
+* Shifted hardcoded comparisons from `"UN_Population"` to the normalized `"UN Population"`.
+* Added a new unit test `render_wikitext_skips_silent_templates_with_underscores` in `src/tests.rs` to verify correct skip counts under underscore-normalized conditions.
+* Ran `./sort.sh` to keep all template configurations properly ordered.
+* Verified that "Three Kingdoms of Korea" compiles cleanly with `unknown_skipped_templates=0`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Normalized wikitext template name underscores to spaces at parsing/extraction time.
+  * Updated `"UN_Population"` matches to `"UN Population"`.
+* `src/tests.rs` [MODIFY]
+  * Added unit test for underscore-normalized silent template skipping.
+* `src/navigations.csv`, `src/silent.csv` [MODIFY]
+  * Automatically sorted by running `./sort.sh`.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the template name underscore-to-space normalization.
+
+### Tests Run
+
+* `cargo test` (all 147 unit tests and 28 integration tests passed successfully)
+* `cargo fmt --check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* Generated `three-kingdoms-of-korea.epub` cleanly with zero unhandled templates.
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Caching Log Verification and Investigation
 
 ### Summary

@@ -1373,7 +1373,8 @@ fn matching_template_end(text: &str, start: usize) -> Option<usize> {
 
 fn render_template(content: &str) -> String {
     let (template, params) = split_template_name(content);
-    let template = template.trim();
+    let template_normalized = template.trim().replace('_', " ");
+    let template = template_normalized.as_str();
 
     if template.eq_ignore_ascii_case("Korean") || template.eq_ignore_ascii_case("Korean/auto") {
         render_korean_template(params)
@@ -1472,7 +1473,7 @@ fn render_template(content: &str) -> String {
         render_blockquote_template(params)
     } else if template.eq_ignore_ascii_case("percentage") {
         render_percentage_template(params)
-    } else if template.eq_ignore_ascii_case("UN_Population") {
+    } else if template.eq_ignore_ascii_case("UN Population") {
         render_un_population_template(params)
     } else if template.eq_ignore_ascii_case("convert") || template.eq_ignore_ascii_case("cvt") {
         render_convert_template(params)
@@ -1650,7 +1651,8 @@ fn log_and_count_nested_skipped_templates(text: &str) {
         if let Some(end) = matching_template_end(text, start) {
             let content = &text[start + 2..end];
             let (template, params) = split_template_name(content);
-            let template = template.trim();
+            let template_normalized = template.trim().replace('_', " ");
+            let template = template_normalized.as_str();
             if is_silent_template_name(template) {
                 increment_recognized_skipped_template_count();
             } else if !is_handled_template_name(template) {
@@ -1727,7 +1729,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("died-in")
         || template.eq_ignore_ascii_case("blockquote")
         || template.eq_ignore_ascii_case("percentage")
-        || template.eq_ignore_ascii_case("UN_Population")
+        || template.eq_ignore_ascii_case("UN Population")
         || template.eq_ignore_ascii_case("convert")
         || template.eq_ignore_ascii_case("cvt")
         || template.eq_ignore_ascii_case("for")

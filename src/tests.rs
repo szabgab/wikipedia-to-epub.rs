@@ -3155,3 +3155,21 @@ articles:
     .expect("config parses");
     assert_eq!(config_central.caching, CachingMode::Central);
 }
+
+#[test]
+fn render_wikitext_skips_silent_templates_with_underscores() {
+    let (_rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{History_of_Korea}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 1,
+            unknown: 0
+        }
+    );
+}
