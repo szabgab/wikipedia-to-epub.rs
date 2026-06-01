@@ -153,7 +153,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Britannica|322222}}` becomes `Britannica:` followed by a link to the Britannica article id
 * `{{Official website|https://example.com|name=Example}}` becomes an external link to `https://example.com` with `Example` as the visible text
 * `{{URL|1=https://english.seoul.go.kr/|2=Official website}}` becomes an external link to `https://english.seoul.go.kr/` with `Official website` as the visible text
-* `{{osmrelation-inline|2396450}}` and `{{OSM relation|382313}}` become an external link to the OpenStreetMap relation
+* `{{osmrelation-inline|2396450}}` and `{{OSM relation|382313}}` become an external link to the OpenStreetMap relation; `{{osmway|131922091}}` and `{{OSM way|131922091}}` similarly link to the OpenStreetMap way
 * `{{Webarchive|url=https://web.archive.org/web/20140703095242/http://example.com/report.pdf|date=3 July 2014}}` becomes an external archive link labelled `Archived on 3 July 2014`
 * `{{GBurl|id=abc123|p=12}}` and `{{GBurl|id=abc123|pg=PA12|q=search+term}}` become external links to the Google Books page, such as `https://books.google.com/books?id=abc123&pg=PA12&q=search+term`
 * `{{usurped|1=https://web.archive.org/web/20130101000000/http://example.com}}` renders the archive URL as an external link, preserving the wikitext hyperlink format

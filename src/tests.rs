@@ -3047,6 +3047,20 @@ fn render_wikitext_formats_fx_convert_template() {
     assert!(rendered_simple.contains("Cost: €100"), "{rendered_simple}");
 }
 
+#[test]
+fn render_wikitext_formats_osm_way_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "Way: {{Osmway|131922091}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Way: <a href=\"https://www.openstreetmap.org/way/131922091\">OpenStreetMap way 131922091</a><span class=\"external-link\">↗</span>"),
+        "{rendered}"
+    );
+}
+
 fn test_cache_path(name: &str) -> PathBuf {
     let nanos = SystemTime::now()
         .duration_since(UNIX_EPOCH)

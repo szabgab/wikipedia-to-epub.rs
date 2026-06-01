@@ -1,5 +1,46 @@
 # Codex Session Notes
 
+## 2026-06-01 Beomeosa Page Templates Handling
+
+### Summary
+
+Added template handling for the English Wikipedia "Beomeosa" article. Added silent skipping for the image display `{{Gallery}}` template and implemented rendering for `{{Osmway}}` and `{{OSM way}}` linking to OpenStreetMap ways. All tests and static checks passed cleanly and warning-free.
+
+### Decisions Made
+
+* Identified the layout template `{{Gallery}}` and registered it in `src/silent.csv` to be skipped silently, matching the behavior of standard `<gallery>` blocks and `{{multiple image}}` templates.
+* Implemented `{{Osmway}}` and `{{OSM way}}` to return custom `[[osmway:way_id|OpenStreetMap way way_id]]` syntax.
+* Registered `osmway` and `OSM way` in `render_template` and `is_handled_template_name` in `src/main.rs`.
+* Intercepted `osmway:` targets inside link post-processing in `src/main.rs` and resolved them to `https://www.openstreetmap.org/way/{way_id}`.
+* Wrote `render_wikitext_formats_osm_way_template` in `src/tests.rs` verifying correct HTML generation and link resolution.
+* Kept all CSVs sorted alphabetically by running `./sort.sh`.
+* Updated `DEVELOPMENT.md` to document the new `Osmway` / `OSM way` conversions.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Registered, dispatched, and implemented rendering and link-resolution support for `Osmway` / `OSM way`.
+* `src/silent.csv` [MODIFY]
+  * Added `Gallery` to silently skipped templates.
+* `src/tests.rs` [MODIFY]
+  * Added the `render_wikitext_formats_osm_way_template` unit test.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the `{{Osmway}}` / `{{OSM way}}` template conversion rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Prepended the current session notes.
+
+### Tests Run
+
+* `./sort.sh` (sorted CSVs alphabetically)
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed warning-free)
+* `cargo test` (145 unit tests and 28 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 History of Gyeongbokgung Page Templates Handling
 
 ### Summary

@@ -1486,6 +1486,8 @@ fn render_template(content: &str) -> String {
         render_url_template(params)
     } else if template.eq_ignore_ascii_case("osmrelation-inline") {
         render_openstreetmap_relation_template(params)
+    } else if template.eq_ignore_ascii_case("osmway") {
+        render_openstreetmap_way_template(params)
     } else if template.eq_ignore_ascii_case("webarchive") {
         render_webarchive_template(params)
     } else if template.eq_ignore_ascii_case("largest cities") {
@@ -1542,6 +1544,8 @@ fn render_template(content: &str) -> String {
         "__WIKIPEDIA_TO_EPUB_PB__".to_string()
     } else if template.eq_ignore_ascii_case("OSM relation") {
         render_openstreetmap_relation_template(params)
+    } else if template.eq_ignore_ascii_case("OSM way") {
+        render_openstreetmap_way_template(params)
     } else if template.eq_ignore_ascii_case("okina") {
         "ʻ".to_string()
     } else if template.eq_ignore_ascii_case("'s") {
@@ -1717,6 +1721,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("official website")
         || template.eq_ignore_ascii_case("url")
         || template.eq_ignore_ascii_case("osmrelation-inline")
+        || template.eq_ignore_ascii_case("osmway")
         || template.eq_ignore_ascii_case("webarchive")
         || template.eq_ignore_ascii_case("largest cities")
         || template.eq_ignore_ascii_case("historical populations")
@@ -1745,6 +1750,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("color box")
         || template.eq_ignore_ascii_case("pb")
         || template.eq_ignore_ascii_case("OSM relation")
+        || template.eq_ignore_ascii_case("OSM way")
         || template.eq_ignore_ascii_case("okina")
         || template.eq_ignore_ascii_case("'s")
         || template.eq_ignore_ascii_case("harvp")
@@ -4133,6 +4139,19 @@ fn render_openstreetmap_relation_template(params: &str) -> String {
     format!("[[osmrelation:{relation_id}|OpenStreetMap relation {relation_id}]]")
 }
 
+fn render_openstreetmap_way_template(params: &str) -> String {
+    let params = template_positional_params(params);
+    let Some(way_id) = params.first().map(String::as_str) else {
+        return String::new();
+    };
+    let way_id = way_id.trim();
+    if way_id.is_empty() {
+        return String::new();
+    }
+
+    format!("[[osmway:{way_id}|OpenStreetMap way {way_id}]]")
+}
+
 fn render_webarchive_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let named = template_named_params(params);
@@ -5102,6 +5121,14 @@ fn wikipedia_link_html(
         );
     }
 
+    if let Some(way_id) = target.strip_prefix("osmway:") {
+        return format!(
+            r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
+            encode_double_quoted_attribute(&openstreetmap_way_url(way_id)),
+            format_inline_text(label)
+        );
+    }
+
     if let Some(href) = wiktionary_article_url(target) {
         return format!(
             r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
@@ -5171,6 +5198,11 @@ fn normalize_external_url(url: &str) -> String {
 fn openstreetmap_relation_url(relation_id: &str) -> String {
     let relation_id = relation_id.trim();
     format!("https://www.openstreetmap.org/relation/{relation_id}")
+}
+
+fn openstreetmap_way_url(way_id: &str) -> String {
+    let way_id = way_id.trim();
+    format!("https://www.openstreetmap.org/way/{way_id}")
 }
 
 fn internal_article_url(target: &str, internal_links: &InternalLinks) -> Option<String> {
