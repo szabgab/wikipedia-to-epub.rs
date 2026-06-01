@@ -1436,6 +1436,8 @@ fn render_template(content: &str) -> String {
         render_literal_template(params)
     } else if template.eq_ignore_ascii_case("isbn") {
         render_isbn_template(params)
+    } else if template.eq_ignore_ascii_case("oclc") {
+        render_oclc_template(params)
     } else if template.eq_ignore_ascii_case("ipa") {
         render_ipa_template(params)
     } else if template.eq_ignore_ascii_case("IPAc-en") {
@@ -1491,7 +1493,7 @@ fn render_template(content: &str) -> String {
         render_passthrough_template(params)
     } else if template.eq_ignore_ascii_case("slink") {
         render_section_link_template(params)
-    } else if template.eq_ignore_ascii_case("legend") {
+    } else if template.eq_ignore_ascii_case("legend") || template.eq_ignore_ascii_case("legend0") {
         render_legend_template(params)
     } else if template.eq_ignore_ascii_case("numero") {
         render_numero_template(params)
@@ -1508,7 +1510,9 @@ fn render_template(content: &str) -> String {
         render_further_template(params)
     } else if template.eq_ignore_ascii_case("wiktionary") {
         render_wiktionary_template(params)
-    } else if template.eq_ignore_ascii_case("wikivoyage") {
+    } else if template.eq_ignore_ascii_case("wikivoyage")
+        || template.eq_ignore_ascii_case("wikivoyage-inline")
+    {
         render_wikivoyage_template(params)
     } else if template.eq_ignore_ascii_case("wikisource") {
         render_wikisource_template(params)
@@ -1717,6 +1721,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("ko-translit")
         || template.eq_ignore_ascii_case("lit")
         || template.eq_ignore_ascii_case("isbn")
+        || template.eq_ignore_ascii_case("oclc")
         || template.eq_ignore_ascii_case("ipa")
         || template.eq_ignore_ascii_case("IPAc-en")
         || template.eq_ignore_ascii_case("Respell")
@@ -1748,6 +1753,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("crossreference")
         || template.eq_ignore_ascii_case("slink")
         || template.eq_ignore_ascii_case("legend")
+        || template.eq_ignore_ascii_case("legend0")
         || template.eq_ignore_ascii_case("numero")
         || template.eq_ignore_ascii_case("anl")
         || template.eq_ignore_ascii_case("excerpt")
@@ -1757,6 +1763,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("further")
         || template.eq_ignore_ascii_case("wiktionary")
         || template.eq_ignore_ascii_case("wikivoyage")
+        || template.eq_ignore_ascii_case("wikivoyage-inline")
         || template.eq_ignore_ascii_case("wikisource")
         || template.eq_ignore_ascii_case("wikibooks")
         || template.eq_ignore_ascii_case("britannica")
@@ -2421,6 +2428,17 @@ fn render_isbn_template(params: &str) -> String {
     };
 
     format!("ISBN {}", render_templates(&isbn))
+}
+
+fn render_oclc_template(params: &str) -> String {
+    let Some(oclc) = template_positional_params(params)
+        .into_iter()
+        .find(|value| !value.trim().is_empty())
+    else {
+        return String::new();
+    };
+
+    format!("OCLC {}", render_templates(&oclc))
 }
 
 fn render_ipa_template(params: &str) -> String {

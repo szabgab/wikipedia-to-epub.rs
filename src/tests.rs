@@ -3252,3 +3252,45 @@ fn render_wikitext_silently_skips_mount_ena_metadata_templates() {
         }
     );
 }
+
+#[test]
+fn render_wikitext_formats_legend0_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "See {{legend0|#EAB|City}}.",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<p>See City.</p>"),
+        "rendered output was: {rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_oclc_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "See {{oclc|58053128}}.",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<p>See OCLC 58053128.</p>"),
+        "rendered output was: {rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_wikivoyage_inline_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "See {{Wikivoyage-inline|Gifu (prefecture)}}.",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Wikivoyage: <a href=\"https://en.wikivoyage.org/wiki/Gifu_(prefecture)\">Gifu (prefecture)</a>"),
+        "rendered output was: {rendered}"
+    );
+}

@@ -72,6 +72,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Ko-translit|rr|^한국}}` becomes `Hanguk`
 * `{{lit|Vernacular Script Commission}}` becomes `lit. Vernacular Script Commission`
 * `{{ISBN|0-8248-0673-5}}` becomes `ISBN 0-8248-0673-5`
+* `{{oclc|58053128}}` becomes `OCLC 58053128`
 * `{{IPA|ko|haːnɡuk|}}` and `{{IPAc-en|lang|ˈ|tʃ|oʊ|s|ʌ|n}}` become International Phonetic Alphabet spans such as `<span title="International Phonetic Alphabet">[haːnɡuk]</span>` and `<span title="International Phonetic Alphabet">[ˈtʃoʊsʌn]</span>`
 * `{{Respell|CHOH|sun}}` becomes `CHOH-sun`
 * `{{Abbr|c.|circa}}` becomes `<abbr title="circa">c.</abbr>`
@@ -111,7 +112,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{circa}} 10 million` becomes `c. 10 million`
 * `{{c.|115 BC}}` and `{{cx|150 AD}}` become `c. 115 BC` and `c. 150 AD`
 * `{{floruit|6th century BC}}` becomes `fl. 6th century BC`
-* `{{legend|#EF767E|North Korean forces}}` becomes `North Korean forces`
+* `{{legend|#EF767E|North Korean forces}}` and `{{legend0|#EF767E|North Korean forces}}` become `North Korean forces`
 * `{{numero|3}}` becomes `No. 3`
 * `{{sic|was}}` becomes `was [sic]`
 * `{{Nowrap|June 10}}` becomes `June 10`
@@ -149,7 +150,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Arrow|r}}` becomes `→`
 * `{{Excerpt|Korean literature|templates=no}}` becomes `Excerpt from:` followed by a link to `Korean literature`
 * `{{Wiktionary|Korea}}` becomes `Wiktionary:` followed by a link to the Wiktionary entry
-* `{{Wikivoyage|Korea}}` becomes `Wikivoyage:` followed by a link to the Wikivoyage entry
+* `{{Wikivoyage|Korea}}` and `{{Wikivoyage-inline|Korea}}` become `Wikivoyage:` followed by a link to the Wikivoyage entry
 * `{{Wikisource|Korea}}` becomes `Wikisource:` followed by a link to the Wikisource entry
 * `{{Wikibooks|1=Book title|2=Chapter title|3=label}}` becomes `Wikibooks:` followed by a link to the Wikibooks chapter
 * `{{Britannica|322222}}` becomes `Britannica:` followed by a link to the Britannica article id

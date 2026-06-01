@@ -1,5 +1,45 @@
 # Codex Session Notes
 
+## 2026-06-01 Handle templates on en "Gifu Prefecture"
+
+### Summary
+
+Supported all Wikipedia templates on the en "Gifu Prefecture" article. This involved implementing rendering support for `legend0` (sharing logic with the `legend` template), implementing the `oclc` bibliography citation format, and implementing rendering support for `Wikivoyage-inline` (sharing logic with the `Wikivoyage` template). All tests and static checks passed successfully.
+
+### Decisions Made
+
+* Identified three unhandled template patterns on "Gifu Prefecture": `legend0`, `oclc`, and `Wikivoyage-inline`.
+* Routed `legend0` to the existing `render_legend_template` parser, since it simply displays the legend label text inline for epub files.
+* Implemented `render_oclc_template` to format standard WorldCat bibliographic links as `OCLC {number}` similarly to `isbn` and `ISSN` templates.
+* Routed `Wikivoyage-inline` to the existing `render_wikivoyage_template`, formatting a clean inline external reference link inside EPUB.
+* Registered the templates in `is_handled_template_name` and `render_template` in `src/main.rs`.
+* Added separate unit tests in `src/tests.rs` to cover all three templates.
+* Documented the conversion rules for `legend0`, `oclc`, and `Wikivoyage-inline` in `DEVELOPMENT.md`.
+* Ran `./sort.sh` to keep all template configuration CSVs alphabetically sorted.
+* Confirmed that "Gifu Prefecture" compiles cleanly with `unknown_skipped_templates = 0`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Handled `legend0`, `oclc`, and `Wikivoyage-inline` templates, implementing the `oclc` renderer.
+* `src/tests.rs` [MODIFY]
+  * Added three unit tests for `legend0`, `oclc`, and `Wikivoyage-inline` template rendering.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the `legend0`, `oclc`, and `Wikivoyage-inline` conversion rules.
+* `src/navigations.csv`, `src/silent.csv` [MODIFY]
+  * Automatically sorted by running `./sort.sh`.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 155 unit tests and 28 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Handle templates on en "Mount Ena"
 
 ### Summary
