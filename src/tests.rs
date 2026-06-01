@@ -2981,6 +2981,19 @@ fn render_wikitext_silently_skips_old_choson_metadata_templates() {
 }
 
 #[test]
+fn test_template_name_is_in_csv_disregards_comments_after_comma() {
+    let mock_csv = "Template1,this is a comment\nTemplate2\nTemplate3, another comment with spaces";
+    assert!(template_name_is_in_csv("Template1", mock_csv));
+    assert!(template_name_is_in_csv("template2", mock_csv));
+    assert!(template_name_is_in_csv("Template3", mock_csv));
+    assert!(!template_name_is_in_csv("this is a comment", mock_csv));
+    assert!(!template_name_is_in_csv(
+        "another comment with spaces",
+        mock_csv
+    ));
+}
+
+#[test]
 fn render_wikitext_formats_main_article_template() {
     let rendered = render_wikitext(
         "Sample",

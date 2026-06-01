@@ -1,5 +1,37 @@
 # Codex Session Notes
 
+## 2026-06-01 Allow Comma and Comments in CSV files
+
+### Summary
+
+Allowed a comma in each row inside `src/silent.csv` (and `src/navigations.csv`) followed by comments or descriptions, and verified that the parser ignores anything after the comma. Added a dedicated unit test `test_template_name_is_in_csv_disregards_comments_after_comma` to prove and guarantee this behavior. All tests passed cleanly.
+
+### Decisions Made
+
+* Inspected `template_name_is_in_csv` inside `src/main.rs` and confirmed it already parses lines by using `line.split_once(',')` to safely isolate and use only the template name before the comma.
+* Documented this CSV comment support in `DEVELOPMENT.md` to guide future template additions.
+* Wrote a dedicated unit test `test_template_name_is_in_csv_disregards_comments_after_comma` inside `src/tests.rs` to verify that `template_name_is_in_csv` disregards comments/text after a comma.
+
+### Files Changed
+
+* `src/tests.rs` [MODIFY]
+  * Added `test_template_name_is_in_csv_disregards_comments_after_comma` unit test.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented that `src/navigations.csv` and `src/silent.csv` support comma-separated comments.
+* `docs/codex-notes.md` [MODIFY]
+  * Prepended the current session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed warning-free)
+* `cargo test` (146 unit tests and 28 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Beomeosa Page Templates Handling
 
 ### Summary
