@@ -129,14 +129,14 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{harvc|last=Peterson|first=Mark|year=1992|in=Kim-Renaud|c=The Sejong Sillok}}` becomes `Mark Peterson. "The Sejong Sillok". In Kim-Renaud 1992`
 * `{{As of|2023}}` becomes `As of 2023`; `{{As of|2009|lc=y}}` becomes `as of 2009`
 * `{{died-in|202 BC}}` becomes `d. 202 BC`
-* `{{Blockquote|text=Quoted text|source=Source}}` becomes `<blockquote><p>Quoted text</p><p class="blockquote-source">Source</p></blockquote>`
+* `{{Blockquote|text=Quoted text|source=Source}}` (or `{{Quote|text=Quoted text|author=Source}}`) becomes `<blockquote><p>Quoted text</p><p class="blockquote-source">Source</p></blockquote>`
 * `{{Percentage|1|4}}` becomes `25%`
 * `{{UN_Population|Dem. People's Republic of Korea}}` becomes `26,100,000`; `{{UN_Population|ref}}` is omitted
 * `{{convert|1100|km|abbr=on}}` and `{{cvt|314|km|0}}` become `1100 km` and `314 km`; range forms such as `{{convert|10|to|47|km2}}` become `10 to 47 km²`
 * `{{ill|Ch'ilchŏngsan|ko}}` becomes a link to `Ch'ilchŏngsan` followed by `[ko]`
 * `{{Reign|1400|1418}}` becomes `r. 1400–1418`
 * `{{Open access}}` and `{{Free access}}` become an open-lock marker: `<span title="open access">&#128275;</span>`
-* `{{Main|Names of Korea}}` becomes `Main article:` followed by a link to `Names of Korea`
+* `{{Main|Names of Korea}}` (or `{{Main article|Names of Korea}}`) becomes `Main article:` followed by a link to `Names of Korea`
 * `{{See also|Korean tea ceremony|Korean royal court cuisine}}` becomes `See also:` followed by links to those articles
 * `{{Further|Joseon dynasty|Downtown Seoul}}` becomes `Further information:` followed by links to those articles
 * `{{For|histories of the modern Korean countries|History of North Korea|History of South Korea}}` becomes `For histories of the modern Korean countries, see:` followed by links to those articles

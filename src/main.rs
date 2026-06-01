@@ -1365,7 +1365,7 @@ fn render_template(content: &str) -> String {
         render_citation_needed_span_template(params)
     } else if template.eq_ignore_ascii_case("ndash") {
         render_endash_template()
-    } else if template.eq_ignore_ascii_case("Quote box") {
+    } else if template.eq_ignore_ascii_case("Quote box") || template.eq_ignore_ascii_case("Quote") {
         render_blockquote_template(params)
     } else if template.eq_ignore_ascii_case("center") {
         render_passthrough_template(params)
@@ -1463,7 +1463,8 @@ fn render_template(content: &str) -> String {
         render_article_link_template(params)
     } else if template.eq_ignore_ascii_case("excerpt") {
         render_excerpt_template(params)
-    } else if template.eq_ignore_ascii_case("main") {
+    } else if template.eq_ignore_ascii_case("main") || template.eq_ignore_ascii_case("Main article")
+    {
         render_main_template(params)
     } else if template.eq_ignore_ascii_case("see also") {
         render_see_also_template(params)
@@ -1637,6 +1638,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("citation needed span")
         || template.eq_ignore_ascii_case("ndash")
         || template.eq_ignore_ascii_case("Quote box")
+        || template.eq_ignore_ascii_case("Quote")
         || template.eq_ignore_ascii_case("center")
         || template.eq_ignore_ascii_case("singular")
         || template.eq_ignore_ascii_case("Nihongo4")
@@ -1696,6 +1698,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("anl")
         || template.eq_ignore_ascii_case("excerpt")
         || template.eq_ignore_ascii_case("main")
+        || template.eq_ignore_ascii_case("Main article")
         || template.eq_ignore_ascii_case("see also")
         || template.eq_ignore_ascii_case("further")
         || template.eq_ignore_ascii_case("wiktionary")

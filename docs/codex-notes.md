@@ -1,5 +1,46 @@
 # Codex Session Notes
 
+## 2026-06-01 Assassination of Empress Myeongseong Page Templates Handling
+
+### Summary
+
+Added template handling for the English Wikipedia "Assassination of Empress Myeongseong" article. Implemented rendering support for `{{Main article}}` (reusing the existing `render_main_template` logic) and `{{Quote}}` (reusing the existing `render_blockquote_template` logic) to reduce redundancy. All tests passed cleanly.
+
+### Decisions Made
+
+* Identified and implemented `{{Main article|...}}` as a case-insensitive alias to `{{Main|...}}` in the render dispatch and `is_handled_template_name` function.
+* Identified and implemented `{{Quote|...}}` as a case-insensitive alias to `{{Blockquote|...}}` and `{{Quote box|...}}`, allowing it to reuse `render_blockquote_template` to format inline quotes.
+* Wrote two dedicated unit tests: `render_wikitext_formats_main_article_template` and `render_wikitext_formats_quote_template` in `src/tests.rs`.
+* Run `./sort.sh` to keep `src/navigations.csv` and `src/silent.csv` alphabetically sorted.
+* Updated `DEVELOPMENT.md` to document the new aliases/renderers for `Main article` and `Quote`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Registered and dispatched case-insensitive aliases for `Main article` and `Quote`.
+* `src/tests.rs` [MODIFY]
+  * Added `render_wikitext_formats_main_article_template` and `render_wikitext_formats_quote_template` unit tests.
+* `src/navigations.csv` [MODIFY]
+  * Kept sorted.
+* `src/silent.csv` [MODIFY]
+  * Kept sorted.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new template conversion rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Prepended the current session notes.
+
+### Tests Run
+
+* `./sort.sh` (sorted CSVs alphabetically)
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed warning-free)
+* `cargo test` (142 unit tests and 28 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Old Chosŏn Page Templates Handling
 
 ### Summary

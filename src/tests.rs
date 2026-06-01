@@ -2980,6 +2980,37 @@ fn render_wikitext_silently_skips_old_choson_metadata_templates() {
     );
 }
 
+#[test]
+fn render_wikitext_formats_main_article_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Main article|Miura Gorō}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains(
+            "Main article: <a href=\"https://en.wikipedia.org/wiki/Miura_Gorō\">Miura Gorō</a><span class=\"external-link\">↗</span>"
+        ),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_quote_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Quote|text=This was a matter I decided|author=Miura}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("This was a matter I decided"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("Miura"), "{rendered}");
+}
+
 fn test_cache_path(name: &str) -> PathBuf {
     let nanos = SystemTime::now()
         .duration_since(UNIX_EPOCH)
