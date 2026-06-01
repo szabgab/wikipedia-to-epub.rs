@@ -3,3 +3,4 @@
 /site
 .antigravitycli/
 *.log
+*.bak
