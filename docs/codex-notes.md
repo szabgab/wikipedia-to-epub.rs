@@ -1,6 +1,44 @@
 # Codex Session Notes
 
+## 2026-06-01 Command Line Flag for Custom Logfile (`--logfile`)
+
+### Summary
+
+Added a new command-line flag called `--logfile` that allows users to override the default `"report.log"` log file path dynamically. Fully implemented, designed, and tested with unit tests and integration tests.
+
+### Decisions Made
+
+* Extended `CliArgs` in `src/main.rs` to include `logfile: Option<PathBuf>` CLI argument configured using clap `#[arg(long = "logfile", value_name = "path")]`.
+* Updated `init_logging` function to accept `logfile: Option<&Path>` parameter and write layered log traces to the specified path, falling back to `"report.log"` if none is provided.
+* Updated `try_main` to pass `args.logfile.as_deref()` to `init_logging`.
+* Added `parse_args_accepts_logfile` unit test to `src/tests.rs` to verify that the CLI parser correctly accepts `--logfile <path>` and maps it to `Some(PathBuf)`.
+* Added `cli_logfile_flag_overrides_default_report_log` integration test to `tests/books.rs` to verify that running the binary with `--logfile <path>` successfully populates logs in the custom file and omits `report.log` in the run directory.
+* Ran `cargo fmt`, `cargo check`, `cargo clippy`, and `cargo test` verifying all tests pass warning-free.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Added `--logfile` arg to `CliArgs`, updated `try_main` and `init_logging`.
+* `src/tests.rs` [MODIFY]
+  * Added `parse_args_accepts_logfile` unit test.
+* `tests/books.rs` [MODIFY]
+  * Added `cli_logfile_flag_overrides_default_report_log` integration test.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended the current session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed warning-free)
+* `cargo test` (138 unit tests and 27 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Budapest Page Templates Handling
+
 
 ### Summary
 

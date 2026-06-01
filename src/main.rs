@@ -235,6 +235,8 @@ struct CliArgs {
     images: bool,
     #[arg(long = "no-images", conflicts_with = "images")]
     no_images: bool,
+    #[arg(long = "logfile", value_name = "path")]
+    logfile: Option<PathBuf>,
 }
 
 trait PageSource {
@@ -451,7 +453,7 @@ fn main() {
 
 fn try_main() -> AppResult<()> {
     let args = parse_args()?;
-    init_logging(args.log_level);
+    init_logging(args.log_level, args.logfile.as_deref());
     info!(
         config_path = %args.config_path.display(),
         local_pages_dir = ?args.local_pages_dir,
@@ -777,7 +779,7 @@ fn read_config(path: &Path) -> AppResult<BookConfig> {
     Ok(serde_yaml::from_str(&content)?)
 }
 
-fn init_logging(level: Level) {
+fn init_logging(level: Level, logfile: Option<&Path>) {
     use tracing_subscriber::prelude::*;
     let level_filter = tracing_subscriber::filter::LevelFilter::from_level(level);
 
@@ -785,7 +787,8 @@ fn init_logging(level: Level) {
         .with_target(false)
         .with_filter(level_filter);
 
-    let file_layer = std::fs::File::create("report.log").ok().map(|file| {
+    let log_path = logfile.unwrap_or_else(|| Path::new("report.log"));
+    let file_layer = std::fs::File::create(log_path).ok().map(|file| {
         tracing_fmt::layer()
             .with_ansi(false)
             .with_target(false)

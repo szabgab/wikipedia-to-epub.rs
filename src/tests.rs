@@ -2439,6 +2439,19 @@ fn parse_args_accepts_no_images() {
 }
 
 #[test]
+fn parse_args_accepts_logfile() {
+    let args = parse_args_from([
+        "wikipedia-to-epub",
+        "books/korea.yaml",
+        "--logfile",
+        "custom.log",
+    ])
+    .expect("args should parse");
+
+    assert_eq!(args.logfile, Some(PathBuf::from("custom.log")));
+}
+
+#[test]
 fn parse_args_rejects_both_images_and_no_images() {
     let err = parse_args_from([
         "wikipedia-to-epub",

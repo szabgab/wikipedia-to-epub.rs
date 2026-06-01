@@ -191,6 +191,41 @@ fn cli_images_flag_overrides_config_images_false() {
 }
 
 #[test]
+fn cli_logfile_flag_overrides_default_report_log() {
+    let repo = repo_root();
+    let work_dir = unique_test_dir(&repo, "logfile-override");
+    fs::create_dir_all(&work_dir).unwrap();
+
+    let custom_log = work_dir.join("custom_report.log");
+    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+        .current_dir(&work_dir)
+        .arg(repo.join("examples/busan.yaml"))
+        .arg("--local")
+        .arg(repo.join("pages"))
+        .arg("--logfile")
+        .arg(&custom_log)
+        .arg("--log")
+        .arg("INFO")
+        .output()
+        .unwrap();
+
+    assert!(output.status.success(), "run failed: {:?}", output);
+    assert!(custom_log.is_file(), "custom log file was not created");
+    assert!(
+        !work_dir.join("report.log").exists(),
+        "default report.log should not be created"
+    );
+
+    let log_content = fs::read_to_string(&custom_log).unwrap();
+    assert!(
+        log_content.contains("starting wikipedia-to-epub"),
+        "log content missing expected starting message"
+    );
+
+    fs::remove_dir_all(&work_dir).unwrap();
+}
+
+#[test]
 #[ignore = "hits the real Wikipedia API"]
 fn generate_example_books_from_real_wikipedia_api() {
     assert_real_api_generates_book("korea", &["Korea"]);
