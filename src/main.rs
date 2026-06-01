@@ -91,7 +91,7 @@ impl From<zip::result::ZipError> for AppError {
     }
 }
 
-#[derive(Debug, Deserialize, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
 #[serde(rename_all = "lowercase")]
 enum CachingMode {
     None,
@@ -237,6 +237,8 @@ struct CliArgs {
     no_images: bool,
     #[arg(long = "logfile", value_name = "path")]
     logfile: Option<PathBuf>,
+    #[arg(long = "caching", value_name = "mode")]
+    caching: Option<CachingMode>,
 }
 
 trait PageSource {
@@ -485,8 +487,9 @@ fn run(args: CliArgs) -> AppResult<()> {
     let download_cache = if local_pages_dir.is_some() {
         None
     } else {
-        let enabled = config.caching != CachingMode::None;
-        let root = match config.caching {
+        let caching = args.caching.unwrap_or(config.caching);
+        let enabled = caching != CachingMode::None;
+        let root = match caching {
             CachingMode::Central => default_cache_root()?,
             CachingMode::Local => std::env::current_dir()?.join(".cache"),
             CachingMode::None => default_cache_root()?,

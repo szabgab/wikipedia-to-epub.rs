@@ -226,6 +226,28 @@ fn cli_logfile_flag_overrides_default_report_log() {
 }
 
 #[test]
+fn cli_caching_flag_is_accepted_by_binary() {
+    let repo = repo_root();
+    let work_dir = unique_test_dir(&repo, "caching-flag-acceptance");
+    fs::create_dir_all(&work_dir).unwrap();
+
+    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+        .current_dir(&work_dir)
+        .arg(repo.join("examples/busan.yaml"))
+        .arg("--local")
+        .arg(repo.join("pages"))
+        .arg("--caching")
+        .arg("none")
+        .arg("--log")
+        .arg("WARN")
+        .output()
+        .unwrap();
+
+    assert!(output.status.success(), "run failed: {:?}", output);
+    fs::remove_dir_all(&work_dir).unwrap();
+}
+
+#[test]
 #[ignore = "hits the real Wikipedia API"]
 fn generate_example_books_from_real_wikipedia_api() {
     assert_real_api_generates_book("korea", &["Korea"]);

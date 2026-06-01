@@ -2452,6 +2452,31 @@ fn parse_args_accepts_logfile() {
 }
 
 #[test]
+fn parse_args_accepts_caching() {
+    let args = parse_args_from([
+        "wikipedia-to-epub",
+        "books/korea.yaml",
+        "--caching",
+        "local",
+    ])
+    .expect("args should parse");
+    assert_eq!(args.caching, Some(CachingMode::Local));
+
+    let args = parse_args_from(["wikipedia-to-epub", "books/korea.yaml", "--caching", "none"])
+        .expect("args should parse");
+    assert_eq!(args.caching, Some(CachingMode::None));
+
+    let args = parse_args_from([
+        "wikipedia-to-epub",
+        "books/korea.yaml",
+        "--caching",
+        "central",
+    ])
+    .expect("args should parse");
+    assert_eq!(args.caching, Some(CachingMode::Central));
+}
+
+#[test]
 fn parse_args_rejects_both_images_and_no_images() {
     let err = parse_args_from([
         "wikipedia-to-epub",

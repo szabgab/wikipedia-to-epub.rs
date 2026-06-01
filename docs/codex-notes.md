@@ -1,6 +1,44 @@
 # Codex Session Notes
 
+## 2026-06-01 Command Line Flag for Caching Override (`--caching`)
+
+### Summary
+
+Added a new command-line flag called `--caching` that allows users to override the `caching` configuration file setting dynamically with `"none"`, `"local"`, or `"central"`. Fully implemented, designed, and tested with unit tests and integration tests.
+
+### Decisions Made
+
+* Derived `clap::ValueEnum` on the `CachingMode` enum in `src/main.rs`.
+* Extended `CliArgs` in `src/main.rs` to include `caching: Option<CachingMode>` CLI argument configured using clap `#[arg(long = "caching", value_name = "mode")]`.
+* Updated the `run` function in `src/main.rs` to override the configuration file caching mode with the parsed CLI value (`args.caching.unwrap_or(config.caching)`).
+* Added `parse_args_accepts_caching` unit test to `src/tests.rs` to verify that the CLI parser correctly accepts `--caching` with values `none`, `local`, and `central`.
+* Added `cli_caching_flag_is_accepted_by_binary` integration test to `tests/books.rs` to verify that executing the binary with `--caching none` successfully starts and runs cleanly.
+* Ran `cargo fmt`, `cargo check`, `cargo clippy`, and `cargo test` verifying all tests pass warning-free.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Derived `clap::ValueEnum` on `CachingMode`, added `--caching` arg to `CliArgs`, and updated `run` function override logic.
+* `src/tests.rs` [MODIFY]
+  * Added `parse_args_accepts_caching` unit test.
+* `tests/books.rs` [MODIFY]
+  * Added `cli_caching_flag_is_accepted_by_binary` integration test.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended the current session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed warning-free)
+* `cargo test` (139 unit tests and 28 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Command Line Flag for Custom Logfile (`--logfile`)
+
 
 ### Summary
 
