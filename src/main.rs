@@ -1825,6 +1825,24 @@ fn render_template(content: &str) -> String {
         render_columns_list_template(params)
     } else if template.eq_ignore_ascii_case("annotated link") {
         render_annotated_link_template(params)
+    } else if template.eq_ignore_ascii_case("Dp") || template.eq_ignore_ascii_case("dp") {
+        render_dp_template(params)
+    } else if template.eq_ignore_ascii_case("Visible anchor")
+        || template.eq_ignore_ascii_case("visible anchor")
+    {
+        render_visible_anchor_template(params)
+    } else if template.eq_ignore_ascii_case("L1") {
+        render_lagrange_template("1")
+    } else if template.eq_ignore_ascii_case("L2") {
+        render_lagrange_template("2")
+    } else if template.eq_ignore_ascii_case("L3") {
+        render_lagrange_template("3")
+    } else if template.eq_ignore_ascii_case("L4") {
+        render_lagrange_template("4")
+    } else if template.eq_ignore_ascii_case("L5") {
+        render_lagrange_template("5")
+    } else if template.eq_ignore_ascii_case("Cite EB1911") {
+        render_cite_eb1911_template(params)
     } else if template.eq_ignore_ascii_case("Collapsible list") {
         render_collapsible_list_template(params)
     } else if template.eq_ignore_ascii_case("Internet Archive short film") {
@@ -2109,6 +2127,16 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("En dash")
         || template.eq_ignore_ascii_case("columns list")
         || template.eq_ignore_ascii_case("annotated link")
+        || template.eq_ignore_ascii_case("Dp")
+        || template.eq_ignore_ascii_case("dp")
+        || template.eq_ignore_ascii_case("Visible anchor")
+        || template.eq_ignore_ascii_case("visible anchor")
+        || template.eq_ignore_ascii_case("L1")
+        || template.eq_ignore_ascii_case("L2")
+        || template.eq_ignore_ascii_case("L3")
+        || template.eq_ignore_ascii_case("L4")
+        || template.eq_ignore_ascii_case("L5")
+        || template.eq_ignore_ascii_case("Cite EB1911")
         || is_silent_template_name(template)
 }
 
@@ -5162,6 +5190,66 @@ fn render_annotated_link_template(params: &str) -> String {
     } else {
         String::new()
     }
+}
+
+fn render_dp_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(name) = positional.first() else {
+        return String::new();
+    };
+    let target = match name.trim().to_lowercase().as_str() {
+        "ceres" => "Ceres (dwarf planet)",
+        "eris" => "Eris (dwarf planet)",
+        "orcus" => "90482 Orcus",
+        "quaoar" => "50000 Quaoar",
+        "gonggong" => "225088 Gonggong",
+        "sedna" => "90377 Sedna",
+        "pluto" => "Pluto",
+        "makemake" => "Makemake",
+        "haumea" => "Haumea",
+        _ => name.trim(),
+    };
+    format!("[[{}|{}]]", target, name.trim())
+}
+
+fn render_visible_anchor_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let text = template_param(&named, &["text", "2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .or_else(|| positional.first().map(String::as_str));
+
+    match text {
+        Some(t) => render_templates(t),
+        None => String::new(),
+    }
+}
+
+fn render_lagrange_template(point: &str) -> String {
+    format!(
+        "L__WIKIPEDIA_TO_EPUB_SUB_START__{}__WIKIPEDIA_TO_EPUB_SUB_END__",
+        point
+    )
+}
+
+fn render_cite_eb1911_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let title = template_param(&named, &["wstitle", "title"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    if title.is_empty() {
+        return "''Encyclopædia Britannica'' (11th ed., 1911)".to_string();
+    }
+
+    format!(
+        "\"{}\" in ''[[src:1911 Encyclopædia Britannica/{}|Encyclopædia Britannica]]'' (11th ed., 1911)",
+        render_templates(title),
+        title
+    )
 }
 
 fn render_collapsible_list_template(params: &str) -> String {

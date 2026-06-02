@@ -1,5 +1,57 @@
 # Codex Session Notes
 
+## 2026-06-02 Templates on en "Solar System"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Solar System" article. This involved implementing custom renderers and routing to render 22 templates accurately: `Dp`/`dp` (for dwarf planets), `Visible anchor`/`visible anchor`, Lagrange points `L1`-`L5`, and `Cite EB1911` (for historical Wikisource citations). Added five navigation templates (`Earth's location`, `Astronomy navbox`, `Nearest systems`, `Star`, and `Solar System models`) to `navigations.csv`, and one graphic image template (`solar system delta v map.svg`) to `silent.csv`. All 171 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Identified and registered 22 unhandled/missing templates for "Solar System":
+  * `Dp` / `dp`: formats dwarf planets as standard wikitext links (Ceres, Eris, Pluto, Makemake, Haumea, Orcus, Quaoar, Gonggong, and Sedna).
+  * `Visible anchor` / `visible anchor`: extracts and renders the visible anchor text parameter.
+  * `L1` - `L5`: formats Lagrange points with subscripts (e.g. `L₄` and `L₅`).
+  * `Cite EB1911`: formats Encyclopaedia Britannica 1911 Wikisource article citations.
+* Registered the following as silently skipped navigation footers in `src/navigations.csv`:
+  * `Earth's location`
+  * `Astronomy navbox`
+  * `Nearest systems`
+  * `Star`
+  * `Solar System models`
+* Registered `solar system delta v map.svg` in `src/silent.csv` to silence the complex graphic SVG image map.
+* Added dedicated unit tests for all four template families in `src/tests.rs`.
+* Regenerated planets EPUB and updated the unzipped `expected/planets/` reference fixtures to match the newly formatted dwarf planet links.
+* Ran `./sort.sh` to keep all CSV databases alphabetically sorted.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Registered and implemented `Dp`/`dp`, `Visible anchor`/`visible anchor`, Lagrange points, and `Cite EB1911` template renderers.
+* `src/tests.rs` [MODIFY]
+  * Appended dedicated unit tests for the newly added templates.
+* `src/navigations.csv` [MODIFY]
+  * Registered new navigation templates and sorted alphabetically.
+* `src/silent.csv` [MODIFY]
+  * Registered `solar system delta v map.svg` and sorted alphabetically.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented all new template conversion rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Added session notes.
+* `expected/planets/` [MODIFY]
+  * Updated planets integration test fixture files to include the newly rendered dwarf planet links.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 171 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-02 Templates on en "Earth"
 
 ### Summary

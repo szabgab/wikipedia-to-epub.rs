@@ -3491,3 +3491,65 @@ fn render_wikitext_formats_annotated_link_template() {
         "{rendered}"
     );
 }
+
+#[test]
+fn render_wikitext_formats_dp_template() {
+    let rendered = render_wikitext("Sample", "{{Dp|Ceres}}", &InternalLinks::new(), "en");
+    assert!(
+        rendered.contains("href=\"https://en.wikipedia.org/wiki/Ceres_(dwarf_planet)\""),
+        "{rendered}"
+    );
+    assert!(rendered.contains("Ceres"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{dp|makemake}}", &InternalLinks::new(), "en");
+    assert!(
+        rendered.contains("href=\"https://en.wikipedia.org/wiki/Makemake\""),
+        "{rendered}"
+    );
+    assert!(rendered.contains("makemake"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_visible_anchor_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Visible anchor|Mercury|text=[[Mercury]]}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Mercury"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{visible anchor|Earth}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Earth"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_lagrange_templates() {
+    let rendered = render_wikitext("Sample", "{{L4}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("L<sub>4</sub>"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{L5}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("L<sub>5</sub>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_cite_eb1911_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Cite EB1911|wstitle=Solar System}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Solar System"), "{rendered}");
+    assert!(
+        rendered.contains(
+            "href=\"https://en.wikisource.org/wiki/1911_Encyclop%C3%A6dia_Britannica/Solar_System\""
+        ),
+        "{rendered}"
+    );
+}
