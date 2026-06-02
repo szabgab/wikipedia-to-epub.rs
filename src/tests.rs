@@ -538,12 +538,8 @@ fn render_wikitext_formats_jaanus_templates() {
         "{rendered}"
     );
 
-    let rendered_no_label = render_wikitext(
-        "Sample",
-        "{{Jaanus|w/washi}}",
-        &InternalLinks::new(),
-        "en",
-    );
+    let rendered_no_label =
+        render_wikitext("Sample", "{{Jaanus|w/washi}}", &InternalLinks::new(), "en");
     assert!(
         rendered_no_label.contains("w/washi</a><span class=\"external-link\">↗</span> at JAANUS"),
         "{rendered_no_label}"

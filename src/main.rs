@@ -3511,11 +3511,7 @@ fn render_jaanus_template(params: &str) -> String {
         return String::new();
     }
 
-    let resolved_label = if label.is_empty() {
-        path
-    } else {
-        label
-    };
+    let resolved_label = if label.is_empty() { path } else { label };
 
     let url = format!("http://www.aisf.or.jp/~jaanus/deta/{}.htm", path);
     format!(
