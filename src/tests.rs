@@ -914,6 +914,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{tocright}}
 {{CS1 config|mode=cs1}}
 {{unsolved|astronomy| corona }}
+{{discuss|talk page section}}
 Visible text."#,
         &InternalLinks::new(),
         "en",
@@ -938,7 +939,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 99,
+            recognized: 100,
             unknown: 0
         }
     );
