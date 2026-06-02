@@ -912,6 +912,8 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{in title|Mercury}}
 {{look from|Mercury}}
 {{tocright}}
+{{CS1 config|mode=cs1}}
+{{unsolved|astronomy| corona }}
 Visible text."#,
         &InternalLinks::new(),
         "en",
@@ -936,7 +938,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 97,
+            recognized: 99,
             unknown: 0
         }
     );
@@ -3611,4 +3613,50 @@ fn render_wikitext_formats_chem_template() {
         rendered.contains("H<sub>3</sub>O<sup>+</sup>"),
         "{rendered}"
     );
+}
+
+#[test]
+fn render_wikitext_formats_also_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "See {{also|Standard solar model}}.",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("See also: <a href=\"https://en.wikipedia.org/wiki/Standard_solar_model\">Standard solar model</a>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_solar_radius_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{solar radius|1.2}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("1.2 R<sub>☉</sub>"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{solar radius}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("R<sub>☉</sub>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_plus_minus_template() {
+    let rendered = render_wikitext("Sample", "{{±|10|2}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("± 10 2"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{±}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("±"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_cite_encyclopedia_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite encyclopedia|title=Solar activity|encyclopedia=Scholarpedia}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Solar activity"), "{rendered}");
+    assert!(rendered.contains("Scholarpedia"), "{rendered}");
 }

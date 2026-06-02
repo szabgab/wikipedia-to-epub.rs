@@ -1691,6 +1691,7 @@ fn render_template(content: &str) -> String {
     } else if template.eq_ignore_ascii_case("cite journal")
         || template.eq_ignore_ascii_case("cite magazine")
         || template.eq_ignore_ascii_case("cite news")
+        || template.eq_ignore_ascii_case("cite encyclopedia")
     {
         render_cite_journal_template(params)
     } else if template.eq_ignore_ascii_case("cite report") {
@@ -1734,7 +1735,7 @@ fn render_template(content: &str) -> String {
     } else if template.eq_ignore_ascii_case("main") || template.eq_ignore_ascii_case("Main article")
     {
         render_main_template(params)
-    } else if template.eq_ignore_ascii_case("see also") {
+    } else if template.eq_ignore_ascii_case("see also") || template.eq_ignore_ascii_case("also") {
         render_see_also_template(params)
     } else if template.eq_ignore_ascii_case("further") {
         render_further_template(params)
@@ -1849,6 +1850,10 @@ fn render_template(content: &str) -> String {
         render_mpl_dash_template(params)
     } else if template.eq_ignore_ascii_case("chem") {
         render_chem_template(params)
+    } else if template.eq_ignore_ascii_case("solar radius") {
+        render_solar_radius_template(params)
+    } else if template.eq_ignore_ascii_case("±") {
+        render_plus_minus_template(params)
     } else if template.eq_ignore_ascii_case("Collapsible list") {
         render_collapsible_list_template(params)
     } else if template.eq_ignore_ascii_case("Internet Archive short film") {
@@ -2025,6 +2030,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("cite ECCP")
         || template.eq_ignore_ascii_case("cite conference")
         || template.eq_ignore_ascii_case("citation")
+        || template.eq_ignore_ascii_case("cite encyclopedia")
         || template.eq_ignore_ascii_case("harvc")
         || template.eq_ignore_ascii_case("as of")
         || template.eq_ignore_ascii_case("died-in")
@@ -2045,6 +2051,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("main")
         || template.eq_ignore_ascii_case("Main article")
         || template.eq_ignore_ascii_case("see also")
+        || template.eq_ignore_ascii_case("also")
         || template.eq_ignore_ascii_case("further")
         || template.eq_ignore_ascii_case("wiktionary")
         || template.eq_ignore_ascii_case("wikivoyage")
@@ -2146,6 +2153,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("spaces")
         || template.eq_ignore_ascii_case("mpl-")
         || template.eq_ignore_ascii_case("chem")
+        || template.eq_ignore_ascii_case("solar radius")
+        || template.eq_ignore_ascii_case("±")
         || is_silent_template_name(template)
 }
 
@@ -3030,6 +3039,7 @@ fn render_cite_journal_template(params: &str) -> String {
             "magazine",
             "newspaper",
             "periodical",
+            "encyclopedia",
         ],
     ) {
         parts.push(format!("''{}''", render_templates(journal)));
@@ -5302,6 +5312,26 @@ fn render_chem_template(params: &str) -> String {
         }
     }
     render_templates(&rendered)
+}
+
+fn render_solar_radius_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let value = positional.first().map(String::as_str).unwrap_or("");
+    let symbol = "R__WIKIPEDIA_TO_EPUB_SUB_START__☉__WIKIPEDIA_TO_EPUB_SUB_END__";
+    if value.is_empty() {
+        symbol.to_string()
+    } else {
+        format!("{} {}", value, symbol)
+    }
+}
+
+fn render_plus_minus_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.is_empty() {
+        "±".to_string()
+    } else {
+        format!("± {}", positional.join(" "))
+    }
 }
 
 fn render_cite_eb1911_template(params: &str) -> String {

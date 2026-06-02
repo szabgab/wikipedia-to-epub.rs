@@ -1,5 +1,5 @@
-'
 -
+'
 About,                       Linking the reader to other meaning of the same word.     https://en.wikipedia.org/wiki/Template:About
 additional citations needed, Asks for help                                             https://en.wikipedia.org/wiki/Template:Additional_citation_needed
 ahnentafel
@@ -18,8 +18,8 @@ clear
 Clear left
 Closed access
 cn
-colbegin
 col-begin
+colbegin
 col-break
 col-end
 colend
@@ -31,6 +31,7 @@ Commons category-inline
 Commons category inline
 commonscat,                    Link to category in Wikimedia Commons. Alias of Commons category.
 Contains special characters
+CS1 config
 Dead link
 disambiguation
 disputed section
@@ -118,6 +119,7 @@ Unreferencedsect
 unreferenced section
 Unreliable source?
 Unreliable sources
+unsolved
 Update inline
 update section
 very long

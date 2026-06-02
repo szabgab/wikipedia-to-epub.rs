@@ -1,5 +1,55 @@
 # Codex Session Notes
 
+## 2026-06-02 Templates on en "Sun"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Sun" article. This involved implementing custom renderers and routing to render 4 new templates: `also` (rendering "See also" cross-reference links), `solar radius` (rendering astronomical values with the solar radius symbol $R_\odot$), `±` (rendering mathematical plus-minus values or characters), and `cite encyclopedia` (rendering encyclopedia references exactly like other journal/work references). Silently skipped 2 metadata and callout templates (`CS1 config` and `unsolved`) and registered 3 new navigation footer templates (`The Sun`, `nearest star systems`, and `astronomy navbar`). Updated `expected/planets/` integration test fixtures to match the newly formatted "See also" link in the Sun chapter of the compiled Planets EPUB. All 178 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Identified and registered 9 unhandled/missing templates for "Sun":
+  * `also`: cross-reference link template (routed to `render_see_also_template`).
+  * `solar radius`: renders value with astronomical subscript symbol $R_\odot$ (e.g. `1.2 R<sub>☉</sub>`).
+  * `±`: renders plus-minus mathematical symbols or values (e.g. `± 10 2`).
+  * `cite encyclopedia`: encyclopedia citation routed to the robust `render_cite_journal_template` with `"encyclopedia"` added to its list of fields.
+  * `CS1 config` and `unsolved`: silent metadata and floating warning templates, added to `src/silent.csv`.
+  * `The Sun`, `nearest star systems`, and `astronomy navbar`: navigation templates, added to `src/navigations.csv`.
+* Ran `./sort.sh` to keep all CSV databases alphabetically sorted.
+* Appended all new silent templates to `render_wikitext_silently_skips_metadata_templates` unit test in `src/tests.rs` and increased expected recognized skip count to `99`.
+* Appended standalone unit tests for `also`, `solar radius`, `±`, and `cite encyclopedia` in `src/tests.rs`.
+* Regenerated the planets EPUB and updated the unzipped `expected/planets/` reference fixtures to match the newly formatted Sun see-also link.
+* Documented all new handled and silent templates in `DEVELOPMENT.md`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Registered and routed `also`, `solar radius`, `±`, and `cite encyclopedia` templates, and implemented their rendering helper functions.
+* `src/tests.rs` [MODIFY]
+  * Appended dedicated unit tests for the 4 new handled templates.
+  * Updated `render_wikitext_silently_skips_metadata_templates` with the 2 new silent templates and asserted skip count `99`.
+* `src/silent.csv` [MODIFY]
+  * Registered `CS1 config` and `unsolved` and sorted alphabetically.
+* `src/navigations.csv` [MODIFY]
+  * Registered `The Sun`, `nearest star systems`, and `astronomy navbar` and sorted alphabetically.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented all new template rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Added session notes.
+* `expected/planets/` [MODIFY]
+  * Updated planets integration test fixture files to include the Sun's new rendered output.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 178 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-02 Templates on en "Mercury"
 
 ### Summary
