@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
   <head>
-    <meta name="dtb:uid" content="urn:wikipedia-to-epub:1780335763849589184"/>
-    <meta name="dtb:depth" content="1"/>
+    <meta name="dtb:uid" content="urn:wikipedia-to-epub:1780373959815179428"/>
+    <meta name="dtb:depth" content="2"/>
     <meta name="dtb:totalPageCount" content="0"/>
     <meta name="dtb:maxPageNumber" content="0"/>
   </head>
@@ -19,26 +19,26 @@
     <navPoint id="chapter-2" playOrder="3">
       <navLabel><text>Solar System</text></navLabel>
       <content src="chapter-2.xhtml"/>
-    </navPoint>
-    <navPoint id="chapter-3" playOrder="4">
+      <navPoint id="chapter-3" playOrder="4">
       <navLabel><text>Sun</text></navLabel>
       <content src="chapter-3.xhtml"/>
     </navPoint>
-    <navPoint id="chapter-4" playOrder="5">
+      <navPoint id="chapter-4" playOrder="5">
       <navLabel><text>Mercury</text></navLabel>
       <content src="chapter-4.xhtml"/>
+    </navPoint>
     </navPoint>
     <navPoint id="chapter-5" playOrder="6">
       <navLabel><text>Planets Info</text></navLabel>
       <content src="chapter-5.xhtml"/>
-    </navPoint>
-    <navPoint id="chapter-6" playOrder="7">
+      <navPoint id="chapter-6" playOrder="7">
       <navLabel><text>Venus</text></navLabel>
       <content src="chapter-6.xhtml"/>
     </navPoint>
-    <navPoint id="chapter-7" playOrder="8">
+      <navPoint id="chapter-7" playOrder="8">
       <navLabel><text>Mars</text></navLabel>
       <content src="chapter-7.xhtml"/>
+    </navPoint>
     </navPoint>
   </navMap>
 </ncx>

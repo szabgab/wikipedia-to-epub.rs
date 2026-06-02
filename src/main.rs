@@ -179,6 +179,13 @@ struct Chapter {
     template_skip_counts: TemplateSkipCounts,
 }
 
+#[derive(Debug, Clone)]
+struct TocNode {
+    title: String,
+    file_name: String,
+    children: Vec<TocNode>,
+}
+
 #[derive(Debug)]
 struct BookImage {
     title: String,
@@ -514,6 +521,135 @@ fn try_main() -> AppResult<()> {
     run(args)
 }
 
+#[allow(clippy::too_many_arguments)]
+fn generate_chapters_hierarchical(
+    entries: &[ArticleConfig],
+    wikipedia_language: &str,
+    loaded_pages: &std::collections::HashMap<String, PageResponse>,
+    page_source: &dyn PageSource,
+    internal_links: &InternalLinks,
+    image_registry: &mut Option<ImageRegistry>,
+    chapter_index: &mut usize,
+    added_article_keys: &mut std::collections::HashSet<String>,
+    chapters: &mut Vec<Chapter>,
+) -> AppResult<Vec<TocNode>> {
+    let mut nodes = Vec::new();
+    for entry in entries {
+        match entry {
+            ArticleConfig::Simple(title) => {
+                let lookup_key = normalize_lookup_key(title);
+                if let Some(page) = loaded_pages.get(&lookup_key) {
+                    if !page_source.is_cache_hit(title) {
+                        info!(article = page.parse.title, "fetching article");
+                    }
+                    let chapter = load_chapter(
+                        page,
+                        *chapter_index,
+                        internal_links,
+                        wikipedia_language,
+                        image_registry.as_mut(),
+                    )?;
+                    let file_name = chapter.file_name.clone();
+                    let chapter_title = chapter.title.clone();
+                    chapters.push(chapter);
+                    added_article_keys.insert(lookup_key);
+                    *chapter_index += 1;
+
+                    nodes.push(TocNode {
+                        title: chapter_title,
+                        file_name,
+                        children: Vec::new(),
+                    });
+                }
+            }
+            ArticleConfig::Detailed(detailed) => {
+                if let Some(ArticleType::Section) = detailed.r#type {
+                    let title = &detailed.title;
+                    let content = format!(
+                        r#"<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{}">
+  <head>
+    <title>{}</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <h1>{}</h1>
+  </body>
+</html>
+"#,
+                        wikipedia_language, title, title
+                    );
+                    let file_name = format!("chapter-{}.xhtml", *chapter_index);
+                    chapters.push(Chapter {
+                        title: title.clone(),
+                        file_name: file_name.clone(),
+                        content,
+                        template_skip_counts: TemplateSkipCounts::default(),
+                    });
+                    *chapter_index += 1;
+
+                    let children = generate_chapters_hierarchical(
+                        &detailed.articles,
+                        wikipedia_language,
+                        loaded_pages,
+                        page_source,
+                        internal_links,
+                        image_registry,
+                        chapter_index,
+                        added_article_keys,
+                        chapters,
+                    )?;
+
+                    nodes.push(TocNode {
+                        title: title.clone(),
+                        file_name,
+                        children,
+                    });
+                } else {
+                    let title = &detailed.title;
+                    let lookup_key = normalize_lookup_key(title);
+                    if let Some(page) = loaded_pages.get(&lookup_key) {
+                        if !page_source.is_cache_hit(title) {
+                            info!(article = page.parse.title, "fetching article");
+                        }
+                        let chapter = load_chapter(
+                            page,
+                            *chapter_index,
+                            internal_links,
+                            wikipedia_language,
+                            image_registry.as_mut(),
+                        )?;
+                        let file_name = chapter.file_name.clone();
+                        let chapter_title = chapter.title.clone();
+                        chapters.push(chapter);
+                        added_article_keys.insert(lookup_key);
+                        *chapter_index += 1;
+
+                        let children = generate_chapters_hierarchical(
+                            &detailed.articles,
+                            wikipedia_language,
+                            loaded_pages,
+                            page_source,
+                            internal_links,
+                            image_registry,
+                            chapter_index,
+                            added_article_keys,
+                            chapters,
+                        )?;
+
+                        nodes.push(TocNode {
+                            title: chapter_title,
+                            file_name,
+                            children,
+                        });
+                    }
+                }
+            }
+        }
+    }
+    Ok(nodes)
+}
+
 fn run(args: CliArgs) -> AppResult<()> {
     let config = read_config(&args.config_path)?;
     let wikipedia_language = normalized_wikipedia_language(&config.metadata.language)?;
@@ -628,89 +764,21 @@ fn run(args: CliArgs) -> AppResult<()> {
 
     let internal_links = internal_links(&ordered_articles);
 
-    #[derive(Debug)]
-    enum BookChapterNode {
-        Article { title: String },
-        Section { title: String },
-    }
-
-    fn collect_chapter_nodes(entries: &[ArticleConfig], nodes: &mut Vec<BookChapterNode>) {
-        for entry in entries {
-            match entry {
-                ArticleConfig::Simple(title) => {
-                    nodes.push(BookChapterNode::Article {
-                        title: title.clone(),
-                    });
-                }
-                ArticleConfig::Detailed(detailed) => {
-                    if let Some(ArticleType::Section) = detailed.r#type {
-                        nodes.push(BookChapterNode::Section {
-                            title: detailed.title.clone(),
-                        });
-                    } else {
-                        nodes.push(BookChapterNode::Article {
-                            title: detailed.title.clone(),
-                        });
-                    }
-                    collect_chapter_nodes(&detailed.articles, nodes);
-                }
-            }
-        }
-    }
-
-    let mut chapter_nodes = Vec::new();
-    collect_chapter_nodes(&config.articles, &mut chapter_nodes);
-
     let mut chapters = Vec::new();
     let mut added_article_keys = std::collections::HashSet::new();
     let mut chapter_index = 1;
 
-    for node in chapter_nodes {
-        match node {
-            BookChapterNode::Section { title } => {
-                let content = format!(
-                    r#"<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{}">
-  <head>
-    <title>{}</title>
-    <link rel="stylesheet" type="text/css" href="style.css" />
-  </head>
-  <body>
-    <h1>{}</h1>
-  </body>
-</html>
-"#,
-                    wikipedia_language, title, title
-                );
-                let file_name = format!("chapter-{}.xhtml", chapter_index);
-                chapters.push(Chapter {
-                    title: title.clone(),
-                    file_name,
-                    content,
-                    template_skip_counts: TemplateSkipCounts::default(),
-                });
-                chapter_index += 1;
-            }
-            BookChapterNode::Article { title } => {
-                let lookup_key = normalize_lookup_key(&title);
-                if let Some(page) = loaded_pages.get(&lookup_key) {
-                    if !page_source.is_cache_hit(&title) {
-                        info!(article = page.parse.title, "fetching article");
-                    }
-                    let chapter = load_chapter(
-                        page,
-                        chapter_index,
-                        &internal_links,
-                        &wikipedia_language,
-                        image_registry.as_mut(),
-                    )?;
-                    chapters.push(chapter);
-                    added_article_keys.insert(lookup_key);
-                    chapter_index += 1;
-                }
-            }
-        }
-    }
+    let mut toc_nodes = generate_chapters_hierarchical(
+        &config.articles,
+        &wikipedia_language,
+        &loaded_pages,
+        page_source.as_ref(),
+        &internal_links,
+        &mut image_registry,
+        &mut chapter_index,
+        &mut added_article_keys,
+        &mut chapters,
+    )?;
 
     // Now append any recursively crawled articles (depth > 0)
     for article in &ordered_articles {
@@ -728,9 +796,17 @@ fn run(args: CliArgs) -> AppResult<()> {
                     &wikipedia_language,
                     image_registry.as_mut(),
                 )?;
+                let file_name = chapter.file_name.clone();
+                let chapter_title = chapter.title.clone();
                 chapters.push(chapter);
                 added_article_keys.insert(lookup_key);
                 chapter_index += 1;
+
+                toc_nodes.push(TocNode {
+                    title: chapter_title,
+                    file_name,
+                    children: Vec::new(),
+                });
             }
         }
     }
@@ -754,7 +830,7 @@ fn run(args: CliArgs) -> AppResult<()> {
         Vec::new()
     };
 
-    write_epub(&config, &chapters, &images, &wikipedia_language)?;
+    write_epub(&config, &chapters, &images, &wikipedia_language, &toc_nodes)?;
     println!("Created {}", config.output_file.display());
     println!(
         "Skipped templates: recognized={}, unknown={}",
@@ -6574,6 +6650,7 @@ fn write_epub(
     chapters: &[Chapter],
     images: &[ResolvedImage],
     wikipedia_language: &str,
+    toc_nodes: &[TocNode],
 ) -> AppResult<()> {
     if let Some(parent) = config.output_file.parent()
         && !parent.as_os_str().is_empty()
@@ -6612,11 +6689,11 @@ fn write_epub(
         zip.write_all(&image.bytes)?;
     }
 
-    let nav = nav_xhtml(chapters, wikipedia_language);
+    let nav = nav_xhtml(toc_nodes, wikipedia_language);
     zip.start_file("OEBPS/nav.xhtml", deflated)?;
     zip.write_all(nav.as_bytes())?;
 
-    let toc = toc_ncx(&identifier, config, chapters);
+    let toc = toc_ncx(&identifier, config, toc_nodes);
     zip.start_file("OEBPS/toc.ncx", deflated)?;
     zip.write_all(toc.as_bytes())?;
 
@@ -6718,18 +6795,42 @@ fn frontmatter_xhtml(metadata: &Metadata, wikipedia_language: &str) -> String {
     )
 }
 
-fn nav_xhtml(chapters: &[Chapter], language: &str) -> String {
-    let items = chapters
-        .iter()
-        .map(|chapter| {
-            format!(
-                r#"<li><a href="{}">{}</a></li>"#,
-                encode_text(&chapter.file_name),
-                encode_text(&chapter.title)
-            )
-        })
-        .collect::<Vec<_>>()
-        .join("\n        ");
+fn render_nav_node(node: &TocNode) -> String {
+    if node.children.is_empty() {
+        format!(
+            r#"<li><a href="{}">{}</a></li>"#,
+            encode_text(&node.file_name),
+            encode_text(&node.title)
+        )
+    } else {
+        let child_items = node
+            .children
+            .iter()
+            .map(render_nav_node)
+            .collect::<Vec<_>>()
+            .join("\n          ");
+        format!(
+            r#"<li>
+          <a href="{}">{}</a>
+          <ol>
+            {}
+          </ol>
+        </li>"#,
+            encode_text(&node.file_name),
+            encode_text(&node.title),
+            child_items
+        )
+    }
+}
+
+fn nav_xhtml(toc_nodes: &[TocNode], language: &str) -> String {
+    let mut items = vec![format!(
+        r#"<li><a href="frontmatter.xhtml">Front matter</a></li>"#
+    )];
+
+    for node in toc_nodes {
+        items.push(render_nav_node(node));
+    }
 
     format!(
         r#"<?xml version="1.0" encoding="utf-8"?>
@@ -6742,13 +6843,13 @@ fn nav_xhtml(chapters: &[Chapter], language: &str) -> String {
     <nav epub:type="toc" id="toc">
       <h1>Contents</h1>
       <ol>
-        <li><a href="frontmatter.xhtml">Front matter</a></li>
-        {items}
+        {}
       </ol>
     </nav>
   </body>
 </html>
 "#,
+        items.join("\n        "),
         language_attributes = html_language_attributes(language),
     )
 }
@@ -6838,7 +6939,45 @@ fn content_opf(
     )
 }
 
-fn toc_ncx(identifier: &str, config: &BookConfig, chapters: &[Chapter]) -> String {
+fn render_ncx_nav_point(node: &TocNode, play_order: &mut usize) -> String {
+    *play_order += 1;
+    let order = *play_order;
+    let id_suffix = node
+        .file_name
+        .strip_prefix("chapter-")
+        .and_then(|s| s.strip_suffix(".xhtml"))
+        .unwrap_or(&node.file_name);
+    let id = format!("chapter-{id_suffix}");
+
+    if node.children.is_empty() {
+        format!(
+            r#"<navPoint id="{id}" playOrder="{order}">
+      <navLabel><text>{title}</text></navLabel>
+      <content src="{file}"/>
+    </navPoint>"#,
+            title = encode_text(&node.title),
+            file = encode_text(&node.file_name),
+        )
+    } else {
+        let mut child_navs = Vec::new();
+        for child in &node.children {
+            child_navs.push(render_ncx_nav_point(child, play_order));
+        }
+        format!(
+            r#"<navPoint id="{id}" playOrder="{order}">
+      <navLabel><text>{title}</text></navLabel>
+      <content src="{file}"/>
+      {}
+    </navPoint>"#,
+            child_navs.join("\n      "),
+            title = encode_text(&node.title),
+            file = encode_text(&node.file_name),
+        )
+    }
+}
+
+fn toc_ncx(identifier: &str, config: &BookConfig, toc_nodes: &[TocNode]) -> String {
+    let mut play_order = 1;
     let mut nav_points = vec![
         r#"<navPoint id="frontmatter" playOrder="1">
       <navLabel><text>Front matter</text></navLabel>
@@ -6847,37 +6986,38 @@ fn toc_ncx(identifier: &str, config: &BookConfig, chapters: &[Chapter]) -> Strin
             .to_string(),
     ];
 
-    for (index, chapter) in chapters.iter().enumerate() {
-        nav_points.push(format!(
-            r#"<navPoint id="chapter-{id}" playOrder="{order}">
-      <navLabel><text>{title}</text></navLabel>
-      <content src="{file}"/>
-    </navPoint>"#,
-            id = index + 1,
-            order = index + 2,
-            title = encode_text(&chapter.title),
-            file = encode_text(&chapter.file_name),
-        ));
+    for node in toc_nodes {
+        nav_points.push(render_ncx_nav_point(node, &mut play_order));
     }
+
+    fn get_max_depth(nodes: &[TocNode]) -> usize {
+        nodes
+            .iter()
+            .map(|node| 1 + get_max_depth(&node.children))
+            .max()
+            .unwrap_or(0)
+    }
+    let depth = get_max_depth(toc_nodes).max(1);
 
     format!(
         r#"<?xml version="1.0" encoding="utf-8"?>
 <ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
   <head>
     <meta name="dtb:uid" content="{identifier}"/>
-    <meta name="dtb:depth" content="1"/>
+    <meta name="dtb:depth" content="{depth}"/>
     <meta name="dtb:totalPageCount" content="0"/>
     <meta name="dtb:maxPageNumber" content="0"/>
   </head>
   <docTitle><text>{title}</text></docTitle>
   <navMap>
-    {nav_points}
+    {}
   </navMap>
 </ncx>
 "#,
+        nav_points.join("\n    "),
         identifier = encode_text(identifier),
         title = encode_text(&config.metadata.title),
-        nav_points = nav_points.join("\n    "),
+        depth = depth,
     )
 }
 

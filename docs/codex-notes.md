@@ -1,5 +1,44 @@
 # Codex Session Notes
 
+## 2026-06-02 Hierarchical Navigation and Nested EPUB Table of Contents Support
+
+### Summary
+
+Implemented fully recursive, hierarchical navigation and table of contents generation for EPUB books. The generated Table of Contents (`OEBPS/nav.xhtml` for EPUB 3 and `OEBPS/toc.ncx` for EPUB 2) now perfectly reflect the hierarchical nesting from the configuration files. All existing 29 flat books retain their flat depth of 1 and continue to pass perfectly, while hierarchical books (like planets) dynamically calculate and render nested layouts and deep nesting levels (depth of 2).
+
+### Decisions Made
+
+* Introduced `TocNode` structure in `src/main.rs` to represent a tree-structured Table of Contents node.
+* Implemented `generate_chapters_hierarchical` recursive visitor function to generate all sequential chapter XHTML files and build the hierarchical `TocNode` tree structure at the exact same time, preserving chronological chapter indices while supporting hierarchical nesting.
+* Updated `write_epub` signature and call sites to accept and pass the hierarchical `TocNode` tree.
+* Re-implemented `nav_xhtml` recursively to generate nested `<ol>` lists inside parent `<li>` elements, fully matching modern EPUB 3 reader specifications.
+* Re-implemented `toc_ncx` recursively to output nested `<navPoint>` elements, maintaining play orders sequentially.
+* Dynamically calculated NCX maximum tree depth (`dtb:depth` metadata) based on the actual nested levels of the generated TOC, ensuring flat books correctly retain depth `1` and nested books dynamically request depth `2` or deeper.
+* Fixed clippy suggestions by simplifying closure maps and adding standard `too_many_arguments` allowance for the recursive builder function.
+* Regenerated and unzipped reference expected files in `expected/planets/` to match the correct nested layouts.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Defined `TocNode` struct.
+  * Added `generate_chapters_hierarchical` recursive generation helper.
+  * Re-implemented `nav_xhtml` and `toc_ncx` recursively to support nested navigation and Table of Contents layouts.
+  * Updated NCX maximum depth calculation recursively.
+  * Resolved clippy warnings.
+* `expected/planets/` [MODIFY]
+  * Updated `expected/planets/OEBPS/nav.xhtml` and `expected/planets/OEBPS/toc.ncx` to match the newly generated nested layouts.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 158 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Integrate Planets Example and Update Expected Outputs
 
 ### Summary
