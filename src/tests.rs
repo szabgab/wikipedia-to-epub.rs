@@ -3446,6 +3446,21 @@ fn render_wikitext_formats_wikivoyage_inline_template() {
 }
 
 #[test]
+fn render_wikitext_formats_wikivoyage_inline_space_separated_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "See {{Wikivoyage inline|Honshu}}.",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered
+            .contains("Wikivoyage: <a href=\"https://en.wikivoyage.org/wiki/Honshu\">Honshu</a>"),
+        "rendered output was: {rendered}"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_nb5_template() {
     let rendered = render_wikitext("Sample", "A{{Nb5}}B", &InternalLinks::new(), "en");
     assert!(

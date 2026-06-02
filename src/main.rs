@@ -1747,6 +1747,7 @@ fn render_template(content: &str) -> String {
         render_wiktionary_template(params)
     } else if template.eq_ignore_ascii_case("wikivoyage")
         || template.eq_ignore_ascii_case("wikivoyage-inline")
+        || template.eq_ignore_ascii_case("wikivoyage inline")
     {
         render_wikivoyage_template(params)
     } else if template.eq_ignore_ascii_case("wikisource") {
@@ -2072,6 +2073,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("wiktionary")
         || template.eq_ignore_ascii_case("wikivoyage")
         || template.eq_ignore_ascii_case("wikivoyage-inline")
+        || template.eq_ignore_ascii_case("wikivoyage inline")
         || template.eq_ignore_ascii_case("wikisource")
         || template.eq_ignore_ascii_case("wikibooks")
         || template.eq_ignore_ascii_case("britannica")

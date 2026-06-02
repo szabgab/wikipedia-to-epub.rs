@@ -1,5 +1,44 @@
 # Codex Session Notes
 
+## 2026-06-02 Templates on en "Honshu"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Honshu" article. Supported the space-separated template alias `wikivoyage inline` by routing it to `render_wikivoyage_template`, and registered `World's largest islands` as a navigation template in `src/navigations.csv`. Wrote a dedicated unit test in `src/tests.rs` to verify that `wikivoyage inline` templates parse correctly, and documented it in `DEVELOPMENT.md`. Run `./sort.sh` to sort the navigation templates database alphabetically. All 186 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "Honshu":
+  * `wikivoyage inline`: space-separated alias of `wikivoyage-inline`, added mapping in `src/main.rs` to route to `render_wikivoyage_template` and registered in `is_handled_template_name`.
+  * `World's largest islands`: navigation template (navbox), added to `src/navigations.csv` to be skipped.
+* Added a dedicated unit test `render_wikitext_formats_wikivoyage_inline_space_separated_template` in `src/tests.rs`.
+* Documented the `wikivoyage inline` space-separated alias in `DEVELOPMENT.md`.
+* Sorted `src/navigations.csv` and `src/silent.csv` alphabetically using `./sort.sh`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Map `wikivoyage inline` alias to `render_wikivoyage_template` and register it in `is_handled_template_name`.
+* `src/navigations.csv` [MODIFY]
+  * Added `World's largest islands` and sorted alphabetically.
+* `src/tests.rs` [MODIFY]
+  * Added unit test `render_wikitext_formats_wikivoyage_inline_space_separated_template`.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented `wikivoyage inline` template support.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 186 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-02 Templates on en "Takayama Station"
 
 ### Summary
