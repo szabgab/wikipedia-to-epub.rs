@@ -1,5 +1,86 @@
 # Codex Session Notes
 
+## 2026-06-01 Integrate Planets Example and Update Expected Outputs
+
+### Summary
+
+Added a new end-to-end integration test `generate_planets_book_from_local_page_dumps` that compiles a hierarchical book from the newly created `examples/planets.yaml` using local pages. Copied the cached Wikipedia pages from `.cache/` to the local `pages/` directory under correct titles. Generated `planets.epub` offline, unzipped the contents, and saved them to the expected output folder `expected/planets/` for full reference comparisons.
+
+### Decisions Made
+
+* Copied the cached Wikipedia page JSON files from `.cache/pages/en/` to `pages/` under readable, standardized titles:
+  * `952631b4f45157d7.json` -> `pages/Earth.json`
+  * `17d403422465886b.json` -> `pages/Solar_System.json`
+  * `987ac119fac8d621.json` -> `pages/Sun.json`
+  * `ececabc23644400e.json` -> `pages/Mercury.json`
+  * `96d908c246fd5c26.json` -> `pages/Venus.json`
+  * `49c958aecfef6768.json` -> `pages/Mars.json`
+* Compiled the hierarchical book `planets.epub` using local fixtures and disabled live-fetches to ensure fully deterministic and offline generation.
+* Unzipped the generated `planets.epub` into `expected/planets/` for integration test regression-checks using Python's `zipfile` module.
+* Added `generate_planets_book_from_local_page_dumps` integration test case in `tests/books.rs` which executes full structure and diff checks on all generated EPUB files against `expected/planets/`.
+* Cleaned up the temporary `.cache` directory and `planets.epub` outputs.
+
+### Files Changed
+
+* `tests/books.rs` [MODIFY]
+  * Appended the `generate_planets_book_from_local_page_dumps` integration test case.
+* `pages/Earth.json`, `pages/Solar_System.json`, `pages/Sun.json`, `pages/Mercury.json`, `pages/Venus.json`, `pages/Mars.json` [NEW]
+  * Added the local article page JSON dumps.
+* `expected/planets/` [NEW]
+  * Created the expected unzipped structure and content for `planets` book regression testing.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 158 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
+## 2026-06-01 Implement Hierarchical Config and Section Category Support
+
+### Summary
+
+Implemented support for a hierarchical article structure in YAML configuration files. Users can now compile books containing flat article lists, parent articles with nested sub-articles, and logical structural sections designated by `type: "section"`. Generated structural sections compile cleanly into the output EPUB zip as non-fetched structural Table of Contents dividers. Updated example files and added comprehensive unit and integration tests. All checks and tests passed successfully.
+
+### Decisions Made
+
+* Designed a clean, backward-compatible nested article configuration format.
+* Added `ArticleType`, `ArticleConfig`, and `DetailedArticle` structs and updated `BookConfig.articles` type in `src/main.rs`.
+* Implemented recursive visiting (`visit_hierarchical_articles`) and Chapter Node collection (`collect_chapter_nodes`) inside the compilation pipeline in `src/main.rs`.
+* Supported logical section headings by dynamically generating structural chapter files with custom headers and skipping Wikipedia live fetches when `type == Some(ArticleType::Section)`.
+* Created a new planet-focused hierarchical configuration example at `examples/planets.yaml`.
+* Updated the template documentation at `skeleton.yaml` to document the hierarchical layout structures.
+* Added a new unit test `test_hierarchical_book_config_parsing` in `src/tests.rs` to verify Serde parsing.
+* Added an end-to-end integration test `generate_hierarchical_book_from_local_page_dump` in `tests/books.rs` to compile a book using hierarchical articles and structural sections, checking the generated EPUB ZIP contents.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Updated configuration structs, implemented recursive hierarchy visiting, and supported logical structural sections in chapter generation.
+* `src/tests.rs` [MODIFY]
+  * Added `test_hierarchical_book_config_parsing` unit test.
+* `tests/books.rs` [MODIFY]
+  * Added `generate_hierarchical_book_from_local_page_dump` integration test.
+* `skeleton.yaml` [MODIFY]
+  * Documented hierarchical formatting options.
+* `examples/planets.yaml` [NEW]
+  * Created planets hierarchical configuration example.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 158 unit tests and 29 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-01 Handle templates on en "Kiso River"
 
 ### Summary

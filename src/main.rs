@@ -99,6 +99,28 @@ enum CachingMode {
     Central,
 }
 
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+enum ArticleType {
+    Section,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(untagged)]
+enum ArticleConfig {
+    Simple(String),
+    Detailed(Box<DetailedArticle>),
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct DetailedArticle {
+    title: String,
+    #[serde(rename = "type")]
+    r#type: Option<ArticleType>,
+    #[serde(default)]
+    articles: Vec<ArticleConfig>,
+}
+
 #[derive(Debug, Deserialize)]
 struct BookConfig {
     metadata: Metadata,
@@ -108,7 +130,7 @@ struct BookConfig {
     images: bool,
     caching: CachingMode,
     depth: usize,
-    articles: Vec<String>,
+    articles: Vec<ArticleConfig>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -548,38 +570,170 @@ fn run(args: CliArgs) -> AppResult<()> {
     let mut ordered_articles = Vec::new();
     let mut loaded_pages = HashMap::new();
 
-    for article in &config.articles {
-        dfs_visit(
-            article,
-            0,
-            config.depth,
-            page_source.as_ref(),
-            &mut visited,
-            &mut ordered_articles,
-            &mut loaded_pages,
-        )?;
+    fn visit_hierarchical_articles(
+        entries: &[ArticleConfig],
+        depth: usize,
+        page_source: &dyn PageSource,
+        visited: &mut std::collections::HashSet<String>,
+        ordered_articles: &mut Vec<String>,
+        loaded_pages: &mut HashMap<String, PageResponse>,
+    ) -> AppResult<()> {
+        for entry in entries {
+            match entry {
+                ArticleConfig::Simple(title) => {
+                    dfs_visit(
+                        title,
+                        0,
+                        depth,
+                        page_source,
+                        visited,
+                        ordered_articles,
+                        loaded_pages,
+                    )?;
+                }
+                ArticleConfig::Detailed(detailed) => {
+                    if detailed.r#type.is_none() {
+                        dfs_visit(
+                            &detailed.title,
+                            0,
+                            depth,
+                            page_source,
+                            visited,
+                            ordered_articles,
+                            loaded_pages,
+                        )?;
+                    }
+                    visit_hierarchical_articles(
+                        &detailed.articles,
+                        depth,
+                        page_source,
+                        visited,
+                        ordered_articles,
+                        loaded_pages,
+                    )?;
+                }
+            }
+        }
+        Ok(())
     }
 
+    visit_hierarchical_articles(
+        &config.articles,
+        config.depth,
+        page_source.as_ref(),
+        &mut visited,
+        &mut ordered_articles,
+        &mut loaded_pages,
+    )?;
+
     let internal_links = internal_links(&ordered_articles);
-    let chapters = ordered_articles
-        .iter()
-        .enumerate()
-        .map(|(index, article)| {
-            let page = loaded_pages
-                .get(&normalize_lookup_key(article))
-                .unwrap_or_else(|| panic!("page '{}' is pre-loaded in resolution phase", article));
-            if !page_source.is_cache_hit(article) {
-                info!(article = page.parse.title, "fetching article");
+
+    #[derive(Debug)]
+    enum BookChapterNode {
+        Article { title: String },
+        Section { title: String },
+    }
+
+    fn collect_chapter_nodes(entries: &[ArticleConfig], nodes: &mut Vec<BookChapterNode>) {
+        for entry in entries {
+            match entry {
+                ArticleConfig::Simple(title) => {
+                    nodes.push(BookChapterNode::Article {
+                        title: title.clone(),
+                    });
+                }
+                ArticleConfig::Detailed(detailed) => {
+                    if let Some(ArticleType::Section) = detailed.r#type {
+                        nodes.push(BookChapterNode::Section {
+                            title: detailed.title.clone(),
+                        });
+                    } else {
+                        nodes.push(BookChapterNode::Article {
+                            title: detailed.title.clone(),
+                        });
+                    }
+                    collect_chapter_nodes(&detailed.articles, nodes);
+                }
             }
-            load_chapter(
-                page,
-                index + 1,
-                &internal_links,
-                &wikipedia_language,
-                image_registry.as_mut(),
-            )
-        })
-        .collect::<AppResult<Vec<_>>>()?;
+        }
+    }
+
+    let mut chapter_nodes = Vec::new();
+    collect_chapter_nodes(&config.articles, &mut chapter_nodes);
+
+    let mut chapters = Vec::new();
+    let mut added_article_keys = std::collections::HashSet::new();
+    let mut chapter_index = 1;
+
+    for node in chapter_nodes {
+        match node {
+            BookChapterNode::Section { title } => {
+                let content = format!(
+                    r#"<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{}">
+  <head>
+    <title>{}</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <h1>{}</h1>
+  </body>
+</html>
+"#,
+                    wikipedia_language, title, title
+                );
+                let file_name = format!("chapter-{}.xhtml", chapter_index);
+                chapters.push(Chapter {
+                    title: title.clone(),
+                    file_name,
+                    content,
+                    template_skip_counts: TemplateSkipCounts::default(),
+                });
+                chapter_index += 1;
+            }
+            BookChapterNode::Article { title } => {
+                let lookup_key = normalize_lookup_key(&title);
+                if let Some(page) = loaded_pages.get(&lookup_key) {
+                    if !page_source.is_cache_hit(&title) {
+                        info!(article = page.parse.title, "fetching article");
+                    }
+                    let chapter = load_chapter(
+                        page,
+                        chapter_index,
+                        &internal_links,
+                        &wikipedia_language,
+                        image_registry.as_mut(),
+                    )?;
+                    chapters.push(chapter);
+                    added_article_keys.insert(lookup_key);
+                    chapter_index += 1;
+                }
+            }
+        }
+    }
+
+    // Now append any recursively crawled articles (depth > 0)
+    for article in &ordered_articles {
+        let lookup_key = normalize_lookup_key(article);
+        if !added_article_keys.contains(&lookup_key) {
+            let page_opt = loaded_pages.get(&lookup_key);
+            if let Some(page) = page_opt {
+                if !page_source.is_cache_hit(article) {
+                    info!(article = page.parse.title, "fetching article");
+                }
+                let chapter = load_chapter(
+                    page,
+                    chapter_index,
+                    &internal_links,
+                    &wikipedia_language,
+                    image_registry.as_mut(),
+                )?;
+                chapters.push(chapter);
+                added_article_keys.insert(lookup_key);
+                chapter_index += 1;
+            }
+        }
+    }
     let total_template_skip_counts =
         chapters
             .iter()

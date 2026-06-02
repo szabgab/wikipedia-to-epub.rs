@@ -1,0 +1,22 @@
+metadata:
+  title: "The Solar System and Planets"
+  author: "Wikipedia contributors"
+  license: "Creative Commons Attribution-ShareAlike 4.0 License"
+  language: "en"
+  edition: "First edition"
+  date: "2026-06-01"
+output-file: "planets.epub"
+images: false
+caching: "central"
+depth: 0
+articles:
+  - "Earth"
+  - title: "Solar System"
+    articles:
+      - "Sun"
+      - "Mercury"
+  - title: "Planets Info"
+    type: "section"
+    articles:
+      - "Venus"
+      - "Mars"

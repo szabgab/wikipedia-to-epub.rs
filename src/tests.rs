@@ -3317,3 +3317,52 @@ fn render_wikitext_formats_generic_ship_template() {
         "rendered output was: {rendered}"
     );
 }
+
+#[test]
+fn test_hierarchical_book_config_parsing() {
+    let yaml = r#"metadata:
+  title: "The Solar System"
+  author: "Wikipedia contributors"
+  language: en
+  edition: First edition
+output-file: planets.epub
+caching: none
+depth: 0
+articles:
+  - "Earth"
+  - title: "Solar System"
+    articles:
+      - "Sun"
+      - "Mercury"
+  - title: "Planets Info"
+    type: "section"
+    articles:
+      - "Venus"
+"#;
+    let config =
+        serde_yaml::from_str::<BookConfig>(yaml).expect("should parse hierarchical config");
+    assert_eq!(config.articles.len(), 3);
+
+    match &config.articles[0] {
+        ArticleConfig::Simple(title) => assert_eq!(title, "Earth"),
+        _ => panic!("Expected simple article entry"),
+    }
+
+    match &config.articles[1] {
+        ArticleConfig::Detailed(detailed) => {
+            assert_eq!(detailed.title, "Solar System");
+            assert_eq!(detailed.r#type, None);
+            assert_eq!(detailed.articles.len(), 2);
+        }
+        _ => panic!("Expected detailed article entry"),
+    }
+
+    match &config.articles[2] {
+        ArticleConfig::Detailed(detailed) => {
+            assert_eq!(detailed.title, "Planets Info");
+            assert_eq!(detailed.r#type, Some(ArticleType::Section));
+            assert_eq!(detailed.articles.len(), 1);
+        }
+        _ => panic!("Expected detailed article entry"),
+    }
+}

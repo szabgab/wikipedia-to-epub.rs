@@ -53,9 +53,26 @@ caching: "central"
 #         (only following links within the same language Wikipedia, without duplicates, depth-first).
 depth: 0
 
-# List of Wikipedia article page titles to compile into the book.
-# Value: An array of article page title strings. The book will be constructed in the
-# order listed (depth-first if depth > 0).
+# List of Wikipedia article page titles and sections to compile into the book.
+# The book will be constructed in the order listed.
+#
+# Supported formats:
+#   1. Stand-alone page (standard flat string)
+#   2. Main article with nested sub-articles (as an object with 'title' and list of 'articles')
+#   3. Logical section/chapter headings (an object with 'title', 'type: "section"', and list of 'articles')
 articles:
+  # Stand-alone article
   - "Earth"
-  - "Solar System"
+  
+  # Parent article with nested sub-pages
+  - title: "Solar System"
+    articles:
+      - "Sun"
+      - "Mercury"
+  
+  # Purely structural section heading/divider
+  - title: "Planets Info"
+    type: "section"
+    articles:
+      - "Venus"
+      - "Mars"

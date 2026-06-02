@@ -116,6 +116,11 @@ fn generate_parhae_book_from_local_page_dumps() {
 }
 
 #[test]
+fn generate_planets_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("planets");
+}
+
+#[test]
 fn generate_spanish_corea_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("es-corea");
 }
@@ -567,4 +572,72 @@ fn unique_test_dir(repo: &Path, test_name: &str) -> PathBuf {
     repo.join("target")
         .join("test-output")
         .join(format!("{test_name}-{}-{nanos}", std::process::id()))
+}
+
+#[test]
+fn generate_hierarchical_book_from_local_page_dump() {
+    let repo = repo_root();
+    let work_dir = unique_test_dir(&repo, "hierarchical-book");
+    fs::create_dir_all(&work_dir).unwrap();
+
+    let config_path = work_dir.join("book.yaml");
+    let yaml = r#"metadata:
+  title: "Japan and Osaka"
+  author: "Wikipedia contributors"
+  language: en
+  edition: First edition
+output-file: output.epub
+caching: none
+depth: 0
+articles:
+  - "Japan"
+  - title: "Osaka Info"
+    type: "section"
+    articles:
+      - "Osaka"
+"#;
+    fs::write(&config_path, yaml).unwrap();
+
+    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+        .current_dir(&work_dir)
+        .arg(&config_path)
+        .arg("--local")
+        .arg(repo.join("pages"))
+        .arg("--caching")
+        .arg("none")
+        .arg("--log")
+        .arg("WARN")
+        .output()
+        .unwrap();
+
+    assert!(output.status.success(), "run failed: {:?}", output);
+
+    let epub_path = work_dir.join("output.epub");
+    assert!(epub_path.exists(), "output.epub should be created");
+
+    let zip_file = File::open(&epub_path).unwrap();
+    let mut archive = ZipArchive::new(zip_file).unwrap();
+
+    assert!(
+        archive.by_name("OEBPS/chapter-1.xhtml").is_ok(),
+        "chapter-1 should exist"
+    );
+    assert!(
+        archive.by_name("OEBPS/chapter-2.xhtml").is_ok(),
+        "chapter-2 should exist"
+    );
+    assert!(
+        archive.by_name("OEBPS/chapter-3.xhtml").is_ok(),
+        "chapter-3 should exist"
+    );
+
+    let mut chapter2 = archive.by_name("OEBPS/chapter-2.xhtml").unwrap();
+    let mut chapter2_content = String::new();
+    chapter2.read_to_string(&mut chapter2_content).unwrap();
+    assert!(
+        chapter2_content.contains("<h1>Osaka Info</h1>"),
+        "chapter2 should have section title"
+    );
+
+    fs::remove_dir_all(&work_dir).unwrap();
 }
