@@ -526,6 +526,42 @@ fn render_wikitext_formats_interlanguage_link_alias_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_jaanus_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Jaanus|w/washi|Washi}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Washi</a><span class=\"external-link\">↗</span> at JAANUS"),
+        "{rendered}"
+    );
+
+    let rendered_no_label = render_wikitext(
+        "Sample",
+        "{{Jaanus|w/washi}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered_no_label.contains("w/washi</a><span class=\"external-link\">↗</span> at JAANUS"),
+        "{rendered_no_label}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_translit_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{translit|ja|[[Genkō yōshi]]}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Genkō yōshi"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_ipa_link_template() {
     let rendered = render_wikitext("Sample", "{{IPAslink|m}}", &InternalLinks::new(), "en");
     assert!(
@@ -1004,6 +1040,9 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{CS1 config|mode=cs1}}
 {{unsolved|astronomy| corona }}
 {{discuss|talk page section}}
+{{Italic title|reason=Category:Japanese words and phrases}}
+{{Expand Japanese|和紙|topic=cult|date=August 2021}}
+{{Tone inline|date=April 2026}}
 Visible text."#,
         &InternalLinks::new(),
         "en",
@@ -1028,7 +1067,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 100,
+            recognized: 103,
             unknown: 0
         }
     );

@@ -67,7 +67,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{langx|ko|溝樓|lit=Walled City|label=none}}` becomes `<span lang="ko">溝樓</span>, lit. Walled City`
 * `{{Lang-zh|t=朝鮮|p=Cháoxiǎn|labels=no}}` becomes `<span lang="zh">朝鮮</span> (Cháoxiǎn)`
 * `{{zh|t=西漢|p=Xīhàn}}` and `{{zhi|c=比}}` are rendered like Chinese-language text spans, including pinyin when present
-* `{{Transliteration|zh|pinyin|Zhuāngxiàn}}` becomes `<span lang="zh-Latn">Zhuāngxiàn</span>`
+* `{{Transliteration|zh|pinyin|Zhuāngxiàn}}` (and its alias `translit`) becomes `<span lang="zh-Latn">Zhuāngxiàn</span>`
 * `{{tlit|ko|mr|Chosŏn'gŭl}}` becomes `<span lang="ko-Latn">Chosŏn'gŭl</span>`
 * `{{Ko-translit|rr|^한국}}` becomes `Hanguk`
 * `{{lit|Vernacular Script Commission}}` becomes `lit. Vernacular Script Commission`
@@ -154,6 +154,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Wikisource|Korea}}` becomes `Wikisource:` followed by a link to the Wikisource entry
 * `{{Wikibooks|1=Book title|2=Chapter title|3=label}}` becomes `Wikibooks:` followed by a link to the Wikibooks chapter
 * `{{Britannica|322222}}` becomes `Britannica:` followed by a link to the Britannica article id
+* `{{Jaanus|w/washi|Washi}}` renders as an external link to the JAANUS database: `<a href="http://www.aisf.or.jp/~jaanus/deta/w/washi.htm">Washi</a> at JAANUS`
 * `{{Official website|https://example.com|name=Example}}` becomes an external link to `https://example.com` with `Example` as the visible text
 * `{{URL|1=https://english.seoul.go.kr/|2=Official website}}` becomes an external link to `https://english.seoul.go.kr/` with `Official website` as the visible text
 * `{{osmrelation-inline|2396450}}` and `{{OSM relation|382313}}` become an external link to the OpenStreetMap relation; `{{osmway|131922091}}` and `{{OSM way|131922091}}` similarly link to the OpenStreetMap way

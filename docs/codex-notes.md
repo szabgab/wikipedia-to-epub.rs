@@ -1,5 +1,48 @@
 # Codex Session Notes
 
+## 2026-06-02 Templates on en "Washi"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Washi" article. Implemented custom renderer `render_jaanus_template` for `Jaanus` to render links to the JAANUS art dictionary, and routed `translit` directly as an alias for `render_transliteration_template`. Registered `Italic title`, `Expand Japanese`, and `Tone inline` as silent metadata and warning templates in `src/silent.csv`. Wrote dedicated unit tests for the new templates in `src/tests.rs` and documented them in `DEVELOPMENT.md`. All 184 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Identified and registered unhandled/missing templates for "Washi":
+  * `Jaanus`: dictionary template for Japanese architecture/art, implemented custom renderer `render_jaanus_template` linking to `http://www.aisf.or.jp/~jaanus/deta/{path}.htm`.
+  * `translit`: alias of `transliteration` template, routed directly to `render_transliteration_template`.
+  * `Italic title`, `Expand Japanese`, and `Tone inline`: silent layout and maintenance templates, added to `src/silent.csv`.
+* Ran `./sort.sh` to keep CSV databases alphabetically sorted.
+* Wrote comprehensive unit tests `render_wikitext_formats_jaanus_templates` and `render_wikitext_formats_translit_templates` in `src/tests.rs`.
+* Appended new silent templates to `render_wikitext_silently_skips_metadata_templates` and updated the recognized skip count assertion to `103`.
+* Documented the new styling template rules in `DEVELOPMENT.md`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Registered `translit` and `Jaanus` in `render_template` and `is_handled_template_name`.
+  * Implemented `render_jaanus_template`.
+* `src/tests.rs` [MODIFY]
+  * Appended standalone unit tests for `Jaanus` and `translit` templates.
+  * Added new silent templates to the skips list in `render_wikitext_silently_skips_metadata_templates` and updated recognized template count to `103`.
+* `src/silent.csv` [MODIFY]
+  * Added `Italic title`, `Expand Japanese`, and `Tone inline`, sorted alphabetically.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new template rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 184 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-02 Templates on en "Battle of Sekigahara"
 
 ### Summary

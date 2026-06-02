@@ -1656,7 +1656,9 @@ fn render_template(content: &str) -> String {
         || template.eq_ignore_ascii_case("zhi")
     {
         render_chinese_lang_template(params)
-    } else if template.eq_ignore_ascii_case("transliteration") {
+    } else if template.eq_ignore_ascii_case("transliteration")
+        || template.eq_ignore_ascii_case("translit")
+    {
         render_transliteration_template(params)
     } else if template.eq_ignore_ascii_case("tlit") {
         render_transliteration_like_template(params)
@@ -1908,6 +1910,8 @@ fn render_template(content: &str) -> String {
         render_tooltip_template(params)
     } else if template.eq_ignore_ascii_case("Nihongo krt") {
         render_nihongo_krt_template(params)
+    } else if template.eq_ignore_ascii_case("Jaanus") {
+        render_jaanus_template(params)
     } else if template.eq_ignore_ascii_case("nihongo3") {
         render_nihongo3_template(params)
     } else if template.eq_ignore_ascii_case("Easy CSS image crop") {
@@ -2015,6 +2019,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("zh")
         || template.eq_ignore_ascii_case("zhi")
         || template.eq_ignore_ascii_case("transliteration")
+        || template.eq_ignore_ascii_case("translit")
         || template.eq_ignore_ascii_case("tlit")
         || template.eq_ignore_ascii_case("ko-translit")
         || template.eq_ignore_ascii_case("lit")
@@ -2118,6 +2123,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("fs interlinear")
         || template.eq_ignore_ascii_case("Tooltip")
         || template.eq_ignore_ascii_case("Nihongo krt")
+        || template.eq_ignore_ascii_case("Jaanus")
         || template.eq_ignore_ascii_case("nihongo3")
         || template.eq_ignore_ascii_case("Easy CSS image crop")
         || template.eq_ignore_ascii_case("ISSN")
@@ -3481,6 +3487,41 @@ fn render_tooltip_template(params: &str) -> String {
     let title = render_templates(title.trim());
     format!(
         "__WIKIPEDIA_TO_EPUB_ABBR_START__{title}__WIKIPEDIA_TO_EPUB_ABBR_VALUE__{text}__WIKIPEDIA_TO_EPUB_ABBR_END__"
+    )
+}
+
+fn render_jaanus_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let path = template_param(&named, &["1", "path"])
+        .map(|s| s.to_string())
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+
+    let label = template_param(&named, &["2", "label", "text"])
+        .map(|s| s.to_string())
+        .or_else(|| positional.get(1).cloned())
+        .unwrap_or_default();
+
+    let path = path.trim();
+    let label = label.trim();
+
+    if path.is_empty() {
+        return String::new();
+    }
+
+    let resolved_label = if label.is_empty() {
+        path
+    } else {
+        label
+    };
+
+    let url = format!("http://www.aisf.or.jp/~jaanus/deta/{}.htm", path);
+    format!(
+        "[[official-url:{}|{}]] at JAANUS",
+        url,
+        render_templates(resolved_label)
     )
 }
 

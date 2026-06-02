@@ -18,17 +18,17 @@ clear
 Clear left
 Closed access
 cn
-col-begin
 colbegin
+col-begin
 col-break
-col-end
 colend
+col-end
 columns-list
 Commons
 Commons and category
 Commons category
-Commons category-inline
 Commons category inline
+Commons category-inline
 commonscat,                    Link to category in Wikimedia Commons. Alias of Commons category.
 Contains special characters
 CS1 config
@@ -45,6 +45,7 @@ dubious
 efn
 efn-ua
 Excessive citations inline
+Expand Japanese
 Expand section
 Explain
 FACT
@@ -57,6 +58,7 @@ Gallery
 huh
 in title
 ISBN?
+Italic title
 Library resources box
 Listen
 location map+
@@ -112,6 +114,7 @@ TOC limit
 TOClimit
 tocright
 tone
+Tone inline
 tree chart
 tree chart/end
 tree chart/start
