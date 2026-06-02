@@ -1,5 +1,63 @@
 # Codex Session Notes
 
+## 2026-06-02 Templates on en "Earth"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Earth" article. This involved implementing custom renderers, routing, and postprocessor placeholders to render a set of 16 templates accurately: `Proto`, `wktl`, `wikt-lang`, `langr`, `val`, `Value`, `value`, `chem2`, `e`, `sup`, `sub`, `mpl`, `columns list`, and `annotated link`. Added `Subject bar` to silent skips, and `Earth` to navigation skips. Refactored the inline markup pipeline to safely preserve superscript (`<sup>`) and subscript (`<sub>`) tags via temporary placeholders, preventing them from being stripped during residual tag cleaning. All 167 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Identified and registered 16 unhandled/missing templates for "Earth":
+  * `Proto`: linguistic proto-language reconstructions (e.g. `Proto-Germanic *erþō`).
+  * `wktl`, `wikt-lang`, `langr`: inline language tagging (translated to standard `render_lang_template`).
+  * `val`, `Value`, `value`: rendering numbers with ranges, uncertainties, exponents, and units.
+  * `chem2`: rendering subscripts in chemical formulas (e.g. `O₂`).
+  * `e`: power of ten markers (e.g. `× 10⁻⁵`).
+  * `sup`, `sub`: superscript/subscript inline spans.
+  * `mpl`: minor planet linking.
+  * `columns list`: positional list items extracted inside standard unordered lists.
+  * `annotated link`: cross-reference linking.
+* Registered `Subject bar` in `src/silent.csv` to silence page metadata bars.
+* Registered `Earth` in `src/navigations.csv` to silence the Earth navigation footer.
+* Solved the HTML/markup postprocessor stripping issue: introduced custom `__WIKIPEDIA_TO_EPUB_SUP_START__`, `__WIKIPEDIA_TO_EPUB_SUP_END__`, `__WIKIPEDIA_TO_EPUB_SUB_START__`, `__WIKIPEDIA_TO_EPUB_SUB_END__` placeholders and restored them sequentially at the end of `format_inline_text`, keeping raw HTML tags safe from the `residual_tags_re` filter.
+* Refactored a highly nested restoration function call chain in `format_inline_text` into clean, sequential let statements to prevent matching brace mistakes and improve maintenance.
+* Added standalone unit tests for each new template category separately in `src/tests.rs`.
+* Fixed `Value` unit test assertion to align with external URL linking for `[[Ronnagram|Rg]]`.
+* Fixed duplicate conditional block clippy warnings and unnecessary `let`-and-return warnings.
+* Regenerated and unzipped reference expected files in `expected/planets/` to match the newly formatted Earth text in the compiled Planets EPUB.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Registered and implemented `Proto`, `val`, `chem2`, `sup`, `sub`, `e`, `mpl`, `columns list`, and `annotated link` renderers.
+  * Refactored `format_inline_text` with custom placeholders for `sup` and `sub` tags.
+  * Merged duplicate conditional branches to satisfy Clippy.
+* `src/tests.rs` [MODIFY]
+  * Appended dedicated unit tests for the 16 new templates.
+  * Verified correct relative/external hyperlink resolution using populated `InternalLinks` maps.
+* `src/navigations.csv` [MODIFY]
+  * Added `Earth` and sorted alphabetically.
+* `src/silent.csv` [MODIFY]
+  * Added `Subject bar` and sorted alphabetically.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented all new template rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Added session notes.
+* `expected/planets/` [MODIFY]
+  * Updated planets integration test fixture files to include Earth's new rendered output.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 167 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-02 Hierarchical Navigation and Nested EPUB Table of Contents Support
 
 ### Summary

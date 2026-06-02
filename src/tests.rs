@@ -3366,3 +3366,128 @@ articles:
         _ => panic!("Expected detailed article entry"),
     }
 }
+
+#[test]
+fn render_wikitext_formats_proto_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Proto|germanic|erþō}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Proto-Germanic *erþō"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_wktl_and_langr_templates() {
+    let rendered = render_wikitext("Sample", "{{wktl|grc|γῆ|gē}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("lang=\"grc\""), "{rendered}");
+    assert!(rendered.contains("γῆ"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{langr|la|Terra}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("lang=\"la\""), "{rendered}");
+    assert!(rendered.contains("Terra"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_val_and_value_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{val|4.5682|0.0002|0.0004}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("4.5682 (+0.0004/-0.0002)"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{val|4.54|0.04|u=Ga}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("4.54 ± 0.04 Ga"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{val|600|–|540|u=Ma}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("600 – 540 Ma"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{val|5.97|e=24|ul=kg}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("5.97 × 10<sup>24</sup> kg"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Value|5.97|u=[[Ronnagram|Rg]]}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("5.97 <a href=\"https://en.wikipedia.org/wiki/Ronnagram\">Rg</a>"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_chem2_template() {
+    let rendered = render_wikitext("Sample", "{{chem2|O2}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("O<sub>2</sub>"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{chem2|CO2}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("CO<sub>2</sub>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_e_template() {
+    let rendered = render_wikitext("Sample", "{{e|-5}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("× 10<sup>-5</sup>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_sup_and_sub_templates() {
+    let rendered = render_wikitext("Sample", "{{sup|2}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<sup>2</sup>"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{sub|x}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<sub>x</sub>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_mpl_template() {
+    let rendered = render_wikitext("Sample", "{{mpl|2010 TK|7}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("2010 TK7"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_columns_list_template() {
+    let wikitext = "{{columns list|colwidth=22em|\n* Item 1\n* Item 2}}";
+    let rendered = render_wikitext("Sample", wikitext, &InternalLinks::new(), "en");
+    assert!(rendered.contains("<li>Item 1</li>"), "{rendered}");
+    assert!(rendered.contains("<li>Item 2</li>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_annotated_link_template() {
+    let mut links = InternalLinks::new();
+    links.insert(
+        "celestialsphere".to_string(),
+        "Celestial_sphere.xhtml".to_string(),
+    );
+    let rendered = render_wikitext(
+        "Sample",
+        "{{annotated link|Celestial sphere}}",
+        &links,
+        "en",
+    );
+    assert!(
+        rendered.contains("href=\"Celestial_sphere.xhtml\""),
+        "{rendered}"
+    );
+}

@@ -175,6 +175,15 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Collapsible list|title=Title|Item A|Item B}}` renders a title followed by bulleted items on newlines
 * `{{Internet Archive short film|id=id|name=Name}}` renders as an external link to the Internet Archive short film details page
 * `{{jct|country=JPN|Route|41}}` renders as a formatted road link (e.g. `National Route 41` linked to the Wikipedia article)
+* `{{Proto|germanic|erþō}}` renders linguistic proto-language reconstructions: `Proto-Germanic *erþō`
+* `{{wktl|grc|γῆ|gē}}` and `{{langr|la|Terra}}` format language-tagged text inside inline spans: `<span lang="grc">γῆ</span>` and `<span lang="la">Terra</span>`
+* `{{val|4.5682|0.0002|0.0004}}` and `{{Value|5.97|u=[[Ronnagram|Rg]]}}` render values with uncertainties, ranges, exponents, or units: `4.5682 (+0.0004/-0.0002)` and `5.97 <a href="https://en.wikipedia.org/wiki/Ronnagram">Rg</a>`
+* `{{chem2|O2}}` renders chemical formulas using subscripts: `O<sub>2</sub>`
+* `{{e|-5}}` renders powers of ten: `× 10<sup>-5</sup>`
+* `{{sup|2}}` and `{{sub|x}}` render superscript and subscript spans: `<sup>2</sup>` and `<sub>x</sub>`
+* `{{mpl|2010 TK|7}}` renders minor planet names: `2010 TK7`
+* `{{columns list|colwidth=22em|...}}` processes and displays positional list items inside standard unordered lists
+* `{{annotated link|Celestial sphere}}` translates annotated links into standard wikilinks
 * Wikipedia navigation templates listed in `src/navigations.csv`  are omitted; both `src/navigations.csv` and `src/silent.csv` support comma-separated comments, ignoring any text after the comma in the code; template names are normalized by converting underscores to spaces before checking for matches.
 * Wikipedia succession-box templates such as `{{Succession box}}` or those whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are omitted
 * Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{More citations needed}}`, `{{additional citations needed}}`, `{{Refimprove}}`, `{{FACT}}`, `{{citation needed}}`, `{{cn}}`, `{{huh}}`, `{{when}}`, `{{who}}`, `{{more cn section}}`, `{{prose}}`, `{{Unreliable source?}}`, `{{Better source needed}}`, `{{Dead link}}`, `{{Page needed}}`, `{{New archival link needed}}`, `{{clear}}`, `{{div}}`, `{{columns-list}}`, `{{location map+}}`, `{{Wide image}}`, `{{Pie chart}}`, `{{ahnentafel}}`, `{{Spoken Wikipedia}}`, `{{very long}}`, `{{long}}`, `{{Explain}}`, `{{Ref}}`, `{{R}}`, `{{Pd-notice}}`, `{{Contains special characters}}`, `{{tree chart}}`, `{{tree chart/start}}`, `{{tree chart/end}}`, `{{-}}`, `{{redirect-several}}`, `{{bots}}`, `{{Div end}}`, `{{Sister bar}}`, `{{Expand section}}`, `{{Unreferencedsect}}`, `{{Clear left}}`, `{{Cleanup}}`, `{{tone}}`, `{{Wikiatlas}}`, `{{update section}}`, `{{party color}}`, `{{category see also}}`, `{{clarify}}`, `{{colbegin}}`, `{{colend}}`, `{{POV}}`, `{{dubious}}`, `{{commonscat}}`, and `{{DEFAULTSORT:...}}` are omitted

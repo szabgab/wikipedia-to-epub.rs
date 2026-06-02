@@ -1798,6 +1798,33 @@ fn render_template(content: &str) -> String {
         render_generic_ship_template(params)
     } else if template.eq_ignore_ascii_case("Nb5") {
         render_five_nonbreaking_spaces_template()
+    } else if template.eq_ignore_ascii_case("Proto") {
+        render_proto_template(params)
+    } else if template.eq_ignore_ascii_case("wktl")
+        || template.eq_ignore_ascii_case("wikt-lang")
+        || template.eq_ignore_ascii_case("langr")
+    {
+        render_lang_template(params)
+    } else if template.eq_ignore_ascii_case("val") {
+        render_val_template(params)
+    } else if template.eq_ignore_ascii_case("chem2") {
+        render_chem2_template(params)
+    } else if template.eq_ignore_ascii_case("Value") || template.eq_ignore_ascii_case("value") {
+        render_val_template(params)
+    } else if template.eq_ignore_ascii_case("e") {
+        render_e_template(params)
+    } else if template.eq_ignore_ascii_case("sup") {
+        render_sup_template(params)
+    } else if template.eq_ignore_ascii_case("sub") {
+        render_sub_template(params)
+    } else if template.eq_ignore_ascii_case("mpl") {
+        render_mpl_template(params)
+    } else if template.eq_ignore_ascii_case("en dash") || template.eq_ignore_ascii_case("En dash") {
+        render_endash_template()
+    } else if template.eq_ignore_ascii_case("columns list") {
+        render_columns_list_template(params)
+    } else if template.eq_ignore_ascii_case("annotated link") {
+        render_annotated_link_template(params)
     } else if template.eq_ignore_ascii_case("Collapsible list") {
         render_collapsible_list_template(params)
     } else if template.eq_ignore_ascii_case("Internet Archive short film") {
@@ -2066,6 +2093,22 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("crlf")
         || template.eq_ignore_ascii_case("jct")
         || template.eq_ignore_ascii_case("FXConvert")
+        || template.eq_ignore_ascii_case("Proto")
+        || template.eq_ignore_ascii_case("wktl")
+        || template.eq_ignore_ascii_case("wikt-lang")
+        || template.eq_ignore_ascii_case("langr")
+        || template.eq_ignore_ascii_case("val")
+        || template.eq_ignore_ascii_case("chem2")
+        || template.eq_ignore_ascii_case("Value")
+        || template.eq_ignore_ascii_case("value")
+        || template.eq_ignore_ascii_case("e")
+        || template.eq_ignore_ascii_case("sup")
+        || template.eq_ignore_ascii_case("sub")
+        || template.eq_ignore_ascii_case("mpl")
+        || template.eq_ignore_ascii_case("en dash")
+        || template.eq_ignore_ascii_case("En dash")
+        || template.eq_ignore_ascii_case("columns list")
+        || template.eq_ignore_ascii_case("annotated link")
         || is_silent_template_name(template)
 }
 
@@ -4954,6 +4997,173 @@ fn render_generic_ship_template(params: &str) -> String {
     format!("[[{target}|{display}]]")
 }
 
+fn render_proto_template(params: &str) -> String {
+    let parts = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .collect::<Vec<_>>();
+    if parts.len() < 2 {
+        return String::new();
+    }
+    let lang_raw = &parts[0];
+    let word = &parts[1];
+
+    let lang_cap = lang_raw
+        .split('-')
+        .map(|w| {
+            let mut chars = w.chars();
+            match chars.next() {
+                None => String::new(),
+                Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
+            }
+        })
+        .collect::<Vec<_>>()
+        .join("-");
+
+    format!("Proto-{} *{}", lang_cap, word)
+}
+
+fn render_val_template(params: &str) -> String {
+    let raw_parts = split_template_params(params);
+    let mut positional = Vec::new();
+    let mut unit = String::new();
+    let mut exponent = String::new();
+
+    for part in raw_parts {
+        let part_trimmed = part.trim();
+        if let Some((name, val)) = part_trimmed.split_once('=') {
+            let name = name.trim();
+            let val = val.trim();
+            if name == "u" || name == "ul" {
+                unit = val.to_string();
+            } else if name == "e" {
+                exponent = val.to_string();
+            }
+        } else if !part_trimmed.is_empty() {
+            positional.push(part_trimmed.to_string());
+        }
+    }
+
+    if positional.is_empty() {
+        return String::new();
+    }
+
+    let mut rendered = String::new();
+
+    if positional.len() >= 3
+        && (positional[1] == "–"
+            || positional[1] == "-"
+            || positional[1] == "to"
+            || positional[1] == "and"
+            || positional[1] == "or")
+    {
+        rendered.push_str(&positional[0]);
+        rendered.push(' ');
+        rendered.push_str(&positional[1]);
+        rendered.push(' ');
+        rendered.push_str(&positional[2]);
+    } else if positional.len() == 2 {
+        rendered.push_str(&positional[0]);
+        rendered.push_str(" ± ");
+        rendered.push_str(&positional[1]);
+    } else if positional.len() >= 3 {
+        rendered.push_str(&positional[0]);
+        rendered.push_str(" (+");
+        rendered.push_str(&positional[2]);
+        rendered.push_str("/-");
+        rendered.push_str(&positional[1]);
+        rendered.push(')');
+    } else {
+        rendered.push_str(&positional[0]);
+    }
+
+    if !exponent.is_empty() {
+        rendered.push_str(" × 10__WIKIPEDIA_TO_EPUB_SUP_START__");
+        rendered.push_str(&exponent);
+        rendered.push_str("__WIKIPEDIA_TO_EPUB_SUP_END__");
+    }
+
+    if !unit.is_empty() {
+        rendered.push(' ');
+        rendered.push_str(&unit);
+    }
+
+    render_templates(&rendered)
+}
+
+fn render_chem2_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if let Some(formula) = positional.first() {
+        let re = Regex::new(r"([a-zA-Z])([0-9]+)").unwrap();
+        re.replace_all(
+            formula,
+            "${1}__WIKIPEDIA_TO_EPUB_SUB_START__${2}__WIKIPEDIA_TO_EPUB_SUB_END__",
+        )
+        .into_owned()
+    } else {
+        String::new()
+    }
+}
+
+fn render_sup_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if let Some(text) = positional.first() {
+        format!(
+            "__WIKIPEDIA_TO_EPUB_SUP_START__{}__WIKIPEDIA_TO_EPUB_SUP_END__",
+            render_templates(text)
+        )
+    } else {
+        String::new()
+    }
+}
+
+fn render_sub_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if let Some(text) = positional.first() {
+        format!(
+            "__WIKIPEDIA_TO_EPUB_SUB_START__{}__WIKIPEDIA_TO_EPUB_SUB_END__",
+            render_templates(text)
+        )
+    } else {
+        String::new()
+    }
+}
+
+fn render_e_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if let Some(power) = positional.first() {
+        format!(
+            "× 10__WIKIPEDIA_TO_EPUB_SUP_START__{}__WIKIPEDIA_TO_EPUB_SUP_END__",
+            render_templates(power)
+        )
+    } else {
+        String::new()
+    }
+}
+
+fn render_mpl_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    positional.join("")
+}
+
+fn render_columns_list_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if let Some(content) = positional.first() {
+        render_templates(content)
+    } else {
+        String::new()
+    }
+}
+
+fn render_annotated_link_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if let Some(target) = positional.first() {
+        format!("[[{}]]", target)
+    } else {
+        String::new()
+    }
+}
+
 fn render_collapsible_list_template(params: &str) -> String {
     let named = template_named_params(params);
     let title = template_param(&named, &["title"]);
@@ -5417,11 +5627,15 @@ fn format_inline_text(text: &str) -> String {
         )
         .replace("__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__", "</span></span>");
 
-    restore_br_spans(&restore_pb_spans(&restore_color_box_spans(
-        &restore_open_access_spans(&restore_ipa_template_spans(&restore_abbr_template_spans(
-            &restore_lang_template_spans(&html),
-        ))),
-    )))
+    let html = restore_lang_template_spans(&html);
+    let html = restore_abbr_template_spans(&html);
+    let html = restore_ipa_template_spans(&html);
+    let html = restore_open_access_spans(&html);
+    let html = restore_color_box_spans(&html);
+    let html = restore_pb_spans(&html);
+    let html = restore_br_spans(&html);
+    let html = restore_sub_spans(&html);
+    restore_sup_spans(&html)
 }
 
 fn restore_color_box_spans(html: &str) -> String {
@@ -5442,6 +5656,16 @@ fn restore_pb_spans(html: &str) -> String {
 
 fn restore_br_spans(html: &str) -> String {
     html.replace("__WIKIPEDIA_TO_EPUB_BR__", "<br />")
+}
+
+fn restore_sup_spans(html: &str) -> String {
+    html.replace("__WIKIPEDIA_TO_EPUB_SUP_START__", "<sup>")
+        .replace("__WIKIPEDIA_TO_EPUB_SUP_END__", "</sup>")
+}
+
+fn restore_sub_spans(html: &str) -> String {
+    html.replace("__WIKIPEDIA_TO_EPUB_SUB_START__", "<sub>")
+        .replace("__WIKIPEDIA_TO_EPUB_SUB_END__", "</sub>")
 }
 
 fn restore_open_access_spans(html: &str) -> String {
