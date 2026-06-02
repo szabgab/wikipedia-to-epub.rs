@@ -81,7 +81,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{mdash}}` becomes `—`
 * `{{snd}}` becomes a spaced en dash: ` – `
 * `{{!}}` becomes `|`
-* `{{ndash}}` becomes `–`
+* `{{ndash}}` and `{{endash}}` become `–`
 * `{{citation needed span|text}}` acts as a passthrough wrapper, omitting the superscript citation warning
 * `{{Quote box|quote=...}}` renders as a blockquote
 * `{{center|text}}` acts as a passthrough wrapper preserving inner formatting
@@ -171,6 +171,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{For-multi|topic1|link1|topic2|link2}}` alternates topics and links, rendering as `For topic1, see [[link1]]; for topic2, see [[link2]].`
 * `{{Inflation|US|12|1950}}` and `{{Inflation/year|US}}` adjust values using US CPI table indices (1950 to 2023)
 * `{{FXConvert|KOR|293.823|b|cursign=[[₩]]|year=2020|showdate=no}}` formats and converts historical currency values (e.g. `₩293.82 billion (US$248.95 million)`)
+* `{{JPY|1234.56}}` displays formatted currency with the Yen symbol: `¥1,234.56`; if no amount is provided, displays just `¥`
 * `{{stack|content}}` acts as a generic passthrough wrapper preserving inner wikitext
 * `{{USS|Missouri|BB-63|6}}`, `{{HMS|Jamaica|44|6}}`, and `{{ship|Japanese cruiser|Kiso}}` render as formatted, italicized ship names linked to their respective articles
 * `{{Nb5}}` renders as five non-breaking spaces (e.g. `     `)

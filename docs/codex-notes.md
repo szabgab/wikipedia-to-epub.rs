@@ -1,5 +1,42 @@
 # Codex Session Notes
 
+## 2026-06-02 Templates on en "Nagano Prefecture"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Nagano Prefecture" article. Implemented a custom renderer for `JPY` template to correctly format Japanese Yen currency, and added support for the `endash` alias (redirect to `ndash`/`en dash`). Wrote dedicated unit tests for both templates, documented their conversion rules under `DEVELOPMENT.md`, and ran all verification scripts successfully. All 188 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "Nagano Prefecture":
+  * `JPY`: custom currency template. Implemented `render_jpy_template` in `src/main.rs` to format values using `format_number_with_commas` with a leading `¥` sign. Supported named parameters `1` and `amount` as well as the first positional parameter.
+  * `endash`: redirect alias to `ndash`/`en dash`. Map it directly to `render_endash_template()` in `src/main.rs`.
+* Added separate unit tests `render_wikitext_formats_endash_template` and `render_wikitext_formats_jpy_template` in `src/tests.rs`.
+* Documented `endash` and `JPY` templates in `DEVELOPMENT.md`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Implemented `render_jpy_template`.
+  * Routed `JPY` and `endash` inside `render_template` and registered them in `is_handled_template_name`.
+* `src/tests.rs` [MODIFY]
+  * Added `render_wikitext_formats_endash_template` and `render_wikitext_formats_jpy_template`.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the `endash` and `JPY` template rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 188 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-02 Templates on en "Honshu"
 
 ### Summary

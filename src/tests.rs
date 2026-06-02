@@ -3050,6 +3050,42 @@ fn render_wikitext_formats_ndash_template() {
 }
 
 #[test]
+fn render_wikitext_formats_endash_template() {
+    let rendered = render_wikitext("Sample", "Buda{{endash}}Pest", &InternalLinks::new(), "en");
+    assert!(rendered.contains("Buda–Pest"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_jpy_template() {
+    let rendered1 = render_wikitext("Sample", "Cost is {{JPY}}.", &InternalLinks::new(), "en");
+    assert!(rendered1.contains("Cost is ¥."), "{rendered1}");
+
+    let rendered2 = render_wikitext(
+        "Sample",
+        "Cost is {{JPY|1234.56}}.",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered2.contains("Cost is ¥1,234.56."), "{rendered2}");
+
+    let rendered3 = render_wikitext(
+        "Sample",
+        "Cost is {{JPY|amount=8.5}}.",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered3.contains("Cost is ¥8.5."), "{rendered3}");
+
+    let rendered4 = render_wikitext(
+        "Sample",
+        "Cost is {{JPY|1=9876}}.",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered4.contains("Cost is ¥9,876."), "{rendered4}");
+}
+
+#[test]
 fn render_wikitext_formats_quote_box_template() {
     let rendered = render_wikitext(
         "Sample",

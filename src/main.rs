@@ -1626,7 +1626,7 @@ fn render_template(content: &str) -> String {
         render_passthrough_template(params)
     } else if template.eq_ignore_ascii_case("citation needed span") {
         render_citation_needed_span_template(params)
-    } else if template.eq_ignore_ascii_case("ndash") {
+    } else if template.eq_ignore_ascii_case("ndash") || template.eq_ignore_ascii_case("endash") {
         render_endash_template()
     } else if template.eq_ignore_ascii_case("Quote box") || template.eq_ignore_ascii_case("Quote") {
         render_blockquote_template(params)
@@ -1827,7 +1827,10 @@ fn render_template(content: &str) -> String {
         render_sub_template(params)
     } else if template.eq_ignore_ascii_case("mpl") {
         render_mpl_template(params)
-    } else if template.eq_ignore_ascii_case("en dash") || template.eq_ignore_ascii_case("En dash") {
+    } else if template.eq_ignore_ascii_case("en dash")
+        || template.eq_ignore_ascii_case("En dash")
+        || template.eq_ignore_ascii_case("endash")
+    {
         render_endash_template()
     } else if template.eq_ignore_ascii_case("columns list") {
         render_columns_list_template(params)
@@ -1947,6 +1950,8 @@ fn render_template(content: &str) -> String {
         render_jct_template(params)
     } else if template.eq_ignore_ascii_case("FXConvert") {
         render_fx_convert_template(params)
+    } else if template.eq_ignore_ascii_case("JPY") {
+        render_jpy_template(params)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -2147,6 +2152,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("crlf")
         || template.eq_ignore_ascii_case("jct")
         || template.eq_ignore_ascii_case("FXConvert")
+        || template.eq_ignore_ascii_case("JPY")
         || template.eq_ignore_ascii_case("Proto")
         || template.eq_ignore_ascii_case("wktl")
         || template.eq_ignore_ascii_case("wikt-lang")
@@ -2161,6 +2167,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("mpl")
         || template.eq_ignore_ascii_case("en dash")
         || template.eq_ignore_ascii_case("En dash")
+        || template.eq_ignore_ascii_case("endash")
         || template.eq_ignore_ascii_case("columns list")
         || template.eq_ignore_ascii_case("annotated link")
         || template.eq_ignore_ascii_case("Dp")
@@ -3695,6 +3702,24 @@ fn render_formatnum_template(template: &str, params: &str) -> String {
         }
     }
     format_number_with_commas(&num_str)
+}
+
+fn render_jpy_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let amount_opt = positional
+        .first()
+        .cloned()
+        .or_else(|| named.get("1").cloned())
+        .or_else(|| named.get("amount").cloned());
+
+    match amount_opt {
+        Some(amount) if !amount.trim().is_empty() => {
+            format!("¥{}", format_number_with_commas(&amount))
+        }
+        _ => "¥".to_string(),
+    }
 }
 
 fn render_stn_template(params: &str) -> String {
