@@ -1,5 +1,44 @@
 # Codex Session Notes
 
+## 2026-06-02 Templates on en "Takayama Station"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Takayama Station" article. Silently skipped 4 railway succession/routing and layout templates: `j-railservice start`, `j-route`, `j-rserv`, and `ja-rail-line` in `src/silent.csv`. Registered the line-specific navigation template `Takayama Main Line (JR Central)` in `src/navigations.csv`. Wrote a comprehensive unit test verifying the silent skips in `src/tests.rs` and documented them in `DEVELOPMENT.md`. All 184 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Identified and registered unhandled/missing templates for "Takayama Station":
+  * `j-railservice start`, `j-route`, `j-rserv`, and `ja-rail-line`: railway routing and succession/formatting templates, added to `src/silent.csv` to be silently skipped.
+  * `Takayama Main Line (JR Central)`: railway line navigation footer template, added to `src/navigations.csv` to be skipped.
+* Ran `./sort.sh` to keep CSV databases alphabetically sorted.
+* Added all new silent templates to the skips list in `render_wikitext_silently_skips_metadata_templates` and updated recognized template count assertion to `107`.
+* Documented the new styling template rules in `DEVELOPMENT.md`.
+
+### Files Changed
+
+* `src/tests.rs` [MODIFY]
+  * Added new silent templates to the skips list in `render_wikitext_silently_skips_metadata_templates` and updated recognized template count assertion to `107`.
+* `src/silent.csv` [MODIFY]
+  * Added `j-railservice start`, `j-route`, `j-rserv`, and `ja-rail-line`, sorted alphabetically.
+* `src/navigations.csv` [MODIFY]
+  * Added `Takayama Main Line (JR Central)`, sorted alphabetically.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new template rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 184 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-02 Templates on en "Washi"
 
 ### Summary

@@ -1039,6 +1039,10 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Italic title|reason=Category:Japanese words and phrases}}
 {{Expand Japanese|和紙|topic=cult|date=August 2021}}
 {{Tone inline|date=April 2026}}
+{{j-railservice start}}
+{{j-route|route=Takayama Main Line|col=#f77321|f=w}}
+{{j-rserv|service=Limited Express}}
+{{ja-rail-line|pfn=1-3}}
 Visible text."#,
         &InternalLinks::new(),
         "en",
@@ -1063,7 +1067,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 103,
+            recognized: 107,
             unknown: 0
         }
     );
