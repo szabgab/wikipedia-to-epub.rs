@@ -1,5 +1,5 @@
--
 '
+-
 About,                       Linking the reader to other meaning of the same word.     https://en.wikipedia.org/wiki/Template:About
 additional citations needed, Asks for help                                             https://en.wikipedia.org/wiki/Template:Additional_citation_needed
 ahnentafel
@@ -18,8 +18,8 @@ clear
 Clear left
 Closed access
 cn
-col-begin
 colbegin
+col-begin
 col-break
 col-end
 colend
@@ -32,6 +32,7 @@ Commons category inline
 commonscat,                    Link to category in Wikimedia Commons. Alias of Commons category.
 Contains special characters
 Dead link
+disambiguation
 disputed section
 Distinguish
 div
@@ -52,11 +53,13 @@ flagicon
 full citation needed
 Gallery
 huh
+in title
 ISBN?
 Library resources box
 Listen
 location map+
 long
+look from
 More citations needed
 more citations needed section
 more cn section
@@ -105,6 +108,7 @@ Spoken Wikipedia
 Subject bar
 TOC limit
 TOClimit
+tocright
 tone
 tree chart
 tree chart/end

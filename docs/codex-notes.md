@@ -1,5 +1,46 @@
 # Codex Session Notes
 
+## 2026-06-02 Templates on en "Mercury"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Mercury" article. This involved identifying and silently skipping 4 new search, layout, and metadata templates: `disambiguation`, `in title`, `look from`, and `tocright`. All 174 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Identified and registered 4 unhandled/missing templates for "Mercury":
+  * `tocright`: Table of Contents layout template.
+  * `look from` and `in title`: live search and indexing templates.
+  * `disambiguation`: disambiguation page metadata template.
+* Added all 4 templates to `src/silent.csv` as they are layout/search/metadata templates that are completely irrelevant in offline EPUB files.
+* Ran `./sort.sh` to keep all CSV databases alphabetically sorted.
+* Appended all 4 templates to the `render_wikitext_silently_skips_metadata_templates` unit test in `src/tests.rs` and updated the expected recognized template counts to `97`.
+* Documented the newly silenced templates in `DEVELOPMENT.md`.
+
+### Files Changed
+
+* `src/silent.csv` [MODIFY]
+  * Registered `disambiguation`, `in title`, `look from`, and `tocright` and sorted alphabetically.
+* `src/navigations.csv` [MODIFY]
+  * Sorted alphabetically.
+* `src/tests.rs` [MODIFY]
+  * Updated unit test `render_wikitext_silently_skips_metadata_templates` to verify that these templates are successfully silenced and skipped, and increased the expected recognized count to `97`.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented all new silent template rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Added session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 174 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-02 Templates on en "Venus"
 
 ### Summary

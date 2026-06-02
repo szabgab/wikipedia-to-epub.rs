@@ -908,6 +908,10 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Seoul weatherbox}}
 {{Jeju City weatherbox}}
 {{Seogwipo weatherbox}}
+{{disambiguation|geo}}
+{{in title|Mercury}}
+{{look from|Mercury}}
+{{tocright}}
 Visible text."#,
         &InternalLinks::new(),
         "en",
@@ -932,7 +936,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 93,
+            recognized: 97,
             unknown: 0
         }
     );
