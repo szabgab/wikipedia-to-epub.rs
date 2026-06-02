@@ -1775,7 +1775,9 @@ fn render_template(content: &str) -> String {
         render_arrow_template(params)
     } else if template.eq_ignore_ascii_case("ROKS") {
         render_republic_of_korea_ship_template(params)
-    } else if template.eq_ignore_ascii_case("ill") {
+    } else if template.eq_ignore_ascii_case("ill")
+        || template.eq_ignore_ascii_case("Interlanguage link")
+    {
         render_interlanguage_link_template(params)
     } else if template.eq_ignore_ascii_case("reign") {
         render_reign_template(params)
@@ -1882,8 +1884,12 @@ fn render_template(content: &str) -> String {
         "ʻ".to_string()
     } else if template.eq_ignore_ascii_case("'s") {
         "'s".to_string()
-    } else if template.eq_ignore_ascii_case("harvp") {
+    } else if template.eq_ignore_ascii_case("harvp") || template.eq_ignore_ascii_case("harv") {
         render_harvp_template(params)
+    } else if template.eq_ignore_ascii_case("harvnb") {
+        render_harvnb_template(params)
+    } else if template.eq_ignore_ascii_case("plainlist") {
+        render_plainlist_template(params)
     } else if template.eq_ignore_ascii_case("IPAslink") {
         render_ipa_link_template(params)
     } else if template.eq_ignore_ascii_case("angbr") {
@@ -2074,6 +2080,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Arrow")
         || template.eq_ignore_ascii_case("ROKS")
         || template.eq_ignore_ascii_case("ill")
+        || template.eq_ignore_ascii_case("Interlanguage link")
         || template.eq_ignore_ascii_case("reign")
         || template.eq_ignore_ascii_case("open access")
         || template.eq_ignore_ascii_case("free access")
@@ -2099,6 +2106,9 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("okina")
         || template.eq_ignore_ascii_case("'s")
         || template.eq_ignore_ascii_case("harvp")
+        || template.eq_ignore_ascii_case("harv")
+        || template.eq_ignore_ascii_case("harvnb")
+        || template.eq_ignore_ascii_case("plainlist")
         || template.eq_ignore_ascii_case("IPAslink")
         || template.eq_ignore_ascii_case("angbr")
         || template.eq_ignore_ascii_case("angbr IPA")
@@ -2177,6 +2187,9 @@ fn is_silent_template_name(template: &str) -> bool {
         || template
             .get(.."Infobox".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Infobox"))
+        || template
+            .get(.."Campaignbox".len())
+            .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Campaignbox"))
         || is_observed_navigation_template_name(template)
 }
 
@@ -3229,7 +3242,7 @@ fn render_color_template(params: &str) -> String {
     )
 }
 
-fn render_harvp_template(params: &str) -> String {
+fn format_harvard_citation(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params)
         .into_iter()
@@ -3283,7 +3296,32 @@ fn render_harvp_template(params: &str) -> String {
         parts.push(render_templates(location.trim()));
     }
 
-    format!("({})", parts.join(", "))
+    parts.join(", ")
+}
+
+fn render_harvp_template(params: &str) -> String {
+    let formatted = format_harvard_citation(params);
+    if formatted.is_empty() {
+        String::new()
+    } else {
+        format!("({formatted})")
+    }
+}
+
+fn render_harvnb_template(params: &str) -> String {
+    format_harvard_citation(params)
+}
+
+fn render_plainlist_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let list_content = template_param(&named, &["1"])
+        .map(|s| s.to_string())
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+
+    render_templates(list_content.trim())
 }
 
 fn render_ipa_link_template(params: &str) -> String {

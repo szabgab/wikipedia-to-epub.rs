@@ -1,5 +1,46 @@
 # Codex Session Notes
 
+## 2026-06-02 Templates on en "Battle of Sekigahara"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Battle of Sekigahara" article. This involved implementing custom renderers and routing to support 3 new templates: `plainlist` (rendering HTML list items from positional or named `1` parameter), `harvnb` (rendering Harvard inline citations without surrounding parentheses), and `harv` (routed to `render_harvp_template`). We also mapped `Interlanguage link` directly to `render_interlanguage_link_template` as a supported full alias of `ill`, and added prefix matching to silently skip `Campaignbox` sidebar templates. Documented the new rules under `DEVELOPMENT.md`. All 182 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Identified and registered unhandled/missing templates for "Battle of Sekigahara":
+  * `Campaignbox`: sidebar campaign navigation templates, silently skipped by checking prefix `Campaignbox` in `is_silent_template_name`.
+  * `plainlist`: custom inline list template, routing to `render_plainlist_template` which parses positional or `1=` parameters and returns inner rendered wikitext.
+  * `Interlanguage link`: full alias of the interlanguage link template, routed to `render_interlanguage_link_template`.
+  * `harvnb`: Harvard-style citations without brackets, refactored `render_harvp_template` to leverage `format_harvard_citation` internally and return values without parentheses.
+  * `harv`: alias of `harvp` routed to `render_harvp_template`.
+* Wrote comprehensive unit tests `render_wikitext_formats_harv_and_harvnb_templates`, `render_wikitext_formats_plainlist_templates`, and `render_wikitext_formats_interlanguage_link_alias_templates` in `src/tests.rs`.
+* Documented the new styling template rules in `DEVELOPMENT.md`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Implemented prefix check for `Campaignbox` in `is_silent_template_name`.
+  * Registered `Interlanguage link`, `harv`, `harvnb`, and `plainlist` in `render_template` and `is_handled_template_name`.
+  * Refactored `render_harvp_template` with a helper `format_harvard_citation` and implemented `render_harvnb_template` and `render_plainlist_template`.
+* `src/tests.rs` [MODIFY]
+  * Appended standalone unit tests for `harv/harvnb`, `plainlist`, and the `Interlanguage link` alias.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented all new template rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 182 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-02 Templates on en "Gifu" and "Mars"
 
 ### Summary

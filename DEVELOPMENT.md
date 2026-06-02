@@ -173,6 +173,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{USS|Missouri|BB-63|6}}`, `{{HMS|Jamaica|44|6}}`, and `{{ship|Japanese cruiser|Kiso}}` render as formatted, italicized ship names linked to their respective articles
 * `{{Nb5}}` renders as five non-breaking spaces (e.g. `     `)
 * `{{color|red|text}}` (and its British spelling alias `colour`) renders text with the given foreground color: `<span style="color: red;">text</span>`
+* `{{plainlist|1=* Item}}` renders as a standard plain list without bullet styling
+* `{{harv|Davis|1999}}` and `{{harvnb|Davis|1999}}` render as formatted inline Harvard citations: `(Davis 1999)` and `Davis 1999`
 * `{{Collapsible list|title=Title|Item A|Item B}}` renders a title followed by bulleted items on newlines
 * `{{Internet Archive short film|id=id|name=Name}}` renders as an external link to the Internet Archive short film details page
 * `{{jct|country=JPN|Route|41}}` renders as a formatted road link (e.g. `National Route 41` linked to the Wikipedia article)

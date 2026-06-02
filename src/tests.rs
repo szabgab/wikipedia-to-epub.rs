@@ -473,6 +473,59 @@ fn render_wikitext_formats_harvp_template() {
 }
 
 #[test]
+fn render_wikitext_formats_harv_and_harvnb_templates() {
+    let rendered_harv =
+        render_wikitext("Sample", "{{harv|Davis|1999}}", &InternalLinks::new(), "en");
+    assert!(rendered_harv.contains("(Davis 1999)"), "{rendered_harv}");
+
+    let rendered_harvnb = render_wikitext(
+        "Sample",
+        "{{harvnb|Davis|1999|p=10}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered_harvnb.contains("Davis 1999, p. 10"),
+        "{rendered_harvnb}"
+    );
+    assert!(!rendered_harvnb.contains("("), "{rendered_harvnb}");
+}
+
+#[test]
+fn render_wikitext_formats_plainlist_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{plainlist|1=*[[Tokugawa Ieyasu]]\n*[[Maeda Toshiie]]}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Tokugawa Ieyasu"), "{rendered}");
+    assert!(rendered.contains("Maeda Toshiie"), "{rendered}");
+
+    let rendered_positional = render_wikitext(
+        "Sample",
+        "{{plainlist|*[[Tokugawa Ieyasu]]}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered_positional.contains("Tokugawa Ieyasu"),
+        "{rendered_positional}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_interlanguage_link_alias_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Interlanguage link|Sekigahara (1981 miniseries)|lt=''Sekigahara''|ja|関ヶ原 (テレビドラマ)}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Sekigahara"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_ipa_link_template() {
     let rendered = render_wikitext("Sample", "{{IPAslink|m}}", &InternalLinks::new(), "en");
     assert!(
