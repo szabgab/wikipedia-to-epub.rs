@@ -1870,6 +1870,8 @@ fn render_template(content: &str) -> String {
         render_soft_hyphen_template(params)
     } else if template.eq_ignore_ascii_case("color box") {
         render_color_box_template(params)
+    } else if template.eq_ignore_ascii_case("color") || template.eq_ignore_ascii_case("colour") {
+        render_color_template(params)
     } else if template.eq_ignore_ascii_case("pb") {
         "__WIKIPEDIA_TO_EPUB_PB__".to_string()
     } else if template.eq_ignore_ascii_case("OSM relation") {
@@ -3198,6 +3200,33 @@ fn render_color_box_template(params: &str) -> String {
     };
     let color = color.trim();
     format!("__WIKIPEDIA_TO_EPUB_COLOR_BOX_START__{color}__WIKIPEDIA_TO_EPUB_COLOR_BOX_END__")
+}
+
+fn render_color_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let color = template_param(&named, &["1", "color", "colour"])
+        .map(|s| s.to_string())
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+
+    let text = template_param(&named, &["2", "text", "content"])
+        .map(|s| s.to_string())
+        .or_else(|| positional.get(1).cloned())
+        .unwrap_or_default();
+
+    let color = color.trim();
+    let text = text.trim();
+
+    if color.is_empty() || text.is_empty() {
+        return render_templates(text);
+    }
+
+    let rendered_text = render_templates(text);
+    format!(
+        "__WIKIPEDIA_TO_EPUB_COLOR_START__{color}__WIKIPEDIA_TO_EPUB_COLOR_MID__{rendered_text}__WIKIPEDIA_TO_EPUB_COLOR_END__"
+    )
 }
 
 fn render_harvp_template(params: &str) -> String {
@@ -5821,6 +5850,7 @@ fn format_inline_text(text: &str) -> String {
     let html = restore_ipa_template_spans(&html);
     let html = restore_open_access_spans(&html);
     let html = restore_color_box_spans(&html);
+    let html = restore_color_spans(&html);
     let html = restore_pb_spans(&html);
     let html = restore_br_spans(&html);
     let html = restore_sub_spans(&html);
@@ -5834,6 +5864,19 @@ fn restore_color_box_spans(html: &str) -> String {
             format!(
                 r#"<span style="color: {};">■</span>"#,
                 encode_double_quoted_attribute(&captures[1])
+            )
+        })
+        .into_owned()
+}
+
+fn restore_color_spans(html: &str) -> String {
+    Regex::new(r"__WIKIPEDIA_TO_EPUB_COLOR_START__(.*?)__WIKIPEDIA_TO_EPUB_COLOR_MID__(.*?)__WIKIPEDIA_TO_EPUB_COLOR_END__")
+        .unwrap()
+        .replace_all(html, |captures: &regex::Captures| {
+            format!(
+                r#"<span style="color: {};">{}</span>"#,
+                encode_double_quoted_attribute(&captures[1]),
+                &captures[2]
             )
         })
         .into_owned()

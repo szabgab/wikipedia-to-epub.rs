@@ -365,6 +365,42 @@ fn render_wikitext_formats_color_box_template() {
 }
 
 #[test]
+fn render_wikitext_formats_color_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{color|#EF7979|Colored text}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<span style=\"color: #EF7979;\">Colored text</span>"),
+        "{rendered}"
+    );
+
+    let rendered_british = render_wikitext(
+        "Sample",
+        "{{colour|red|British spelling}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered_british.contains("<span style=\"color: red;\">British spelling</span>"),
+        "{rendered_british}"
+    );
+
+    let rendered_named = render_wikitext(
+        "Sample",
+        "{{color|color=blue|text=Named parameter}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered_named.contains("<span style=\"color: blue;\">Named parameter</span>"),
+        "{rendered_named}"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_pb_template() {
     let rendered = render_wikitext("Sample", "first{{pb}}second", &InternalLinks::new(), "en");
     assert!(rendered.contains("first<br /><br />second"), "{rendered}");

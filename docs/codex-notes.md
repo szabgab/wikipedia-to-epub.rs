@@ -1,5 +1,46 @@
 # Codex Session Notes
 
+## 2026-06-02 Templates on en "Gifu" and "Mars"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Gifu" and "Mars" articles.
+For "Mars", verified that all templates (such as `discuss` and `Mars timescale`) are fully handled and all tests pass perfectly.
+For "Gifu", supported the `color` and `colour` templates by implementing a new renderer (`render_color_template`) that parses color parameters (both positional and named) and wraps the nested rendered text in HTML span elements with color styling (e.g. `<span style="color: #EF7979;">Colored text</span>`). Added the shortcut `Gifu` navigation template to `src/navigations.csv`. Added a comprehensive unit test in `src/tests.rs` covering standard positional parameter usage, British spelling aliases (`colour`), and named parameters (`color` and `text`). Documented the new rules in `DEVELOPMENT.md`. Run `./sort.sh` to keep the CSV databases alphabetically sorted. All 179 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Identified missing templates on "Gifu" and implemented proper handling:
+  * `color` and `colour`: custom inline style templates wrapping text in `<span style="color: {color};">{text}</span>`.
+  * `Gifu`: navigation template shortcut for Gifu Prefecture, added to `src/navigations.csv` to be skipped.
+* Sorted CSV databases alphabetically.
+* Wrote a robust unit test `render_wikitext_formats_color_template` in `src/tests.rs` to verify that `color` and `colour` templates are rendered correctly under various circumstances.
+* Added documentation for `{{color}}` and `{{colour}}` under `DEVELOPMENT.md`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Registered `color` and `colour` template routing and implemented `render_color_template` and post-processing span restorer `restore_color_spans`.
+* `src/tests.rs` [MODIFY]
+  * Added dedicated unit test `render_wikitext_formats_color_template` testing positional, named, and British spelling usages.
+* `src/navigations.csv` [MODIFY]
+  * Added `Gifu` and sorted alphabetically.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the `{{color}}` template rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 179 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-02 Templates on en "Sun"
 
 ### Summary
