@@ -1,5 +1,50 @@
 # Codex Session Notes
 
+## 2026-06-02 Templates on en "Venus"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Venus" article. This involved implementing custom renderers and routing to render 3 new templates: `spaces` (rendering non-breaking spaces), `mpl-` (rendering abridged minor planet links), and `chem` (rendering chemical formulas using subscripts and charge superscripts). Added `failed verification` to silent skips. Updated `expected/planets/` integration test fixtures to match the newly formatted templates in the compiled Planets EPUB. All 174 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Identified and registered 3 unhandled/missing templates for "Venus":
+  * `spaces`: renders non-breaking spaces. Since the codebase collapses consecutive whitespaces to a single space during HTML normalization, the spaces are correctly converted to a standard single space.
+  * `mpl-` (abridged minor planet link): renders parenthesized numbered designation for minor planets linked to their Wikipedia article, supporting variations in parameter count (e.g. designation, number, suffix).
+  * `chem`: renders chemical formulas by recursively wrapping numeric digits in subscript markers (`<sub>`) and positive/negative integer charges in superscript markers (`<sup>`).
+* Registered `failed verification` as silently skipped editorial warning in `src/silent.csv`.
+* Appended standalone unit tests for `spaces`, `mpl-`, and `chem` in `src/tests.rs`.
+* Regenerated planets EPUB and updated the unzipped `expected/planets/` reference fixtures to match the new Venus template rendering.
+* Ran `./sort.sh` to keep all CSV databases alphabetically sorted.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Registered and implemented `spaces`, `mpl-`, and `chem` template renderers.
+* `src/tests.rs` [MODIFY]
+  * Appended dedicated unit tests for the 3 new templates.
+* `src/silent.csv` [MODIFY]
+  * Registered `failed verification` and sorted alphabetically.
+* `src/navigations.csv` [MODIFY]
+  * Sorted alphabetically.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented all new template conversion and silent rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Added session notes.
+* `expected/planets/` [MODIFY]
+  * Updated planets integration test fixture files to include Venus's new rendered output.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 174 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-02 Templates on en "Solar System"
 
 ### Summary

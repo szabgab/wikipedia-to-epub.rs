@@ -3553,3 +3553,58 @@ fn render_wikitext_formats_cite_eb1911_template() {
         "{rendered}"
     );
 }
+
+#[test]
+fn render_wikitext_formats_spaces_template() {
+    let rendered = render_wikitext("Sample", "A{{spaces|3}}B", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<p>A B</p>"), "{rendered}");
+    assert!(!rendered.contains("{{"));
+
+    let rendered = render_wikitext("Sample", "A{{spaces}}B", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<p>A B</p>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_mpl_dash_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{mpl-|322756|2001 CK|32}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("href=\"https://en.wikipedia.org/wiki/(322756)_2001_CK32\""),
+        "{rendered}"
+    );
+    assert!(rendered.contains("(322756) 2001 CK32"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{mpl-|322756|2001 CK}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("href=\"https://en.wikipedia.org/wiki/(322756)_2001_CK\""),
+        "{rendered}"
+    );
+    assert!(rendered.contains("(322756) 2001 CK"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_chem_template() {
+    let rendered = render_wikitext("Sample", "{{chem|H|2|O}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("H<sub>2</sub>O"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{chem|CO|3|2-}}", &InternalLinks::new(), "en");
+    assert!(
+        rendered.contains("CO<sub>3</sub><sup>2-</sup>"),
+        "{rendered}"
+    );
+
+    let rendered = render_wikitext("Sample", "{{chem|H|3|O|+}}", &InternalLinks::new(), "en");
+    assert!(
+        rendered.contains("H<sub>3</sub>O<sup>+</sup>"),
+        "{rendered}"
+    );
+}

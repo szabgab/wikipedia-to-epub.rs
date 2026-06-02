@@ -1843,6 +1843,12 @@ fn render_template(content: &str) -> String {
         render_lagrange_template("5")
     } else if template.eq_ignore_ascii_case("Cite EB1911") {
         render_cite_eb1911_template(params)
+    } else if template.eq_ignore_ascii_case("spaces") {
+        render_spaces_template(params)
+    } else if template.eq_ignore_ascii_case("mpl-") {
+        render_mpl_dash_template(params)
+    } else if template.eq_ignore_ascii_case("chem") {
+        render_chem_template(params)
     } else if template.eq_ignore_ascii_case("Collapsible list") {
         render_collapsible_list_template(params)
     } else if template.eq_ignore_ascii_case("Internet Archive short film") {
@@ -2137,6 +2143,9 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("L4")
         || template.eq_ignore_ascii_case("L5")
         || template.eq_ignore_ascii_case("Cite EB1911")
+        || template.eq_ignore_ascii_case("spaces")
+        || template.eq_ignore_ascii_case("mpl-")
+        || template.eq_ignore_ascii_case("chem")
         || is_silent_template_name(template)
 }
 
@@ -5231,6 +5240,68 @@ fn render_lagrange_template(point: &str) -> String {
         "L__WIKIPEDIA_TO_EPUB_SUB_START__{}__WIKIPEDIA_TO_EPUB_SUB_END__",
         point
     )
+}
+
+fn render_spaces_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let count = positional
+        .first()
+        .and_then(|val| val.trim().parse::<usize>().ok())
+        .unwrap_or(1);
+    "\u{00A0}".repeat(count)
+}
+
+fn render_mpl_dash_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.len() >= 3 {
+        let number = &positional[0];
+        let desig = &positional[1];
+        let suffix = &positional[2];
+        format!("[[({}) {}{}]]", number, desig, suffix)
+    } else if positional.len() == 2 {
+        let number = &positional[0];
+        let desig = &positional[1];
+        format!("[[({}) {}]]", number, desig)
+    } else if let Some(first) = positional.first() {
+        first.to_string()
+    } else {
+        String::new()
+    }
+}
+
+fn render_chem_template(params: &str) -> String {
+    fn is_charge(s: &str) -> bool {
+        if s == "+" || s == "-" {
+            return true;
+        }
+        if s.ends_with('+') || s.ends_with('-') {
+            let num_part = &s[..s.len() - 1];
+            return !num_part.is_empty() && num_part.chars().all(|c| c.is_ascii_digit());
+        }
+        if s.starts_with('+') || s.starts_with('-') {
+            let num_part = &s[1..];
+            return !num_part.is_empty() && num_part.chars().all(|c| c.is_ascii_digit());
+        }
+        false
+    }
+
+    let positional = template_positional_params(params);
+    let mut rendered = String::new();
+    for part in positional {
+        let trimmed = part.trim();
+        if trimmed.chars().all(|c| c.is_ascii_digit()) && !trimmed.is_empty() {
+            rendered.push_str("__WIKIPEDIA_TO_EPUB_SUB_START__");
+            rendered.push_str(trimmed);
+            rendered.push_str("__WIKIPEDIA_TO_EPUB_SUB_END__");
+        } else if is_charge(trimmed) && !trimmed.is_empty() {
+            rendered.push_str("__WIKIPEDIA_TO_EPUB_SUP_START__");
+            rendered.push_str(trimmed);
+            rendered.push_str("__WIKIPEDIA_TO_EPUB_SUP_END__");
+        } else {
+            rendered.push_str(trimmed);
+        }
+    }
+    render_templates(&rendered)
 }
 
 fn render_cite_eb1911_template(params: &str) -> String {
