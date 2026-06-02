@@ -1700,6 +1700,8 @@ fn render_template(content: &str) -> String {
         render_cite_report_template(params)
     } else if template.eq_ignore_ascii_case("cite ECCP") {
         render_cite_eccp_template(params)
+    } else if template.eq_ignore_ascii_case("cite gvp") {
+        render_cite_gvp_template(params)
     } else if template.eq_ignore_ascii_case("cite conference")
         || template.eq_ignore_ascii_case("citation")
     {
@@ -2041,6 +2043,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("cite news")
         || template.eq_ignore_ascii_case("cite report")
         || template.eq_ignore_ascii_case("cite ECCP")
+        || template.eq_ignore_ascii_case("cite gvp")
         || template.eq_ignore_ascii_case("cite conference")
         || template.eq_ignore_ascii_case("citation")
         || template.eq_ignore_ascii_case("cite encyclopedia")
@@ -3159,6 +3162,38 @@ fn render_cite_eccp_template(params: &str) -> String {
 
     if let Some(pages) = template_param(&named, &["pages", "page"]) {
         parts.push(format!("pp. {}", render_templates(pages)));
+    }
+
+    parts.join(". ")
+}
+
+fn render_cite_gvp_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let name = template_param(&named, &["name", "1"])
+        .map(|s| s.to_string())
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+
+    let access_date = template_param(&named, &["access-date", "accessdate"])
+        .map(|s| s.to_string())
+        .unwrap_or_default();
+
+    let name = name.trim();
+    let access_date = access_date.trim();
+
+    if name.is_empty() {
+        return String::new();
+    }
+
+    let mut parts = Vec::new();
+    parts.push(format!("\"{}\"", render_templates(name)));
+    parts.push("''Global Volcanism Program''".to_string());
+    parts.push("Smithsonian Institution".to_string());
+
+    if !access_date.is_empty() {
+        parts.push(format!("Retrieved {}", render_templates(access_date)));
     }
 
     parts.join(". ")

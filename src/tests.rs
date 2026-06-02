@@ -558,6 +558,20 @@ fn render_wikitext_formats_translit_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_cite_gvp_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite gvp|name=Norikuradake|vn=283060|access-date=2021-06-24}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains(r#""Norikuradake". <em>Global Volcanism Program</em>. Smithsonian Institution. Retrieved 2021-06-24"#),
+        "{rendered}"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_ipa_link_template() {
     let rendered = render_wikitext("Sample", "{{IPAslink|m}}", &InternalLinks::new(), "en");
     assert!(
@@ -1043,6 +1057,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{j-route|route=Takayama Main Line|col=#f77321|f=w}}
 {{j-rserv|service=Limited Express}}
 {{ja-rail-line|pfn=1-3}}
+{{clarification needed|date=April 2022}}
 Visible text."#,
         &InternalLinks::new(),
         "en",
@@ -1067,7 +1082,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 107,
+            recognized: 108,
             unknown: 0
         }
     );
