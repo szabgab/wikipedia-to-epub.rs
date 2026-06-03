@@ -90,7 +90,7 @@ jobs:
         uses: astral-sh/setup-uv@v7
 
       - name: Download compiled binaries
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: wikipedia-to-epub-*
           path: site/downloads
@@ -102,7 +102,7 @@ jobs:
             --output-dir site
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: site
 
@@ -119,4 +119,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
