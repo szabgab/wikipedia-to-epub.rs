@@ -808,6 +808,42 @@ fn render_wikitext_formats_age_template() {
 }
 
 #[test]
+fn render_wikitext_formats_ayd_template() {
+    let rendered1 = render_wikitext(
+        "Sample",
+        "{{ayd|April 26, 2001|September 26, 2006}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered1.contains("5 years, 153 days"), "{rendered1}");
+
+    let rendered2 = render_wikitext(
+        "Sample",
+        "{{ayd|1 October 2024}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        !rendered2.trim().is_empty(),
+        "ayd output should not be empty"
+    );
+
+    let rendered3 = render_wikitext(
+        "Sample",
+        "{{ayd|2001|4|26|2006|9|26}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered3.contains("5 years, 153 days"), "{rendered3}");
+
+    let rendered4 = render_wikitext("Sample", "{{ayd|2024|10|1}}", &InternalLinks::new(), "en");
+    assert!(
+        !rendered4.trim().is_empty(),
+        "ayd output should not be empty"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_cite_nsrw_template() {
     let rendered = render_wikitext(
         "Sample",

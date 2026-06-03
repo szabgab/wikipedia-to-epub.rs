@@ -1,5 +1,48 @@
 # Codex Session Notes
 
+## 2026-06-03 Templates on en "Government of Japan"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Government of Japan" article. Implemented a custom renderer for the `ayd` (redirect alias of `age in years and days nts`) template to format elapsed time in years and days (e.g. `X years, Y days`), supporting both numeric and string formatted dates. Registered several navigational and silent templates in `src/navigations.csv` and `src/silent.csv`. Wrote a dedicated unit test for `ayd` covering various date formats, documented the rule under `DEVELOPMENT.md`, and ran all verification scripts successfully. All 193 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "Government of Japan":
+  * `ayd` (along with `age in years and days nts` and `Age in years and days nts` redirects): custom template representing age in years and days. Implemented `render_ayd_template` in `src/main.rs` to compute years and days elapsed between two dates (supporting both string dates like `April 26, 2001` or `1 October 2024` and numeric list formats, and system time relative calculation).
+  * `Hatnote`, `Librivox author`: registered as silent metadata/maintenance templates in `src/silent.csv`.
+  * `Current cabinet of Japan`, `Administrative divisions of Japan`, `Ministries of Japan`: registered as navigation templates in `src/navigations.csv` to be skipped.
+* Added a separate unit test `render_wikitext_formats_ayd_template` in `src/tests.rs`.
+* Documented `ayd` template in `DEVELOPMENT.md`.
+* Sorted database lists alphabetically by running `./sort.sh`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Implemented `render_ayd_template`, `parse_date_string`, `get_date_from_params`, `days_from_year_zero`, `days_between_dates`, and `calculate_age_in_years_and_days`.
+  * Mapped `ayd` (and redirects) inside `render_template` and registered them in `is_handled_template_name`.
+* `src/tests.rs` [MODIFY]
+  * Added unit test for `ayd`.
+* `src/silent.csv` [MODIFY]
+  * Added `Hatnote` and `Librivox author`, sorted alphabetically.
+* `src/navigations.csv` [MODIFY]
+  * Added Current cabinet of Japan, Administrative divisions of Japan, and Ministries of Japan, sorted alphabetically.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new template conversion rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 193 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-03 Templates on en "Emperor of Japan"
 
 ### Summary

@@ -1933,6 +1933,11 @@ fn render_template(content: &str) -> String {
         render_doi_template(params)
     } else if template.eq_ignore_ascii_case("age") {
         render_age_template(params)
+    } else if template.eq_ignore_ascii_case("ayd")
+        || template.eq_ignore_ascii_case("age in years and days nts")
+        || template.eq_ignore_ascii_case("Age in years and days nts")
+    {
+        render_ayd_template(params)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -2139,6 +2144,9 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("JPY")
         || template.eq_ignore_ascii_case("doi")
         || template.eq_ignore_ascii_case("age")
+        || template.eq_ignore_ascii_case("ayd")
+        || template.eq_ignore_ascii_case("age in years and days nts")
+        || template.eq_ignore_ascii_case("Age in years and days nts")
         || template.eq_ignore_ascii_case("Proto")
         || template.eq_ignore_ascii_case("wktl")
         || template.eq_ignore_ascii_case("wikt-lang")
@@ -3860,6 +3868,178 @@ fn render_age_template(params: &str) -> String {
     } else {
         String::new()
     }
+}
+
+fn parse_date_string(s: &str) -> Option<(i32, i32, i32)> {
+    let s = s.trim().replace(',', "");
+    let parts: Vec<&str> = s.split_whitespace().collect();
+    if parts.len() != 3 {
+        return None;
+    }
+
+    let months = [
+        "january",
+        "february",
+        "march",
+        "april",
+        "may",
+        "june",
+        "july",
+        "august",
+        "september",
+        "october",
+        "november",
+        "december",
+    ];
+
+    // Case 1: Month Day Year (e.g. April 26 2001)
+    if let Some(month_idx) = months
+        .iter()
+        .position(|&m| m.eq_ignore_ascii_case(parts[0]))
+    {
+        let month = month_idx as i32 + 1;
+        let day = parts[1].parse::<i32>().ok()?;
+        let year = parts[2].parse::<i32>().ok()?;
+        return Some((year, month, day));
+    }
+
+    // Case 2: Day Month Year (e.g. 1 October 2024)
+    if let Some(month_idx) = months
+        .iter()
+        .position(|&m| m.eq_ignore_ascii_case(parts[1]))
+    {
+        let month = month_idx as i32 + 1;
+        let day = parts[0].parse::<i32>().ok()?;
+        let year = parts[2].parse::<i32>().ok()?;
+        return Some((year, month, day));
+    }
+
+    None
+}
+
+fn get_date_from_params(
+    positional: &[String],
+    start_idx: usize,
+    len: usize,
+) -> Option<(i32, i32, i32)> {
+    if start_idx + len > positional.len() {
+        return None;
+    }
+
+    if len == 3 {
+        let y = positional[start_idx].parse::<i32>().ok()?;
+        let m = positional[start_idx + 1].parse::<i32>().ok()?;
+        let d = positional[start_idx + 2].parse::<i32>().ok()?;
+        Some((y, m, d))
+    } else if len == 1 {
+        parse_date_string(&positional[start_idx])
+    } else {
+        None
+    }
+}
+
+fn days_from_year_zero(year: i32, month: i32, day: i32) -> i32 {
+    let mut y = year;
+    if y < 0 {
+        y += 1;
+    }
+
+    let mut days = day;
+
+    let prev_y = y - 1;
+    days += prev_y * 365 + prev_y / 4 - prev_y / 100 + prev_y / 400;
+
+    let is_leap = (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0);
+    let month_lengths = if is_leap {
+        [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    } else {
+        [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    };
+
+    days += month_lengths.iter().take(month as usize - 1).sum::<i32>();
+
+    days
+}
+
+fn days_between_dates(y1: i32, m1: i32, d1: i32, y2: i32, m2: i32, d2: i32) -> i32 {
+    let days1 = days_from_year_zero(y1, m1, d1);
+    let days2 = days_from_year_zero(y2, m2, d2);
+    days2 - days1
+}
+
+fn calculate_age_in_years_and_days(
+    y1: i32,
+    m1: i32,
+    d1: i32,
+    y2: i32,
+    m2: i32,
+    d2: i32,
+) -> (i32, i32) {
+    let mut years = y2 - y1;
+    if y1 < 0 && y2 > 0 {
+        years -= 1;
+    }
+
+    let anniversary_passed = m2 > m1 || (m2 == m1 && d2 >= d1);
+
+    let (anniversary_year, years_actual) = if anniversary_passed {
+        (y2, years)
+    } else {
+        let prev_year = if y2 == 1 && y1 < 0 { -1 } else { y2 - 1 };
+        (prev_year, years - 1)
+    };
+
+    let days = days_between_dates(anniversary_year, m1, d1, y2, m2, d2);
+
+    (years_actual, days)
+}
+
+fn render_ayd_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+
+    let date1_opt;
+    let date2_opt;
+
+    if positional.len() >= 6
+        && positional[0].parse::<i32>().is_ok()
+        && positional[3].parse::<i32>().is_ok()
+    {
+        date1_opt = get_date_from_params(&positional, 0, 3);
+        date2_opt = get_date_from_params(&positional, 3, 3);
+    } else if positional.len() >= 3 && positional[0].parse::<i32>().is_ok() {
+        date1_opt = get_date_from_params(&positional, 0, 3);
+        date2_opt = Some(current_utc_date());
+    } else if positional.len() >= 2 {
+        date1_opt = get_date_from_params(&positional, 0, 1);
+        date2_opt = get_date_from_params(&positional, 1, 1);
+    } else if !positional.is_empty() {
+        date1_opt = get_date_from_params(&positional, 0, 1);
+        date2_opt = Some(current_utc_date());
+    } else {
+        return String::new();
+    }
+
+    let Some((y1, m1, d1)) = date1_opt else {
+        return String::new();
+    };
+    let Some((y2, m2, d2)) = date2_opt else {
+        return String::new();
+    };
+
+    let (years, days) = calculate_age_in_years_and_days(y1, m1, d1, y2, m2, d2);
+
+    let years_str = if years == 1 {
+        "1 year".to_string()
+    } else {
+        format!("{years} years")
+    };
+    let days_str = if days == 1 {
+        "1 day".to_string()
+    } else {
+        format!("{days} days")
+    };
+
+    format!("{years_str}, {days_str}")
 }
 
 fn render_stn_template(params: &str) -> String {

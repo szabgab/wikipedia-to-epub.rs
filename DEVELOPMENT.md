@@ -137,6 +137,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{As of|2023}}` becomes `As of 2023`; `{{As of|2009|lc=y}}` becomes `as of 2009`
 * `{{died-in|202 BC}}` becomes `d. 202 BC`
 * `{{age|1989|11|9|2019|11|9}}` calculates and displays age between two dates: `30`; if only birth date is provided, calculates age relative to the current date
+* `{{ayd|April 26, 2001|September 26, 2006}}` calculates and displays duration in years and days: `5 years, 153 days`; also supports numeric parameters and single-date relative calculations
 * `{{Blockquote|text=Quoted text|source=Source}}` (or `{{Quote|text=Quoted text|author=Source}}`) becomes `<blockquote><p>Quoted text</p><p class="blockquote-source">Source</p></blockquote>`
 * `{{Percentage|1|4}}` becomes `25%`
 * `{{UN_Population|Dem. People's Republic of Korea}}` becomes `26,100,000`; `{{UN_Population|ref}}` is omitted
