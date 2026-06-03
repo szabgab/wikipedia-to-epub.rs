@@ -7246,6 +7246,7 @@ fn write_epub(
     }
 
     let identifier = book_identifier();
+    info!(identifier = identifier, "book id");
     let file = File::create(&config.output_file)?;
     let mut zip = ZipWriter::new(file);
     let stored: SimpleFileOptions =
