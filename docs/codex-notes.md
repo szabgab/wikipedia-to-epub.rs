@@ -1,5 +1,35 @@
 # Codex Session Notes
 
+## 2026-06-03 Templates on en "Asakusa"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Asakusa" article by registering three new navigational templates in `src/navigations.csv`: `Original 15 wards of Tokyo`, `Neighborhoods of Tokyo`, and `"Taitō, Tokyo"`. Ran the `./sort.sh` database sorting script and verified that all 203 unit tests and 30 integration tests pass cleanly.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "Asakusa":
+  * `Original 15 wards of Tokyo`, `Neighborhoods of Tokyo`, and `"Taitō, Tokyo"`: registered in `src/navigations.csv` to be skipped silently as they are footer navigation boxes. Quotes were added around `Taitō, Tokyo` to handle the comma separation correctly inside our custom CSV parser logic.
+* Sorted template list databases using `./sort.sh`.
+
+### Files Changed
+
+* `src/navigations.csv` [MODIFY]
+  * Registered the three new navigation templates and sorted alphabetically.
+* `docs/docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 203 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-03 Templates on en "Tokyo Station"
 
 ### Summary
