@@ -9,5 +9,6 @@ output-file: macchini-deep.epub
 images: false
 caching: central
 depth: 1
+resources: false
 articles:
   - Macchini

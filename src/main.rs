@@ -128,6 +128,8 @@ struct BookConfig {
     output_file: PathBuf,
     #[serde(default)]
     images: bool,
+    #[serde(default)]
+    resources: bool,
     caching: CachingMode,
     depth: usize,
     articles: Vec<ArticleConfig>,
@@ -810,6 +812,55 @@ fn run(args: CliArgs) -> AppResult<()> {
             }
         }
     }
+
+    if config.resources {
+        let mut resources_list = String::new();
+        for article in &ordered_articles {
+            let lookup_key = normalize_lookup_key(article);
+            if let Some(page) = loaded_pages.get(&lookup_key) {
+                let canonical_title = &page.parse.title;
+                let url = wikipedia_article_url(canonical_title, &wikipedia_language);
+                resources_list.push_str(&format!(
+                    "      <li><a href=\"{}\">{}</a></li>\n",
+                    encode_text(&url),
+                    encode_text(canonical_title)
+                ));
+            }
+        }
+
+        let content = format!(
+            r#"<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" {language_attributes}>
+  <head>
+    <title>Resources</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <h1>Resources</h1>
+    <ul>
+{}    </ul>
+  </body>
+</html>
+"#,
+            resources_list,
+            language_attributes = html_language_attributes(&wikipedia_language),
+        );
+
+        let file_name = format!("chapter-{}.xhtml", chapter_index);
+        chapters.push(Chapter {
+            title: "Resources".to_string(),
+            file_name: file_name.clone(),
+            content,
+            template_skip_counts: TemplateSkipCounts::default(),
+        });
+
+        toc_nodes.push(TocNode {
+            title: "Resources".to_string(),
+            file_name,
+            children: Vec::new(),
+        });
+    }
+
     let total_template_skip_counts =
         chapters
             .iter()

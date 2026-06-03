@@ -9,5 +9,6 @@ output-file: programming-in-spanish.epub
 images: false
 caching: central
 depth: 0
+resources: false
 articles:
   - Rust (lenguaje de programación)

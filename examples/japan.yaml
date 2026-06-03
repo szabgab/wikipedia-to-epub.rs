@@ -9,5 +9,6 @@ output-file: japan.epub
 images: false
 caching: central
 depth: 0
+resources: false
 articles:
   - Japan

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package version="2.0" unique-identifier="bookid" xmlns="http://www.idpf.org/2007/opf">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
-    <dc:identifier id="bookid">urn:wikipedia-to-epub:1780385941630461097</dc:identifier>
+    <dc:identifier id="bookid">urn:wikipedia-to-epub:1780483282417683306</dc:identifier>
     <dc:title>The Solar System and Planets</dc:title>
     <dc:creator>Wikipedia contributors</dc:creator>
     <dc:language>en</dc:language>
@@ -20,6 +20,7 @@
     <item id="chapter-5" href="chapter-5.xhtml" media-type="application/xhtml+xml"/>
     <item id="chapter-6" href="chapter-6.xhtml" media-type="application/xhtml+xml"/>
     <item id="chapter-7" href="chapter-7.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter-8" href="chapter-8.xhtml" media-type="application/xhtml+xml"/>
   </manifest>
   <spine toc="ncx">
     <itemref idref="nav" linear="no"/>
@@ -31,5 +32,6 @@
     <itemref idref="chapter-5"/>
     <itemref idref="chapter-6"/>
     <itemref idref="chapter-7"/>
+    <itemref idref="chapter-8"/>
   </spine>
 </package>

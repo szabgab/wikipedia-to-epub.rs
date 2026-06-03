@@ -9,6 +9,7 @@ output-file: korea-in-hebrew.epub
 images: false
 caching: central
 depth: 0
+resources: false
 articles:
   - קוריאה
   - שלוש הממלכות של קוריאה

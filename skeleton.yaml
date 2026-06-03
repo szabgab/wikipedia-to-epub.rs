@@ -53,6 +53,13 @@ caching: "central"
 #         (only following links within the same language Wikipedia, without duplicates, depth-first).
 depth: 0
 
+# Whether to include a resources page listing all the compiled Wikipedia pages at the end of the book.
+# Valid values:
+#   - true  : Generate and append a "Resources" page.
+#   - false : Do not append a resources page.
+resources: false
+
+
 # List of Wikipedia article page titles and sections to compile into the book.
 # The book will be constructed in the order listed.
 #

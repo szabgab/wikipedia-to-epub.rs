@@ -9,6 +9,8 @@ output-file: "planets.epub"
 images: false
 caching: "central"
 depth: 0
+resources: true
+
 articles:
   - "Earth"
   - title: "Solar System"

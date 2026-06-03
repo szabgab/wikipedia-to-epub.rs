@@ -9,5 +9,6 @@ output-file: north-korea.epub
 images: false
 caching: central
 depth: 0
+resources: false
 articles:
   - North Korea

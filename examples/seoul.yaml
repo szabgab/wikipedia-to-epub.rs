@@ -9,5 +9,6 @@ output-file: seoul.epub
 images: false
 caching: central
 depth: 0
+resources: false
 articles:
   - Seoul

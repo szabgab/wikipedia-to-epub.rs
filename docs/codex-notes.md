@@ -1,5 +1,48 @@
 # Codex Session Notes
 
+## 2026-06-03 Resources Configuration and Page Generation
+
+### Summary
+
+Added a new boolean configuration flag `resources` to book YAML configurations. When `resources` is `true`, a "Resources" page is appended to the end of the compiled EPUB book, containing XHTML list items with external hyperlinks to all the Wikipedia pages included in the book. Configured `resources: false` on all books in `examples/` and `skeleton.yaml` except for `planets.yaml`, which is configured as `true`. Regenerated `expected/planets/` integration test fixtures to match the newly generated "Resources" chapter (chapter-8). All 203 unit tests and 30 integration tests pass cleanly.
+
+### Decisions Made
+
+* Supported the `resources` config flag:
+  * Added `resources: bool` to the `BookConfig` struct in `src/main.rs`. Mapped to Serde with `#[serde(default)]` to preserve backward compatibility.
+  * Implemented logic in `src/main.rs` to generate and append the "Resources" page using `ordered_articles` to list titles and canonical links.
+* Updated configuration files:
+  * Documented the flag in `skeleton.yaml` and set it to `false`.
+  * Set `resources: true` in `examples/planets.yaml`.
+  * Set `resources: false` in all other 25 example files in `examples/`.
+* Updated expected book integration fixtures:
+  * Regenerated `planets.epub` using local page caches.
+  * Unzipped and replaced files in `expected/planets/` (adding `chapter-8.xhtml` and updating the OPF, NAV, and NCX files).
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Updated `BookConfig` struct and implemented the resources page generation logic.
+* `skeleton.yaml` [MODIFY]
+  * Added the resources flag configuration template.
+* `examples/*.yaml` [MODIFY]
+  * Set `resources: false` on 25 files and `resources: true` on `planets.yaml`.
+* `expected/planets/` [MODIFY/NEW]
+  * Updated with the newly generated EPUB files, including `OEBPS/chapter-8.xhtml`.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 203 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-03 Templates on en "Asakusa"
 
 ### Summary

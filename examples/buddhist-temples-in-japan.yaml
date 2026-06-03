@@ -9,5 +9,6 @@ output-file: buddhist-temples-in-japan.epub
 images: false
 caching: central
 depth: 0
+resources: false
 articles:
   - Buddhist temples in Japan
