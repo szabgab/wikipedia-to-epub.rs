@@ -3297,10 +3297,12 @@ fn render_wikitext_silently_skips_old_choson_metadata_templates() {
 
 #[test]
 fn test_template_name_is_in_csv_disregards_comments_after_comma() {
-    let mock_csv = "Template1,this is a comment\nTemplate2\nTemplate3, another comment with spaces";
+    let mock_csv = "Template1,this is a comment\nTemplate2\nTemplate3, another comment with spaces\n\"Template, with comma\",comment\n\"Another, comma template\"";
     assert!(template_name_is_in_csv("Template1", mock_csv));
     assert!(template_name_is_in_csv("template2", mock_csv));
     assert!(template_name_is_in_csv("Template3", mock_csv));
+    assert!(template_name_is_in_csv("Template, with comma", mock_csv));
+    assert!(template_name_is_in_csv("Another, comma template", mock_csv));
     assert!(!template_name_is_in_csv("this is a comment", mock_csv));
     assert!(!template_name_is_in_csv(
         "another comment with spaces",
@@ -4103,6 +4105,71 @@ fn render_wikitext_formats_quote_escaping_templates() {
 
     let rendered2 = render_wikitext("Sample", "a{{\"'}}b", &InternalLinks::new(), "en");
     assert!(rendered2.contains("a\"'b"), "{rendered2}");
+}
+
+#[test]
+fn render_wikitext_formats_nbndash_template() {
+    let rendered = render_wikitext("Sample", "2020{{nbndash}}2022", &InternalLinks::new(), "en");
+    assert!(rendered.contains("2020–2022"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_ric_template() {
+    let rendered1 = render_wikitext("Sample", "{{ric|JR East|JT}}", &InternalLinks::new(), "en");
+    assert!(rendered1.contains("[JT]"), "{rendered1}");
+
+    let rendered2 = render_wikitext(
+        "Sample",
+        "{{rint|london|underground}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered2.contains("[underground]"), "{rendered2}");
+}
+
+#[test]
+fn render_wikitext_formats_ja_platform_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{| class=\"wikitable\"\n{{jpf|pfn=1|name=Yamanote Line|dir=for Tokyo}}\n|}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<td><strong>1</strong></td>"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("<td>Yamanote Line</td>"), "{rendered}");
+    assert!(rendered.contains("<td>for Tokyo</td>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_lnl_template() {
+    let rendered_jy = render_wikitext("Sample", "{{lnl|JR East|JY}}", &InternalLinks::new(), "en");
+    assert!(
+        rendered_jy.contains("href=\"https://en.wikipedia.org/wiki/Yamanote_Line\""),
+        "{rendered_jy}"
+    );
+    assert!(rendered_jy.contains("Yamanote Line"), "{rendered_jy}");
+
+    let rendered_jc = render_wikitext("Sample", "{{lnl|JR East|JC}}", &InternalLinks::new(), "en");
+    assert!(
+        rendered_jc.contains("href=\"https://en.wikipedia.org/wiki/Chūō_Line_(Rapid)\""),
+        "{rendered_jc}"
+    );
+    assert!(rendered_jc.contains("Chūō Line"), "{rendered_jc}");
+
+    let rendered_fallback = render_wikitext(
+        "Sample",
+        "{{lnl|Tokyo Metro|M}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered_fallback.contains("href=\"https://en.wikipedia.org/wiki/Tokyo_Metro_M_Line\""),
+        "{rendered_fallback}"
+    );
+    assert!(rendered_fallback.contains("M Line"), "{rendered_fallback}");
 }
 
 fn read_or_fetch_text(

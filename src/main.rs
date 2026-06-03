@@ -1604,7 +1604,11 @@ fn render_template(content: &str) -> String {
         render_passthrough_template(params)
     } else if template.eq_ignore_ascii_case("citation needed span") {
         render_citation_needed_span_template(params)
-    } else if template.eq_ignore_ascii_case("ndash") || template.eq_ignore_ascii_case("endash") {
+    } else if template.eq_ignore_ascii_case("ndash")
+        || template.eq_ignore_ascii_case("endash")
+        || template.eq_ignore_ascii_case("nbndash")
+        || template.eq_ignore_ascii_case("nbnd")
+    {
         render_endash_template()
     } else if template.eq_ignore_ascii_case("Quote box") || template.eq_ignore_ascii_case("Quote") {
         render_blockquote_template(params)
@@ -1955,6 +1959,19 @@ fn render_template(content: &str) -> String {
         || template.eq_ignore_ascii_case("Not applicable")
     {
         render_na_template(params)
+    } else if template.eq_ignore_ascii_case("Ja-platform")
+        || template.eq_ignore_ascii_case("jpf")
+        || template.eq_ignore_ascii_case("Ja-platform-m")
+        || template.eq_ignore_ascii_case("jpfm")
+    {
+        render_ja_platform_template(params)
+    } else if template.eq_ignore_ascii_case("rail-interchange")
+        || template.eq_ignore_ascii_case("ric")
+        || template.eq_ignore_ascii_case("rint")
+    {
+        render_ric_template(params)
+    } else if template.eq_ignore_ascii_case("Line link") || template.eq_ignore_ascii_case("lnl") {
+        render_lnl_template(params)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -2205,6 +2222,19 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Not applicable")
         || template == "'\""
         || template == "\"'"
+        || template.eq_ignore_ascii_case("nbndash")
+        || template.eq_ignore_ascii_case("nbnd")
+        || template.eq_ignore_ascii_case("Ja-platform")
+        || template.eq_ignore_ascii_case("jpf")
+        || template.eq_ignore_ascii_case("Ja-platform-m")
+        || template.eq_ignore_ascii_case("jpfm")
+        || template.eq_ignore_ascii_case("rail-interchange")
+        || template.eq_ignore_ascii_case("ric")
+        || template.eq_ignore_ascii_case("rint")
+        || template.eq_ignore_ascii_case("Line link")
+        || template.eq_ignore_ascii_case("lnl")
+        || template.eq_ignore_ascii_case("color")
+        || template.eq_ignore_ascii_case("colour")
         || is_silent_template_name(template)
 }
 
@@ -2238,10 +2268,17 @@ fn is_observed_navigation_template_name(template: &str) -> bool {
 
 fn template_name_is_in_csv(template: &str, csv: &str) -> bool {
     csv.lines().any(|line| {
-        line.split_once(',')
-            .map_or(line, |(name, _)| name)
-            .trim()
-            .eq_ignore_ascii_case(template)
+        let name = if let Some(stripped) = line.strip_prefix('"') {
+            if let Some(end_idx) = stripped.find('"') {
+                &stripped[..end_idx]
+            } else {
+                line
+            }
+        } else {
+            line.split_once(',').map_or(line, |(name, _)| name)
+        };
+
+        name.trim().eq_ignore_ascii_case(template)
     })
 }
 
@@ -4258,6 +4295,122 @@ fn render_stn_template(params: &str) -> String {
     };
 
     format!("[[{}|{}]]", target, render_templates(&label))
+}
+
+fn render_ja_platform_template(params: &str) -> String {
+    let named = template_named_params(params);
+
+    let pfn = template_param(&named, &["pfn"])
+        .map(str::to_string)
+        .unwrap_or_default();
+    let name = template_param(&named, &["name"])
+        .map(str::to_string)
+        .unwrap_or_default();
+    let symbol = template_param(&named, &["symbol", "imgfile"])
+        .map(str::to_string)
+        .unwrap_or_default();
+    let dir = template_param(&named, &["dir"])
+        .map(str::to_string)
+        .unwrap_or_default();
+
+    let pfn = render_templates(&pfn);
+    let name = render_templates(&name);
+    let symbol = render_templates(&symbol);
+    let dir = render_templates(&dir);
+
+    let cell_line = if symbol.is_empty() {
+        name
+    } else if name.is_empty() {
+        symbol
+    } else {
+        format!("{} {}", symbol, name)
+    };
+
+    format!("|-\n| '''{}'''\n| {}\n| {}\n", pfn, cell_line, dir)
+}
+
+fn render_ric_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let system = positional
+        .first()
+        .cloned()
+        .or_else(|| named.get("1").cloned())
+        .unwrap_or_default();
+    let line = positional
+        .get(1)
+        .cloned()
+        .or_else(|| named.get("2").cloned())
+        .unwrap_or_default();
+
+    let system = render_templates(&system);
+    let line = render_templates(&line);
+
+    let line = line.trim();
+    if line.is_empty() {
+        system.trim().to_string()
+    } else {
+        format!("[{}]", line)
+    }
+}
+
+fn render_lnl_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let system = positional
+        .first()
+        .cloned()
+        .or_else(|| named.get("1").cloned())
+        .unwrap_or_default();
+    let line = positional
+        .get(1)
+        .cloned()
+        .or_else(|| named.get("2").cloned())
+        .unwrap_or_default();
+
+    let system = render_templates(&system).trim().to_string();
+    let line = render_templates(&line).trim().to_string();
+
+    if system.is_empty() {
+        return String::new();
+    }
+    if line.is_empty() {
+        return format!("[[{system}]]");
+    }
+
+    if system.eq_ignore_ascii_case("JR East") {
+        let (link, label) = match line.to_ascii_uppercase().as_str() {
+            "JY" => ("Yamanote Line", "Yamanote Line"),
+            "JK" => ("Keihin–Tōhoku Line", "Keihin–Tōhoku Line"),
+            "JU" => ("Utsunomiya Line", "Utsunomiya Line"),
+            "JC" => ("Chūō Line (Rapid)", "Chūō Line"),
+            "JO" => ("Yokosuka Line", "Yokosuka Line"),
+            "JB" => ("Chūō–Sōbu Line", "Chūō–Sōbu Line"),
+            "JE" => ("Keiyō Line", "Keiyō Line"),
+            "JH" => ("Yokohama Line", "Yokohama Line"),
+            "JT" => ("Tōkaidō Line (JR East)", "Tōkaidō Line"),
+            "JJ" => ("Jōban Line", "Jōban Line (Rapid)"),
+            "JM" => ("Musashino Line", "Musashino Line"),
+            "JN" => ("Nambu Line", "Nambu Line"),
+            "JI" => ("Tsurumi Line", "Tsurumi Line"),
+            _ => (line.as_str(), line.as_str()),
+        };
+        if link == label {
+            format!("[[{link}]]")
+        } else {
+            format!("[[{link}|{label}]]")
+        }
+    } else {
+        // Fallback for other systems
+        if line.len() <= 2 {
+            // Likely a code, e.g. M, H
+            format!("[[{system} {line} Line|{line} Line]]")
+        } else {
+            format!("[[{line}]]")
+        }
+    }
 }
 
 fn render_gburl_template(params: &str) -> String {

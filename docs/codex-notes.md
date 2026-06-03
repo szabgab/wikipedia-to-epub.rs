@@ -1,5 +1,46 @@
 # Codex Session Notes
 
+## 2026-06-03 Templates on en "Tokyo Station"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Tokyo Station" article. Implemented rendering support for the `Line link` (shortcut `lnl`) template by mapping JR East transit line codes (`JY`, `JK`, etc.) and fallbacks to formatted wiki internal links. Handled `Expand German` by adding it to `src/silent.csv`. Wrote a dedicated unit test for `lnl` / `Line link` in `src/tests.rs` covering both specific JR East and fallback transit line mappings. Resolved a clippy `manual_strip` warning in `template_name_is_in_csv` in `src/main.rs`. Documented the template conversion rules under `DEVELOPMENT.md`. Run `./sort.sh` to sort the silent list, and verified all 203 unit tests and 30 integration tests pass cleanly.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "Tokyo Station":
+  * `Expand German`: registered in `src/silent.csv` to be skipped silently.
+  * `Line link` / `lnl`: custom template linking to specific transit lines (e.g., Yamanote Line, Keihin-Tōhoku Line). Implemented `render_lnl_template` in `src/main.rs` to map standard JR East keys to their corresponding articles/labels, and fallback logically for other systems.
+* Resolved manual prefix stripping clippy check in `template_name_is_in_csv`.
+* Added separate unit test `render_wikitext_formats_lnl_template` in `src/tests.rs` verifying accurate internal link outputs.
+* Documented `Line link` and `lnl` templates in `DEVELOPMENT.md`.
+* Sorted database lists using `./sort.sh`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Registered and implemented `render_lnl_template`.
+  * Refactored `template_name_is_in_csv` using `strip_prefix` to resolve clippy check.
+* `src/tests.rs` [MODIFY]
+  * Added unit test for `lnl` / `Line link`.
+* `src/silent.csv` [MODIFY]
+  * Added `Expand German` and sorted alphabetically.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new template conversion rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 203 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-03 Templates on en "Government of Japan"
 
 ### Summary

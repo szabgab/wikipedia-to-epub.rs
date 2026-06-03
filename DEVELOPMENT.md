@@ -182,8 +182,13 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Nb5}}` renders as five non-breaking spaces (e.g. `     `)
 * `{{color|red|text}}` (and its British spelling alias `colour`) renders text with the given foreground color: `<span style="color: red;">text</span>`
 * `{{Ja-rail-color|JY}}` returns the standardized hex color code for the Japanese rail line (e.g. `#80c241`)
+* `{{Ja-platform|pfn=1|name=Yamanote Line|dir=for Tokyo}}` (or `{{jpf}}`, `{{Ja-platform-m}}`, `{{jpfm}}`) renders a Japanese rail platform layout as a table row inside wikitables
+* `{{rail-interchange|JR East|JT}}` (or `{{ric}}`, `{{rint}}`) displays railway system/line abbreviations in brackets, e.g. `[JT]`
+* `{{Line link|JR East|JY}}` (or `{{lnl}}`) creates formatted internal links for rail transit lines, e.g. `[[Yamanote Line]]` or `[[Chūō Line (Rapid)|Chūō Line]]`
+* `{{nbndash}}` (or `{{nbnd}}`) renders a non-breaking en-dash: `–`
 * `{{RouteBox|JY|Yamanote Line|#80c241|white}}` renders a route box badge with colored background and text wrapping a wikilink to the route: `<span style="background-color: #80c241; color: white; ...">[[Yamanote Line|JY]]</span>`
 * `{{plainlist|1=* Item}}` renders as a standard plain list without bullet styling
+
 * `{{harv|Davis|1999}}` and `{{harvnb|Davis|1999}}` render as formatted inline Harvard citations: `(Davis 1999)` and `Davis 1999`
 * `{{Collapsible list|title=Title|Item A|Item B}}` renders a title followed by bulleted items on newlines
 * `{{Internet Archive short film|id=id|name=Name}}` renders as an external link to the Internet Archive short film details page
