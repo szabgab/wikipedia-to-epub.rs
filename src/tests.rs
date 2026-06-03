@@ -3901,3 +3901,70 @@ fn render_wikitext_formats_cite_encyclopedia_template() {
     assert!(rendered.contains("Solar activity"), "{rendered}");
     assert!(rendered.contains("Scholarpedia"), "{rendered}");
 }
+
+fn read_or_fetch_text(
+    cache_path: &Path,
+    refresh: bool,
+    fetch: impl FnOnce() -> AppResult<String>,
+) -> AppResult<(String, CacheSource)> {
+    read_or_fetch_text_with_stats(cache_path, refresh, None, true, fetch)
+}
+
+fn read_or_fetch_bytes(
+    cache_path: &Path,
+    refresh: bool,
+    fetch: impl FnOnce() -> AppResult<Vec<u8>>,
+) -> AppResult<(Vec<u8>, CacheSource)> {
+    read_or_fetch_bytes_with_stats(cache_path, refresh, None, true, fetch)
+}
+
+fn render_wikitext(
+    title: &str,
+    wikitext: &str,
+    internal_links: &InternalLinks,
+    language: &str,
+) -> String {
+    render_wikitext_with_template_counts(title, wikitext, internal_links, language, None).0
+}
+
+fn strip_wikitext_tables(text: &str) -> String {
+    let mut tables = Vec::new();
+    let internal_links = InternalLinks::new();
+    let mut text_with_placeholders =
+        render_wikitext_tables(text, &mut tables, &internal_links, "en");
+    for i in 0..tables.len() {
+        text_with_placeholders =
+            text_with_placeholders.replace(&format!("__WIKIPEDIA_TO_EPUB_TABLE_{}__", i), "");
+    }
+    text_with_placeholders
+}
+
+fn strip_balanced_sections(text: &str, open: &str, close: &str) -> String {
+    let mut output = String::with_capacity(text.len());
+    let mut depth = 0usize;
+    let mut index = 0usize;
+
+    while index < text.len() {
+        let remaining = &text[index..];
+
+        if remaining.starts_with(open) {
+            depth += 1;
+            index += open.len();
+            continue;
+        }
+
+        if depth > 0 && remaining.starts_with(close) {
+            depth -= 1;
+            index += close.len();
+            continue;
+        }
+
+        let ch = remaining.chars().next().unwrap();
+        if depth == 0 {
+            output.push(ch);
+        }
+        index += ch.len_utf8();
+    }
+
+    output
+}

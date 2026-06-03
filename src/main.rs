@@ -880,15 +880,6 @@ fn default_cache_root() -> AppResult<PathBuf> {
         })
 }
 
-#[cfg(test)]
-fn read_or_fetch_text(
-    cache_path: &Path,
-    refresh: bool,
-    fetch: impl FnOnce() -> AppResult<String>,
-) -> AppResult<(String, CacheSource)> {
-    read_or_fetch_text_with_stats(cache_path, refresh, None, true, fetch)
-}
-
 fn read_or_fetch_text_with_stats(
     cache_path: &Path,
     refresh: bool,
@@ -943,15 +934,6 @@ fn fetch_and_write_text_with_stats(
         stats.downloaded.set(stats.downloaded.get() + 1);
     }
     Ok(content)
-}
-
-#[cfg(test)]
-fn read_or_fetch_bytes(
-    cache_path: &Path,
-    refresh: bool,
-    fetch: impl FnOnce() -> AppResult<Vec<u8>>,
-) -> AppResult<(Vec<u8>, CacheSource)> {
-    read_or_fetch_bytes_with_stats(cache_path, refresh, None, true, fetch)
 }
 
 fn read_or_fetch_bytes_with_stats(
@@ -1308,16 +1290,6 @@ fn http_failure_detail(headers: &HeaderMap, body: &str) -> Option<String> {
         .get(RETRY_AFTER)
         .and_then(|value| value.to_str().ok())
         .map(|value| format!("retry-after: {value}"))
-}
-
-#[cfg(test)]
-fn render_wikitext(
-    title: &str,
-    wikitext: &str,
-    internal_links: &InternalLinks,
-    language: &str,
-) -> String {
-    render_wikitext_with_template_counts(title, wikitext, internal_links, language, None).0
 }
 
 fn render_wikitext_with_template_counts(
@@ -6416,19 +6388,6 @@ fn table_marker_id(line: &str) -> Option<usize> {
     }
 }
 
-#[cfg(test)]
-fn strip_wikitext_tables(text: &str) -> String {
-    let mut tables = Vec::new();
-    let internal_links = InternalLinks::new();
-    let mut text_with_placeholders =
-        render_wikitext_tables(text, &mut tables, &internal_links, "en");
-    for i in 0..tables.len() {
-        text_with_placeholders =
-            text_with_placeholders.replace(&format!("__WIKIPEDIA_TO_EPUB_TABLE_{}__", i), "");
-    }
-    text_with_placeholders
-}
-
 fn render_wikitext_tables(
     text: &str,
     tables: &mut Vec<String>,
@@ -6688,37 +6647,6 @@ fn extract_cell_content(cell: &str) -> &str {
         }
     }
     trimmed
-}
-
-#[cfg(test)]
-fn strip_balanced_sections(text: &str, open: &str, close: &str) -> String {
-    let mut output = String::with_capacity(text.len());
-    let mut depth = 0usize;
-    let mut index = 0usize;
-
-    while index < text.len() {
-        let remaining = &text[index..];
-
-        if remaining.starts_with(open) {
-            depth += 1;
-            index += open.len();
-            continue;
-        }
-
-        if depth > 0 && remaining.starts_with(close) {
-            depth -= 1;
-            index += close.len();
-            continue;
-        }
-
-        let ch = remaining.chars().next().unwrap();
-        if depth == 0 {
-            output.push(ch);
-        }
-        index += ch.len_utf8();
-    }
-
-    output
 }
 
 impl ImageRegistry {
