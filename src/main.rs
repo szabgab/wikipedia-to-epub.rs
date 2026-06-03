@@ -1929,6 +1929,10 @@ fn render_template(content: &str) -> String {
         render_fx_convert_template(params)
     } else if template.eq_ignore_ascii_case("JPY") {
         render_jpy_template(params)
+    } else if template.eq_ignore_ascii_case("doi") {
+        render_doi_template(params)
+    } else if template.eq_ignore_ascii_case("age") {
+        render_age_template(params)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -2133,6 +2137,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("jct")
         || template.eq_ignore_ascii_case("FXConvert")
         || template.eq_ignore_ascii_case("JPY")
+        || template.eq_ignore_ascii_case("doi")
+        || template.eq_ignore_ascii_case("age")
         || template.eq_ignore_ascii_case("Proto")
         || template.eq_ignore_ascii_case("wktl")
         || template.eq_ignore_ascii_case("wikt-lang")
@@ -3757,6 +3763,102 @@ fn render_jpy_template(params: &str) -> String {
             format!("¥{}", format_number_with_commas(&amount))
         }
         _ => "¥".to_string(),
+    }
+}
+
+fn render_doi_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let Some(doi) = positional
+        .first()
+        .cloned()
+        .or_else(|| named.get("1").cloned())
+    else {
+        return String::new();
+    };
+    format!("doi:{}", render_templates(&doi))
+}
+
+fn current_utc_date() -> (i32, i32, i32) {
+    let now = std::time::SystemTime::now();
+    let duration = now
+        .duration_since(std::time::SystemTime::UNIX_EPOCH)
+        .unwrap_or_else(|_| std::time::Duration::from_secs(0));
+    let secs = duration.as_secs();
+
+    let days_since_epoch = secs / 86400;
+
+    let mut days = days_since_epoch as i32;
+    let mut year = 1970;
+    loop {
+        let is_leap = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+        let days_in_year = if is_leap { 366 } else { 365 };
+        if days >= days_in_year {
+            days -= days_in_year;
+            year += 1;
+        } else {
+            break;
+        }
+    }
+
+    let is_leap = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+    let month_lengths = if is_leap {
+        [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    } else {
+        [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    };
+
+    let mut month = 1;
+    for &length in month_lengths.iter() {
+        if days >= length {
+            days -= length;
+            month += 1;
+        } else {
+            break;
+        }
+    }
+
+    let day = days + 1;
+    (year, month, day)
+}
+
+fn calculate_age(y1: i32, m1: i32, d1: i32, y2: i32, m2: i32, d2: i32) -> i32 {
+    let mut age = y2 - y1;
+    if y1 < 0 && y2 > 0 {
+        age -= 1;
+    }
+    if m2 < m1 || (m2 == m1 && d2 < d1) {
+        age -= 1;
+    }
+    age
+}
+
+fn render_age_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+
+    let nums: Vec<i32> = positional
+        .iter()
+        .map(|s| s.parse::<i32>().unwrap_or(0))
+        .collect();
+
+    if nums.len() >= 6 {
+        let y1 = nums[0];
+        let m1 = nums[1];
+        let d1 = nums[2];
+        let y2 = nums[3];
+        let m2 = nums[4];
+        let d2 = nums[5];
+        let age = calculate_age(y1, m1, d1, y2, m2, d2);
+        age.to_string()
+    } else if nums.len() >= 3 {
+        let y1 = nums[0];
+        let m1 = nums[1];
+        let d1 = nums[2];
+        let (y2, m2, d2) = current_utc_date();
+        let age = calculate_age(y1, m1, d1, y2, m2, d2);
+        age.to_string()
+    } else {
+        String::new()
     }
 }
 

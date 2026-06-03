@@ -3,6 +3,7 @@
 About,                       Linking the reader to other meaning of the same word.     https://en.wikipedia.org/wiki/Template:About
 additional citations needed, Asks for help                                             https://en.wikipedia.org/wiki/Template:Additional_citation_needed
 ahnentafel
+Americana Poster
 anchor,                      Used for inbound links. Not relevant in epub.             https://en.wikipedia.org/wiki/Template:Anchor
 Audio,                       Link to an audio file. Not really relevant in epub files. https://en.wikipedia.org/wiki/Template:Audio
 Authority control,           Validate formats and values                               https://en.wikipedia.org/wiki/Template:Authority_control
@@ -19,17 +20,17 @@ clear
 Clear left
 Closed access
 cn
-col-begin
 colbegin
+col-begin
 col-break
-col-end
 colend
+col-end
 columns-list
 Commons
 Commons and category
 Commons category
-Commons category-inline
 Commons category inline
+Commons category-inline
 commonscat,                    Link to category in Wikimedia Commons. Alias of Commons category.
 Contains special characters
 CS1 config
@@ -90,6 +91,7 @@ Pp-move
 Pp-pc
 pp-semi-indef
 pp-vandalism
+Primary source inline
 prose
 Protection padlock
 R
@@ -115,6 +117,7 @@ solar system delta v map.svg
 source-attribution
 Spoken Wikipedia
 Subject bar
+Subscription required
 TOC limit
 TOClimit
 tocright

@@ -761,6 +761,53 @@ fn render_wikitext_formats_issn_template() {
 }
 
 #[test]
+fn render_wikitext_formats_doi_template() {
+    let rendered1 = render_wikitext(
+        "Sample",
+        "{{doi|10.1080/02757206.2013.726990}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered1.contains("doi:10.1080/02757206.2013.726990"),
+        "{rendered1}"
+    );
+
+    let rendered2 = render_wikitext(
+        "Sample",
+        "{{doi|1=10.2307/20033332}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered2.contains("doi:10.2307/20033332"), "{rendered2}");
+}
+
+#[test]
+fn render_wikitext_formats_age_template() {
+    let rendered1 = render_wikitext(
+        "Sample",
+        "{{age|1989|11|9|2019|11|9}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered1.contains("30"), "{rendered1}");
+
+    let rendered2 = render_wikitext(
+        "Sample",
+        "{{age|-660|2|11|2026|6|3}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered2.contains("2685"), "{rendered2}");
+
+    let rendered3 = render_wikitext("Sample", "{{age|1989|11|9}}", &InternalLinks::new(), "en");
+    assert!(
+        !rendered3.trim().is_empty(),
+        "age output should not be empty"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_cite_nsrw_template() {
     let rendered = render_wikitext(
         "Sample",

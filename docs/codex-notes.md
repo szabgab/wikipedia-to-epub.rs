@@ -1,5 +1,49 @@
 # Codex Session Notes
 
+## 2026-06-03 Templates on en "Emperor of Japan"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Emperor of Japan" article. Implemented custom renderers for `doi` (rendering standard doi text links) and `age` (calculating years between dates, supporting BC years and system time calendar calculation) in `src/main.rs`. Registered several navigational and silent templates in `src/navigations.csv` and `src/silent.csv`. Wrote dedicated unit tests for all new template logic and verified all tests pass cleanly. All 192 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "Emperor of Japan":
+  * `doi`: routed to `render_doi_template` returning `doi:<doi>` to remain consistent with ISBN/ISSN.
+  * `age`: implemented `render_age_template` inside `src/main.rs`. Performs year calculations between two given dates (handling BC negative years and the lack of a year 0), or computes age from birth date relative to current UTC system time (using a custom pure stdlib calendar day/month/leap year algorithm).
+  * `Americana Poster`, `Primary source inline`, `Subscription required`: registered as silent metadata/maintenance templates in `src/silent.csv`.
+  * `Politics of Japan`, `Monarchs of Japan`, `List of Current Heads of State of G20`, `Heads of state and government of Asia`, `Monarchies`: registered as navigation templates in `src/navigations.csv` to be skipped.
+* Added separate unit tests `render_wikitext_formats_doi_template` and `render_wikitext_formats_age_template` in `src/tests.rs`.
+* Documented `doi` and `age` templates in `DEVELOPMENT.md`.
+* Alphabetized database lists by running `./sort.sh`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Implemented `render_doi_template`, `render_age_template` and helper calendar algorithms.
+  * Mapped `doi` and `age` inside `render_template` and registered them in `is_handled_template_name`.
+* `src/tests.rs` [MODIFY]
+  * Added unit tests for `doi` and `age`.
+* `src/silent.csv` [MODIFY]
+  * Added `Primary source inline`, `Subscription required`, and `Americana Poster`, sorted alphabetically.
+* `src/navigations.csv` [MODIFY]
+  * Added G20/Asian heads of state, Politics of Japan, Monarchs of Japan, and Monarchies navboxes, sorted alphabetically.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new template conversion rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 192 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-02 Templates on en "History of Tokyo"
 
 ### Summary
