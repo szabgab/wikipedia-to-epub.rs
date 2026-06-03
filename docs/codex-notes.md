@@ -1,5 +1,57 @@
 # Codex Session Notes
 
+## 2026-06-03 Cover Image Configuration Support
+
+### Summary
+
+Added support for a new configuration field `cover` to book YAML configurations. It can be `"None"` or a path to an image file. If it is a path to a file, use it as the book cover page in the generated EPUB. Set the `cover` field to `"None"` in `skeleton.yaml` and all example YAMLs in the `examples/` directory except for `planets.yaml`, which was configured with `"./front-page.png"`. Refactored the integration tests to perform raw byte comparisons for binary media files, avoiding UTF-8 decode issues. Regenerated and verified `expected/planets/` fixtures to include the new cover page. All 203 unit tests and 30 integration tests pass cleanly.
+
+### Decisions Made
+
+* Supported the `cover` config field:
+  * Added `cover: Option<String>` to the `BookConfig` struct in `src/main.rs`. Mapped to Serde with `#[serde(default)]` for backward compatibility.
+  * Resolved the cover image path relative to the configuration file path.
+  * If a valid image path is provided, loaded the image bytes and determined its MIME type from the file extension.
+  * Generated `OEBPS/cover.xhtml` (as the first spine item) and embedded the cover image in the EPUB.
+  * Added cover page metadata matching the EPUB 2.0 standards (with `properties="cover-image"` and metadata tag headers).
+* Refactored integration tests in `tests/books.rs`:
+  * Implemented a binary check for EPUB entries matching `.png`, `.jpg`, `.jpeg`, or `.gif`.
+  * Verified binary files using exact byte comparison instead of UTF-8 decoding, resolving panics during binary cover validation.
+* Updated configuration files:
+  * Documented the field in `skeleton.yaml` and set it to `"None"`.
+  * Set `cover: "./front-page.png"` in `examples/planets.yaml`.
+  * Set `cover: "None"` in all other 25 example files in `examples/`.
+* Updated expected book integration fixtures:
+  * Regenerated `planets.epub` using local page caches.
+  * Added `OEBPS/cover.xhtml` and `OEBPS/cover_image.png` to the expected files of `planets`.
+  * Updated OPF and NCX expected files of `planets`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Updated `BookConfig` struct, implemented cover image loading, relative path resolution, and EPUB cover page generation.
+* `skeleton.yaml` [MODIFY]
+  * Added the cover field configuration template.
+* `examples/*.yaml` [MODIFY]
+  * Set `cover: "None"` on 25 example files and `cover: "./front-page.png"` on `planets.yaml`.
+* `tests/books.rs` [MODIFY]
+  * Updated `assert_generated_book_matches_expected` to compare binary files as raw bytes.
+* `expected/planets/` [MODIFY/NEW]
+  * Added `OEBPS/cover.xhtml` and `OEBPS/cover_image.png`. Updated `OEBPS/content.opf` and `OEBPS/toc.ncx`.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 203 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-03 Resources Configuration and Page Generation
 
 ### Summary

@@ -10,5 +10,6 @@ images: true
 caching: central
 depth: 0
 resources: false
+cover: "None"
 articles:
   - Busan

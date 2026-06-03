@@ -130,6 +130,8 @@ struct BookConfig {
     images: bool,
     #[serde(default)]
     resources: bool,
+    #[serde(default)]
+    cover: Option<String>,
     caching: CachingMode,
     depth: usize,
     articles: Vec<ArticleConfig>,
@@ -654,6 +656,40 @@ fn generate_chapters_hierarchical(
 
 fn run(args: CliArgs) -> AppResult<()> {
     let config = read_config(&args.config_path)?;
+    let mut cover_image = None;
+    if let Some(ref cover_str) = config.cover
+        && cover_str != "None"
+        && !cover_str.is_empty()
+    {
+        let path = PathBuf::from(cover_str);
+        let resolved_path = if path.is_absolute() {
+            path
+        } else {
+            let config_parent = args.config_path.parent().unwrap_or_else(|| Path::new("."));
+            config_parent.join(path)
+        };
+        if !resolved_path.is_file() {
+            return Err(AppError::Message(format!(
+                "cover image file not found: {}",
+                resolved_path.display()
+            )));
+        }
+        let bytes = fs::read(&resolved_path)?;
+        let ext = resolved_path
+            .extension()
+            .and_then(|e| e.to_str())
+            .unwrap_or("")
+            .to_lowercase();
+        let media_type = match ext.as_str() {
+            "jpg" | "jpeg" => "image/jpeg",
+            "png" => "image/png",
+            "gif" => "image/gif",
+            "svg" => "image/svg+xml",
+            _ => "image/jpeg",
+        };
+        cover_image = Some((bytes, ext, media_type));
+    }
+
     let wikipedia_language = normalized_wikipedia_language(&config.metadata.language)?;
     if config.articles.is_empty() {
         return Err(AppError::Message(
@@ -881,7 +917,14 @@ fn run(args: CliArgs) -> AppResult<()> {
         Vec::new()
     };
 
-    write_epub(&config, &chapters, &images, &wikipedia_language, &toc_nodes)?;
+    write_epub(
+        &config,
+        &chapters,
+        &images,
+        &wikipedia_language,
+        &toc_nodes,
+        &cover_image,
+    )?;
     println!("Created {}", config.output_file.display());
     println!(
         "Skipped templates: recognized={}, unknown={}",
@@ -7909,6 +7952,7 @@ fn write_epub(
     images: &[ResolvedImage],
     wikipedia_language: &str,
     toc_nodes: &[TocNode],
+    cover_image: &Option<(Vec<u8>, String, &'static str)>,
 ) -> AppResult<()> {
     if let Some(parent) = config.output_file.parent()
         && !parent.as_os_str().is_empty()
@@ -7934,6 +7978,40 @@ fn write_epub(
     zip.start_file("OEBPS/style.css", deflated)?;
     zip.write_all(style_css().as_bytes())?;
 
+    if let Some((bytes, ext, _media_type)) = cover_image {
+        let cover_xhtml = format!(
+            r#"<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{wikipedia_language}">
+  <head>
+    <title>Cover</title>
+    <style type="text/css">
+      body {{
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        background-color: #ffffff;
+      }}
+      img {{
+        max-width: 100%;
+        height: auto;
+      }}
+    </style>
+  </head>
+  <body>
+    <div style="text-align: center; page-break-inside: avoid;">
+      <img src="cover_image.{ext}" alt="Cover" />
+    </div>
+  </body>
+</html>
+"#
+        );
+        zip.start_file("OEBPS/cover.xhtml", deflated)?;
+        zip.write_all(cover_xhtml.as_bytes())?;
+
+        zip.start_file(format!("OEBPS/cover_image.{}", ext), deflated)?;
+        zip.write_all(bytes)?;
+    }
+
     let frontmatter = frontmatter_xhtml(&config.metadata, wikipedia_language);
     zip.start_file("OEBPS/frontmatter.xhtml", deflated)?;
     zip.write_all(frontmatter.as_bytes())?;
@@ -7956,7 +8034,10 @@ fn write_epub(
     zip.start_file("OEBPS/toc.ncx", deflated)?;
     zip.write_all(toc.as_bytes())?;
 
-    let package = content_opf(&identifier, config, chapters, images);
+    let cover_info = cover_image
+        .as_ref()
+        .map(|(_, ext, media_type)| (ext.as_str(), *media_type));
+    let package = content_opf(&identifier, config, chapters, images, cover_info);
     zip.start_file("OEBPS/content.opf", deflated)?;
     zip.write_all(package.as_bytes())?;
 
@@ -8118,6 +8199,7 @@ fn content_opf(
     config: &BookConfig,
     chapters: &[Chapter],
     images: &[ResolvedImage],
+    cover_info: Option<(&str, &str)>,
 ) -> String {
     let mut manifest_items = vec![
         r#"<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>"#
@@ -8128,6 +8210,17 @@ fn content_opf(
             .to_string(),
     ];
     let mut spine_items = vec![r#"<itemref idref="frontmatter"/>"#.to_string()];
+
+    if let Some((ext, media_type)) = cover_info {
+        manifest_items.push(
+            r#"<item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>"#
+                .to_string(),
+        );
+        manifest_items.push(format!(
+            r#"<item id="cover-image" href="cover_image.{ext}" media-type="{media_type}" properties="cover-image"/>"#
+        ));
+        spine_items.insert(0, r#"<itemref idref="cover"/>"#.to_string());
+    }
 
     for (index, chapter) in chapters.iter().enumerate() {
         let id = format!("chapter-{}", index + 1);
@@ -8160,6 +8253,21 @@ fn content_opf(
         .map(encode_text)
         .unwrap_or_default();
 
+    let meta_line = if cover_info.is_some() {
+        "\n    <meta name=\"cover\" content=\"cover-image\"/>".to_string()
+    } else {
+        String::new()
+    };
+
+    let guide_section = if cover_info.is_some() {
+        r#"
+  <guide>
+    <reference type="cover" title="Cover" href="cover.xhtml"/>
+  </guide>"#
+    } else {
+        ""
+    };
+
     format!(
         r#"<?xml version="1.0" encoding="utf-8"?>
 <package version="2.0" unique-identifier="bookid" xmlns="http://www.idpf.org/2007/opf">
@@ -8169,7 +8277,7 @@ fn content_opf(
     <dc:creator>{creator}</dc:creator>
     <dc:language>{language}</dc:language>
     {date_line}
-    {rights_line}
+    {rights_line}{meta_line}
   </metadata>
   <manifest>
     {manifest}
@@ -8177,7 +8285,7 @@ fn content_opf(
   <spine toc="ncx">
     <itemref idref="nav" linear="no"/>
     {spine}
-  </spine>
+  </spine>{guide_section}
 </package>
 "#,
         title = encode_text(&config.metadata.title),

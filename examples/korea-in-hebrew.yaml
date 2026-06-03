@@ -10,6 +10,7 @@ images: false
 caching: central
 depth: 0
 resources: false
+cover: "None"
 articles:
   - קוריאה
   - שלוש הממלכות של קוריאה

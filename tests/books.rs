@@ -305,19 +305,47 @@ fn assert_generated_book_matches_expected(book: &str) {
     assert_eq!(zip_entries(&epub), expected_entries);
 
     for entry_name in expected_entries {
-        let generated = normalize_epub_entry(&entry_name, &read_epub_entry(&mut epub, &entry_name));
         let expected_path = expected_dir.join(&entry_name);
-        let expected = normalize_epub_entry(
-            &entry_name,
-            &fs::read_to_string(&expected_path).unwrap_or_else(|err| {
+        let name_lower = entry_name.to_lowercase();
+        let is_binary = name_lower.ends_with(".png")
+            || name_lower.ends_with(".jpg")
+            || name_lower.ends_with(".jpeg")
+            || name_lower.ends_with(".gif");
+
+        if is_binary {
+            let mut entry = epub
+                .by_name(&entry_name)
+                .unwrap_or_else(|err| panic!("epub entry '{}' exists: {:?}", entry_name, err));
+            let mut generated_bytes = Vec::new();
+            entry.read_to_end(&mut generated_bytes).unwrap();
+
+            let expected_bytes = fs::read(&expected_path).unwrap_or_else(|err| {
                 panic!(
                     "expected epub entry '{}' reads: {:?}",
                     expected_path.display(),
                     err
                 )
-            }),
-        );
-        assert_text_matches_expected(&entry_name, &generated, &expected);
+            });
+            assert_eq!(
+                generated_bytes, expected_bytes,
+                "binary file mismatch for {}",
+                entry_name
+            );
+        } else {
+            let generated =
+                normalize_epub_entry(&entry_name, &read_epub_entry(&mut epub, &entry_name));
+            let expected = normalize_epub_entry(
+                &entry_name,
+                &fs::read_to_string(&expected_path).unwrap_or_else(|err| {
+                    panic!(
+                        "expected epub entry '{}' reads: {:?}",
+                        expected_path.display(),
+                        err
+                    )
+                }),
+            );
+            assert_text_matches_expected(&entry_name, &generated, &expected);
+        }
     }
 
     fs::remove_dir_all(&work_dir).unwrap_or_else(|err| {
