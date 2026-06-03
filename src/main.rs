@@ -1938,6 +1938,10 @@ fn render_template(content: &str) -> String {
         || template.eq_ignore_ascii_case("Age in years and days nts")
     {
         render_ayd_template(params)
+    } else if template.eq_ignore_ascii_case("RouteBox") {
+        render_route_box_template(params)
+    } else if template.eq_ignore_ascii_case("Ja-rail-color") {
+        render_ja_rail_color_template(params)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -2145,6 +2149,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("doi")
         || template.eq_ignore_ascii_case("age")
         || template.eq_ignore_ascii_case("ayd")
+        || template.eq_ignore_ascii_case("RouteBox")
+        || template.eq_ignore_ascii_case("Ja-rail-color")
         || template.eq_ignore_ascii_case("age in years and days nts")
         || template.eq_ignore_ascii_case("Age in years and days nts")
         || template.eq_ignore_ascii_case("Proto")
@@ -4040,6 +4046,83 @@ fn render_ayd_template(params: &str) -> String {
     };
 
     format!("{years_str}, {days_str}")
+}
+
+fn render_ja_rail_color_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(code) = positional.first().map(|s| s.to_ascii_uppercase()) else {
+        return "#333333".to_string();
+    };
+
+    let color = match code.as_str() {
+        "JY" => "#80c241", // Yamanote Line
+        "JK" => "#00b2e5", // Keihin-Tohoku Line
+        "JU" => "#f58220", // Utsunomiya/Takasaki Line
+        "JC" => "#f15a22", // Chuo Line
+        "JO" => "#007ac1", // Yokosuka/Sobu Rapid Line
+        "JB" => "#ffd400", // Chuo-Sobu Line
+        "JE" => "#c9242f", // Keiyo Line
+        "JH" => "#80c241", // Yokohama Line
+        "JT" => "#f58220", // Tokaido Line
+        "JJ" => "#00b261", // Joban Line
+        "JM" => "#f15a22", // Musashino Line
+        "JN" => "#ffd400", // Nambu Line
+        "JI" => "#ffd400", // Tsurumi Line
+        "MO" => "#007ac1", // Tokyo Monorail
+        "KK" => "#e60012", // Keikyu
+        "U" => "#007ac1",  // Yurikamome
+        "TR" => "#007ac1", // Toyo Rapid
+        "SR" => "#007ac1", // Saitama Rapid / Shibayama Railway
+        "N" => "#00ac9a",  // Tokyo Metro Namboku Line
+        "HS" => "#007ac1", // Hokuso Line
+        _ => "#333333",
+    };
+    color.to_string()
+}
+
+fn render_route_box_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let label = positional
+        .first()
+        .cloned()
+        .or_else(|| named.get("1").cloned())
+        .unwrap_or_default();
+    let link = positional
+        .get(1)
+        .cloned()
+        .or_else(|| named.get("2").cloned())
+        .unwrap_or_default();
+    let bg_color = positional
+        .get(2)
+        .cloned()
+        .or_else(|| named.get("3").cloned())
+        .unwrap_or_else(|| "#333333".to_string());
+    let text_color = positional
+        .get(3)
+        .cloned()
+        .or_else(|| named.get("4").cloned())
+        .unwrap_or_else(|| "white".to_string());
+
+    let label = render_templates(&label);
+    let link = render_templates(&link);
+    let bg_color = render_templates(&bg_color);
+    let text_color = render_templates(&text_color);
+
+    let link_wikitext = if link.is_empty() {
+        label.clone()
+    } else if label == link {
+        format!("[[{link}]]")
+    } else {
+        format!("[[{link}|{label}]]")
+    };
+
+    let bg_color = bg_color.trim();
+    let text_color = text_color.trim();
+    format!(
+        "__WIKIPEDIA_TO_EPUB_ROUTE_BOX_START__{bg_color}__WIKIPEDIA_TO_EPUB_ROUTE_BOX_MID__{text_color}__WIKIPEDIA_TO_EPUB_ROUTE_BOX_TEXT__{link_wikitext}__WIKIPEDIA_TO_EPUB_ROUTE_BOX_END__"
+    )
 }
 
 fn render_stn_template(params: &str) -> String {
@@ -6308,6 +6391,7 @@ fn format_inline_text(text: &str) -> String {
     let html = restore_open_access_spans(&html);
     let html = restore_color_box_spans(&html);
     let html = restore_color_spans(&html);
+    let html = restore_route_box_spans(&html);
     let html = restore_pb_spans(&html);
     let html = restore_br_spans(&html);
     let html = restore_sub_spans(&html);
@@ -6334,6 +6418,20 @@ fn restore_color_spans(html: &str) -> String {
                 r#"<span style="color: {};">{}</span>"#,
                 encode_double_quoted_attribute(&captures[1]),
                 &captures[2]
+            )
+        })
+        .into_owned()
+}
+
+fn restore_route_box_spans(html: &str) -> String {
+    Regex::new(r"__WIKIPEDIA_TO_EPUB_ROUTE_BOX_START__(.*?)__WIKIPEDIA_TO_EPUB_ROUTE_BOX_MID__(.*?)__WIKIPEDIA_TO_EPUB_ROUTE_BOX_TEXT__(.*?)__WIKIPEDIA_TO_EPUB_ROUTE_BOX_END__")
+        .unwrap()
+        .replace_all(html, |captures: &regex::Captures| {
+            format!(
+                r#"<span style="background-color: {}; color: {}; padding: 1px 4px; border-radius: 2px; font-weight: bold; font-size: 0.9em; display: inline-block;">{}</span>"#,
+                encode_double_quoted_attribute(&captures[1]),
+                encode_double_quoted_attribute(&captures[2]),
+                &captures[3]
             )
         })
         .into_owned()

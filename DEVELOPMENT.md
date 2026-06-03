@@ -180,6 +180,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{USS|Missouri|BB-63|6}}`, `{{HMS|Jamaica|44|6}}`, and `{{ship|Japanese cruiser|Kiso}}` render as formatted, italicized ship names linked to their respective articles
 * `{{Nb5}}` renders as five non-breaking spaces (e.g. `     `)
 * `{{color|red|text}}` (and its British spelling alias `colour`) renders text with the given foreground color: `<span style="color: red;">text</span>`
+* `{{Ja-rail-color|JY}}` returns the standardized hex color code for the Japanese rail line (e.g. `#80c241`)
+* `{{RouteBox|JY|Yamanote Line|#80c241|white}}` renders a route box badge with colored background and text wrapping a wikilink to the route: `<span style="background-color: #80c241; color: white; ...">[[Yamanote Line|JY]]</span>`
 * `{{plainlist|1=* Item}}` renders as a standard plain list without bullet styling
 * `{{harv|Davis|1999}}` and `{{harvnb|Davis|1999}}` render as formatted inline Harvard citations: `(Davis 1999)` and `Davis 1999`
 * `{{Collapsible list|title=Title|Item A|Item B}}` renders a title followed by bulleted items on newlines

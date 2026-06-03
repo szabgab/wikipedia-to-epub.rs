@@ -3985,6 +3985,71 @@ fn render_wikitext_formats_cite_encyclopedia_template() {
     assert!(rendered.contains("Scholarpedia"), "{rendered}");
 }
 
+#[test]
+fn render_wikitext_formats_ja_rail_color_template() {
+    let rendered1 = render_wikitext(
+        "Sample",
+        "color:{{Ja-rail-color|JY}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered1.contains("color:#80c241"), "{rendered1}");
+
+    let rendered2 = render_wikitext(
+        "Sample",
+        "color:{{ja-rail-color|jk}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered2.contains("color:#00b2e5"), "{rendered2}");
+
+    let rendered3 = render_wikitext(
+        "Sample",
+        "color:{{Ja-rail-color|invalid}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered3.contains("color:#333333"), "{rendered3}");
+}
+
+#[test]
+fn render_wikitext_formats_route_box_template() {
+    let rendered1 = render_wikitext(
+        "Sample",
+        "{{RouteBox|Yamanote Line|Yamanote Line|#80c241|white}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered1.contains("background-color: #80c241"),
+        "{rendered1}"
+    );
+    assert!(rendered1.contains("color: white"), "{rendered1}");
+    assert!(rendered1.contains("Yamanote Line"), "{rendered1}");
+    assert!(
+        rendered1
+            .contains("<a href=\"https://en.wikipedia.org/wiki/Yamanote_Line\">Yamanote Line</a>"),
+        "{rendered1}"
+    );
+
+    // Test with nested Ja-rail-color
+    let rendered2 = render_wikitext(
+        "Sample",
+        "{{RouteBox|JY|Yamanote Line|{{Ja-rail-color|JY}}|white}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered2.contains("background-color: #80c241"),
+        "{rendered2}"
+    );
+    assert!(rendered2.contains("color: white"), "{rendered2}");
+    assert!(
+        rendered2.contains("<a href=\"https://en.wikipedia.org/wiki/Yamanote_Line\">JY</a>"),
+        "{rendered2}"
+    );
+}
+
 fn read_or_fetch_text(
     cache_path: &Path,
     refresh: bool,

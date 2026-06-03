@@ -2950,3 +2950,41 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * None. Everything is fully resolved and verified.
+
+## Session Note: 2026-06-03 - Transport in Greater Tokyo Template Support
+
+### Decisions Made
+
+* Supported missing templates identified from the PAGE="Transport in Greater Tokyo" English Wikipedia article:
+  * Omitted the navigation template `Tokyo transit` by adding it to `src/navigations.csv` and running `./sort.sh` to sort it alphabetically.
+  * Implemented `render_ja_rail_color_template` in `src/main.rs` to return standardized hex color codes for common Japanese rail lines.
+  * Implemented `render_route_box_template` in `src/main.rs` to render colored route badge spans containing a wikilink.
+  * Utilized placeholder strings (`__WIKIPEDIA_TO_EPUB_ROUTE_BOX_START__` etc.) and integrated a custom post-processor `restore_route_box_spans` in `format_inline_text` to preserve style attributes and prevent the wikitext parser from misinterpreting hex color codes starting with `#` as ordered lists.
+* Wrote separate unit tests for `Ja-rail-color` and `RouteBox` in `src/tests.rs` to verify correct formatting and parameter evaluation (including nested template expansion).
+* Updated `DEVELOPMENT.md` with conversion rules for `Ja-rail-color` and `RouteBox`.
+
+### Files Changed
+
+* `src/main.rs`
+  * Implemented `render_route_box_template`, `render_ja_rail_color_template`, and `restore_route_box_spans`.
+  * Registered `RouteBox` and `Ja-rail-color` in `render_template`, `is_handled_template_name`, and `format_inline_text`.
+* `src/tests.rs`
+  * Added `render_wikitext_formats_ja_rail_color_template` and `render_wikitext_formats_route_box_template`.
+* `src/navigations.csv`
+  * Added `Tokyo transit` and sorted the file.
+* `DEVELOPMENT.md`
+  * Documented rules for `Ja-rail-color` and `RouteBox`.
+* `docs/codex-notes.md`
+  * Appended the current session notes.
+
+### Tests Run
+
+* `cargo fmt --check` (clean formatting check)
+* `cargo check` (clean compile with no warnings)
+* `cargo clippy --all-targets -- -D warnings` (clean lint verification)
+* `cargo test` (all 195 unit tests and 30 integration tests pass successfully with 100% success rate)
+
+### Pending Follow-Ups
+
+* None. All tests pass and the templates are fully supported.
+
