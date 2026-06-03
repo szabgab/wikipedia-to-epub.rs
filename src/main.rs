@@ -1578,7 +1578,11 @@ fn render_template(content: &str) -> String {
     let template_normalized = template.trim().replace('_', " ");
     let template = template_normalized.as_str();
 
-    if template.eq_ignore_ascii_case("Korean")
+    if template == "'\"" {
+        "'\"".to_string()
+    } else if template == "\"'" {
+        "\"'".to_string()
+    } else if template.eq_ignore_ascii_case("Korean")
         || template.eq_ignore_ascii_case("Korean/auto")
         || template.eq_ignore_ascii_case("ko")
     {
@@ -1588,6 +1592,8 @@ fn render_template(content: &str) -> String {
     } else if template.eq_ignore_ascii_case("Nihongo4") || template.eq_ignore_ascii_case("Nihongo")
     {
         render_japanese_template(params)
+    } else if template.eq_ignore_ascii_case("Nihongo foot") {
+        render_nihongo_foot_template(params)
     } else if template.eq_ignore_ascii_case("nbsp") {
         render_nonbreaking_space_template()
     } else if template.eq_ignore_ascii_case("snd") {
@@ -1636,7 +1642,9 @@ fn render_template(content: &str) -> String {
         render_transliteration_like_template(params)
     } else if template.eq_ignore_ascii_case("ko-translit") {
         render_korean_transliteration_template(params)
-    } else if template.eq_ignore_ascii_case("lit") {
+    } else if template.eq_ignore_ascii_case("lit")
+        || template.eq_ignore_ascii_case("Literal translation")
+    {
         render_literal_template(params)
     } else if template.eq_ignore_ascii_case("isbn") {
         render_isbn_template(params)
@@ -1942,6 +1950,11 @@ fn render_template(content: &str) -> String {
         render_route_box_template(params)
     } else if template.eq_ignore_ascii_case("Ja-rail-color") {
         render_ja_rail_color_template(params)
+    } else if template.eq_ignore_ascii_case("N/A")
+        || template.eq_ignore_ascii_case("NA")
+        || template.eq_ignore_ascii_case("Not applicable")
+    {
+        render_na_template(params)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -2185,12 +2198,20 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("chem")
         || template.eq_ignore_ascii_case("solar radius")
         || template.eq_ignore_ascii_case("±")
+        || template.eq_ignore_ascii_case("Nihongo foot")
+        || template.eq_ignore_ascii_case("Literal translation")
+        || template.eq_ignore_ascii_case("N/A")
+        || template.eq_ignore_ascii_case("NA")
+        || template.eq_ignore_ascii_case("Not applicable")
+        || template == "'\""
+        || template == "\"'"
         || is_silent_template_name(template)
 }
 
 fn is_silent_template_name(template: &str) -> bool {
     let template = template.trim();
-    template_name_is_in_csv(template, include_str!("silent.csv"))
+    template.starts_with('#')
+        || template_name_is_in_csv(template, include_str!("silent.csv"))
         || template.ends_with(" weatherbox")
         || template
             .get(.."DEFAULTSORT".len())
@@ -2386,6 +2407,72 @@ fn render_japanese_template(params: &str) -> String {
     format!(
         "{term}__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_START__ (__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__{japanese}__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__{suffix})__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_END__"
     )
+}
+
+fn render_nihongo_foot_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let english = positional
+        .first()
+        .cloned()
+        .or_else(|| named.get("1").cloned())
+        .unwrap_or_default();
+    let kanji = positional
+        .get(1)
+        .cloned()
+        .or_else(|| named.get("2").cloned())
+        .unwrap_or_default();
+    let romaji = positional
+        .get(2)
+        .cloned()
+        .or_else(|| named.get("3").cloned())
+        .unwrap_or_default();
+    let extra = positional
+        .get(3)
+        .cloned()
+        .or_else(|| named.get("4").cloned())
+        .unwrap_or_default();
+    let post = named.get("post").cloned().unwrap_or_default();
+
+    let english = render_templates(&english);
+    let kanji = render_templates(&kanji);
+    let romaji = render_templates(&romaji);
+    let extra = render_templates(&extra);
+    let post = render_templates(&post);
+
+    let mut parts = Vec::new();
+    if !kanji.trim().is_empty() {
+        parts.push(format!(
+            "__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__{}__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__",
+            kanji.trim()
+        ));
+    }
+    if !romaji.trim().is_empty() {
+        parts.push(format!("<em>{}</em>", romaji.trim()));
+    }
+    if !extra.trim().is_empty() {
+        parts.push(extra.trim().to_string());
+    }
+
+    if parts.is_empty() {
+        format!("{english}{post}")
+    } else {
+        let inside = parts.join(", ");
+        format!(
+            "{english}__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_START__ ({inside})__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_END__{post}"
+        )
+    }
+}
+
+fn render_na_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let text = positional
+        .first()
+        .filter(|s| !s.trim().is_empty())
+        .map(|s| s.trim())
+        .unwrap_or("N/A");
+    text.to_string()
 }
 
 fn render_nihongo3_template(params: &str) -> String {

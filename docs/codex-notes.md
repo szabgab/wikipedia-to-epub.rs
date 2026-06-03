@@ -2988,3 +2988,42 @@ Latest verification passed:
 
 * None. All tests pass and the templates are fully supported.
 
+## Session Note: 2026-06-03 - Tokyo Template Support
+
+### Decisions Made
+
+* Supported missing templates identified from the PAGE="Tokyo" English Wikipedia article:
+  * Omitted metadata/layout/map templates `Hatnote group`, `pp-move-indef`, `pp-protected`, and `Tokyo Metropolis Labelled Map` by adding them to `src/silent.csv` and running `./sort.sh` to sort alphabetically.
+  * Silently bypassed any template/parser function starting with `#` (e.g. `#chart:...`) by checking `template.starts_with('#')` in `is_silent_template_name`.
+  * Implemented `render_nihongo_foot_template` to render the inline English text followed by its Japanese translation and romanization in parentheses.
+  * Integrated `Literal translation` as an alias of the `lit` template renderer `render_literal_template`.
+  * Implemented `render_na_template` to support `N/A`, `NA`, and `Not applicable` comparison table templates.
+  * Added direct support for character escaping templates `'" ` (Single+double quote) and `"' ` (Double+single quote).
+* Wrote separate unit tests for `Nihongo foot`, `Literal translation`, `N/A`, and single/double quote templates in `src/tests.rs`.
+* Updated `DEVELOPMENT.md` with conversion rules for `Nihongo foot`, `Literal translation`, `N/A`, and quote escaping templates.
+
+### Files Changed
+
+* `src/main.rs`
+  * Implemented `render_nihongo_foot_template` and `render_na_template`.
+  * Added routing and prefix bypasses for new templates inside `render_template`, `is_handled_template_name`, and `is_silent_template_name`.
+* `src/tests.rs`
+  * Added `render_wikitext_formats_nihongo_foot_template`, `render_wikitext_formats_literal_translation_template`, `render_wikitext_formats_na_template`, and `render_wikitext_formats_quote_escaping_templates`.
+* `src/silent.csv`
+  * Added `Hatnote group`, `pp-move-indef`, `pp-protected`, and `Tokyo Metropolis Labelled Map`, and sorted the file.
+* `DEVELOPMENT.md`
+  * Documented conversion rules for the new templates.
+* `docs/codex-notes.md`
+  * Appended the current session notes.
+
+### Tests Run
+
+* `cargo fmt --check` (clean formatting check)
+* `cargo check` (clean compile with no warnings)
+* `cargo clippy --all-targets -- -D warnings` (clean lint verification)
+* `cargo test` (all 199 unit tests and 30 integration tests pass successfully with 100% success rate)
+
+### Pending Follow-Ups
+
+* None. All tests pass and the templates are fully supported.
+

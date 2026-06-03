@@ -20,8 +20,8 @@ clear
 Clear left
 Closed access
 cn
-col-begin
 colbegin
+col-begin
 col-break
 colend
 col-end
@@ -58,6 +58,7 @@ flagicon
 full citation needed
 Gallery
 Hatnote
+Hatnote group
 huh
 in title
 ISBN?
@@ -90,7 +91,9 @@ Portal
 Portal bar
 POV, Point of view issue with the content
 Pp-move
+pp-move-indef
 Pp-pc
+pp-protected
 pp-semi-indef
 pp-vandalism
 Primary source inline
@@ -123,6 +126,7 @@ Subscription required
 TOC limit
 TOClimit
 tocright
+Tokyo Metropolis Labelled Map
 tone
 Tone inline
 tree chart

@@ -4050,6 +4050,61 @@ fn render_wikitext_formats_route_box_template() {
     );
 }
 
+#[test]
+fn render_wikitext_formats_nihongo_foot_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Nihongo foot|'''Tokyo Metropolis'''|東京都|Tōkyō-to|{{IPA|ja|toː.kʲoꜜː.to}}|post=,}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<strong>Tokyo Metropolis</strong>"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("東京都"), "{rendered}");
+    assert!(rendered.contains("Tōkyō-to"), "{rendered}");
+    assert!(rendered.contains("[toː.kʲoꜜː.to]"), "{rendered}");
+    assert!(rendered.contains(","), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_literal_translation_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Literal translation|[[Capital of Japan|Eastern Capital]]}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains(
+            "lit. <a href=\"https://en.wikipedia.org/wiki/Capital_of_Japan\">Eastern Capital</a>"
+        ),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_na_template() {
+    let rendered1 = render_wikitext("Sample", "{{N/A}}", &InternalLinks::new(), "en");
+    assert!(rendered1.contains("<p>N/A</p>"), "{rendered1}");
+
+    let rendered2 = render_wikitext("Sample", "{{NA|custom text}}", &InternalLinks::new(), "en");
+    assert!(rendered2.contains("<p>custom text</p>"), "{rendered2}");
+
+    let rendered3 = render_wikitext("Sample", "{{Not applicable|}}", &InternalLinks::new(), "en");
+    assert!(rendered3.contains("<p>N/A</p>"), "{rendered3}");
+}
+
+#[test]
+fn render_wikitext_formats_quote_escaping_templates() {
+    let rendered1 = render_wikitext("Sample", "a{{'\"}}b", &InternalLinks::new(), "en");
+    assert!(rendered1.contains("a'\"b"), "{rendered1}");
+
+    let rendered2 = render_wikitext("Sample", "a{{\"'}}b", &InternalLinks::new(), "en");
+    assert!(rendered2.contains("a\"'b"), "{rendered2}");
+}
+
 fn read_or_fetch_text(
     cache_path: &Path,
     refresh: bool,
