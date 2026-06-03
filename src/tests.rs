@@ -526,6 +526,21 @@ fn render_wikitext_formats_interlanguage_link_alias_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_interlanguage_link_multi_alias_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Interlanguage link multi|List of governors of Tokyo|ja|東京都知事一覧}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("List of governors of Tokyo"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("[ja]"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_jaanus_templates() {
     let rendered = render_wikitext(
         "Sample",
@@ -705,6 +720,37 @@ fn render_wikitext_formats_easy_css_image_crop_template() {
     assert_eq!(
         rendered,
         "[[File:Osaka Urban Railway network.svg|thumb|The rail network.]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_multiple_images_template() {
+    let wikitext = "{{Multiple images\n\
+        | align = right\n\
+        | direction = vertical\n\
+        | header = Some Header\n\
+        | footer = Some Footer\n\
+        | image1 = Yoshiwara M.jpg\n\
+        | caption1 = First Caption\n\
+        | image2 = Hokusai.jpg\n\
+        | caption2 = Second Caption\n\
+    }}";
+    let rendered = render_templates(wikitext);
+    assert!(
+        rendered.contains("<p><strong>Some Header</strong></p>"),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains("[[File:Yoshiwara M.jpg|thumb|First Caption]]"),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains("[[File:Hokusai.jpg|thumb|Second Caption]]"),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains("<p><em>Some Footer</em></p>"),
+        "{rendered}"
     );
 }
 

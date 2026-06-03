@@ -1,5 +1,51 @@
 # Codex Session Notes
 
+## 2026-06-02 Templates on en "History of Tokyo"
+
+### Summary
+
+Supported all Wikipedia templates on the English "History of Tokyo" article. Implemented a custom renderer for `Multiple images` (and its alias `Multiple image`) to convert grouped images into standard `[[File:...]]` links, mapped the `Interlanguage link multi` alias to the `render_interlanguage_link_template` handler, and registered `Tokyo` and `Years in Japan` as navigation templates in `src/navigations.csv`. Wrote dedicated unit tests for all new templates/aliases and updated all expected integration test fixtures on disk. All 190 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "History of Tokyo":
+  * `Multiple images` / `Multiple image`: custom template to display groups of images. Implemented `render_multiple_images_template` in `src/main.rs` to generate standard MediaWiki `[[File:...]]` image blocks from the positional and named image parameters.
+  * `Interlanguage link multi`: alias of `ill`, mapped directly to `render_interlanguage_link_template(params)` in `src/main.rs`.
+  * `Tokyo`: navigational box (navbox) for Tokyo, added to `src/navigations.csv` to be skipped.
+  * `Years in Japan`: navigational box (navbox) for historical years in Japan, added to `src/navigations.csv` to be skipped.
+* Added separate unit tests `render_wikitext_formats_multiple_images_template` and `render_wikitext_formats_interlanguage_link_multi_alias_templates` in `src/tests.rs`.
+* Documented `Multiple images` and `Interlanguage link multi` in `DEVELOPMENT.md`.
+* Sorted template list databases using `./sort.sh`.
+* Updated expected book integration fixtures (`expected/han-dynasty/` and `expected/planets/`) to reflect newly rendered `Multiple images` templates.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Implemented `render_multiple_images_template`.
+  * Routed `Multiple images`, `Multiple image`, and `Interlanguage link multi` in `render_template` and registered them in `is_handled_template_name`.
+* `src/tests.rs` [MODIFY]
+  * Added `render_wikitext_formats_multiple_images_template` and `render_wikitext_formats_interlanguage_link_multi_alias_templates` unit tests.
+* `src/navigations.csv` [MODIFY]
+  * Added `Tokyo` and `Years in Japan`, sorted alphabetically.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new template conversion rules.
+* `expected/han-dynasty/OEBPS/chapter-1.xhtml` [MODIFY]
+* `expected/planets/OEBPS/chapter-6.xhtml` [MODIFY]
+  * Updated integration expected fixtures to include newly rendered image captions.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 190 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-02 Templates on en "Nagano Prefecture"
 
 ### Summary

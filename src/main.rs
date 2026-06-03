@@ -1782,6 +1782,7 @@ fn render_template(content: &str) -> String {
         render_republic_of_korea_ship_template(params)
     } else if template.eq_ignore_ascii_case("ill")
         || template.eq_ignore_ascii_case("Interlanguage link")
+        || template.eq_ignore_ascii_case("Interlanguage link multi")
     {
         render_interlanguage_link_template(params)
     } else if template.eq_ignore_ascii_case("reign") {
@@ -1922,6 +1923,10 @@ fn render_template(content: &str) -> String {
         render_nihongo3_template(params)
     } else if template.eq_ignore_ascii_case("Easy CSS image crop") {
         render_easy_css_image_crop_template(params)
+    } else if template.eq_ignore_ascii_case("Multiple images")
+        || template.eq_ignore_ascii_case("Multiple image")
+    {
+        render_multiple_images_template(params)
     } else if template.eq_ignore_ascii_case("ISSN") {
         render_issn_template(params)
     } else if template.eq_ignore_ascii_case("Cite NSRW") {
@@ -2096,6 +2101,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("ROKS")
         || template.eq_ignore_ascii_case("ill")
         || template.eq_ignore_ascii_case("Interlanguage link")
+        || template.eq_ignore_ascii_case("Interlanguage link multi")
         || template.eq_ignore_ascii_case("reign")
         || template.eq_ignore_ascii_case("open access")
         || template.eq_ignore_ascii_case("free access")
@@ -2136,6 +2142,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Jaanus")
         || template.eq_ignore_ascii_case("nihongo3")
         || template.eq_ignore_ascii_case("Easy CSS image crop")
+        || template.eq_ignore_ascii_case("Multiple images")
+        || template.eq_ignore_ascii_case("Multiple image")
         || template.eq_ignore_ascii_case("ISSN")
         || template.eq_ignore_ascii_case("Cite NSRW")
         || template
@@ -3621,6 +3629,64 @@ fn render_easy_css_image_crop_template(params: &str) -> String {
     } else {
         format!("[[File:{image}|thumb|alt={alt}|{caption}]]")
     }
+}
+
+fn render_multiple_images_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut rendered_images = Vec::new();
+
+    let header = template_param(&named, &["header", "Header"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let footer = template_param(&named, &["footer", "Footer"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    if !header.is_empty() {
+        rendered_images.push(format!(
+            "<p><strong>{}</strong></p>",
+            render_templates(header)
+        ));
+    }
+
+    for i in 1..=10 {
+        let img_key = format!("image{i}");
+        let cap_key = format!("caption{i}");
+        let alt_key = format!("alt{i}");
+
+        let Some(image) = named
+            .get(&img_key)
+            .map(|s| s.trim())
+            .filter(|s| !s.is_empty())
+        else {
+            continue;
+        };
+
+        let caption = named.get(&cap_key).map(|s| s.trim()).unwrap_or("");
+        let alt = named.get(&alt_key).map(|s| s.trim()).unwrap_or("");
+
+        let file_link = if alt.is_empty() {
+            if caption.is_empty() {
+                format!("[[File:{image}|thumb]]")
+            } else {
+                format!("[[File:{image}|thumb|{caption}]]")
+            }
+        } else {
+            if caption.is_empty() {
+                format!("[[File:{image}|thumb|alt={alt}]]")
+            } else {
+                format!("[[File:{image}|thumb|alt={alt}|{caption}]]")
+            }
+        };
+
+        rendered_images.push(render_templates(&file_link));
+    }
+
+    if !footer.is_empty() {
+        rendered_images.push(format!("<p><em>{}</em></p>", render_templates(footer)));
+    }
+
+    rendered_images.join("\n")
 }
 
 fn render_issn_template(params: &str) -> String {
