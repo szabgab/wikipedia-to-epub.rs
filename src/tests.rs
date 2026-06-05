@@ -3611,6 +3611,59 @@ fn render_wikitext_formats_oclc_template() {
 }
 
 #[test]
+fn render_wikitext_formats_asin_template() {
+    let rendered = render_wikitext("Sample", "{{ASIN|B00086U61Y}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("ASIN B00086U61Y"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{ASIN|B00086U61Y|title=Item's Title}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("ASIN B00086U61Y, <em>Item's Title</em>"),
+        "{rendered}"
+    );
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{ASIN|B00086U61Y|date=2000-12-24}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("ASIN B00086U61Y (2000-12-24)"),
+        "{rendered}"
+    );
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{ASIN|B00086U61Y|title=Item's Title|date=2000-12-24}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("ASIN B00086U61Y, <em>Item's Title</em> (2000-12-24)"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_script_template() {
+    let rendered = render_wikitext("Sample", "{{Script|Hani|神}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("神"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Script|Hani|神道}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("神道"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_wikivoyage_inline_template() {
     let rendered = render_wikitext(
         "Sample",

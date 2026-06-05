@@ -1,5 +1,45 @@
 # Codex Session Notes
 
+## 2026-06-05 Templates on en "Shinto"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Shinto" article. Implemented rendering support for the `ASIN` (Amazon Standard Identification Number lookup) and `Script` (language/font script tagging) templates in `src/main.rs`. Registered `Shinto2` as a navigation template in `src/navigations.csv`. Added comprehensive unit tests in `src/tests.rs` verifying that `ASIN` and `Script` templates render correctly, and documented them in `DEVELOPMENT.md`. Sorted template lists alphabetically. Verified that all 207 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "Shinto":
+  * `Shinto2`: navigation template (navbox), added to `src/navigations.csv` to be skipped.
+  * `ASIN`: Amazon lookup template, implemented custom renderer `render_asin_template` in `src/main.rs` to format the identifier, optionally including the item's title and date.
+  * `Script`: language script font formatting template, implemented custom renderer `render_script_template` in `src/main.rs` to extract and output the inner text parameter.
+* Sorted `src/navigations.csv` alphabetically using `./sort.sh`.
+* Added dedicated unit tests `render_wikitext_formats_asin_template` and `render_wikitext_formats_script_template` in `src/tests.rs`.
+* Documented `ASIN` and `Script` template support in `DEVELOPMENT.md`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Map `ASIN` and `Script` templates in `render_template` and register them in `is_handled_template_name`. Implemented `render_asin_template` and `render_script_template`.
+* `src/navigations.csv` [MODIFY]
+  * Added `Shinto2` and sorted alphabetically.
+* `src/tests.rs` [MODIFY]
+  * Added unit tests `render_wikitext_formats_asin_template` and `render_wikitext_formats_script_template`.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented `ASIN` and `Script` template support.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 207 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-05 Templates on en "Heian period"
 
 ### Summary

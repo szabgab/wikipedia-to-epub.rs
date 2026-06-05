@@ -72,6 +72,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Ko-translit|rr|^한국}}` becomes `Hanguk`
 * `{{lit|Vernacular Script Commission}}` becomes `lit. Vernacular Script Commission`
 * `{{ISBN|0-8248-0673-5}}` becomes `ISBN 0-8248-0673-5`
+* `{{ASIN|B00086U61Y}}` becomes `ASIN B00086U61Y`
+* `{{Script|Hani|神}}` becomes `神`
 * `{{oclc|58053128}}` becomes `OCLC 58053128`
 * `{{doi|10.1080/02757206.2013.726990}}` becomes `doi:10.1080/02757206.2013.726990`
 * `{{IPA|ko|haːnɡuk|}}` and `{{IPAc-en|lang|ˈ|tʃ|oʊ|s|ʌ|n}}` become International Phonetic Alphabet spans such as `<span title="International Phonetic Alphabet">[haːnɡuk]</span>` and `<span title="International Phonetic Alphabet">[ˈtʃoʊsʌn]</span>`

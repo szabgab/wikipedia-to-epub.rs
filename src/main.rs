@@ -1746,6 +1746,10 @@ fn render_template(content: &str) -> String {
         render_literal_template(params)
     } else if template.eq_ignore_ascii_case("isbn") {
         render_isbn_template(params)
+    } else if template.eq_ignore_ascii_case("asin") {
+        render_asin_template(params)
+    } else if template.eq_ignore_ascii_case("script") {
+        render_script_template(params)
     } else if template.eq_ignore_ascii_case("oclc") {
         render_oclc_template(params)
     } else if template.eq_ignore_ascii_case("ipa") {
@@ -2149,6 +2153,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("ko-translit")
         || template.eq_ignore_ascii_case("lit")
         || template.eq_ignore_ascii_case("isbn")
+        || template.eq_ignore_ascii_case("asin")
+        || template.eq_ignore_ascii_case("script")
         || template.eq_ignore_ascii_case("oclc")
         || template.eq_ignore_ascii_case("ipa")
         || template.eq_ignore_ascii_case("IPAc-en")
@@ -3009,6 +3015,43 @@ fn render_isbn_template(params: &str) -> String {
     };
 
     format!("ISBN {}", render_templates(&isbn))
+}
+
+fn render_asin_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let asin_id = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .unwrap_or("");
+    if asin_id.is_empty() {
+        return String::new();
+    }
+
+    let mut parts = vec![format!("ASIN {}", asin_id)];
+
+    if let Some(title) = template_param(&named, &["title"]) {
+        parts.push(format!("''{}''", title));
+    }
+
+    let mut date_part = String::new();
+    if let Some(date) = template_param(&named, &["date"]) {
+        date_part = format!(" ({})", date);
+    }
+
+    let base = parts.join(", ");
+    format!("{}{}", base, date_part)
+}
+
+fn render_script_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.len() >= 2 {
+        render_templates(&positional[1])
+    } else if let Some(first) = positional.first() {
+        render_templates(first)
+    } else {
+        String::new()
+    }
 }
 
 fn render_oclc_template(params: &str) -> String {
