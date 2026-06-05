@@ -1709,6 +1709,14 @@ fn render_template(content: &str) -> String {
         render_endash_template()
     } else if template.eq_ignore_ascii_case("Quote box") || template.eq_ignore_ascii_case("Quote") {
         render_blockquote_template(params)
+    } else if template.eq_ignore_ascii_case("Poem quote")
+        || template.eq_ignore_ascii_case("poemquote")
+    {
+        render_poem_quote_template(params)
+    } else if template.eq_ignore_ascii_case("Verse translation") {
+        render_verse_translation_template(params)
+    } else if template.eq_ignore_ascii_case("Verse transliteration-translation") {
+        render_verse_transliteration_translation_template(params)
     } else if template.eq_ignore_ascii_case("center") {
         render_passthrough_template(params)
     } else if template.eq_ignore_ascii_case("singular") {
@@ -2140,6 +2148,10 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("ndash")
         || template.eq_ignore_ascii_case("Quote box")
         || template.eq_ignore_ascii_case("Quote")
+        || template.eq_ignore_ascii_case("Poem quote")
+        || template.eq_ignore_ascii_case("poemquote")
+        || template.eq_ignore_ascii_case("Verse translation")
+        || template.eq_ignore_ascii_case("Verse transliteration-translation")
         || template.eq_ignore_ascii_case("center")
         || template.eq_ignore_ascii_case("singular")
         || template.eq_ignore_ascii_case("Nihongo4")
@@ -5034,6 +5046,167 @@ fn render_blockquote_template(params: &str) -> String {
             source.trim()
         ));
     }
+    rendered.push_str("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_END__\n");
+    rendered
+}
+
+fn render_poem_quote_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let text = template_param(&named, &["text", "quote", "1"])
+        .map(str::to_string)
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+
+    let source = template_param(&named, &["source", "author", "cite", "2"])
+        .map(str::to_string)
+        .or_else(|| positional.get(1).cloned())
+        .unwrap_or_default();
+
+    if text.trim().is_empty() {
+        return String::new();
+    }
+
+    let mut rendered = String::new();
+    rendered.push_str("\n__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_START__\n");
+    for line in text.lines() {
+        let rendered_line = render_templates(line);
+        rendered.push_str(&format!(
+            "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__{}\n",
+            rendered_line.trim()
+        ));
+    }
+
+    let rendered_source = render_templates(&source);
+    if !rendered_source.trim().is_empty() {
+        rendered.push_str(&format!(
+            "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_SOURCE__{}\n",
+            rendered_source.trim()
+        ));
+    }
+    rendered.push_str("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_END__\n");
+    rendered
+}
+
+fn render_verse_translation_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let text1 = template_param(&named, &["1"])
+        .map(str::to_string)
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+
+    let text2 = template_param(&named, &["2"])
+        .map(str::to_string)
+        .or_else(|| positional.get(1).cloned())
+        .unwrap_or_default();
+
+    if text1.trim().is_empty() && text2.trim().is_empty() {
+        return String::new();
+    }
+
+    let italicsoff = template_param(&named, &["italicsoff"])
+        .is_some_and(|v| v.eq_ignore_ascii_case("y") || v.eq_ignore_ascii_case("yes"));
+
+    let mut rendered = String::new();
+    rendered.push_str("\n__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_START__\n");
+
+    if !text1.trim().is_empty() {
+        for line in text1.lines() {
+            let rendered_line = render_templates(line);
+            let formatted_line = if italicsoff {
+                rendered_line.trim().to_string()
+            } else {
+                format!("''{}''", rendered_line.trim())
+            };
+            rendered.push_str(&format!(
+                "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__{}\n",
+                formatted_line
+            ));
+        }
+        if !text2.trim().is_empty() {
+            rendered.push_str("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__\n");
+        }
+    }
+
+    if !text2.trim().is_empty() {
+        for line in text2.lines() {
+            let rendered_line = render_templates(line);
+            rendered.push_str(&format!(
+                "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__{}\n",
+                rendered_line.trim()
+            ));
+        }
+    }
+
+    rendered.push_str("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_END__\n");
+    rendered
+}
+
+fn render_verse_transliteration_translation_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let text1 = template_param(&named, &["1"])
+        .map(str::to_string)
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+
+    let text2 = template_param(&named, &["2"])
+        .map(str::to_string)
+        .or_else(|| positional.get(1).cloned())
+        .unwrap_or_default();
+
+    let text3 = template_param(&named, &["3"])
+        .map(str::to_string)
+        .or_else(|| positional.get(2).cloned())
+        .unwrap_or_default();
+
+    if text1.trim().is_empty() && text2.trim().is_empty() && text3.trim().is_empty() {
+        return String::new();
+    }
+
+    let mut rendered = String::new();
+    rendered.push_str("\n__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_START__\n");
+
+    if !text1.trim().is_empty() {
+        for line in text1.lines() {
+            let rendered_line = render_templates(line);
+            rendered.push_str(&format!(
+                "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__{}\n",
+                rendered_line.trim()
+            ));
+        }
+        if !text2.trim().is_empty() || !text3.trim().is_empty() {
+            rendered.push_str("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__\n");
+        }
+    }
+
+    if !text2.trim().is_empty() {
+        for line in text2.lines() {
+            let rendered_line = render_templates(line);
+            rendered.push_str(&format!(
+                "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__''{}''\n",
+                rendered_line.trim()
+            ));
+        }
+        if !text3.trim().is_empty() {
+            rendered.push_str("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__\n");
+        }
+    }
+
+    if !text3.trim().is_empty() {
+        for line in text3.lines() {
+            let rendered_line = render_templates(line);
+            rendered.push_str(&format!(
+                "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__{}\n",
+                rendered_line.trim()
+            ));
+        }
+    }
+
     rendered.push_str("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_END__\n");
     rendered
 }

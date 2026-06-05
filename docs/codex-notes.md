@@ -1,5 +1,48 @@
 # Codex Session Notes
 
+## 2026-06-05 Templates on en "Haiku"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Haiku" article. Implemented three custom blockquote-style template renderers (`render_poem_quote_template` for `Poem quote`/`poemquote`, `render_verse_translation_template` for `Verse translation`, and `render_verse_transliteration_translation_template` for `Verse transliteration-translation`) in `src/main.rs`. Added the metadata/category templates `NoteTag` and `wikisource category` to `src/silent.csv`. Wrote dedicated unit tests for all three new renderers in `src/tests.rs` and documented the new template conversion/silent rules in `DEVELOPMENT.md`. Sorted the database files alphabetically using `./sort.sh`. Verified that all 215 unit tests and 30 integration tests pass successfully.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "Haiku":
+  * `Poem quote` / `poemquote`: Renders poem verses sequential lines inside blockquotes.
+  * `Verse translation`: Renders original verse and translation within blockquotes, supporting `italicsoff` parameter to control automatic italicization.
+  * `Verse transliteration-translation`: Renders original verse, transliteration, and translation sequentially inside blockquotes.
+  * `NoteTag` and `wikisource category`: Registered in `src/silent.csv` to be skipped silently.
+* Added dedicated unit tests `render_wikitext_formats_poem_quote_template`, `render_wikitext_formats_verse_translation_template`, and `render_wikitext_formats_verse_transliteration_translation_template` in `src/tests.rs`.
+* Documented the conversion rules for the new templates in `DEVELOPMENT.md`.
+* Sorted databases using `./sort.sh`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Implemented `render_poem_quote_template`, `render_verse_translation_template`, and `render_verse_transliteration_translation_template`.
+  * Routed the new templates in `render_template` and registered them in `is_handled_template_name`.
+  * Fixed a type error in `render_blockquote_template` by returning the `rendered` string.
+* `src/silent.csv` [MODIFY]
+  * Added `NoteTag` and `wikisource category` and sorted alphabetically.
+* `src/tests.rs` [MODIFY]
+  * Added three unit tests for the poem and verse templates.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the rendering behavior of `Poem quote`, `Verse translation`, and `Verse transliteration-translation` templates, and updated the list of silently omitted templates.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 215 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-05 Templates on en "Hirohito"
 
 ### Summary

@@ -3744,6 +3744,53 @@ fn render_wikitext_formats_unbulleted_list_template() {
 }
 
 #[test]
+fn render_wikitext_formats_poem_quote_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Poem quote|\nold pond\nfrog leaps in\nwater's sound\n}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<blockquote>"), "{rendered}");
+    assert!(rendered.contains("<p>old pond</p>"), "{rendered}");
+    assert!(rendered.contains("<p>frog leaps in</p>"), "{rendered}");
+    assert!(rendered.contains("<p>water's sound</p>"), "{rendered}");
+    assert!(rendered.contains("</blockquote>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_verse_translation_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Verse translation|lang1=it|L'autunno giovane|The young autumn}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<blockquote>"), "{rendered}");
+    assert!(
+        rendered.contains("<em>L'autunno giovane</em>"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("<p>The young autumn</p>"), "{rendered}");
+    assert!(rendered.contains("</blockquote>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_verse_transliteration_translation_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Verse transliteration-translation|稲妻の|inazuma no|the flash}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<blockquote>"), "{rendered}");
+    assert!(rendered.contains("<p>稲妻の</p>"), "{rendered}");
+    assert!(rendered.contains("<em>inazuma no</em>"), "{rendered}");
+    assert!(rendered.contains("<p>the flash</p>"), "{rendered}");
+    assert!(rendered.contains("</blockquote>"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_wikivoyage_inline_template() {
     let rendered = render_wikitext(
         "Sample",
