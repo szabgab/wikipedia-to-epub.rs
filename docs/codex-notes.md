@@ -1,5 +1,51 @@
 # Codex Session Notes
 
+## 2026-06-05 Templates on en "Hirohito"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Hirohito" article. Mapped the `Birth date and age` (and its lowercase alias `birth date and age`) template to a new custom renderer `render_birth_date_and_age_template` formatting dates and calculating age in `src/main.rs`. Implemented `render_unbulleted_list_template` in `src/main.rs` to format `unbulleted list` (and aliases `ubl`, `ubli`, `unbulleted indent list`) as standard wikitext bullet lists to preserve nested structure and prevent tag stripping. Registered `snds` as an alias to the spaced en dash template `snd` in `src/main.rs`. Registered 10 maintenance, database, and link templates in `src/silent.csv` and 7 navigation templates in `src/navigations.csv`. Added three dedicated unit tests in `src/tests.rs` verifying all new templates, and documented conversion/silent rules in `DEVELOPMENT.md`. Sorted databases using `./sort.sh` and verified all 212 tests pass cleanly.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "Hirohito":
+  * `Birth date and age` / `birth date and age`: mapped to route to `render_birth_date_and_age_template` calculating age relative to current UTC system time.
+  * `unbulleted list` / `ubl` / `ubli` / `unbulleted indent list`: mapped to route to `render_unbulleted_list_template` converting list parameters to wikitext bullet items to bypass HTML stripping.
+  * `snds`: mapped to route to `render_spaced_endash_template`.
+  * `literal`: registered as handled alias of `lit`.
+  * `pp-dispute`, `Attribution needed`, `incomplete short citation`, `Wikidata fallback link`, `flagicon image`, `external media`, `Wikiquote-inline`, `wikispecies-inline`, `IMDb name`, and `PM20`: registered in `src/silent.csv` to be skipped silently.
+  * `Shōwa Statism`, `Conservatism in Japan`, `Shōwa nationalism`, `Emperors of Japan`, `Japanese princes`, `Sesshō`, and `JapanEmpireNavbox`: registered in `src/navigations.csv` to be skipped.
+* Added dedicated unit tests for `snds`, `Birth date and age`, and `unbulleted list` templates in `src/tests.rs`.
+* Documented the new handled and silent template conversion rules in `DEVELOPMENT.md`.
+* Sorted databases alphabetically using `./sort.sh`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Implemented `render_birth_date_and_age_template` and `render_unbulleted_list_template`.
+  * Routed `Birth date and age`, `birth date and age`, `unbulleted list`, `ubl`, `ubli`, `unbulleted indent list`, `snds`, and `literal` in `render_template` and registered them in `is_handled_template_name`.
+* `src/silent.csv` [MODIFY]
+  * Registered 10 new silent templates.
+* `src/navigations.csv` [MODIFY]
+  * Registered 7 new navigation templates.
+* `src/tests.rs` [MODIFY]
+  * Added three unit tests for the new templates.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new handled and silent template conversion rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 212 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-05 Templates on en "Fujiwara clan"
 
 ### Summary

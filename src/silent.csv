@@ -6,6 +6,7 @@ additional citations needed, Asks for help                                      
 ahnentafel
 Americana Poster
 anchor,                      Used for inbound links. Not relevant in epub.             https://en.wikipedia.org/wiki/Template:Anchor
+Attribution needed
 Audio,                       Link to an audio file. Not really relevant in epub files. https://en.wikipedia.org/wiki/Template:Audio
 Authority control,           Validate formats and values                               https://en.wikipedia.org/wiki/Template:Authority_control
 Better source needed,        Ask for help                                              https://en.wikipedia.org/wiki/Template:Better_source_needed
@@ -54,16 +55,20 @@ Expand German
 Expand Japanese
 Expand section
 Explain
+external media
 FACT
 failed verification
 flag
 flagcountry
 flagicon
+flagicon image
 full citation needed
 Gallery
 Hatnote
 Hatnote group
 huh
+IMDb name
+incomplete short citation
 in title
 ISBN?
 Italic title
@@ -95,9 +100,11 @@ Page needed
 party color
 Pd-notice
 Pie chart
+PM20
 Portal
 Portal bar
 POV, Point of view issue with the content
+pp-dispute
 Pp-move
 pp-move-indef
 Pp-pc
@@ -132,8 +139,8 @@ Source needed
 Spoken Wikipedia
 Subject bar
 Subscription required
-TOClimit
 TOC limit
+TOClimit
 tocright
 Tokyo Metropolis Labelled Map
 tone
@@ -160,5 +167,8 @@ when
 who
 Wide image
 Wikiatlas
+Wikidata fallback link
+Wikiquote-inline
 Wikisource-inline
+wikispecies-inline
 YouTube

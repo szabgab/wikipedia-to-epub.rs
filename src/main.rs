@@ -1690,7 +1690,10 @@ fn render_template(content: &str) -> String {
         render_nihongo_foot_template(params)
     } else if template.eq_ignore_ascii_case("nbsp") {
         render_nonbreaking_space_template()
-    } else if template.eq_ignore_ascii_case("snd") || template.eq_ignore_ascii_case("dash") {
+    } else if template.eq_ignore_ascii_case("snd")
+        || template.eq_ignore_ascii_case("dash")
+        || template.eq_ignore_ascii_case("snds")
+    {
         render_spaced_endash_template()
     } else if template.eq_ignore_ascii_case("mdash") {
         render_emdash_template()
@@ -1742,6 +1745,7 @@ fn render_template(content: &str) -> String {
         render_korean_transliteration_template(params)
     } else if template.eq_ignore_ascii_case("lit")
         || template.eq_ignore_ascii_case("Literal translation")
+        || template.eq_ignore_ascii_case("literal")
     {
         render_literal_template(params)
     } else if template.eq_ignore_ascii_case("isbn") {
@@ -1984,6 +1988,12 @@ fn render_template(content: &str) -> String {
         render_harvnb_template(params)
     } else if template.eq_ignore_ascii_case("plainlist") {
         render_plainlist_template(params)
+    } else if template.eq_ignore_ascii_case("unbulleted list")
+        || template.eq_ignore_ascii_case("ubl")
+        || template.eq_ignore_ascii_case("ubli")
+        || template.eq_ignore_ascii_case("unbulleted indent list")
+    {
+        render_unbulleted_list_template(params)
     } else if template.eq_ignore_ascii_case("IPAslink") {
         render_ipa_link_template(params)
     } else if template.eq_ignore_ascii_case("angbr") {
@@ -2046,6 +2056,10 @@ fn render_template(content: &str) -> String {
         render_doi_template(params)
     } else if template.eq_ignore_ascii_case("age") {
         render_age_template(params)
+    } else if template.eq_ignore_ascii_case("Birth date and age")
+        || template.eq_ignore_ascii_case("birth date and age")
+    {
+        render_birth_date_and_age_template(params)
     } else if template.eq_ignore_ascii_case("ayd")
         || template.eq_ignore_ascii_case("age in years and days nts")
         || template.eq_ignore_ascii_case("Age in years and days nts")
@@ -2133,6 +2147,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("nbsp")
         || template.eq_ignore_ascii_case("snd")
         || template.eq_ignore_ascii_case("dash")
+        || template.eq_ignore_ascii_case("snds")
         || template.eq_ignore_ascii_case("mdash")
         || template.eq_ignore_ascii_case("nowrap")
         || template.eq_ignore_ascii_case("smaller")
@@ -2153,6 +2168,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("tlit")
         || template.eq_ignore_ascii_case("ko-translit")
         || template.eq_ignore_ascii_case("lit")
+        || template.eq_ignore_ascii_case("Literal translation")
+        || template.eq_ignore_ascii_case("literal")
         || template.eq_ignore_ascii_case("isbn")
         || template.eq_ignore_ascii_case("asin")
         || template.eq_ignore_ascii_case("script")
@@ -2250,6 +2267,10 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("harv")
         || template.eq_ignore_ascii_case("harvnb")
         || template.eq_ignore_ascii_case("plainlist")
+        || template.eq_ignore_ascii_case("unbulleted list")
+        || template.eq_ignore_ascii_case("ubl")
+        || template.eq_ignore_ascii_case("ubli")
+        || template.eq_ignore_ascii_case("unbulleted indent list")
         || template.eq_ignore_ascii_case("IPAslink")
         || template.eq_ignore_ascii_case("angbr")
         || template.eq_ignore_ascii_case("angbr IPA")
@@ -2283,6 +2304,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("JPY")
         || template.eq_ignore_ascii_case("doi")
         || template.eq_ignore_ascii_case("age")
+        || template.eq_ignore_ascii_case("Birth date and age")
+        || template.eq_ignore_ascii_case("birth date and age")
         || template.eq_ignore_ascii_case("ayd")
         || template.eq_ignore_ascii_case("RouteBox")
         || template.eq_ignore_ascii_case("Ja-rail-color")
@@ -4140,6 +4163,73 @@ fn render_age_template(params: &str) -> String {
         age.to_string()
     } else {
         String::new()
+    }
+}
+
+fn render_birth_date_and_age_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let nums: Vec<i32> = positional
+        .iter()
+        .map(|s| s.parse::<i32>().unwrap_or(0))
+        .collect();
+
+    if nums.len() >= 3 {
+        let y = nums[0];
+        let m = nums[1];
+        let d = nums[2];
+
+        let month_names = [
+            "",
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+        ];
+
+        let month_name = if (1..=12).contains(&m) {
+            month_names[m as usize]
+        } else {
+            ""
+        };
+
+        let (cy, cm, cd) = current_utc_date();
+        let age = calculate_age(y, m, d, cy, cm, cd);
+
+        let named = template_named_params(params);
+        let df_dmy = template_param(&named, &["df"])
+            .is_some_and(|v| v.eq_ignore_ascii_case("yes") || v.eq_ignore_ascii_case("dmy"));
+
+        if df_dmy {
+            format!("{} {} {} (age {})", d, month_name, y, age)
+        } else {
+            format!("{} {}, {} (age {})", month_name, d, y, age)
+        }
+    } else {
+        String::new()
+    }
+}
+
+fn render_unbulleted_list_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let mut items = Vec::new();
+    for param in positional {
+        let trimmed = param.trim();
+        if !trimmed.is_empty() {
+            items.push(format!("* {}", render_templates(trimmed)));
+        }
+    }
+    if items.is_empty() {
+        String::new()
+    } else {
+        format!("\n{}", items.join("\n"))
     }
 }
 
