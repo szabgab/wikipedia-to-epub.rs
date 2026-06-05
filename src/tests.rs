@@ -541,6 +541,18 @@ fn render_wikitext_formats_interlanguage_link_multi_alias_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_illm_alias_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{illm|In-no-chō|ja|院庁|lt=''In-no-chō''}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("In-no-chō"), "{rendered}");
+    assert!(rendered.contains("[ja]"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_jaanus_templates() {
     let rendered = render_wikitext(
         "Sample",

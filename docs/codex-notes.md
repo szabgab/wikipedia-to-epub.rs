@@ -1,5 +1,40 @@
 # Codex Session Notes
 
+## 2026-06-05 Templates on en "Heian period"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Heian period" article. Registered the `illm` template alias (which redirects to `Template:Interlanguage link` on Wikipedia) to map to `render_interlanguage_link_template` in `src/main.rs`. Wrote a dedicated unit test in `src/tests.rs` verifying that `illm` aliases render correctly, and documented it in `DEVELOPMENT.md`. Verified that all 205 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "Heian period":
+  * `illm`: Interlanguage link multi template redirect, registered in `render_template` and `is_handled_template_name` to route to `render_interlanguage_link_template`.
+* Added a dedicated unit test `render_wikitext_formats_illm_alias_templates` in `src/tests.rs`.
+* Documented `illm` template alias support in `DEVELOPMENT.md`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Map `illm` template to `render_interlanguage_link_template` and register it in `is_handled_template_name`.
+* `src/tests.rs` [MODIFY]
+  * Added unit test `render_wikitext_formats_illm_alias_templates`.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented `illm` template alias support.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 205 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-05 Templates on en "Greater Tokyo Area"
 
 ### Summary

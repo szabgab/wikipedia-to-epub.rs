@@ -1859,6 +1859,7 @@ fn render_template(content: &str) -> String {
     } else if template.eq_ignore_ascii_case("ROKS") {
         render_republic_of_korea_ship_template(params)
     } else if template.eq_ignore_ascii_case("ill")
+        || template.eq_ignore_ascii_case("illm")
         || template.eq_ignore_ascii_case("Interlanguage link")
         || template.eq_ignore_ascii_case("Interlanguage link multi")
     {
@@ -2211,6 +2212,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Arrow")
         || template.eq_ignore_ascii_case("ROKS")
         || template.eq_ignore_ascii_case("ill")
+        || template.eq_ignore_ascii_case("illm")
         || template.eq_ignore_ascii_case("Interlanguage link")
         || template.eq_ignore_ascii_case("Interlanguage link multi")
         || template.eq_ignore_ascii_case("reign")
