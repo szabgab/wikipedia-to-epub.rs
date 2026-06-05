@@ -3680,6 +3680,12 @@ fn render_wikitext_silently_skips_tree_list_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_dash_template() {
+    let rendered = render_wikitext("Sample", "202 BC{{dash}}9 AD", &InternalLinks::new(), "en");
+    assert!(rendered.contains("202 BC – 9 AD"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_wikivoyage_inline_template() {
     let rendered = render_wikitext(
         "Sample",

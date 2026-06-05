@@ -1690,7 +1690,7 @@ fn render_template(content: &str) -> String {
         render_nihongo_foot_template(params)
     } else if template.eq_ignore_ascii_case("nbsp") {
         render_nonbreaking_space_template()
-    } else if template.eq_ignore_ascii_case("snd") {
+    } else if template.eq_ignore_ascii_case("snd") || template.eq_ignore_ascii_case("dash") {
         render_spaced_endash_template()
     } else if template.eq_ignore_ascii_case("mdash") {
         render_emdash_template()
@@ -2132,6 +2132,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Nihongo")
         || template.eq_ignore_ascii_case("nbsp")
         || template.eq_ignore_ascii_case("snd")
+        || template.eq_ignore_ascii_case("dash")
         || template.eq_ignore_ascii_case("mdash")
         || template.eq_ignore_ascii_case("nowrap")
         || template.eq_ignore_ascii_case("smaller")

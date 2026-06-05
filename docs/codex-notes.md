@@ -1,5 +1,44 @@
 # Codex Session Notes
 
+## 2026-06-05 Templates on en "Fujiwara clan"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Fujiwara clan" article. Mapped the `dash` template (which redirects to the spaced en dash template `snd` on Wikipedia) to `render_spaced_endash_template` in `src/main.rs`. Registered the infobox and structural templates `Japanese clan name`, `chart top`, and `chart bottom` in `src/silent.csv`. Wrote a dedicated unit test `render_wikitext_formats_dash_template` in `src/tests.rs` to verify that `dash` correctly formats spaced en dashes, and documented the new template conversion and silent rules in `DEVELOPMENT.md`. Sorted the silent templates database using `./sort.sh`. Verified that all 209 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "Fujiwara clan":
+  * `dash`: mapped to route to `render_spaced_endash_template` and registered in `is_handled_template_name`.
+  * `Japanese clan name`, `chart top`, and `chart bottom`: registered in `src/silent.csv` to be skipped silently.
+* Added a dedicated unit test `render_wikitext_formats_dash_template` in `src/tests.rs`.
+* Documented the templates in `DEVELOPMENT.md`.
+* Sorted `src/silent.csv` alphabetically using `./sort.sh`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Routed `dash` to `render_spaced_endash_template` and registered it in `is_handled_template_name`.
+* `src/silent.csv` [MODIFY]
+  * Registered `Japanese clan name`, `chart top`, and `chart bottom` and sorted alphabetically.
+* `src/tests.rs` [MODIFY]
+  * Added unit test `render_wikitext_formats_dash_template`.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new handled and silent template conversion rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 209 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-05 Templates on en "Kamakura shogunate"
 
 ### Summary
