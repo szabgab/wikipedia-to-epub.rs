@@ -1,5 +1,44 @@
 # Codex Session Notes
 
+## 2026-06-05 Templates on en "Greater Tokyo Area"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Greater Tokyo Area" article. Added rendering support for the `su` template (which formats vertically-stacked subscripts and superscripts as standard EPUB/HTML `<sup>` and `<sub>` elements) in `src/main.rs`. Registered `JPLargestMetros` as a navigation template in `src/navigations.csv`. Added a comprehensive unit test in `src/tests.rs` verifying that `su` template variants render correctly, and documented it in `DEVELOPMENT.md`. Run `./sort.sh` to sort the template databases alphabetically. All 204 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "Greater Tokyo Area":
+  * `JPLargestMetros`: navigation template (navbox), added to `src/navigations.csv` to be skipped.
+  * `su`: vertically-stacked subscript/superscript template, implemented custom renderer `render_su_template` in `src/main.rs` that maps `p` to a superscript span and `b` to a subscript span using the placeholder tokens `__WIKIPEDIA_TO_EPUB_SUP_START__` and `__WIKIPEDIA_TO_EPUB_SUB_START__`.
+* Sorted `src/navigations.csv` alphabetically using `./sort.sh`.
+* Added a dedicated unit test `render_wikitext_formats_su_template` in `src/tests.rs`.
+* Documented `su` template support in `DEVELOPMENT.md`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Map `su` template to `render_su_template` and register it in `is_handled_template_name`. Implemented `render_su_template`.
+* `src/navigations.csv` [MODIFY]
+  * Added `JPLargestMetros` and sorted alphabetically.
+* `src/tests.rs` [MODIFY]
+  * Added unit test `render_wikitext_formats_su_template`.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented `su` template support.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 204 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-03 Cover Image Configuration Support
 
 ### Summary

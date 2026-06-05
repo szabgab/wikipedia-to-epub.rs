@@ -3792,6 +3792,29 @@ fn render_wikitext_formats_sup_and_sub_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_su_template() {
+    let rendered = render_wikitext("Sample", "{{su|p=2}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<sup>2</sup>"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{su|b=x}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<sub>x</sub>"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{su|p=2|b=x}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<sup>2</sup><sub>x</sub>"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{su|p={{sup|2}}|b={{sub|x}}}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<sup><sup>2</sup></sup><sub><sub>x</sub></sub>"),
+        "{rendered}"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_mpl_template() {
     let rendered = render_wikitext("Sample", "{{mpl|2010 TK|7}}", &InternalLinks::new(), "en");
     assert!(rendered.contains("2010 TK7"), "{rendered}");

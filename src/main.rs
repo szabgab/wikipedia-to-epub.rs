@@ -1904,6 +1904,8 @@ fn render_template(content: &str) -> String {
         render_sup_template(params)
     } else if template.eq_ignore_ascii_case("sub") {
         render_sub_template(params)
+    } else if template.eq_ignore_ascii_case("su") {
+        render_su_template(params)
     } else if template.eq_ignore_ascii_case("mpl") {
         render_mpl_template(params)
     } else if template.eq_ignore_ascii_case("en dash")
@@ -2288,6 +2290,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("e")
         || template.eq_ignore_ascii_case("sup")
         || template.eq_ignore_ascii_case("sub")
+        || template.eq_ignore_ascii_case("su")
         || template.eq_ignore_ascii_case("mpl")
         || template.eq_ignore_ascii_case("en dash")
         || template.eq_ignore_ascii_case("En dash")
@@ -6077,6 +6080,25 @@ fn render_sub_template(params: &str) -> String {
     } else {
         String::new()
     }
+}
+
+fn render_su_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let p = template_param(&named, &["p"]);
+    let b = template_param(&named, &["b"]);
+
+    let mut rendered = String::new();
+    if let Some(sup_val) = p {
+        rendered.push_str("__WIKIPEDIA_TO_EPUB_SUP_START__");
+        rendered.push_str(&render_templates(sup_val));
+        rendered.push_str("__WIKIPEDIA_TO_EPUB_SUP_END__");
+    }
+    if let Some(sub_val) = b {
+        rendered.push_str("__WIKIPEDIA_TO_EPUB_SUB_START__");
+        rendered.push_str(&render_templates(sub_val));
+        rendered.push_str("__WIKIPEDIA_TO_EPUB_SUB_END__");
+    }
+    rendered
 }
 
 fn render_e_template(params: &str) -> String {

@@ -119,6 +119,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{numero|3}}` becomes `No. 3`
 * `{{sic|was}}` becomes `was [sic]`
 * `{{Nowrap|June 10}}` becomes `June 10`
+* `{{su|p=2|b=x}}` becomes `<sup>2</sup><sub>x</sub>`
 * `{{Smaller|note}}` and `{{small|note}}` become `<small>note</small>`
 * `{{Coord|37|33|36|N|126|59|24|E|display=inline}}` becomes `37°33′36″N 126°59′24″E`; decimal forms such as `{{Coord|43.65107|-79.347015|display=inline}}` become `43.65107, -79.347015`
 * `{{rp|12}}` becomes an inline reference page marker: `p. 12`; multiple values such as `{{rp|12|15}}` become `pp. 12, 15`
