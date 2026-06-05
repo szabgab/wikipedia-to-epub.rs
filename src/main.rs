@@ -1833,6 +1833,8 @@ fn render_template(content: &str) -> String {
     } else if template.eq_ignore_ascii_case("main") || template.eq_ignore_ascii_case("Main article")
     {
         render_main_template(params)
+    } else if template.eq_ignore_ascii_case("Main list") {
+        render_main_list_template(params)
     } else if template.eq_ignore_ascii_case("see also") || template.eq_ignore_ascii_case("also") {
         render_see_also_template(params)
     } else if template.eq_ignore_ascii_case("further") {
@@ -2060,6 +2062,8 @@ fn render_template(content: &str) -> String {
         render_fx_convert_template(params)
     } else if template.eq_ignore_ascii_case("JPY") {
         render_jpy_template(params)
+    } else if template.eq_ignore_ascii_case("dts") {
+        render_dts_template(params)
     } else if template.eq_ignore_ascii_case("doi") {
         render_doi_template(params)
     } else if template.eq_ignore_ascii_case("age") {
@@ -2225,6 +2229,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("excerpt")
         || template.eq_ignore_ascii_case("main")
         || template.eq_ignore_ascii_case("Main article")
+        || template.eq_ignore_ascii_case("Main list")
         || template.eq_ignore_ascii_case("see also")
         || template.eq_ignore_ascii_case("also")
         || template.eq_ignore_ascii_case("further")
@@ -2315,6 +2320,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("FXConvert")
         || template.eq_ignore_ascii_case("JPY")
         || template.eq_ignore_ascii_case("doi")
+        || template.eq_ignore_ascii_case("dts")
         || template.eq_ignore_ascii_case("age")
         || template.eq_ignore_ascii_case("Birth date and age")
         || template.eq_ignore_ascii_case("birth date and age")
@@ -5585,6 +5591,124 @@ fn render_main_template(params: &str) -> String {
         [article] => format!("Main article: [[{article}]]"),
         articles => format!("Main articles: {}", join_template_articles(articles)),
     }
+}
+
+fn render_main_list_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let articles = template_article_params(params);
+    let more = template_param(&named, &["more"])
+        .map(|v| !v.eq_ignore_ascii_case("no"))
+        .unwrap_or(true);
+
+    if articles.is_empty() {
+        return String::new();
+    }
+
+    let prefix = if more {
+        if articles.len() == 1 {
+            "For a more comprehensive list, see "
+        } else {
+            "For more comprehensive lists, see "
+        }
+    } else {
+        if articles.len() == 1 {
+            "For a comprehensive list, see "
+        } else {
+            "For comprehensive lists, see "
+        }
+    };
+
+    format!("{}{}", prefix, join_template_articles(&articles))
+}
+
+fn render_dts_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let mut year = None;
+    let mut month = None;
+    let mut day = None;
+
+    if positional.len() >= 3 {
+        year = positional[0].trim().parse::<i32>().ok();
+        let m_str = positional[1].trim();
+        month = m_str.parse::<i32>().ok().or_else(|| {
+            let months = [
+                "january",
+                "february",
+                "march",
+                "april",
+                "may",
+                "june",
+                "july",
+                "august",
+                "september",
+                "october",
+                "november",
+                "december",
+            ];
+            months
+                .iter()
+                .position(|&m| m.eq_ignore_ascii_case(m_str))
+                .map(|idx| idx as i32 + 1)
+        });
+        day = positional[2].trim().parse::<i32>().ok();
+    } else if let Some(first_param) = positional.first() {
+        let first_param = first_param.trim();
+        let parts: Vec<&str> = first_param.split('-').collect();
+        if parts.len() == 3 {
+            year = parts[0].parse::<i32>().ok();
+            month = parts[1].parse::<i32>().ok();
+            day = parts[2].parse::<i32>().ok();
+        } else if let Some((y, m, d)) = parse_date_string(first_param) {
+            year = Some(y);
+            month = Some(m);
+            day = Some(d);
+        }
+    }
+
+    let Some(y) = year else {
+        return String::new();
+    };
+    let Some(m) = month else {
+        return String::new();
+    };
+    let Some(d) = day else {
+        return String::new();
+    };
+
+    let months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
+    if !(1..=12).contains(&m) {
+        return String::new();
+    }
+    let month_name = months[m as usize - 1];
+
+    let format_param = template_param(&named, &["format"]);
+    let is_dmy = format_param.is_some_and(|fmt| fmt.eq_ignore_ascii_case("dmy"));
+
+    let bc = template_param(&named, &["bc"]).is_some()
+        || positional.iter().any(|p| p.eq_ignore_ascii_case("bc"));
+
+    let base = if is_dmy {
+        format!("{} {} {}", d, month_name, y)
+    } else {
+        format!("{} {}, {}", month_name, d, y)
+    };
+
+    if bc { format!("{} BC", base) } else { base }
 }
 
 fn render_see_also_template(params: &str) -> String {

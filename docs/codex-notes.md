@@ -1,5 +1,49 @@
 # Codex Session Notes
 
+## 2026-06-05 Templates on en "National Diet"
+
+### Summary
+
+Supported all Wikipedia templates on the English "National Diet" article. Implemented custom date template renderer (`render_dts_template`) for `dts` and list link template renderer (`render_main_list_template`) for `Main list` in `src/main.rs`. Added the table layout template `0` to `src/silent.csv` and the footer navigational template `National bicameral legislatures` to `src/navigations.csv`. Added standalone unit tests for `dts` and `Main list` in `src/tests.rs`, and updated conversion/silent template rules in `DEVELOPMENT.md`. Verified that all lints, formatting rules, and tests pass cleanly with 0 unknown skipped templates.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "National Diet":
+  * `dts`: Date table sorting template. Parses date parameters (both standard hyphenated dates `YYYY-MM-DD` and multi-parameter format `year|month|day`), and displays them in readable form (MDY by default, supporting `format=dmy` and `bc` flags).
+  * `Main list`: Hatnote cross-reference template. Renders "For a more comprehensive list, see..." (or "For a comprehensive list, see..." if `more=no` is set).
+  * `0`: Table formatting invisible padding template. Added to `src/silent.csv` to be skipped silently.
+  * `National bicameral legislatures`: Navigational footer template. Added to `src/navigations.csv` to be omitted.
+* Added dedicated unit tests `render_wikitext_formats_dts_template` and `render_wikitext_formats_main_list_template` in `src/tests.rs`.
+* Documented the new template conversion rules in `DEVELOPMENT.md`.
+* Sorted databases using `./sort.sh`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Implemented `render_dts_template` and `render_main_list_template`.
+  * Routed `dts` and `Main list` in `render_template` and registered them in `is_handled_template_name`.
+* `src/silent.csv` [MODIFY]
+  * Registered `0` and sorted alphabetically.
+* `src/navigations.csv` [MODIFY]
+  * Registered `National bicameral legislatures` and sorted alphabetically.
+* `src/tests.rs` [MODIFY]
+  * Added unit tests for `dts` and `Main list`.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the conversion rules for `dts`, `Main list`, and `0`.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 217 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-05 Templates on en "Haiku"
 
 ### Summary

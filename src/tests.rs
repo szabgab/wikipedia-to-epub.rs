@@ -3791,6 +3791,57 @@ fn render_wikitext_formats_verse_transliteration_translation_template() {
 }
 
 #[test]
+fn render_wikitext_formats_main_list_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Main list|List of members of the Diet of Japan}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("For a more comprehensive list, see <a href=\"https://en.wikipedia.org/wiki/List_of_members_of_the_Diet_of_Japan\">List of members of the Diet of Japan</a>"),
+        "{rendered}"
+    );
+
+    let rendered2 = render_wikitext(
+        "Sample",
+        "{{Main list|more=no|List of members of the Diet of Japan}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered2.contains("For a comprehensive list, see <a href=\"https://en.wikipedia.org/wiki/List_of_members_of_the_Diet_of_Japan\">List of members of the Diet of Japan</a>"),
+        "{rendered2}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_dts_template() {
+    let rendered = render_wikitext("Sample", "{{dts|1947-5-20}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("May 20, 1947"), "{rendered}");
+
+    let rendered_dmy = render_wikitext(
+        "Sample",
+        "{{dts|1947-05-20|format=dmy}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered_dmy.contains("20 May 1947"), "{rendered_dmy}");
+
+    let rendered_parts =
+        render_wikitext("Sample", "{{dts|1947|May|20}}", &InternalLinks::new(), "en");
+    assert!(rendered_parts.contains("May 20, 1947"), "{rendered_parts}");
+
+    let rendered_bc = render_wikitext(
+        "Sample",
+        "{{dts|0100-05-20|bc=yes}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered_bc.contains("May 20, 100 BC"), "{rendered_bc}");
+}
+
+#[test]
 fn render_wikitext_formats_wikivoyage_inline_template() {
     let rendered = render_wikitext(
         "Sample",
