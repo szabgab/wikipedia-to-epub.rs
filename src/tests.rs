@@ -3664,6 +3664,22 @@ fn render_wikitext_formats_script_template() {
 }
 
 #[test]
+fn render_wikitext_silently_skips_tree_list_templates() {
+    let wikitext = r#"
+{{Tree list}}
+* First level
+** Second level
+*** {{Tree list/final branch}} Final branch text
+{{Tree list/end}}
+"#;
+    let rendered = render_wikitext("Sample", wikitext, &InternalLinks::new(), "en");
+    assert!(!rendered.contains("Tree list"), "{rendered}");
+    assert!(rendered.contains("First level"), "{rendered}");
+    assert!(rendered.contains("Second level"), "{rendered}");
+    assert!(rendered.contains("Final branch text"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_wikivoyage_inline_template() {
     let rendered = render_wikitext(
         "Sample",

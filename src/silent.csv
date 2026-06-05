@@ -138,6 +138,11 @@ Tone inline
 tree chart
 tree chart/end
 tree chart/start
+tree list
+tree list/branching
+tree list/end
+tree list/final branch
+tree list/final branching
 unbalanced opinion
 Unreferencedsect
 unreferenced section

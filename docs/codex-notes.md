@@ -1,5 +1,41 @@
 # Codex Session Notes
 
+## 2026-06-05 Templates on en "Kamakura shogunate"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Kamakura shogunate" article. Registered the `Tree list` family of templates (`Tree list`, `Tree list/end`, `Tree list/final branch`, `Tree list/branching`, `Tree list/final branching`) in `src/silent.csv`. Wrote a dedicated unit test in `src/tests.rs` to verify that these templates are skipped silently while keeping the nested wikitext list items intact, and updated `DEVELOPMENT.md` to document the new rules. Sorted the silent templates list using `./sort.sh`. Verified that all 208 unit tests and 30 integration tests are completely passing cleanly.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "Kamakura shogunate":
+  * Registered `Tree list`, `Tree list/end`, `Tree list/final branch`, `Tree list/branching`, and `Tree list/final branching` in `src/silent.csv` to be skipped silently.
+* Added a dedicated unit test `render_wikitext_silently_skips_tree_list_templates` in `src/tests.rs`.
+* Documented `Tree list` templates support in `DEVELOPMENT.md`.
+* Sorted `src/silent.csv` alphabetically using `./sort.sh`.
+
+### Files Changed
+
+* `src/silent.csv` [MODIFY]
+  * Registered the 5 tree list templates.
+* `src/tests.rs` [MODIFY]
+  * Added unit test `render_wikitext_silently_skips_tree_list_templates`.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented `Tree list` templates.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 208 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-05 Templates on en "Shinto"
 
 ### Summary
