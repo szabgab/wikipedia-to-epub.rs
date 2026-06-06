@@ -8,7 +8,7 @@ use std::{
     io::Write,
     path::{Path, PathBuf},
     rc::Rc,
-    time::{Duration, SystemTime, UNIX_EPOCH},
+    time::Duration,
 };
 
 use clap::Parser;
@@ -8879,11 +8879,8 @@ fn toc_ncx(identifier: &str, config: &BookConfig, toc_nodes: &[TocNode]) -> Stri
 }
 
 fn book_identifier() -> String {
-    let nanos = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map(|duration| duration.as_nanos())
-        .unwrap_or_default();
-    format!("urn:wikipedia-to-epub:{nanos}")
+    let id = uuid::Uuid::new_v4();
+    format!("urn:uuid:{id}")
 }
 
 #[cfg(test)]

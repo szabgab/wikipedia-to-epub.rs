@@ -1,5 +1,41 @@
 # Codex Session Notes
 
+## 2026-06-06 UUID Book Identifiers
+
+### Summary
+
+Updated the default book identifier generator to use random UUIDs (URN format `urn:uuid:<uuid>`) instead of timestamp-based identifiers, ensuring cleaner and more standard book URNs when no custom ID is supplied. Updated dependencies in `Cargo.toml` and fixed unused imports. All tests and checks pass cleanly.
+
+### Decisions Made
+
+* Added the `uuid` crate with `v4` feature to the dependencies in `Cargo.toml`.
+* Updated `book_identifier()` in `src/main.rs` to generate a random UUID-based URN using `uuid::Uuid::new_v4()`.
+* Cleaned up unused imports (`SystemTime` and `UNIX_EPOCH`) at the top of `src/main.rs` and qualified their usage directly in `src/tests.rs`'s `test_cache_path` helper function.
+* Ran verification steps (`cargo test`, `cargo fmt`, `cargo check`, `cargo clippy`).
+
+### Files Changed
+
+* `Cargo.toml` [MODIFY]
+  * Added `uuid` dependency.
+* `src/main.rs` [MODIFY]
+  * Updated `book_identifier` to use UUID.
+  * Cleaned up unused imports.
+* `src/tests.rs` [MODIFY]
+  * Qualified `SystemTime` and `UNIX_EPOCH` usage inside `test_cache_path` to avoid warning/error.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 218 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-06 Title-based Chapter Filenames
 
 ### Summary

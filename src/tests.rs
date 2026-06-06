@@ -3415,8 +3415,8 @@ fn render_wikitext_formats_osm_way_template() {
 }
 
 fn test_cache_path(name: &str) -> PathBuf {
-    let nanos = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
+    let nanos = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
         .expect("system clock is after Unix epoch")
         .as_nanos();
     env::temp_dir().join(format!(
