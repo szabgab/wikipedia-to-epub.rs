@@ -22,12 +22,12 @@ fn generate_macchini_deep_book_from_local_page_dump() {
 
 #[test]
 fn generate_administrative_divisions_of_south_korea_book_from_local_page_dump() {
-    assert_generated_book_matches_expected("macchini");
+    assert_generated_book_matches_expected("administrative-divisions-of-south-korea");
 }
 
 #[test]
 fn generate_goguryeo_book_from_local_page_dump() {
-    assert_generated_book_matches_expected("macchini");
+    assert_generated_book_matches_expected("goguryeo");
 }
 
 #[test]

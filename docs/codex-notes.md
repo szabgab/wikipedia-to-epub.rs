@@ -4,7 +4,7 @@
 
 ### Summary
 
-Added support for a custom `id` configuration field in the book YAML configurations. When this optional field is set, it is used as the book's unique identifier (e.g., in the generated EPUB's OPF and NCX structures) instead of a dynamically generated timestamp-based URN. Set the `id` field in all 26 example YAML files in `examples/` to use `<filename>-fixed-id`, updated `skeleton.yaml`, and regenerated all expected book test fixtures in `expected/`. All unit and integration tests, check, clippy, and formatting pass successfully.
+Added support for a custom `id` configuration field in the book YAML configurations. When this optional field is set, it is used as the book's unique identifier (e.g., in the generated EPUB's OPF and NCX structures) instead of a dynamically generated timestamp-based URN. Set the `id` field in all 26 example YAML files in `examples/` to use `<filename>-fixed-id`, updated `skeleton.yaml`, and regenerated all expected book test fixtures in `expected/`. Also fixed a bug in the integration test suite where `administrative-divisions-of-south-korea` and `goguryeo` tests were incorrectly asserting against the `"macchini"` fixtures. All unit and integration tests, check, clippy, and formatting pass successfully.
 
 ### Decisions Made
 
@@ -12,6 +12,7 @@ Added support for a custom `id` configuration field in the book YAML configurati
 * In `write_book` (`src/main.rs`), resolved the EPUB identifier using the custom config `id` if present, falling back to the standard dynamic time-based `book_identifier()`.
 * Documented the optional `id` configuration field in `skeleton.yaml`.
 * Configured the `id` field in all 26 example books under `examples/` with `<filename>-fixed-id` to ensure stable, reproducible book identifiers.
+* Corrected the integration tests in `tests/books.rs` for `goguryeo` and `administrative-divisions-of-south-korea` to reference their correct expected directories rather than `"macchini"`.
 * Regenerated the `expected/` fixtures for all 25 integration tests.
 * Ran all verification steps and ensured no compiler warnings or test failures exist.
 
@@ -24,6 +25,8 @@ Added support for a custom `id` configuration field in the book YAML configurati
   * Added the `id` configuration option template.
 * `examples/*.yaml` [MODIFY]
   * Updated all 26 configuration files to include the `id` field.
+* `tests/books.rs` [MODIFY]
+  * Fixed assertion targets for `goguryeo` and `administrative-divisions-of-south-korea` integration tests.
 * `expected/*/` [MODIFY]
   * Updated the generated `OEBPS/content.opf` and `OEBPS/toc.ncx` (and some `chapter-*.xhtml` references) files with the new stable book IDs across all expected fixtures.
 * `docs/codex-notes.md` [MODIFY]
