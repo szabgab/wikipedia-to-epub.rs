@@ -1203,6 +1203,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Multiple issues}}
 {{Advert}}
 {{Original research}}
+{{Unreferenced}}
 Visible text."#,
         &InternalLinks::new(),
         "en",
@@ -1227,7 +1228,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 112,
+            recognized: 113,
             unknown: 0
         }
     );
