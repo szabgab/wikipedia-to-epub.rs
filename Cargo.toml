@@ -11,6 +11,7 @@ repository = "https://github.com/szabgab/wikipedia-to-epub.rs/"
 homepage = "https://wikipedia-to-epub.code-maven.com/"
 
 [dependencies]
+any_ascii = "0.3.3"
 clap = { version = "4.5.53", features = ["derive"] }
 html-escape = "0.2.13"
 regex = "1.12.2"

@@ -33,7 +33,7 @@ fn render_wikitext_handles_sections_links_and_lists() {
 
     assert!(
             rendered.contains(
-                r#"<p>Intro with <a href="https://en.wikipedia.org/wiki/Link_target">visible text</a><span class="external-link">↗</span> and <strong>bold</strong> text. See <a href="chapter-2.xhtml">Seoul</a>.</p>"#
+                r#"<p>Intro with <a href="https://en.wikipedia.org/wiki/Link_target">visible text</a><span class="external-link">↗</span> and <strong>bold</strong> text. See <a href="Seoul.xhtml">Seoul</a>.</p>"#
             )
         );
     assert!(rendered.contains("<h2>History</h2>"));

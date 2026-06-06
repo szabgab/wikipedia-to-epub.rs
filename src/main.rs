@@ -584,7 +584,7 @@ fn generate_chapters_hierarchical(
 "#,
                         wikipedia_language, title, title
                     );
-                    let file_name = format!("chapter-{}.xhtml", *chapter_index);
+                    let file_name = sanitize_chapter_filename(title);
                     chapters.push(Chapter {
                         title: title.clone(),
                         file_name: file_name.clone(),
@@ -883,7 +883,7 @@ fn run(args: CliArgs) -> AppResult<()> {
             language_attributes = html_language_attributes(&wikipedia_language),
         );
 
-        let file_name = format!("chapter-{}.xhtml", chapter_index);
+        let file_name = sanitize_chapter_filename("Resources");
         chapters.push(Chapter {
             title: "Resources".to_string(),
             file_name: file_name.clone(),
@@ -1142,19 +1142,34 @@ fn init_logging(level: Level, logfile: Option<&Path>) {
         .try_init();
 }
 
+fn sanitize_chapter_filename(title: &str) -> String {
+    let ascii_title = any_ascii::any_ascii(title);
+    let sanitized: String = ascii_title
+        .chars()
+        .map(|c| {
+            if c.is_ascii_alphanumeric() || c == '_' {
+                c
+            } else {
+                '_'
+            }
+        })
+        .collect();
+    format!("{}.xhtml", sanitized)
+}
+
 fn internal_links(articles: &[String]) -> InternalLinks {
     let mut links = InternalLinks::new();
-    for (index, article) in articles.iter().enumerate() {
+    for article in articles {
         links
             .entry(normalize_lookup_key(article))
-            .or_insert_with(|| format!("chapter-{}.xhtml", index + 1));
+            .or_insert_with(|| sanitize_chapter_filename(article));
     }
     links
 }
 
 fn load_chapter(
     page: &PageResponse,
-    index: usize,
+    _index: usize,
     internal_links: &InternalLinks,
     language: &str,
     image_registry: Option<&mut ImageRegistry>,
@@ -1174,7 +1189,7 @@ fn load_chapter(
         "article template skip counts"
     );
 
-    let file_name = format!("chapter-{index}.xhtml");
+    let file_name = sanitize_chapter_filename(&page.parse.title);
     Ok(Chapter {
         title: page.parse.title.clone(),
         file_name,
@@ -8786,7 +8801,8 @@ fn render_ncx_nav_point(node: &TocNode, play_order: &mut usize) -> String {
     let id_suffix = node
         .file_name
         .strip_prefix("chapter-")
-        .and_then(|s| s.strip_suffix(".xhtml"))
+        .unwrap_or(&node.file_name)
+        .strip_suffix(".xhtml")
         .unwrap_or(&node.file_name);
     let id = format!("chapter-{id_suffix}");
 

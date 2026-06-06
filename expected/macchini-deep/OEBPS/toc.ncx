@@ -12,13 +12,13 @@
       <navLabel><text>Front matter</text></navLabel>
       <content src="frontmatter.xhtml"/>
     </navPoint>
-    <navPoint id="chapter-1" playOrder="2">
+    <navPoint id="chapter-Macchini" playOrder="2">
       <navLabel><text>Macchini</text></navLabel>
-      <content src="chapter-1.xhtml"/>
+      <content src="Macchini.xhtml"/>
     </navPoint>
-    <navPoint id="chapter-2" playOrder="3">
+    <navPoint id="chapter-Licia_Macchini" playOrder="3">
       <navLabel><text>Licia Macchini</text></navLabel>
-      <content src="chapter-2.xhtml"/>
+      <content src="Licia_Macchini.xhtml"/>
     </navPoint>
   </navMap>
 </ncx>

@@ -12,9 +12,9 @@
       <navLabel><text>Front matter</text></navLabel>
       <content src="frontmatter.xhtml"/>
     </navPoint>
-    <navPoint id="chapter-1" playOrder="2">
+    <navPoint id="chapter-Korean_War" playOrder="2">
       <navLabel><text>Korean War</text></navLabel>
-      <content src="chapter-1.xhtml"/>
+      <content src="Korean_War.xhtml"/>
     </navPoint>
   </navMap>
 </ncx>

@@ -1,5 +1,49 @@
 # Codex Session Notes
 
+## 2026-06-06 Title-based Chapter Filenames
+
+### Summary
+
+Changed chapter filenames in the generated EPUB files to reflect the title of each specific chapter. Sanitized filenames to use only `[a-zA-Z0-9_]`. Integrated the `any_ascii` crate to perform Unicode-to-ASCII transliteration prior to character replacement, ensuring readable and collision-free filenames for non-ASCII scripts (such as Hebrew). Updated `internal_links` mapping and NCX navigation point ID extraction to work with the new filenames, and updated unit/integration tests and regenerated all expected fixtures on disk. All tests and checks pass cleanly.
+
+### Decisions Made
+
+* Added the `any_ascii` crate as a dependency in `Cargo.toml` to safely and cleanly map Unicode characters to readable ASCII approximations.
+* Implemented `sanitize_chapter_filename(title: &str) -> String` using `any_ascii::any_ascii` before character filtering.
+* Used `sanitize_chapter_filename` to determine filenames in `load_chapter` (article chapters), `generate_chapters_hierarchical` (section chapters), and `write_book` (for the `"Resources"` page).
+* Updated `internal_links` function to map target lookup keys directly to the sanitized chapter filename based on article titles.
+* Adjusted NCX XML ID construction to gracefully handle arbitrary filenames without `.xhtml` extensions.
+* Updated test assertions in `tests/books.rs` and `src/tests.rs` to expect title-based filenames.
+* Regenerated expected fixtures under `expected/` for all example books (transliterating Hebrew chapters for `korea-in-hebrew`).
+
+### Files Changed
+
+* `Cargo.toml` [MODIFY]
+  * Added `any_ascii` dependency.
+* `src/main.rs` [MODIFY]
+  * Implemented `sanitize_chapter_filename`.
+  * Updated `internal_links`, `load_chapter`, `generate_chapters_hierarchical`, `write_book`, and `render_ncx_nav_point`.
+* `src/tests.rs` [MODIFY]
+  * Updated `render_wikitext_handles_sections_links_and_lists` to verify link references to `Seoul.xhtml`.
+* `tests/books.rs` [MODIFY]
+  * Updated real-api check loop and hierarchical test expectations.
+  * Added `sanitize_chapter_filename` helper.
+* `expected/*/` [MODIFY/NEW/DELETE]
+  * Regenerated expected fixtures: deleted `chapter-*.xhtml` files and created new title-based `.xhtml` files. Updated OPF, NCX, and NAV files to link to the new names.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 218 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-06 Custom Book ID Support
 
 ### Summary

@@ -401,7 +401,8 @@ fn assert_real_api_generates_book(book: &str, chapter_titles: &[&str]) {
     assert_eq!(zip_entries(&epub), expected_entries);
 
     for (index, title) in chapter_titles.iter().enumerate() {
-        let chapter = read_epub_entry(&mut epub, &format!("OEBPS/chapter-{}.xhtml", index + 1));
+        let filename = sanitize_chapter_filename(title);
+        let chapter = read_epub_entry(&mut epub, &format!("OEBPS/{filename}"));
         assert!(
             chapter.contains(&format!("<title>{title}</title>")),
             "chapter {} is missing expected title {title:?}",
@@ -647,19 +648,19 @@ articles:
     let mut archive = ZipArchive::new(zip_file).unwrap();
 
     assert!(
-        archive.by_name("OEBPS/chapter-1.xhtml").is_ok(),
-        "chapter-1 should exist"
+        archive.by_name("OEBPS/Japan.xhtml").is_ok(),
+        "Japan should exist"
     );
     assert!(
-        archive.by_name("OEBPS/chapter-2.xhtml").is_ok(),
-        "chapter-2 should exist"
+        archive.by_name("OEBPS/Osaka_Info.xhtml").is_ok(),
+        "Osaka_Info should exist"
     );
     assert!(
-        archive.by_name("OEBPS/chapter-3.xhtml").is_ok(),
-        "chapter-3 should exist"
+        archive.by_name("OEBPS/Osaka.xhtml").is_ok(),
+        "Osaka should exist"
     );
 
-    let mut chapter2 = archive.by_name("OEBPS/chapter-2.xhtml").unwrap();
+    let mut chapter2 = archive.by_name("OEBPS/Osaka_Info.xhtml").unwrap();
     let mut chapter2_content = String::new();
     chapter2.read_to_string(&mut chapter2_content).unwrap();
     assert!(
@@ -668,4 +669,19 @@ articles:
     );
 
     fs::remove_dir_all(&work_dir).unwrap();
+}
+
+fn sanitize_chapter_filename(title: &str) -> String {
+    let ascii_title = any_ascii::any_ascii(title);
+    let sanitized: String = ascii_title
+        .chars()
+        .map(|c| {
+            if c.is_ascii_alphanumeric() || c == '_' {
+                c
+            } else {
+                '_'
+            }
+        })
+        .collect();
+    format!("{}.xhtml", sanitized)
 }

@@ -12,9 +12,9 @@
       <navLabel><text>Front matter</text></navLabel>
       <content src="frontmatter.xhtml"/>
     </navPoint>
-    <navPoint id="chapter-1" playOrder="2">
+    <navPoint id="chapter-Buddhist_temples_in_Japan" playOrder="2">
       <navLabel><text>Buddhist temples in Japan</text></navLabel>
-      <content src="chapter-1.xhtml"/>
+      <content src="Buddhist_temples_in_Japan.xhtml"/>
     </navPoint>
   </navMap>
 </ncx>

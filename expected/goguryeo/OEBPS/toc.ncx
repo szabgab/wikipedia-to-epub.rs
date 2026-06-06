@@ -12,9 +12,9 @@
       <navLabel><text>Front matter</text></navLabel>
       <content src="frontmatter.xhtml"/>
     </navPoint>
-    <navPoint id="chapter-1" playOrder="2">
+    <navPoint id="chapter-Goguryeo" playOrder="2">
       <navLabel><text>Goguryeo</text></navLabel>
-      <content src="chapter-1.xhtml"/>
+      <content src="Goguryeo.xhtml"/>
     </navPoint>
   </navMap>
 </ncx>

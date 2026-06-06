@@ -12,13 +12,13 @@
       <navLabel><text>Front matter</text></navLabel>
       <content src="frontmatter.xhtml"/>
     </navPoint>
-    <navPoint id="chapter-1" playOrder="2">
+    <navPoint id="chapter-kvry_h" playOrder="2">
       <navLabel><text>קוריאה</text></navLabel>
-      <content src="chapter-1.xhtml"/>
+      <content src="kvry_h.xhtml"/>
     </navPoint>
-    <navPoint id="chapter-2" playOrder="3">
+    <navPoint id="chapter-slvs_hmmlkhvt_sl_kvry_h" playOrder="3">
       <navLabel><text>שלוש הממלכות של קוריאה</text></navLabel>
-      <content src="chapter-2.xhtml"/>
+      <content src="slvs_hmmlkhvt_sl_kvry_h.xhtml"/>
     </navPoint>
   </navMap>
 </ncx>
