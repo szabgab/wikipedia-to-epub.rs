@@ -72,7 +72,7 @@ cover: "None"
 # Valid values:
 #   - "title"          : standard chapter names as they are (default).
 #   - "numbered-title" : automatically prepends hierarchical numbers (e.g. 1, 1.1, 1.2) to titles.
-chapter: "title"
+chapters: "title"
 
 
 # List of Wikipedia article page titles and sections to compile into the book.

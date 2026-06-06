@@ -133,7 +133,7 @@ enum ChapterStyle {
 struct BookConfig {
     id: Option<String>,
     #[serde(default)]
-    chapter: ChapterStyle,
+    chapters: ChapterStyle,
     metadata: Metadata,
     #[serde(rename = "output-file")]
     output_file: PathBuf,
@@ -885,7 +885,7 @@ fn run(args: CliArgs) -> AppResult<()> {
         &mut image_registry,
         &mut added_article_keys,
         &mut chapters,
-        config.chapter,
+        config.chapters,
         &[],
     )?;
 
@@ -899,8 +899,10 @@ fn run(args: CliArgs) -> AppResult<()> {
                 if !page_source.is_cache_hit(article) {
                     info!(article = page.parse.title, "fetching article");
                 }
-                let display_title = match config.chapter {
-                    ChapterStyle::NumberedTitle => format!("{next_top_level} {}", page.parse.title),
+                let display_title = match config.chapters {
+                    ChapterStyle::NumberedTitle => {
+                        format!("{next_top_level} {}", page.parse.title)
+                    }
                     ChapterStyle::Title => page.parse.title.clone(),
                 };
                 let chapter = load_chapter(

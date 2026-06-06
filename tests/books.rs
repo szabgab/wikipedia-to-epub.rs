@@ -678,7 +678,7 @@ fn generate_numbered_chapters_book_from_local_page_dump() {
     fs::create_dir_all(&work_dir).unwrap();
 
     let config_path = work_dir.join("book.yaml");
-    let yaml = r#"chapter: numbered-title
+    let yaml = r#"chapters: numbered-title
 metadata:
   title: "Japan and Osaka"
   author: "Wikipedia contributors"

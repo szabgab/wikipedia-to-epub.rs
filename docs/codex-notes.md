@@ -1,5 +1,46 @@
 # Codex Session Notes
 
+## 2026-06-06 Rename Chapter parameter to Chapters
+
+### Summary
+
+Renamed the configuration parameter `chapter` to `chapters` throughout the codebase, templates, examples, and tests. All tests pass cleanly.
+
+### Decisions Made
+
+* Renamed the `chapter` field of `BookConfig` in `src/main.rs` to `chapters`.
+* Updated references `config.chapter` to `config.chapters` in `src/main.rs`.
+* Renamed `chapter: numbered-title` in `examples/planets.yaml` and `tests/books.rs` to `chapters: numbered-title`.
+* Documented the renamed `chapters` option in `skeleton.yaml` and `DEVELOPMENT.md`.
+* Ran verification steps (`cargo fmt`, `cargo check`, `cargo clippy`, `cargo test`).
+
+### Files Changed
+
+* `DEVELOPMENT.md` [MODIFY]
+  * Renamed documentation of `chapter` parameter to `chapters`.
+* `skeleton.yaml` [MODIFY]
+  * Renamed documentation and setting of `chapter` parameter to `chapters`.
+* `examples/planets.yaml` [MODIFY]
+  * Renamed configuration `chapter` parameter to `chapters`.
+* `src/main.rs` [MODIFY]
+  * Renamed `chapter` field to `chapters` in `BookConfig`.
+  * Updated references to `chapters` in `run`.
+* `tests/books.rs` [MODIFY]
+  * Renamed configuration `chapter` to `chapters` in integration test yaml definition.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 218 unit tests and 33 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-06 Command Line Output Override Flag
 
 ### Summary

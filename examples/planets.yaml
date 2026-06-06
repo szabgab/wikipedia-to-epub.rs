@@ -9,7 +9,7 @@ metadata:
 output-file: "planets.epub"
 images: false
 caching: "central"
-chapter: numbered-title
+chapters: numbered-title
 depth: 0
 resources: true
 cover: "./front-page.png"
