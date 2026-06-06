@@ -1199,6 +1199,9 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{j-rserv|service=Limited Express}}
 {{ja-rail-line|pfn=1-3}}
 {{clarification needed|date=April 2022}}
+{{Multiple issues}}
+{{Advert}}
+{{Original research}}
 Visible text."#,
         &InternalLinks::new(),
         "en",
@@ -1223,7 +1226,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 108,
+            recognized: 111,
             unknown: 0
         }
     );
