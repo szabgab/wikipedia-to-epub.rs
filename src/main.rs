@@ -255,7 +255,7 @@ thread_local! {
 }
 
 #[derive(Debug, Parser)]
-#[command(name = "wikipedia-to-epub")]
+#[command(name = "wikipedia-to-epub", version = concat!(env!("CARGO_PKG_VERSION"), " (SHA: ", env!("GIT_SHA"), ")"))]
 struct CliArgs {
     #[arg(value_name = "config.yaml")]
     config_path: PathBuf,
@@ -509,8 +509,18 @@ impl PageSource for FixturePageSource {
 
 fn main() {
     if let Err(err) = try_main() {
-        eprintln!("error: {err}");
-        std::process::exit(1);
+        let msg = err.to_string();
+        if (msg.contains("wikipedia-to-epub") && msg.contains("SHA:"))
+            || msg.starts_with("Usage:")
+            || msg.contains("Usage:\n")
+            || msg.contains("Options:")
+        {
+            print!("{msg}");
+            std::process::exit(0);
+        } else {
+            eprintln!("error: {err}");
+            std::process::exit(1);
+        }
     }
 }
 

@@ -1,5 +1,39 @@
 # Codex Session Notes
 
+## 2026-06-06 Embedded CLI Version & Git SHA
+
+### Summary
+
+Added compile-time embedding of the crate version (from `Cargo.toml`) and the current git commit SHA in the executable. Configured Clap to display them whenever the `--version` or `-V` flags are provided, printing them cleanly (without the `error:` prefix) and exiting with code 0. All tests and quality checks pass cleanly.
+
+### Decisions Made
+
+* Created `build.rs` to execute `git rev-parse HEAD` at build time and set the `GIT_SHA` compile-time environment variable (defaulting to `"unknown"` if git is not present/fails).
+* Updated the `CliArgs` struct macro `#[command(version = ...)]` in `src/main.rs` to concatenate `CARGO_PKG_VERSION` and `GIT_SHA` at compile time using `concat!`.
+* Refactored `main()` to intercept help and version output strings from `try_parse_from`, printing them cleanly and exiting with code 0.
+* Ran verification steps (`cargo fmt`, `cargo check`, `cargo clippy`, `cargo test`).
+
+### Files Changed
+
+* `build.rs` [NEW]
+  * Created build script to expose `GIT_SHA` environment variable at compile time.
+* `src/main.rs` [MODIFY]
+  * Set version parameter on `CliArgs` command.
+  * Intercept help/version output in `main()` to print cleanly and exit with code 0.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 218 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-06 UUID Book Identifiers
 
 ### Summary
