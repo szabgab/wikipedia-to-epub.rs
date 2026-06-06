@@ -1163,6 +1163,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{Sister project links|Busan|voy=Busan|d=Q16520}}
 {{Commons category|Sample page}}
 {{Commons and category|Sample page}}
+{{Commons-inline|Sample page}}
 {{columns-list|colwidth=23em|
 * Hidden first column item
 * Hidden second column item
@@ -1226,7 +1227,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 111,
+            recognized: 112,
             unknown: 0
         }
     );

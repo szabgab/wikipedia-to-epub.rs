@@ -1,5 +1,47 @@
 # Codex Session Notes
 
+## 2026-06-06 Add missing Commons-inline template for Mount Tsurugi
+
+### Summary
+
+Identified and added support for the missing `Commons-inline` template to `src/silent.csv` in response to compilation of the "Mount Tsurugi (Toyama)" Wikipedia page. Fixed missing commas in the `Pie chart` and `Portal` templates in `src/silent.csv` which were introduced in a previous commit, resolving a test suite failure. Added a unit test and documented the template. All tests pass cleanly.
+
+### Decisions Made
+
+* Created a temporary `book.yaml` config and ran the compiler on "Mount Tsurugi (Toyama)" in debug mode, identifying `Commons-inline` as the missing template.
+* Added `Commons-inline` to `src/silent.csv`.
+* Fixed missing commas in `src/silent.csv` for `Pie chart` and `Portal` templates.
+* Sorted `navigations.csv` and `silent.csv` using `./sort.sh`.
+* Added `{{Commons-inline|Sample page}}` to `render_wikitext_silently_skips_metadata_templates` unit test in `src/tests.rs` and adjusted the expected skip count.
+* Documented the `{{Commons-inline}}` template in `DEVELOPMENT.md`.
+* Ran verification steps (`cargo fmt`, `cargo check`, `cargo clippy`, `cargo test`).
+
+### Files Changed
+
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented `{{Commons-inline}}` as an omitted template.
+* `src/silent.csv` [MODIFY]
+  * Added `Commons-inline` template.
+  * Added missing commas to `Pie chart` and `Portal`.
+  * Sorted template names.
+* `src/navigations.csv` [MODIFY]
+  * Sorted template names.
+* `src/tests.rs` [MODIFY]
+  * Added `Commons-inline` to the silent metadata templates unit test and updated assertion skip counts.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 218 unit tests and 33 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-06 Required Chapters Configuration Parameter
 
 ### Summary

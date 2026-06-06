@@ -1,5 +1,5 @@
-'
 -
+'
 0
 About,                       Linking the reader to other meaning of the same word.     https://en.wikipedia.org/wiki/Template:About
 additional citations needed, Asks for help                                             https://en.wikipedia.org/wiki/Template:Additional_citation_needed
@@ -25,8 +25,8 @@ clear
 Clear left
 Closed access
 cn
-colbegin
 col-begin
+colbegin
 col-break
 colend
 col-end
@@ -37,6 +37,7 @@ Commons category
 Commons category inline
 Commons category-inline
 commonscat,                  Link to category in Wikimedia Commons. Alias of Commons category.
+Commons-inline
 Contains special characters
 CS1 config
 Dead link
@@ -104,9 +105,9 @@ Overly detailed
 Page needed
 party color
 Pd-notice
-Pie chart                    TODO: should be converted on an image https://en.wikipedia.org/wiki/Template:Pie_chart
+Pie chart,                   TODO: should be converted on an image https://en.wikipedia.org/wiki/Template:Pie_chart
 PM20,                        TODO: https://en.wikipedia.org/wiki/Template:PM20
-Portal                       A visible list of portals https://en.wikipedia.org/wiki/Template:Portal
+Portal,                      A visible list of portals https://en.wikipedia.org/wiki/Template:Portal
 Portal bar,                  A visible list of portals https://en.wikipedia.org/wiki/Template:Portal_bar
 POV,                         Point of view issue with the content https://en.wikipedia.org/wiki/Template:POV
 pp-dispute
