@@ -1,5 +1,42 @@
 # Codex Session Notes
 
+## 2026-06-06 Required Chapters Configuration Parameter
+
+### Summary
+
+Made `chapters` a required configuration parameter of the `BookConfig` struct by removing `#[serde(default)]` from the field. Updated all unit tests, integration tests, and example configuration files to supply `chapters` value. All tests pass cleanly.
+
+### Decisions Made
+
+* Removed `#[serde(default)]` from the `chapters: ChapterStyle` field in the `BookConfig` struct within `src/main.rs`.
+* Updated all 25 YAML example files under `examples/` to include `chapters: title`.
+* Updated all YAML test strings in `src/tests.rs` and `tests/books.rs` to include `chapters: title`.
+* Ran verification steps (`cargo fmt`, `cargo check`, `cargo clippy`, `cargo test`).
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Removed `#[serde(default)]` from the `chapters` configuration field in `BookConfig`.
+* `src/tests.rs` [MODIFY]
+  * Updated unit test configuration YAML strings to include the required `chapters` field.
+* `tests/books.rs` [MODIFY]
+  * Updated integration test configuration YAML strings to include the required `chapters` field.
+* `examples/*.yaml` [MODIFY]
+  * Added `chapters: title` to all example configuration files that did not already have it.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 218 unit tests and 33 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-06 Rename Chapter parameter to Chapters
 
 ### Summary

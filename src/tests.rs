@@ -2610,7 +2610,8 @@ fn render_wikitext_embeds_resolved_file_links_when_images_are_enabled() {
 #[test]
 fn book_config_defaults_images_to_false() {
     let config = serde_yaml::from_str::<BookConfig>(
-        r#"metadata:
+        r#"chapters: title
+metadata:
   title: Sample
   author: Wikipedia contributors
   language: en
@@ -2630,7 +2631,8 @@ articles:
 #[test]
 fn book_config_accepts_images_true() {
     let config = serde_yaml::from_str::<BookConfig>(
-        r#"metadata:
+        r#"chapters: title
+metadata:
   title: Sample
   author: Wikipedia contributors
   language: en
@@ -3448,7 +3450,8 @@ fn caching_mode_none_bypasses_cache_writes() {
 #[test]
 fn caching_mode_local_resolves_path() {
     let config_none = serde_yaml::from_str::<BookConfig>(
-        r#"metadata:
+        r#"chapters: title
+metadata:
   title: Sample
   author: Wikipedia contributors
   language: en
@@ -3464,7 +3467,8 @@ articles:
     assert_eq!(config_none.caching, CachingMode::None);
 
     let config_local = serde_yaml::from_str::<BookConfig>(
-        r#"metadata:
+        r#"chapters: title
+metadata:
   title: Sample
   author: Wikipedia contributors
   language: en
@@ -3480,7 +3484,8 @@ articles:
     assert_eq!(config_local.caching, CachingMode::Local);
 
     let config_central = serde_yaml::from_str::<BookConfig>(
-        r#"metadata:
+        r#"chapters: title
+metadata:
   title: Sample
   author: Wikipedia contributors
   language: en
@@ -3906,7 +3911,8 @@ fn render_wikitext_formats_generic_ship_template() {
 
 #[test]
 fn test_hierarchical_book_config_parsing() {
-    let yaml = r#"metadata:
+    let yaml = r#"chapters: title
+metadata:
   title: "The Solar System"
   author: "Wikipedia contributors"
   language: en

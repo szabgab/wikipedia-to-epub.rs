@@ -610,7 +610,8 @@ fn generate_hierarchical_book_from_local_page_dump() {
     fs::create_dir_all(&work_dir).unwrap();
 
     let config_path = work_dir.join("book.yaml");
-    let yaml = r#"metadata:
+    let yaml = r#"chapters: title
+metadata:
   title: "Japan and Osaka"
   author: "Wikipedia contributors"
   language: en
@@ -769,7 +770,8 @@ fn cli_output_flag_overrides_config_output_file() {
     fs::create_dir_all(&work_dir).unwrap();
 
     let config_path = work_dir.join("book.yaml");
-    let yaml = r#"metadata:
+    let yaml = r#"chapters: title
+metadata:
   title: "Japan"
   author: "Wikipedia contributors"
   language: en

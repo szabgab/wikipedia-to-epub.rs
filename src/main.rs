@@ -132,7 +132,6 @@ enum ChapterStyle {
 #[derive(Debug, Deserialize)]
 struct BookConfig {
     id: Option<String>,
-    #[serde(default)]
     chapters: ChapterStyle,
     metadata: Metadata,
     #[serde(rename = "output-file")]
