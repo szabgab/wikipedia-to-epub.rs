@@ -1,5 +1,38 @@
 # Codex Session Notes
 
+## 2026-06-06 Command Line Output Override Flag
+
+### Summary
+
+Added a new command line argument `-o` / `--output` to override the output EPUB filename specified in the book configuration YAML file. Created an integration test to verify that the CLI flag overrides the output path successfully. All tests and checks pass cleanly.
+
+### Decisions Made
+
+* Updated `CliArgs` in `src/main.rs` to include an optional `output` argument using clap (`#[arg(short = 'o', long = "output", value_name = "output.epub")]`).
+* Updated `run` in `src/main.rs` to conditionally override `config.output_file` with the CLI `--output` path if provided.
+* Created `cli_output_flag_overrides_config_output_file` integration test in `tests/books.rs` to verify that the generated EPUB matches the overridden path, and is not generated at the YAML-configured output path.
+* Ran verification steps (`cargo fmt`, `cargo check`, `cargo clippy`, `cargo test`).
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Updated `CliArgs` struct and the `run` function to override the output file name if specified.
+* `tests/books.rs` [MODIFY]
+  * Added `cli_output_flag_overrides_config_output_file` integration test.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 218 unit tests and 33 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-06 Optional Chapter Numbering
 
 ### Summary

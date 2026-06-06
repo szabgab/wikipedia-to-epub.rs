@@ -283,6 +283,8 @@ struct CliArgs {
     logfile: Option<PathBuf>,
     #[arg(long = "caching", value_name = "mode")]
     caching: Option<CachingMode>,
+    #[arg(short = 'o', long = "output", value_name = "output.epub")]
+    output: Option<PathBuf>,
 }
 
 trait PageSource {
@@ -721,7 +723,10 @@ fn generate_chapters_hierarchical(
 }
 
 fn run(args: CliArgs) -> AppResult<()> {
-    let config = read_config(&args.config_path)?;
+    let mut config = read_config(&args.config_path)?;
+    if let Some(output) = args.output {
+        config.output_file = output;
+    }
     let mut cover_image = None;
     if let Some(ref cover_str) = config.cover
         && cover_str != "None"
