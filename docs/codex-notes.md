@@ -1,5 +1,47 @@
 # Codex Session Notes
 
+## 2026-06-06 Optional Chapter Numbering
+
+### Summary
+
+Added a new configuration option called `chapter` that supports two values: `title` (keeps titles as-is, default) and `numbered-title` (automatically prepends hierarchical numbers e.g. `1`, `1.1`, `1.2` to the chapter and subchapter titles in the table of contents and on the actual chapter pages). Cleaned up unused `chapter_index` code since page indices are no longer used for filenames or title prefixes in standard runs. All tests and checks pass cleanly.
+
+### Decisions Made
+
+* Defined a `ChapterStyle` enum containing `Title` and `NumberedTitle` variants, with `#[serde(rename_all = "kebab-case")]` and defaulting to `Title`.
+* Added `chapter: ChapterStyle` field to `BookConfig` using `#[serde(default)]`.
+* Refactored `generate_chapters_hierarchical` to accept the `chapter_style` and recursive `parent_prefix: &[usize]`, tracking a sibling index to construct hierarchical prefixes (e.g., `1.1`).
+* Refactored `load_chapter` to receive a `display_title` containing the optional prefix, while retaining the original page title for sanitizing the output filename.
+* Removed the obsolete `chapter_index: &mut usize` tracker from `generate_chapters_hierarchical` and `run` to clean up unused assignment warnings.
+* Updated `skeleton.yaml` and `DEVELOPMENT.md` to document the new `chapter` configuration option.
+* Added an integration test `generate_numbered_chapters_book_from_local_page_dump` in `tests/books.rs` to verify hierarchical chapter numbering in both the TOC and HTML page content.
+* Ran verification steps (`cargo fmt`, `cargo check`, `cargo clippy`, `cargo test`).
+
+### Files Changed
+
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new `chapter` configuration option.
+* `skeleton.yaml` [MODIFY]
+  * Documented and set the default `chapter` configuration option.
+* `src/main.rs` [MODIFY]
+  * Implemented `ChapterStyle` enum and added it to `BookConfig`.
+  * Updated `generate_chapters_hierarchical`, `load_chapter`, and `run` to support prefix generation and removed unused `chapter_index`.
+* `tests/books.rs` [MODIFY]
+  * Added `generate_numbered_chapters_book_from_local_page_dump` integration test.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 218 unit tests and 32 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-06 Embedded CLI Version & Git SHA
 
 ### Summary

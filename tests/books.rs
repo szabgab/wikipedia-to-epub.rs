@@ -671,6 +671,97 @@ articles:
     fs::remove_dir_all(&work_dir).unwrap();
 }
 
+#[test]
+fn generate_numbered_chapters_book_from_local_page_dump() {
+    let repo = repo_root();
+    let work_dir = unique_test_dir(&repo, "numbered-book");
+    fs::create_dir_all(&work_dir).unwrap();
+
+    let config_path = work_dir.join("book.yaml");
+    let yaml = r#"chapter: numbered-title
+metadata:
+  title: "Japan and Osaka"
+  author: "Wikipedia contributors"
+  language: en
+  edition: First edition
+output-file: output.epub
+caching: none
+depth: 0
+articles:
+  - "Japan"
+  - title: "Osaka Info"
+    type: "section"
+    articles:
+      - "Osaka"
+"#;
+    fs::write(&config_path, yaml).unwrap();
+
+    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+        .current_dir(&work_dir)
+        .arg(&config_path)
+        .arg("--local")
+        .arg(repo.join("pages"))
+        .arg("--caching")
+        .arg("none")
+        .arg("--log")
+        .arg("WARN")
+        .output()
+        .unwrap();
+
+    assert!(output.status.success(), "run failed: {:?}", output);
+
+    let epub_path = work_dir.join("output.epub");
+    assert!(epub_path.exists(), "output.epub should be created");
+
+    let zip_file = File::open(&epub_path).unwrap();
+    let mut archive = ZipArchive::new(zip_file).unwrap();
+
+    assert!(
+        archive.by_name("OEBPS/Japan.xhtml").is_ok(),
+        "Japan should exist"
+    );
+    assert!(
+        archive.by_name("OEBPS/Osaka_Info.xhtml").is_ok(),
+        "Osaka_Info should exist"
+    );
+    assert!(
+        archive.by_name("OEBPS/Osaka.xhtml").is_ok(),
+        "Osaka should exist"
+    );
+
+    {
+        let mut chapter1 = archive.by_name("OEBPS/Japan.xhtml").unwrap();
+        let mut chapter1_content = String::new();
+        chapter1.read_to_string(&mut chapter1_content).unwrap();
+        assert!(
+            chapter1_content.contains("<h1>1 Japan</h1>"),
+            "chapter1 should have numbered title"
+        );
+    }
+
+    {
+        let mut chapter2 = archive.by_name("OEBPS/Osaka_Info.xhtml").unwrap();
+        let mut chapter2_content = String::new();
+        chapter2.read_to_string(&mut chapter2_content).unwrap();
+        assert!(
+            chapter2_content.contains("<h1>2 Osaka Info</h1>"),
+            "chapter2 should have numbered section title"
+        );
+    }
+
+    {
+        let mut chapter3 = archive.by_name("OEBPS/Osaka.xhtml").unwrap();
+        let mut chapter3_content = String::new();
+        chapter3.read_to_string(&mut chapter3_content).unwrap();
+        assert!(
+            chapter3_content.contains("<h1>2.1 Osaka</h1>"),
+            "chapter3 should have nested numbered title"
+        );
+    }
+
+    fs::remove_dir_all(&work_dir).unwrap();
+}
+
 fn sanitize_chapter_filename(title: &str) -> String {
     let ascii_title = any_ascii::any_ascii(title);
     let sanitized: String = ascii_title

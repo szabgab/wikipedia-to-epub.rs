@@ -48,6 +48,9 @@ articles:
 
 Set `images: true` to embed resolvable `[[File:...]]` and `[[Image:...]]` links in the EPUB. Live runs download bounded thumbnails from Wikipedia/Commons and cache article JSON, image metadata JSON, and image files. Local `--local` runs use image fixtures from `pages/images/manifest.json` and ignore the live download cache; missing fixture images are omitted with a warning. Live runs log a final cache report with needed, cached, downloaded, and failed counts for JSON files and image files.
 
+Set `chapter: numbered-title` to automatically prepend hierarchical numbers (e.g., `1 `, `1.1 `, `1.2 `) to chapter and subchapter titles both in the Table of Contents and on the actual chapter pages. By default, this is set to `title`, which leaves titles unnumbered.
+
+
 ## Conversion rules
 
 The converter renders a simplified subset of Wikipedia wikitext as XHTML:

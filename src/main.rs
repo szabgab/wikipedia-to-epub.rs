@@ -121,9 +121,19 @@ struct DetailedArticle {
     articles: Vec<ArticleConfig>,
 }
 
+#[derive(Debug, Deserialize, Clone, Copy, PartialEq, Eq, Default)]
+#[serde(rename_all = "kebab-case")]
+enum ChapterStyle {
+    #[default]
+    Title,
+    NumberedTitle,
+}
+
 #[derive(Debug, Deserialize)]
 struct BookConfig {
     id: Option<String>,
+    #[serde(default)]
+    chapter: ChapterStyle,
     metadata: Metadata,
     #[serde(rename = "output-file")]
     output_file: PathBuf,
@@ -544,11 +554,13 @@ fn generate_chapters_hierarchical(
     page_source: &dyn PageSource,
     internal_links: &InternalLinks,
     image_registry: &mut Option<ImageRegistry>,
-    chapter_index: &mut usize,
     added_article_keys: &mut std::collections::HashSet<String>,
     chapters: &mut Vec<Chapter>,
+    chapter_style: ChapterStyle,
+    parent_prefix: &[usize],
 ) -> AppResult<Vec<TocNode>> {
     let mut nodes = Vec::new();
+    let mut sibling_index = 1;
     for entry in entries {
         match entry {
             ArticleConfig::Simple(title) => {
@@ -557,9 +569,23 @@ fn generate_chapters_hierarchical(
                     if !page_source.is_cache_hit(title) {
                         info!(article = page.parse.title, "fetching article");
                     }
+                    let mut current_prefix = parent_prefix.to_vec();
+                    current_prefix.push(sibling_index);
+                    let prefix_str = current_prefix
+                        .iter()
+                        .map(|x| x.to_string())
+                        .collect::<Vec<String>>()
+                        .join(".");
+                    sibling_index += 1;
+
+                    let display_title = match chapter_style {
+                        ChapterStyle::NumberedTitle => format!("{prefix_str} {}", page.parse.title),
+                        ChapterStyle::Title => page.parse.title.clone(),
+                    };
+
                     let chapter = load_chapter(
                         page,
-                        *chapter_index,
+                        display_title,
                         internal_links,
                         wikipedia_language,
                         image_registry.as_mut(),
@@ -568,7 +594,6 @@ fn generate_chapters_hierarchical(
                     let chapter_title = chapter.title.clone();
                     chapters.push(chapter);
                     added_article_keys.insert(lookup_key);
-                    *chapter_index += 1;
 
                     nodes.push(TocNode {
                         title: chapter_title,
@@ -580,6 +605,20 @@ fn generate_chapters_hierarchical(
             ArticleConfig::Detailed(detailed) => {
                 if let Some(ArticleType::Section) = detailed.r#type {
                     let title = &detailed.title;
+                    let mut current_prefix = parent_prefix.to_vec();
+                    current_prefix.push(sibling_index);
+                    let prefix_str = current_prefix
+                        .iter()
+                        .map(|x| x.to_string())
+                        .collect::<Vec<String>>()
+                        .join(".");
+                    sibling_index += 1;
+
+                    let display_title = match chapter_style {
+                        ChapterStyle::NumberedTitle => format!("{prefix_str} {title}"),
+                        ChapterStyle::Title => title.clone(),
+                    };
+
                     let content = format!(
                         r#"<?xml version="1.0" encoding="utf-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{}">
@@ -592,16 +631,15 @@ fn generate_chapters_hierarchical(
   </body>
 </html>
 "#,
-                        wikipedia_language, title, title
+                        wikipedia_language, display_title, display_title
                     );
                     let file_name = sanitize_chapter_filename(title);
                     chapters.push(Chapter {
-                        title: title.clone(),
+                        title: display_title.clone(),
                         file_name: file_name.clone(),
                         content,
                         template_skip_counts: TemplateSkipCounts::default(),
                     });
-                    *chapter_index += 1;
 
                     let children = generate_chapters_hierarchical(
                         &detailed.articles,
@@ -610,13 +648,14 @@ fn generate_chapters_hierarchical(
                         page_source,
                         internal_links,
                         image_registry,
-                        chapter_index,
                         added_article_keys,
                         chapters,
+                        chapter_style,
+                        &current_prefix,
                     )?;
 
                     nodes.push(TocNode {
-                        title: title.clone(),
+                        title: display_title,
                         file_name,
                         children,
                     });
@@ -627,9 +666,25 @@ fn generate_chapters_hierarchical(
                         if !page_source.is_cache_hit(title) {
                             info!(article = page.parse.title, "fetching article");
                         }
+                        let mut current_prefix = parent_prefix.to_vec();
+                        current_prefix.push(sibling_index);
+                        let prefix_str = current_prefix
+                            .iter()
+                            .map(|x| x.to_string())
+                            .collect::<Vec<String>>()
+                            .join(".");
+                        sibling_index += 1;
+
+                        let display_title = match chapter_style {
+                            ChapterStyle::NumberedTitle => {
+                                format!("{prefix_str} {}", page.parse.title)
+                            }
+                            ChapterStyle::Title => page.parse.title.clone(),
+                        };
+
                         let chapter = load_chapter(
                             page,
-                            *chapter_index,
+                            display_title,
                             internal_links,
                             wikipedia_language,
                             image_registry.as_mut(),
@@ -638,7 +693,6 @@ fn generate_chapters_hierarchical(
                         let chapter_title = chapter.title.clone();
                         chapters.push(chapter);
                         added_article_keys.insert(lookup_key);
-                        *chapter_index += 1;
 
                         let children = generate_chapters_hierarchical(
                             &detailed.articles,
@@ -647,9 +701,10 @@ fn generate_chapters_hierarchical(
                             page_source,
                             internal_links,
                             image_registry,
-                            chapter_index,
                             added_article_keys,
                             chapters,
+                            chapter_style,
+                            &current_prefix,
                         )?;
 
                         nodes.push(TocNode {
@@ -815,7 +870,6 @@ fn run(args: CliArgs) -> AppResult<()> {
 
     let mut chapters = Vec::new();
     let mut added_article_keys = std::collections::HashSet::new();
-    let mut chapter_index = 1;
 
     let mut toc_nodes = generate_chapters_hierarchical(
         &config.articles,
@@ -824,12 +878,14 @@ fn run(args: CliArgs) -> AppResult<()> {
         page_source.as_ref(),
         &internal_links,
         &mut image_registry,
-        &mut chapter_index,
         &mut added_article_keys,
         &mut chapters,
+        config.chapter,
+        &[],
     )?;
 
     // Now append any recursively crawled articles (depth > 0)
+    let mut next_top_level = toc_nodes.len() + 1;
     for article in &ordered_articles {
         let lookup_key = normalize_lookup_key(article);
         if !added_article_keys.contains(&lookup_key) {
@@ -838,9 +894,13 @@ fn run(args: CliArgs) -> AppResult<()> {
                 if !page_source.is_cache_hit(article) {
                     info!(article = page.parse.title, "fetching article");
                 }
+                let display_title = match config.chapter {
+                    ChapterStyle::NumberedTitle => format!("{next_top_level} {}", page.parse.title),
+                    ChapterStyle::Title => page.parse.title.clone(),
+                };
                 let chapter = load_chapter(
                     page,
-                    chapter_index,
+                    display_title,
                     &internal_links,
                     &wikipedia_language,
                     image_registry.as_mut(),
@@ -849,7 +909,7 @@ fn run(args: CliArgs) -> AppResult<()> {
                 let chapter_title = chapter.title.clone();
                 chapters.push(chapter);
                 added_article_keys.insert(lookup_key);
-                chapter_index += 1;
+                next_top_level += 1;
 
                 toc_nodes.push(TocNode {
                     title: chapter_title,
@@ -1179,13 +1239,13 @@ fn internal_links(articles: &[String]) -> InternalLinks {
 
 fn load_chapter(
     page: &PageResponse,
-    _index: usize,
+    display_title: String,
     internal_links: &InternalLinks,
     language: &str,
     image_registry: Option<&mut ImageRegistry>,
 ) -> AppResult<Chapter> {
     let (rendered, template_skip_counts) = render_wikitext_with_template_counts(
-        &page.parse.title,
+        &display_title,
         &page.parse.wikitext.text,
         internal_links,
         language,
@@ -1201,7 +1261,7 @@ fn load_chapter(
 
     let file_name = sanitize_chapter_filename(&page.parse.title);
     Ok(Chapter {
-        title: page.parse.title.clone(),
+        title: display_title,
         file_name,
         content: rendered,
         template_skip_counts,

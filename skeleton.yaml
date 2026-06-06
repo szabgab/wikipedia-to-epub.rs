@@ -68,6 +68,12 @@ resources: false
 #   - A relative or absolute path to an image file (e.g., "./cover.png").
 cover: "None"
 
+# Styling format for chapter and subchapter titles.
+# Valid values:
+#   - "title"          : standard chapter names as they are (default).
+#   - "numbered-title" : automatically prepends hierarchical numbers (e.g. 1, 1.1, 1.2) to titles.
+chapter: "title"
+
 
 # List of Wikipedia article page titles and sections to compile into the book.
 # The book will be constructed in the order listed.
