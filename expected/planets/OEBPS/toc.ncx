@@ -13,30 +13,30 @@
       <content src="frontmatter.xhtml"/>
     </navPoint>
     <navPoint id="chapter-Earth" playOrder="2">
-      <navLabel><text>Earth</text></navLabel>
+      <navLabel><text>1 Earth</text></navLabel>
       <content src="Earth.xhtml"/>
     </navPoint>
     <navPoint id="chapter-Solar_System" playOrder="3">
-      <navLabel><text>Solar System</text></navLabel>
+      <navLabel><text>2 Solar System</text></navLabel>
       <content src="Solar_System.xhtml"/>
       <navPoint id="chapter-Sun" playOrder="4">
-      <navLabel><text>Sun</text></navLabel>
+      <navLabel><text>2.1 Sun</text></navLabel>
       <content src="Sun.xhtml"/>
     </navPoint>
       <navPoint id="chapter-Mercury" playOrder="5">
-      <navLabel><text>Mercury</text></navLabel>
+      <navLabel><text>2.2 Mercury</text></navLabel>
       <content src="Mercury.xhtml"/>
     </navPoint>
     </navPoint>
     <navPoint id="chapter-Planets_Info" playOrder="6">
-      <navLabel><text>Planets Info</text></navLabel>
+      <navLabel><text>3 Planets Info</text></navLabel>
       <content src="Planets_Info.xhtml"/>
       <navPoint id="chapter-Venus" playOrder="7">
-      <navLabel><text>Venus</text></navLabel>
+      <navLabel><text>3.1 Venus</text></navLabel>
       <content src="Venus.xhtml"/>
     </navPoint>
       <navPoint id="chapter-Mars" playOrder="8">
-      <navLabel><text>Mars</text></navLabel>
+      <navLabel><text>3.2 Mars</text></navLabel>
       <content src="Mars.xhtml"/>
     </navPoint>
     </navPoint>
