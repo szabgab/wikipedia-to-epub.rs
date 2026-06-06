@@ -1778,7 +1778,8 @@ fn render_template(content: &str) -> String {
         render_floruit_template(params)
     } else if template.eq_ignore_ascii_case("coord") {
         render_coord_template(params)
-    } else if template.eq_ignore_ascii_case("rp") {
+    } else if template.eq_ignore_ascii_case("rp") || template.eq_ignore_ascii_case("Reference page")
+    {
         render_reference_page_template(params)
     } else if template.eq_ignore_ascii_case("cite web") {
         render_cite_web_template(params)
@@ -2199,6 +2200,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("floruit")
         || template.eq_ignore_ascii_case("coord")
         || template.eq_ignore_ascii_case("rp")
+        || template.eq_ignore_ascii_case("Reference page")
         || template.eq_ignore_ascii_case("cite web")
         || template.eq_ignore_ascii_case("cite book")
         || template.eq_ignore_ascii_case("cite journal")
@@ -6890,6 +6892,22 @@ fn render_open_access_template() -> String {
 }
 
 fn render_reference_page_template(params: &str) -> String {
+    let named = template_named_params(params);
+
+    if let Some(pages_val) = template_param(&named, &["pages"]) {
+        let rendered_page = render_templates(pages_val).trim().to_string();
+        if !rendered_page.is_empty() {
+            return format!(" pp. {rendered_page}");
+        }
+    }
+
+    if let Some(page_val) = template_param(&named, &["page", "1"]) {
+        let rendered_page = render_templates(page_val).trim().to_string();
+        if !rendered_page.is_empty() {
+            return format!(" p. {rendered_page}");
+        }
+    }
+
     let pages = split_template_params(params)
         .into_iter()
         .map(|param| render_templates(param.trim()).trim().to_string())

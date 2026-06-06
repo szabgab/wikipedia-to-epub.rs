@@ -1746,6 +1746,17 @@ fn render_wikitext_formats_reference_page_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_reference_page_alias_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "A claim.{{Reference page|page=90}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("p. 90"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_cite_book_templates() {
     let cases = [
         (

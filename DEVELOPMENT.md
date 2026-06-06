@@ -127,7 +127,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{su|p=2|b=x}}` becomes `<sup>2</sup><sub>x</sub>`
 * `{{Smaller|note}}` and `{{small|note}}` become `<small>note</small>`
 * `{{Coord|37|33|36|N|126|59|24|E|display=inline}}` becomes `37°33′36″N 126°59′24″E`; decimal forms such as `{{Coord|43.65107|-79.347015|display=inline}}` become `43.65107, -79.347015`
-* `{{rp|12}}` becomes an inline reference page marker: `p. 12`; multiple values such as `{{rp|12|15}}` become `pp. 12, 15`
+* `{{rp|12}}` (or its alias `{{Reference page|page=12}}`) becomes an inline reference page marker: `p. 12`; multiple values such as `{{rp|12|15}}` become `pp. 12, 15`
 * `{{Cite book|last=Oberdorfer|first=Don|title=The Two Koreas|year=2001|publisher=Basic Books}}` becomes `Don Oberdorfer. <em>The Two Koreas</em>. Basic Books, 2001`
 * `{{cite web|last=Demick|first=Barbara|title=North Korea's giant leap backwards|url=http://example.com|website=The Guardian|date=16 July 2010}}` becomes `Barbara Demick. "North Korea's giant leap backwards". <em>The Guardian</em>. 16 July 2010`, with the title linked when `url=` is present
 * `{{Cite journal|last=Kim|first=Chin W.|title=The Legacy of King Sejong the Great|journal=Studies in the Linguistic Sciences|year=2000}}` becomes `Chin W. Kim. "The Legacy of King Sejong the Great". <em>Studies in the Linguistic Sciences</em>. 2000`

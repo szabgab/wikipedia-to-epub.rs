@@ -1,5 +1,50 @@
 # Codex Session Notes
 
+## 2026-06-05 Templates on en "Second Sino-Japanese War"
+
+### Summary
+
+Supported all Wikipedia templates on the English "Second Sino-Japanese War" article. Mapped and routed the `Reference page` template redirect/alias in `src/main.rs`. Updated the reference page renderer (`render_reference_page_template`) to correctly parse and format named parameters `page` and `pages` (while fully preserving the original positional-list behavior). Added 7 navigational templates (including `Second Sino-Japanese War`, `World War II`, and `war crimes`) to `src/navigations.csv`. Added a separate unit test `render_wikitext_formats_reference_page_alias_template` in `src/tests.rs` and documented the new template conversion rules in `DEVELOPMENT.md`. Verified that all lints, checks, and test suites pass successfully with 0 unknown skipped templates.
+
+### Decisions Made
+
+* Handled unhandled/missing templates for "Second Sino-Japanese War":
+  * `Reference page`: Mapped as an alias for the `rp` template. Refactored `render_reference_page_template` to support named parameters `page` and `pages`, resolving values like `page=90` to `p. 90` and `pages=90-94` to `pp. 90-94`. Preserved existing positional behaviour (e.g. `{{rp|12}}` -> `p. 12` and `{{rp|12|15}}` -> `pp. 12, 15`) to maintain full backward compatibility with all historical pages.
+  * Navigational footers: Registered `Second Sino-Japanese War`, `World War II`, `World War II history by nation`, `war crimes`, `China–Japan relations`, `China–United States relations`, and `Anti-Chinese sentiment` in `src/navigations.csv` to be skipped.
+* Added a dedicated unit test `render_wikitext_formats_reference_page_alias_template` in `src/tests.rs` to verify correct named parameter formatting.
+* Updated expected book integration fixtures for `planets` and `korean-war` to reflect the newly supported, correct rendering of `page` and `pages` parameters.
+* Documented the `Reference page` template redirect support in `DEVELOPMENT.md`.
+* Sorted databases using `./sort.sh`.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Routed `Reference page` in `render_template` and registered it in `is_handled_template_name`.
+  * Refactored `render_reference_page_template` to support named `page` and `pages` parameters.
+* `src/navigations.csv` [MODIFY]
+  * Registered the 7 new navigational templates and sorted them alphabetically.
+* `src/tests.rs` [MODIFY]
+  * Added unit test `render_wikitext_formats_reference_page_alias_template`.
+* `expected/planets/` [MODIFY]
+  * Updated `chapter-2.xhtml`, `content.opf`, and `toc.ncx` expected fixtures.
+* `expected/korean-war/` [MODIFY]
+  * Updated `chapter-1.xhtml`, `content.opf`, and `toc.ncx` expected fixtures.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the `Reference page` alias conversion rules.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 218 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-05 Templates on en "National Diet"
 
 ### Summary
