@@ -142,16 +142,22 @@ fn cli_no_images_flag_overrides_config_images_true() {
     fs::create_dir_all(&work_dir).unwrap();
 
     let output_file_name = "busan-images.epub";
-    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+    let yaml_path = repo.join("examples/busan-images.yaml");
+    let mut command = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"));
+    command
         .current_dir(&work_dir)
-        .arg(repo.join("examples/busan-images.yaml"))
+        .arg(&yaml_path)
         .arg("--local")
         .arg(repo.join("pages"))
         .arg("--no-images")
         .arg("--log")
-        .arg("WARN")
-        .output()
-        .unwrap();
+        .arg("WARN");
+    if let Some(date) = extract_yaml_date(&yaml_path) {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
+    } else {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
+    }
+    let output = command.output().unwrap();
 
     assert!(output.status.success(), "run failed: {:?}", output);
     let output_file = work_dir.join(output_file_name);
@@ -172,16 +178,22 @@ fn cli_images_flag_overrides_config_images_false() {
     fs::create_dir_all(&work_dir).unwrap();
 
     let output_file_name = "busan.epub";
-    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+    let yaml_path = repo.join("examples/busan.yaml");
+    let mut command = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"));
+    command
         .current_dir(&work_dir)
-        .arg(repo.join("examples/busan.yaml"))
+        .arg(&yaml_path)
         .arg("--local")
         .arg(repo.join("pages"))
         .arg("--images")
         .arg("--log")
-        .arg("WARN")
-        .output()
-        .unwrap();
+        .arg("WARN");
+    if let Some(date) = extract_yaml_date(&yaml_path) {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
+    } else {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
+    }
+    let output = command.output().unwrap();
 
     assert!(output.status.success(), "run failed: {:?}", output);
     let output_file = work_dir.join(output_file_name);
@@ -202,17 +214,23 @@ fn cli_logfile_flag_overrides_default_report_log() {
     fs::create_dir_all(&work_dir).unwrap();
 
     let custom_log = work_dir.join("custom_report.log");
-    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+    let yaml_path = repo.join("examples/busan.yaml");
+    let mut command = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"));
+    command
         .current_dir(&work_dir)
-        .arg(repo.join("examples/busan.yaml"))
+        .arg(&yaml_path)
         .arg("--local")
         .arg(repo.join("pages"))
         .arg("--logfile")
         .arg(&custom_log)
         .arg("--log")
-        .arg("INFO")
-        .output()
-        .unwrap();
+        .arg("INFO");
+    if let Some(date) = extract_yaml_date(&yaml_path) {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
+    } else {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
+    }
+    let output = command.output().unwrap();
 
     assert!(output.status.success(), "run failed: {:?}", output);
     assert!(custom_log.is_file(), "custom log file was not created");
@@ -236,17 +254,23 @@ fn cli_caching_flag_is_accepted_by_binary() {
     let work_dir = unique_test_dir(&repo, "caching-flag-acceptance");
     fs::create_dir_all(&work_dir).unwrap();
 
-    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+    let yaml_path = repo.join("examples/busan.yaml");
+    let mut command = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"));
+    command
         .current_dir(&work_dir)
-        .arg(repo.join("examples/busan.yaml"))
+        .arg(&yaml_path)
         .arg("--local")
         .arg(repo.join("pages"))
         .arg("--caching")
         .arg("none")
         .arg("--log")
-        .arg("WARN")
-        .output()
-        .unwrap();
+        .arg("WARN");
+    if let Some(date) = extract_yaml_date(&yaml_path) {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
+    } else {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
+    }
+    let output = command.output().unwrap();
 
     assert!(output.status.success(), "run failed: {:?}", output);
     fs::remove_dir_all(&work_dir).unwrap();
@@ -271,22 +295,28 @@ fn assert_generated_book_matches_expected(book: &str) {
     });
 
     let output_file_name = format!("{book}.epub");
-    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+    let yaml_path = repo.join(format!("examples/{book}.yaml"));
+    let mut command = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"));
+    command
         .current_dir(&work_dir)
-        .arg(repo.join(format!("examples/{book}.yaml")))
+        .arg(&yaml_path)
         .arg("--local")
         .arg(repo.join("pages"))
         .arg("--log")
-        .arg("WARN")
-        .output()
-        .unwrap_or_else(|err| {
-            panic!(
-                "failed to execute wikipedia-to-epub binary for book '{}' at {}: {:?}",
-                book,
-                work_dir.display(),
-                err
-            )
-        });
+        .arg("WARN");
+
+    if let Some(date) = extract_yaml_date(&yaml_path) {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
+    }
+
+    let output = command.output().unwrap_or_else(|err| {
+        panic!(
+            "failed to execute wikipedia-to-epub binary for book '{}' at {}: {:?}",
+            book,
+            work_dir.display(),
+            err
+        )
+    });
 
     assert!(
         output.status.success(),
@@ -628,7 +658,8 @@ articles:
 "#;
     fs::write(&config_path, yaml).unwrap();
 
-    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+    let mut command = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"));
+    command
         .current_dir(&work_dir)
         .arg(&config_path)
         .arg("--local")
@@ -636,9 +667,13 @@ articles:
         .arg("--caching")
         .arg("none")
         .arg("--log")
-        .arg("WARN")
-        .output()
-        .unwrap();
+        .arg("WARN");
+    if let Some(date) = extract_yaml_date(&config_path) {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
+    } else {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
+    }
+    let output = command.output().unwrap();
 
     assert!(output.status.success(), "run failed: {:?}", output);
 
@@ -697,7 +732,8 @@ articles:
 "#;
     fs::write(&config_path, yaml).unwrap();
 
-    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+    let mut command = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"));
+    command
         .current_dir(&work_dir)
         .arg(&config_path)
         .arg("--local")
@@ -705,9 +741,13 @@ articles:
         .arg("--caching")
         .arg("none")
         .arg("--log")
-        .arg("WARN")
-        .output()
-        .unwrap();
+        .arg("WARN");
+    if let Some(date) = extract_yaml_date(&config_path) {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
+    } else {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
+    }
+    let output = command.output().unwrap();
 
     assert!(output.status.success(), "run failed: {:?}", output);
 
@@ -786,7 +826,8 @@ articles:
 
     let overridden_output = work_dir.join("overridden.epub");
 
-    let output = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"))
+    let mut command = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"));
+    command
         .current_dir(&work_dir)
         .arg(&config_path)
         .arg("--local")
@@ -796,9 +837,13 @@ articles:
         .arg("--output")
         .arg(&overridden_output)
         .arg("--log")
-        .arg("WARN")
-        .output()
-        .unwrap();
+        .arg("WARN");
+    if let Some(date) = extract_yaml_date(&config_path) {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
+    } else {
+        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
+    }
+    let output = command.output().unwrap();
 
     assert!(output.status.success(), "run failed: {:?}", output);
 
@@ -827,4 +872,16 @@ fn sanitize_chapter_filename(title: &str) -> String {
         })
         .collect();
     format!("{}.xhtml", sanitized)
+}
+
+fn extract_yaml_date(path: &Path) -> Option<String> {
+    let content = fs::read_to_string(path).ok()?;
+    for line in content.lines() {
+        let trimmed = line.trim();
+        if let Some(stripped) = trimmed.strip_prefix("date:") {
+            let val = stripped.trim().trim_matches('"').trim_matches('\'');
+            return Some(val.to_string());
+        }
+    }
+    None
 }

@@ -1228,7 +1228,12 @@ fn cache_key(value: &str) -> String {
 
 fn read_config(path: &Path) -> AppResult<BookConfig> {
     let content = fs::read_to_string(path)?;
-    Ok(serde_yaml::from_str(&content)?)
+    let mut config: BookConfig = serde_yaml::from_str(&content)?;
+
+    let (year, month, day) = current_utc_date();
+    config.metadata.date = Some(format!("{:04}-{:02}-{:02}", year, month, day));
+
+    Ok(config)
 }
 
 fn init_logging(level: Level, logfile: Option<&Path>) {
@@ -4284,6 +4289,23 @@ fn render_doi_template(params: &str) -> String {
 }
 
 fn current_utc_date() -> (i32, i32, i32) {
+    if let Ok(mock_date) = std::env::var("WIKIPEDIA_TO_EPUB_MOCK_DATE") {
+        let mock_date = mock_date.trim();
+        let parts: Vec<&str> = mock_date.split('-').collect();
+        if parts.len() == 3 {
+            let parsed = (
+                parts[0].parse::<i32>(),
+                parts[1].parse::<i32>(),
+                parts[2].parse::<i32>(),
+            );
+            if let (Ok(y), Ok(m), Ok(d)) = parsed {
+                return (y, m, d);
+            }
+        }
+        if let Some((y, m, d)) = parse_date_string(mock_date) {
+            return (y, m, d);
+        }
+    }
     let now = std::time::SystemTime::now();
     let duration = now
         .duration_since(std::time::SystemTime::UNIX_EPOCH)

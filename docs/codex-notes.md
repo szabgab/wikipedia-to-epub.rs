@@ -1,5 +1,42 @@
 # Codex Session Notes
 
+## 2026-06-06 Current Date configuration and Test Mocking
+
+### Summary
+
+Replaced the parsed/written `date` field in configuration YAML files with the dynamic current system date (in `YYYY-MM-DD` format). To maintain test stability, supported mocking the current time in the integration tests using the `WIKIPEDIA_TO_EPUB_MOCK_DATE` environment variable. All tests, formatting rules, compilation checks, and clippy lints pass cleanly.
+
+### Decisions Made
+
+* Updated `read_config` in `src/main.rs` to automatically overwrite the book's metadata `date` field with the current system date obtained via `current_utc_date()`.
+* Updated `current_utc_date()` in `src/main.rs` to intercept the `WIKIPEDIA_TO_EPUB_MOCK_DATE` environment variable. If present, it splits and parses it to mock the returned date, otherwise falls back to the system clock.
+* Implemented `extract_yaml_date(path)` helper function in `tests/books.rs` to scan YAML files for the `date:` field.
+* Configured all `Command` subprocess invocations in `tests/books.rs` to inject `WIKIPEDIA_TO_EPUB_MOCK_DATE` with the value from the YAML file (falling back to `"2026-06-06"` if none is present). This allows all integration tests to run with deterministic, stable dates without modifying any pre-recorded book fixtures.
+* Resolved all clippy lints (`collapsible-if` and `manual-strip`) in both `src/main.rs` and `tests/books.rs`.
+* Ran all verification steps.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Updated `read_config` to overwrite `config.metadata.date` with the current formatted date.
+  * Updated `current_utc_date` to support `WIKIPEDIA_TO_EPUB_MOCK_DATE` environment variable.
+* `tests/books.rs` [MODIFY]
+  * Appended `extract_yaml_date` helper function.
+  * Modified all `Command` invocations to set `WIKIPEDIA_TO_EPUB_MOCK_DATE` from target YAML files.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 219 unit tests and 33 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-06 Front Matter Pages Support
 
 ### Summary
