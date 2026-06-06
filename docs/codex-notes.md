@@ -1,5 +1,42 @@
 # Codex Session Notes
 
+## 2026-06-06 Required Cover Configuration Field
+
+### Summary
+
+Made the `cover` configuration field required by removing `#[serde(default)]` from it in the `BookConfig` struct. Updated all unit tests and integration tests to include a default `cover: "None"` value in their dynamically generated YAML configurations, and updated `skeleton.yaml` to document it as required. All tests, formatting rules, compilation checks, and clippy lints pass cleanly.
+
+### Decisions Made
+
+* Removed `#[serde(default)]` from the `cover: Option<String>` field in the `BookConfig` struct within `src/main.rs`.
+* Updated all YAML test strings in `src/tests.rs` and `tests/books.rs` to include `cover: "None"`.
+* Updated `skeleton.yaml` to document the `cover` field as required (removing `(Optional)`).
+* Ran all verification steps.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Removed `#[serde(default)]` from the `cover` configuration field in `BookConfig`.
+* `src/tests.rs` [MODIFY]
+  * Updated unit test configuration YAML strings to include the required `cover: "None"` field.
+* `tests/books.rs` [MODIFY]
+  * Updated integration test configuration YAML strings to include the required `cover: "None"` field.
+* `skeleton.yaml` [MODIFY]
+  * Documented the `cover` field as required.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 219 unit tests and 33 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-06 Current Date configuration and Test Mocking
 
 ### Summary

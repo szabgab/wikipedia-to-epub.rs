@@ -62,7 +62,7 @@ depth: 0
 #   - false : Do not append a resources page.
 resources: false
 
-# (Optional) Path to a cover image to be used as the book cover page.
+# Path to a cover image to be used as the book cover page.
 # Valid values:
 #   - "None" : Do not embed a cover image.
 #   - A relative or absolute path to an image file (e.g., "./cover.png").

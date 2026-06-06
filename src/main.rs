@@ -140,7 +140,6 @@ struct BookConfig {
     images: bool,
     #[serde(default)]
     resources: bool,
-    #[serde(default)]
     cover: Option<String>,
     caching: CachingMode,
     depth: usize,

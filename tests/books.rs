@@ -647,6 +647,7 @@ metadata:
   language: en
   edition: First edition
 output-file: output.epub
+cover: "None"
 caching: none
 depth: 0
 articles:
@@ -721,6 +722,7 @@ metadata:
   language: en
   edition: First edition
 output-file: output.epub
+cover: "None"
 caching: none
 depth: 0
 articles:
@@ -817,6 +819,7 @@ metadata:
   language: en
   edition: First edition
 output-file: config-output.epub
+cover: "None"
 caching: none
 depth: 0
 articles:
