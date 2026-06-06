@@ -13,6 +13,9 @@ chapters: numbered-title
 depth: 0
 resources: true
 cover: "./front-page.png"
+front_mater:
+  - about.md
+  - copyright.md
 
 articles:
   - "Earth"

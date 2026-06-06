@@ -144,6 +144,8 @@ struct BookConfig {
     cover: Option<String>,
     caching: CachingMode,
     depth: usize,
+    #[serde(default, alias = "front_matter", alias = "front-matter")]
+    front_mater: Vec<PathBuf>,
     articles: Vec<ArticleConfig>,
 }
 
@@ -994,6 +996,40 @@ fn run(args: CliArgs) -> AppResult<()> {
         Vec::new()
     };
 
+    let mut front_matter_chapters = Vec::new();
+    let mut front_matter_toc_nodes = Vec::new();
+    let config_parent = args.config_path.parent().unwrap_or_else(|| Path::new("."));
+    for md_file in &config.front_mater {
+        let resolved_path = if md_file.is_absolute() {
+            md_file.clone()
+        } else {
+            config_parent.join(md_file)
+        };
+        if !resolved_path.is_file() {
+            return Err(AppError::Message(format!(
+                "front matter file not found: {}",
+                resolved_path.display()
+            )));
+        }
+        let chapter = load_markdown_chapter(&resolved_path, &wikipedia_language)?;
+        let file_name = chapter.file_name.clone();
+        let title = chapter.title.clone();
+        front_matter_chapters.push(chapter);
+        front_matter_toc_nodes.push(TocNode {
+            title,
+            file_name,
+            children: Vec::new(),
+        });
+    }
+
+    if !front_matter_chapters.is_empty() {
+        front_matter_chapters.extend(chapters);
+        chapters = front_matter_chapters;
+
+        front_matter_toc_nodes.extend(toc_nodes);
+        toc_nodes = front_matter_toc_nodes;
+    }
+
     write_epub(
         &config,
         &chapters,
@@ -1241,6 +1277,58 @@ fn internal_links(articles: &[String]) -> InternalLinks {
             .or_insert_with(|| sanitize_chapter_filename(article));
     }
     links
+}
+
+fn load_markdown_chapter(path: &Path, language: &str) -> AppResult<Chapter> {
+    let content = fs::read_to_string(path)?;
+    let mut title = path
+        .file_stem()
+        .and_then(|s| s.to_str())
+        .unwrap_or("Front Matter")
+        .to_string();
+
+    for line in content.lines() {
+        let trimmed = line.trim();
+        if let Some(header) = trimmed.strip_prefix("# ") {
+            title = header.trim().to_string();
+            break;
+        }
+    }
+
+    let file_name = format!(
+        "{}.xhtml",
+        path.file_stem()
+            .and_then(|s| s.to_str())
+            .unwrap_or("front-page")
+    );
+
+    let parser = pulldown_cmark::Parser::new(&content);
+    let mut html_content = String::new();
+    pulldown_cmark::html::push_html(&mut html_content, parser);
+
+    let xhtml = format!(
+        r#"<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{}">
+  <head>
+    <title>{}</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    {}
+  </body>
+</html>
+"#,
+        language,
+        encode_text(&title),
+        html_content,
+    );
+
+    Ok(Chapter {
+        file_name,
+        title,
+        content: xhtml,
+        template_skip_counts: TemplateSkipCounts::default(),
+    })
 }
 
 fn load_chapter(

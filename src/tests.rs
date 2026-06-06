@@ -4459,6 +4459,43 @@ fn render_wikitext_formats_lnl_template() {
     assert!(rendered_fallback.contains("M Line"), "{rendered_fallback}");
 }
 
+#[test]
+fn test_load_markdown_chapter() {
+    use std::fs::File;
+    use std::io::Write;
+    let temp_dir = std::env::temp_dir();
+    let file_path = temp_dir.join("test_chapter.md");
+    let mut file = File::create(&file_path).unwrap();
+    let md_content = "\
+# My Test Chapter
+
+Hello world! This is a **markdown** paragraph.
+
+- List item 1
+- List item 2
+";
+    file.write_all(md_content.as_bytes()).unwrap();
+
+    let chapter = crate::load_markdown_chapter(&file_path, "en").unwrap();
+    assert_eq!(chapter.title, "My Test Chapter");
+    assert_eq!(chapter.file_name, "test_chapter.xhtml");
+
+    // Check that the content is valid XHTML and contains translated Markdown elements
+    assert!(chapter.content.contains("xml:lang=\"en\""));
+    assert!(chapter.content.contains("<title>My Test Chapter</title>"));
+    assert!(chapter.content.contains("<h1>My Test Chapter</h1>"));
+    assert!(
+        chapter
+            .content
+            .contains("<p>Hello world! This is a <strong>markdown</strong> paragraph.</p>")
+    );
+    assert!(chapter.content.contains("<ul>"));
+    assert!(chapter.content.contains("<li>List item 1</li>"));
+
+    // Clean up
+    std::fs::remove_file(file_path).ok();
+}
+
 fn read_or_fetch_text(
     cache_path: &Path,
     refresh: bool,

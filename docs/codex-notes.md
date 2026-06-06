@@ -1,5 +1,54 @@
 # Codex Session Notes
 
+## 2026-06-06 Front Matter Pages Support
+
+### Summary
+
+Added support for adding several pages before the numbered chapters. Configured `front_matter` (and robust aliases like `front_mater` and `front-matter`) to accept a list of Markdown files in the book YAML configuration. Loaded, parsed, and translated these Markdown files into valid XHTML pages (generating `.xhtml` files named after the original Markdown files). Positioned the front matter pages before the main numbered chapters without affecting chapter numbering. Wrote a unit test verifying `load_markdown_chapter` and regenerated all expected planets book fixtures on disk. All tests and checks pass cleanly.
+
+### Decisions Made
+
+* Added `front_mater: Vec<PathBuf>` to the `BookConfig` struct in `src/main.rs` with Serde aliases for `front_matter` and `front-matter`.
+* Implemented `load_markdown_chapter(path, language)` in `src/main.rs` to read Markdown files, convert them to HTML using the `pulldown-cmark` crate, and format them into valid XHTML pages. The XHTML page `<title>` is extracted from the first `# ` header in the Markdown file.
+* Updated `run` in `src/main.rs` to parse the configured front matter markdown files, construct their `Chapter` and `TocNode` representations, and prepend them to the book's chapters and TOC nodes lists.
+* Prepending front matter pages after computing the starting index for numbered chapters preserves correct starting chapter number (`1`, etc.) for subsequent articles.
+* Added `pulldown-cmark` dependency in `Cargo.toml`.
+* Added `front_mater` to `examples/planets.yaml`.
+* Added `test_load_markdown_chapter` unit test to `src/tests.rs` to verify correct Markdown-to-XHTML conversion and title extraction.
+* Updated/regenerated the expected book integration fixtures for `planets` under `expected/planets/` (unzipping with python3 to replace files and adding `about.xhtml` and `copyright.xhtml`).
+* Ran formatting, checks, clippy, and the entire test suite.
+
+### Files Changed
+
+* `Cargo.toml` [MODIFY]
+  * Added `pulldown-cmark` dependency.
+* `Cargo.lock` [MODIFY]
+  * Updated lock file.
+* `examples/planets.yaml` [MODIFY]
+  * Added `front_mater` entry specifying `about.md` and `copyright.md`.
+* `src/main.rs` [MODIFY]
+  * Added `front_mater` field to `BookConfig`.
+  * Implemented `load_markdown_chapter`.
+  * Prepended front matter chapters and TOC nodes in `run`.
+* `src/tests.rs` [MODIFY]
+  * Added `test_load_markdown_chapter` unit test.
+* `expected/planets/` [MODIFY/NEW]
+  * Added `OEBPS/about.xhtml` and `OEBPS/copyright.xhtml`.
+  * Updated `OEBPS/content.opf`, `OEBPS/nav.xhtml`, and `OEBPS/toc.ncx` to include the front matter pages.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes at the beginning.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 219 unit tests and 33 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-06 Add missing Commons-inline template for Mount Tsurugi
 
 ### Summary

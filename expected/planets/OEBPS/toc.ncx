@@ -12,35 +12,43 @@
       <navLabel><text>Front matter</text></navLabel>
       <content src="frontmatter.xhtml"/>
     </navPoint>
-    <navPoint id="chapter-Earth" playOrder="2">
+    <navPoint id="chapter-about" playOrder="2">
+      <navLabel><text>About</text></navLabel>
+      <content src="about.xhtml"/>
+    </navPoint>
+    <navPoint id="chapter-copyright" playOrder="3">
+      <navLabel><text>Copyright</text></navLabel>
+      <content src="copyright.xhtml"/>
+    </navPoint>
+    <navPoint id="chapter-Earth" playOrder="4">
       <navLabel><text>1 Earth</text></navLabel>
       <content src="Earth.xhtml"/>
     </navPoint>
-    <navPoint id="chapter-Solar_System" playOrder="3">
+    <navPoint id="chapter-Solar_System" playOrder="5">
       <navLabel><text>2 Solar System</text></navLabel>
       <content src="Solar_System.xhtml"/>
-      <navPoint id="chapter-Sun" playOrder="4">
+      <navPoint id="chapter-Sun" playOrder="6">
       <navLabel><text>2.1 Sun</text></navLabel>
       <content src="Sun.xhtml"/>
     </navPoint>
-      <navPoint id="chapter-Mercury" playOrder="5">
+      <navPoint id="chapter-Mercury" playOrder="7">
       <navLabel><text>2.2 Mercury</text></navLabel>
       <content src="Mercury.xhtml"/>
     </navPoint>
     </navPoint>
-    <navPoint id="chapter-Planets_Info" playOrder="6">
+    <navPoint id="chapter-Planets_Info" playOrder="8">
       <navLabel><text>3 Planets Info</text></navLabel>
       <content src="Planets_Info.xhtml"/>
-      <navPoint id="chapter-Venus" playOrder="7">
+      <navPoint id="chapter-Venus" playOrder="9">
       <navLabel><text>3.1 Venus</text></navLabel>
       <content src="Venus.xhtml"/>
     </navPoint>
-      <navPoint id="chapter-Mars" playOrder="8">
+      <navPoint id="chapter-Mars" playOrder="10">
       <navLabel><text>3.2 Mars</text></navLabel>
       <content src="Mars.xhtml"/>
     </navPoint>
     </navPoint>
-    <navPoint id="chapter-Resources" playOrder="9">
+    <navPoint id="chapter-Resources" playOrder="11">
       <navLabel><text>Resources</text></navLabel>
       <content src="Resources.xhtml"/>
     </navPoint>
