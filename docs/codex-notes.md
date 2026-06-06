@@ -1,5 +1,45 @@
 # Codex Session Notes
 
+## 2026-06-06 Custom Book ID Support
+
+### Summary
+
+Added support for a custom `id` configuration field in the book YAML configurations. When this optional field is set, it is used as the book's unique identifier (e.g., in the generated EPUB's OPF and NCX structures) instead of a dynamically generated timestamp-based URN. Set the `id` field in all 26 example YAML files in `examples/` to use `<filename>-fixed-id`, updated `skeleton.yaml`, and regenerated all expected book test fixtures in `expected/`. All unit and integration tests, check, clippy, and formatting pass successfully.
+
+### Decisions Made
+
+* Added `id: Option<String>` to the `BookConfig` struct in `src/main.rs` and marked it as optional using Serde.
+* In `write_book` (`src/main.rs`), resolved the EPUB identifier using the custom config `id` if present, falling back to the standard dynamic time-based `book_identifier()`.
+* Documented the optional `id` configuration field in `skeleton.yaml`.
+* Configured the `id` field in all 26 example books under `examples/` with `<filename>-fixed-id` to ensure stable, reproducible book identifiers.
+* Regenerated the `expected/` fixtures for all 25 integration tests.
+* Ran all verification steps and ensured no compiler warnings or test failures exist.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Updated `BookConfig` struct to include `id: Option<String>`.
+  * Updated `write_book` to check `config.id` and use it as the book identifier.
+* `skeleton.yaml` [MODIFY]
+  * Added the `id` configuration option template.
+* `examples/*.yaml` [MODIFY]
+  * Updated all 26 configuration files to include the `id` field.
+* `expected/*/` [MODIFY]
+  * Updated the generated `OEBPS/content.opf` and `OEBPS/toc.ncx` (and some `chapter-*.xhtml` references) files with the new stable book IDs across all expected fixtures.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 218 unit tests and 30 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-05 Templates on en "Second Sino-Japanese War"
 
 ### Summary

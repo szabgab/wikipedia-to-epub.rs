@@ -3,6 +3,9 @@
 # ==============================================================================
 # Use this file as a starting point to compile Wikipedia articles into an EPUB.
 
+# (Optional) Unique identifier of the book. If omitted, a random URN is generated.
+id: "my-custom-book-fixed-id"
+
 # Metadata block for the compiled EPUB book.
 metadata:
   # The title of the book.

@@ -123,6 +123,7 @@ struct DetailedArticle {
 
 #[derive(Debug, Deserialize)]
 struct BookConfig {
+    id: Option<String>,
     metadata: Metadata,
     #[serde(rename = "output-file")]
     output_file: PathBuf,
@@ -8433,7 +8434,7 @@ fn write_epub(
         fs::create_dir_all(parent)?;
     }
 
-    let identifier = book_identifier();
+    let identifier = config.id.clone().unwrap_or_else(book_identifier);
     info!(identifier = identifier, "book id");
     let file = File::create(&config.output_file)?;
     let mut zip = ZipWriter::new(file);
