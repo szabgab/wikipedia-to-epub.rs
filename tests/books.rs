@@ -885,3 +885,8 @@ fn extract_opf_date(expected_dir: &Path) -> Option<String> {
     }
     None
 }
+
+#[test]
+fn generate_kiso_mountains_book_from_local_page_dump() {
+    assert_generated_book_matches_expected("Kiso_Mountains");
+}
