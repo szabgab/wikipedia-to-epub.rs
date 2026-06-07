@@ -1,5 +1,52 @@
 # Codex Session Notes
 
+## 2026-06-06 Required Links to Pages (Appendix A) Field
+
+### Summary
+
+Created a required boolean configuration field called `links_to_pages` in the `BookConfig` struct. When `links_to_pages` is `true`, an "Appendix A" page is generated at the end of the book, listing and linking all the compiled Wikipedia pages. Updated all example configurations to set this to `false` except for `planets.yaml` and `macchini-deep.yaml` which are set to `true`. Updated all test configuration YAML strings, regenerated expected book fixtures, and verified all tests pass cleanly.
+
+### Decisions Made
+
+* Added `links_to_pages: bool` field to the `BookConfig` struct in `src/main.rs`.
+* Implemented Appendix A page generation logic in `run` in `src/main.rs` to format links using `wikipedia_article_url()` and append them at the end of `chapters` and `toc_nodes`.
+* Updated `skeleton.yaml` to document the new `links_to_pages` option.
+* Set `links_to_pages: true` in `examples/planets.yaml` and `examples/macchini-deep.yaml`, and `links_to_pages: false` in all other 24 examples.
+* Updated all YAML test strings in `src/tests.rs` and `tests/books.rs` to include `links_to_pages: false`.
+* Regenerated expected integration test fixtures for `planets` and `macchini-deep` (preserving correct mock dates during generation).
+* Ran all verification steps.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Added `links_to_pages: bool` to `BookConfig`.
+  * Implemented Appendix A page generation in `run`.
+* `src/tests.rs` [MODIFY]
+  * Added `links_to_pages: false` to all unit test configurations.
+* `tests/books.rs` [MODIFY]
+  * Added `links_to_pages: false` to all integration test configurations.
+* `skeleton.yaml` [MODIFY]
+  * Documented and added default `links_to_pages: false`.
+* `examples/*.yaml` [MODIFY]
+  * Set `links_to_pages` to `true` for planets/macchini-deep and `false` for others.
+* `expected/planets/` [MODIFY/NEW]
+  * Added `OEBPS/Appendix_A.xhtml`. Updated `OEBPS/content.opf`, `OEBPS/nav.xhtml`, and `OEBPS/toc.ncx`.
+* `expected/macchini-deep/` [MODIFY/NEW]
+  * Added `OEBPS/Appendix_A.xhtml`. Updated `OEBPS/content.opf`, `OEBPS/nav.xhtml`, and `OEBPS/toc.ncx`.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 219 unit tests and 33 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-06 Required Cover Configuration Field
 
 ### Summary

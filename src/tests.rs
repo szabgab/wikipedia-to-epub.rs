@@ -2623,6 +2623,7 @@ metadata:
   edition: First edition
 output-file: sample.epub
 cover: "None"
+links_to_pages: false
 caching: none
 depth: 0
 articles:
@@ -2646,6 +2647,7 @@ metadata:
 output-file: sample.epub
 images: true
 cover: "None"
+links_to_pages: false
 caching: none
 depth: 0
 articles:
@@ -3465,6 +3467,7 @@ metadata:
   edition: First edition
 output-file: sample.epub
 cover: "None"
+links_to_pages: false
 caching: none
 depth: 0
 articles:
@@ -3483,6 +3486,7 @@ metadata:
   edition: First edition
 output-file: sample.epub
 cover: "None"
+links_to_pages: false
 caching: local
 depth: 0
 articles:
@@ -3501,6 +3505,7 @@ metadata:
   edition: First edition
 output-file: sample.epub
 cover: "None"
+links_to_pages: false
 caching: central
 depth: 0
 articles:
@@ -3929,6 +3934,7 @@ metadata:
   edition: First edition
 output-file: planets.epub
 cover: "None"
+links_to_pages: false
 caching: none
 depth: 0
 articles:

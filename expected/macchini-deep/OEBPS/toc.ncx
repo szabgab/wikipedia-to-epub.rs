@@ -20,5 +20,9 @@
       <navLabel><text>Licia Macchini</text></navLabel>
       <content src="Licia_Macchini.xhtml"/>
     </navPoint>
+    <navPoint id="chapter-Appendix_A" playOrder="4">
+      <navLabel><text>Appendix A</text></navLabel>
+      <content src="Appendix_A.xhtml"/>
+    </navPoint>
   </navMap>
 </ncx>

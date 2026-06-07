@@ -26,6 +26,7 @@
     <item id="chapter-8" href="Venus.xhtml" media-type="application/xhtml+xml"/>
     <item id="chapter-9" href="Mars.xhtml" media-type="application/xhtml+xml"/>
     <item id="chapter-10" href="Resources.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter-11" href="Appendix_A.xhtml" media-type="application/xhtml+xml"/>
   </manifest>
   <spine toc="ncx">
     <itemref idref="nav" linear="no"/>
@@ -41,6 +42,7 @@
     <itemref idref="chapter-8"/>
     <itemref idref="chapter-9"/>
     <itemref idref="chapter-10"/>
+    <itemref idref="chapter-11"/>
   </spine>
   <guide>
     <reference type="cover" title="Cover" href="cover.xhtml"/>

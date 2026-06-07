@@ -15,11 +15,13 @@
     <item id="frontmatter" href="frontmatter.xhtml" media-type="application/xhtml+xml"/>
     <item id="chapter-1" href="Macchini.xhtml" media-type="application/xhtml+xml"/>
     <item id="chapter-2" href="Licia_Macchini.xhtml" media-type="application/xhtml+xml"/>
+    <item id="chapter-3" href="Appendix_A.xhtml" media-type="application/xhtml+xml"/>
   </manifest>
   <spine toc="ncx">
     <itemref idref="nav" linear="no"/>
     <itemref idref="frontmatter"/>
     <itemref idref="chapter-1"/>
     <itemref idref="chapter-2"/>
+    <itemref idref="chapter-3"/>
   </spine>
 </package>

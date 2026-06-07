@@ -648,6 +648,7 @@ metadata:
   edition: First edition
 output-file: output.epub
 cover: "None"
+links_to_pages: false
 caching: none
 depth: 0
 articles:
@@ -723,6 +724,7 @@ metadata:
   edition: First edition
 output-file: output.epub
 cover: "None"
+links_to_pages: false
 caching: none
 depth: 0
 articles:
@@ -820,6 +822,7 @@ metadata:
   edition: First edition
 output-file: config-output.epub
 cover: "None"
+links_to_pages: false
 caching: none
 depth: 0
 articles:

@@ -62,6 +62,12 @@ depth: 0
 #   - false : Do not append a resources page.
 resources: false
 
+# Whether to include an "Appendix A" page listing and linking the compiled Wikipedia pages at the end of the book.
+# Valid values:
+#   - true  : Generate and append an "Appendix A" page.
+#   - false : Do not append an "Appendix A" page.
+links_to_pages: false
+
 # Path to a cover image to be used as the book cover page.
 # Valid values:
 #   - "None" : Do not embed a cover image.

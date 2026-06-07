@@ -52,5 +52,9 @@
       <navLabel><text>Resources</text></navLabel>
       <content src="Resources.xhtml"/>
     </navPoint>
+    <navPoint id="chapter-Appendix_A" playOrder="12">
+      <navLabel><text>Appendix A</text></navLabel>
+      <content src="Appendix_A.xhtml"/>
+    </navPoint>
   </navMap>
 </ncx>

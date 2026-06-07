@@ -12,6 +12,7 @@ images: false
 caching: central
 depth: 0
 resources: false
+links_to_pages: false
 cover: "None"
 articles:
   - Kyoto

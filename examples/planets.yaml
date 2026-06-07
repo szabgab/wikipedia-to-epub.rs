@@ -12,6 +12,7 @@ caching: "central"
 chapters: numbered-title
 depth: 0
 resources: true
+links_to_pages: true
 cover: "./front-page.png"
 front_mater:
   - about.md
