@@ -152,7 +152,8 @@ fn cli_no_images_flag_overrides_config_images_true() {
         .arg("--no-images")
         .arg("--log")
         .arg("WARN");
-    if let Some(date) = extract_yaml_date(&yaml_path) {
+    let expected_dir = repo.join("expected").join("busan-images");
+    if let Some(date) = extract_opf_date(&expected_dir) {
         command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
     } else {
         command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
@@ -188,7 +189,8 @@ fn cli_images_flag_overrides_config_images_false() {
         .arg("--images")
         .arg("--log")
         .arg("WARN");
-    if let Some(date) = extract_yaml_date(&yaml_path) {
+    let expected_dir = repo.join("expected").join("busan");
+    if let Some(date) = extract_opf_date(&expected_dir) {
         command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
     } else {
         command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
@@ -225,7 +227,8 @@ fn cli_logfile_flag_overrides_default_report_log() {
         .arg(&custom_log)
         .arg("--log")
         .arg("INFO");
-    if let Some(date) = extract_yaml_date(&yaml_path) {
+    let expected_dir = repo.join("expected").join("busan");
+    if let Some(date) = extract_opf_date(&expected_dir) {
         command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
     } else {
         command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
@@ -265,7 +268,8 @@ fn cli_caching_flag_is_accepted_by_binary() {
         .arg("none")
         .arg("--log")
         .arg("WARN");
-    if let Some(date) = extract_yaml_date(&yaml_path) {
+    let expected_dir = repo.join("expected").join("busan");
+    if let Some(date) = extract_opf_date(&expected_dir) {
         command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
     } else {
         command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
@@ -305,7 +309,8 @@ fn assert_generated_book_matches_expected(book: &str) {
         .arg("--log")
         .arg("WARN");
 
-    if let Some(date) = extract_yaml_date(&yaml_path) {
+    let expected_dir = repo.join("expected").join(book);
+    if let Some(date) = extract_opf_date(&expected_dir) {
         command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
     }
 
@@ -330,7 +335,6 @@ fn assert_generated_book_matches_expected(book: &str) {
     assert!(output_file.is_file());
 
     let mut epub = open_epub(&output_file);
-    let expected_dir = repo.join("expected").join(book);
     let expected_entries = expected_epub_entries(&expected_dir);
     assert_eq!(zip_entries(&epub), expected_entries);
 
@@ -670,11 +674,7 @@ articles:
         .arg("none")
         .arg("--log")
         .arg("WARN");
-    if let Some(date) = extract_yaml_date(&config_path) {
-        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
-    } else {
-        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
-    }
+    command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
     let output = command.output().unwrap();
 
     assert!(output.status.success(), "run failed: {:?}", output);
@@ -746,11 +746,7 @@ articles:
         .arg("none")
         .arg("--log")
         .arg("WARN");
-    if let Some(date) = extract_yaml_date(&config_path) {
-        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
-    } else {
-        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
-    }
+    command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
     let output = command.output().unwrap();
 
     assert!(output.status.success(), "run failed: {:?}", output);
@@ -844,11 +840,7 @@ articles:
         .arg(&overridden_output)
         .arg("--log")
         .arg("WARN");
-    if let Some(date) = extract_yaml_date(&config_path) {
-        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", date);
-    } else {
-        command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
-    }
+    command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
     let output = command.output().unwrap();
 
     assert!(output.status.success(), "run failed: {:?}", output);
@@ -880,13 +872,15 @@ fn sanitize_chapter_filename(title: &str) -> String {
     format!("{}.xhtml", sanitized)
 }
 
-fn extract_yaml_date(path: &Path) -> Option<String> {
-    let content = fs::read_to_string(path).ok()?;
-    for line in content.lines() {
-        let trimmed = line.trim();
-        if let Some(stripped) = trimmed.strip_prefix("date:") {
-            let val = stripped.trim().trim_matches('"').trim_matches('\'');
-            return Some(val.to_string());
+fn extract_opf_date(expected_dir: &Path) -> Option<String> {
+    let opf_path = expected_dir.join("OEBPS").join("content.opf");
+    let content = fs::read_to_string(opf_path).ok()?;
+    let start_tag = "<dc:date>";
+    let end_tag = "</dc:date>";
+    if let (Some(start_idx), Some(end_idx)) = (content.find(start_tag), content.find(end_tag)) {
+        let start = start_idx + start_tag.len();
+        if start < end_idx {
+            return Some(content[start..end_idx].trim().to_string());
         }
     }
     None

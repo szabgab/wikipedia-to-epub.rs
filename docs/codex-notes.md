@@ -1,5 +1,35 @@
 # Codex Session Notes
 
+## 2026-06-07 Extract Mock Date from Expected EPUB Metadata
+
+### Summary
+
+Replaced `extract_yaml_date` with `extract_opf_date` in the integration test suite (`tests/books.rs`). Instead of reading the mock date parameter from the input book YAML config, it is now extracted directly from the `<dc:date>` field inside the expected `OEBPS/content.opf` file of the respective expected EPUB test fixture. Dynamic tests without expected EPUB folders mock the date to `"2026-06-06"`. All tests and quality checks pass cleanly.
+
+### Decisions Made
+
+* Implemented `extract_opf_date(expected_dir: &Path) -> Option<String>` to read `expected/{book}/OEBPS/content.opf` and locate the `<dc:date>` element.
+* Refactored tests referencing `extract_yaml_date` (`cli_no_images_flag_overrides_config_images_true`, `cli_images_flag_overrides_config_images_false`, `cli_logfile_flag_overrides_default_report_log`, `cli_caching_flag_is_accepted_by_binary`, and `assert_generated_book_matches_expected`) to pass the corresponding `expected_dir` path to `extract_opf_date`.
+* Simplified dynamic tests (`generate_hierarchical_book_from_local_page_dump`, `generate_numbered_chapters_book_from_local_page_dump`, and `cli_output_flag_overrides_config_output_file`) which do not use pre-recorded expected folders to mock date directly to `"2026-06-06"`.
+* Deleted the now unused `extract_yaml_date` function.
+* Resolved a collapsible `if` clippy lint inside `extract_opf_date` by combining `find` checks into a tuple pattern match.
+
+### Files Changed
+
+* `tests/books.rs` [MODIFY]
+  * Replaced `extract_yaml_date` helper function and all call locations.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 219 unit tests and 32 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-07 Wikitext Hierarchy Parsing Tool
 
 ### Summary
