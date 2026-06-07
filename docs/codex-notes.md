@@ -1,5 +1,36 @@
 # Codex Session Notes
 
+## 2026-06-07 Wikitext Hierarchy Parsing Tool
+
+### Summary
+
+Created a Perl tool in `tools/wikitext_hierarchy.pl` that parses a page's JSON cache file, extracts the raw wikitext, and recursively parses it to print the balanced hierarchy of nested templates (including template names and parameters) and tables. All checks and existing test suites pass cleanly.
+
+### Decisions Made
+
+* Created the script `tools/wikitext_hierarchy.pl` with a recursive descent parser implementation to parse wikitext blocks into templates (`{{}}`), parameters (`|`), and tables (`{| |}`).
+* Leveraged standard `JSON::PP` module to parse MediaWiki API page JSON files.
+* Made the script executable and ran integration checks on various JSON files.
+* Ran rust compilation and test suites to verify no breaking changes were introduced.
+
+### Files Changed
+
+* `tools/wikitext_hierarchy.pl` [NEW]
+  * Created script to output templates, parameters, and tables in indented hierarchical form.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 219 unit tests and 33 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-06 Required Links to Pages (Appendix A) Field
 
 ### Summary
