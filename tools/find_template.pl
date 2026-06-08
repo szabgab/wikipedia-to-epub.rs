@@ -56,6 +56,7 @@ sub find_json_files {
 sub find_matches {
     my ($target_template, $all_files) = @_;
 
+    my $count = 0;
     my $json_parser = JSON::PP->new->utf8;
 
     for my $filepath (@$all_files) {
@@ -81,9 +82,12 @@ sub find_matches {
             # Check if the block starts with the specified template name case-insensitively
             if ($tmpl =~ /^\{\{\s*\Q$target_template\E\s*(?:\||\}\})/i) {
                 print "$filepath: $tmpl\n";
+                $count++;
             }
         }
     }
+
+    return $count;
 }
 
 sub files_from_pages_folder {
@@ -111,18 +115,34 @@ sub files_from_central_cache_folder {
     return uniq @all_files;
 }
 
+sub usage {
+    die "Usage: $0 [--all] <template_name>\n"
+}
 
 sub main {
-    my $target_template = shift @ARGV or die "Usage: $0 <template_name>\n";
+    usage() if not @ARGV;
+    my $all = 0;
+    if ($ARGV[0] eq '--all') {
+        shift @ARGV;
+        $all = 1;
+    }
+    my $target_template = shift @ARGV or usage();
 
-    my @local_files = files_from_pages_folder();
-    printf("Local files (found %s files)\n", scalar @local_files);
-    #die Dumper \@local_files;
-    find_matches($target_template, \@local_files);
+    {
+        my @local_files = files_from_pages_folder();
+        printf("Local files (found %s files)\n", scalar @local_files);
+        #die Dumper \@local_files;
+        my $count = find_matches($target_template, \@local_files);
+        printf("Found $count matched in %s local files\n", scalar @local_files);
+        print("\n-------------\n");
+    }
 
-    my @cached_files = files_from_central_cache_folder();
-    printf("Cached files (found %s files)\n", scalar @cached_files);
-    find_matches($target_template, \@cached_files);
+    if ($all) {
+        my @cached_files = files_from_central_cache_folder();
+        printf("Cached files (found %s files)\n", scalar @cached_files);
+        my $count = find_matches($target_template, \@cached_files);
+        printf("Found $count matched in %s cached files\n", scalar @cached_files);
+    }
 }
 
 
