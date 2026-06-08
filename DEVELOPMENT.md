@@ -90,6 +90,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{hlist|item1|item2}}` (and `{{flatlist}}`) renders standard XHTML list items joined by commas: `item1, item2`
 * `{{native name list|tag1=ja|name1=Name}}` renders native name list as a comma-separated list of names and their language tags: `Name (Japanese)`
 * `{{Infobox mountain|name=...}}` renders mountain infoboxes as a two-column wikitable containing properties (e.g. Name, Native name, Country, Highest point, Coordinates, etc.)
+* `{{Infobox settlement|name=...}}` renders settlement infoboxes as a two-column wikitable containing properties (e.g. Name, Official name, Native name, Country, Governing body, Area, Population, Website, etc.)
+* `{{infobox|title=...|label1=...|data1=...}}` renders generic infoboxes as a two-column wikitable mapping titles, headers, labels, and data fields
 * `{{mdash}}` becomes `—`
 * `{{snd}}` (or `{{dash}}` / `{{snds}}`) becomes a spaced en dash: ` – `
 * `{{!}}` becomes `|`

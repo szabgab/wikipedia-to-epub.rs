@@ -1,5 +1,55 @@
 # Codex Session Notes
 
+## 2026-06-08 Infobox and Infobox settlement Support
+
+### Summary
+
+Added support for rendering `Infobox settlement` and generic `Infobox` templates as clean two-column `wikitable` structures containing their respective titles, images, captions, and key/value properties. Updated all unit tests, regenerated the expected EPUB XHTML fixtures for affected books (Osaka, Planets, Busan, Busan Images, Kyoto, Seoul), and verified all check scripts and test suites pass successfully.
+
+### Decisions Made
+
+* Excluded `Infobox settlement` and `Infobox` (generic infobox) from being skipped silently in `is_silent_template_name`.
+* Implemented `render_infobox_settlement_template` to output a 2-column wikitext table (`{| class="wikitable"` / `|}`) containing populated fields like Name, Official name, Native name, Country, Region, Prefecture, Governing body, Area, Population, Density, Time zone, Coordinates, blank symbol/address sections, and Website.
+* Implemented `render_infobox_generic_template` to dynamically output a 2-column wikitext table for the standard `Template:Infobox` structure containing `title`, `image`, `caption`, and sequential `headerX`, `labelX`, and `dataX` parameters.
+* Added standalone unit tests to `src/tests.rs` for both `Infobox settlement` and generic `Infobox`.
+* Updated `DEVELOPMENT.md` to document the new template rendering conversion rules.
+* Updated `regenerate.sh` to extract EPUB books using Python's standard `zipfile` module since `unzip` is missing.
+* Regenerated expected EPUB book fixtures for `osaka`, `planets`, `busan`, `busan-images`, `kyoto`, and `seoul`.
+* Ran `./sort.sh` to sort the template databases.
+* Resolved collapsible `if` clippy lints in the new renderers.
+
+### Files Changed
+
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented `Infobox settlement` and generic `infobox` rendering rules.
+* `regenerate.sh` [MODIFY]
+  * Changed `unzip` invocation to use `python3 -m zipfile`.
+* `src/main.rs` [MODIFY]
+  * Added dispatching, classification, and implementation for `render_infobox_settlement_template` and `render_infobox_generic_template`.
+* `src/tests.rs` [MODIFY]
+  * Added unit tests.
+  * Replaced `Infobox` / `Infobox settlement` with `Infobox road` in silent skip tests.
+* `expected/busan-images/` [MODIFY]
+* `expected/busan/` [MODIFY]
+* `expected/kyoto/` [MODIFY]
+* `expected/osaka/` [MODIFY]
+* `expected/planets/` [MODIFY]
+* `expected/seoul/` [MODIFY]
+  * Regenerated expected XHTML, OPF, and nav fixtures reflecting the newly rendered infobox tables.
+* `docs/codex-notes.md` [MODIFY]
+  * Prepended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 224 unit tests and 33 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-07 Infobox Mountain Support for Kiso Mountains
 
 ### Summary

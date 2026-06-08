@@ -23,7 +23,7 @@ fn render_wikitext_handles_sections_links_and_lists() {
 * First item
 * Second [https://example.com link]
 [[Category:Hidden]]
-{{Infobox|ignored=yes}}
+{{Infobox road|ignored=yes}}
 <ref>omit this</ref>
 "#,
         &internal_links,
@@ -1146,7 +1146,7 @@ fn render_wikitext_silently_skips_metadata_templates() {
 {{self-published inline|date=May 2026}}
 {{Use British English|date=March 2022}}
 {{Use dmy dates|date=April 2022}}
-{{Infobox settlement|name=Sample}}
+{{Infobox road|name=Sample}}
 {{History of Korea}}
 {{Korea topics}}
 {{East Asian topics}}
@@ -4560,6 +4560,57 @@ fn render_wikitext_formats_infobox_mountain_template() {
     assert!(rendered.contains("Japan</a>"), "{rendered}");
     assert!(rendered.contains("Elevation"), "{rendered}");
     assert!(rendered.contains("2956"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_infobox_settlement_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        r#"{{Infobox settlement
+| name = Osaka
+| official_name = Osaka City
+| native_name = {{nobold|大阪市}}
+| subdivision_type = Country
+| subdivision_name = Japan
+| population_total = 2,816,247
+| area_total_km2 = 225.21
+}}"#,
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Name"), "{rendered}");
+    assert!(rendered.contains("Osaka"), "{rendered}");
+    assert!(rendered.contains("Official name"), "{rendered}");
+    assert!(rendered.contains("Osaka City"), "{rendered}");
+    assert!(rendered.contains("Native name"), "{rendered}");
+    assert!(rendered.contains("大阪市"), "{rendered}");
+    assert!(rendered.contains("Country"), "{rendered}");
+    assert!(rendered.contains("Japan"), "{rendered}");
+    assert!(rendered.contains("Population"), "{rendered}");
+    assert!(rendered.contains("2,816,247"), "{rendered}");
+    assert!(rendered.contains("Area"), "{rendered}");
+    assert!(rendered.contains("225.21"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_infobox_generic_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        r#"{{infobox
+| title = Sun
+| label1 = Names
+| data1 = Sun, Sol
+| label2 = Adjectives
+| data2 = Solar
+}}"#,
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Sun"), "{rendered}");
+    assert!(rendered.contains("Names"), "{rendered}");
+    assert!(rendered.contains("Sun, Sol"), "{rendered}");
+    assert!(rendered.contains("Adjectives"), "{rendered}");
+    assert!(rendered.contains("Solar"), "{rendered}");
 }
 
 fn read_or_fetch_text(

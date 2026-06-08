@@ -2335,6 +2335,10 @@ fn render_template(content: &str) -> String {
         render_lnl_template(params)
     } else if template.eq_ignore_ascii_case("Infobox mountain") {
         render_infobox_mountain_template(params)
+    } else if template.eq_ignore_ascii_case("Infobox settlement") {
+        render_infobox_settlement_template(params)
+    } else if template.eq_ignore_ascii_case("Infobox") {
+        render_infobox_generic_template(params)
     } else if template.eq_ignore_ascii_case("native name list") {
         render_native_name_list_template(params)
     } else if template.eq_ignore_ascii_case("hlist") || template.eq_ignore_ascii_case("flatlist") {
@@ -2624,6 +2628,8 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("color")
         || template.eq_ignore_ascii_case("colour")
         || template.eq_ignore_ascii_case("Infobox mountain")
+        || template.eq_ignore_ascii_case("Infobox settlement")
+        || template.eq_ignore_ascii_case("Infobox")
         || template.eq_ignore_ascii_case("native name list")
         || template.eq_ignore_ascii_case("hlist")
         || template.eq_ignore_ascii_case("flatlist")
@@ -2648,7 +2654,9 @@ fn is_silent_template_name(template: &str) -> bool {
         || (template
             .get(.."Infobox".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Infobox"))
-            && !template.eq_ignore_ascii_case("Infobox mountain"))
+            && !template.eq_ignore_ascii_case("Infobox mountain")
+            && !template.eq_ignore_ascii_case("Infobox settlement")
+            && !template.eq_ignore_ascii_case("Infobox"))
         || template
             .get(.."Campaignbox".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Campaignbox"))
@@ -4630,6 +4638,171 @@ fn render_infobox_mountain_template(params: &str) -> String {
     add_row(&mut rows, "Length", &["length_km", "length"]);
     add_row(&mut rows, "Width", &["width_km", "width"]);
     add_row(&mut rows, "Area", &["area_km2", "area"]);
+
+    rows.push("|}".to_string());
+    rows.join("\n")
+}
+
+/// https://en.wikipedia.org/wiki/Template:Infobox_settlement
+fn render_infobox_settlement_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut rows = Vec::new();
+
+    rows.push("{| class=\"wikitable\"".to_string());
+
+    if let Some(name) = template_param(&named, &["name"]) {
+        rows.push("|-".to_string());
+        rows.push("! Name".to_string());
+        rows.push(format!("| {}", render_templates(name)));
+    }
+
+    if let Some(official_name) = template_param(&named, &["official_name"]) {
+        rows.push("|-".to_string());
+        rows.push("! Official name".to_string());
+        rows.push(format!("| {}", render_templates(official_name)));
+    }
+
+    if let Some(native_name) = template_param(&named, &["native_name"]) {
+        rows.push("|-".to_string());
+        rows.push("! Native name".to_string());
+        rows.push(format!("| {}", render_templates(native_name)));
+    }
+
+    if let Some(settlement_type) = template_param(&named, &["settlement_type"]) {
+        rows.push("|-".to_string());
+        rows.push("! Settlement type".to_string());
+        rows.push(format!("| {}", render_templates(settlement_type)));
+    }
+
+    let add_row = |rows: &mut Vec<String>, label: &str, keys: &[&str]| {
+        if let Some(val) = template_param(&named, keys) {
+            let rendered_val = render_templates(val);
+            rows.push("|-".to_string());
+            rows.push(format!("! {}", label));
+            rows.push(format!("| {}", rendered_val));
+        }
+    };
+
+    // Images: image_skyline
+    if let Some(image) = template_param(&named, &["image_skyline"]) {
+        rows.push("|-".to_string());
+        rows.push("! Image".to_string());
+        rows.push(format!("| {}", render_templates(image)));
+    }
+
+    for i in 1..=4 {
+        let type_key = if i == 1 {
+            "subdivision_type".to_string()
+        } else {
+            format!("subdivision_type{}", i - 1)
+        };
+        let name_key = if i == 1 {
+            "subdivision_name".to_string()
+        } else {
+            format!("subdivision_name{}", i - 1)
+        };
+        if let (Some(label), Some(val)) = (
+            template_param(&named, &[&type_key]),
+            template_param(&named, &[&name_key]),
+        ) {
+            rows.push("|-".to_string());
+            rows.push(format!("! {}", render_templates(label)));
+            rows.push(format!("| {}", render_templates(val)));
+        }
+    }
+
+    add_row(&mut rows, "Governing body", &["governing_body"]);
+
+    if let (Some(leader_title), Some(leader_name)) = (
+        template_param(&named, &["leader_title"]),
+        template_param(&named, &["leader_name"]),
+    ) {
+        rows.push("|-".to_string());
+        rows.push(format!("! {}", render_templates(leader_title)));
+        rows.push(format!("| {}", render_templates(leader_name)));
+    }
+
+    add_row(&mut rows, "Area", &["area_total_km2"]);
+    add_row(&mut rows, "Population", &["population_total"]);
+    add_row(&mut rows, "Density", &["population_density_km2"]);
+    add_row(&mut rows, "Time zone", &["timezone1"]);
+    add_row(&mut rows, "Coordinates", &["coordinates"]);
+
+    for sec in 1..=5 {
+        let sec_name_key = format!("blank_name_sec{}", sec);
+        let sec_info_key = format!("blank_info_sec{}", sec);
+        if let Some(sec_name) = template_param(&named, &[&sec_name_key]) {
+            rows.push("|-".to_string());
+            rows.push(format!("! {}", render_templates(sec_name)));
+            if let Some(sec_info) = template_param(&named, &[&sec_info_key]) {
+                rows.push(format!("| {}", render_templates(sec_info)));
+            } else {
+                rows.push("|".to_string());
+            }
+        }
+        for idx in 1..=7 {
+            let name_key = format!("blank{}_name_sec{}", idx, sec);
+            let info_key = format!("blank{}_info_sec{}", idx, sec);
+            if let (Some(name), Some(info)) = (
+                template_param(&named, &[&name_key]),
+                template_param(&named, &[&info_key]),
+            ) {
+                rows.push("|-".to_string());
+                rows.push(format!("! {}", render_templates(name)));
+                rows.push(format!("| {}", render_templates(info)));
+            }
+        }
+    }
+
+    add_row(&mut rows, "Website", &["website"]);
+
+    rows.push("|}".to_string());
+    rows.join("\n")
+}
+
+/// https://en.wikipedia.org/wiki/Template:Infobox
+fn render_infobox_generic_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut rows = Vec::new();
+
+    rows.push("{| class=\"wikitable\"".to_string());
+
+    if let Some(title) = template_param(&named, &["title"]) {
+        rows.push("|-".to_string());
+        rows.push(format!("! colspan=\"2\" | {}", render_templates(title)));
+    }
+
+    if let Some(image) = template_param(&named, &["image"]) {
+        rows.push("|-".to_string());
+        if let Some(caption) = template_param(&named, &["caption"]) {
+            rows.push(format!(
+                "| colspan=\"2\" | {}\n<br/>{}",
+                render_templates(image),
+                render_templates(caption)
+            ));
+        } else {
+            rows.push(format!("| colspan=\"2\" | {}", render_templates(image)));
+        }
+    }
+
+    for i in 1..=120 {
+        let header_key = format!("header{}", i);
+        let label_key = format!("label{}", i);
+        let data_key = format!("data{}", i);
+
+        if let Some(header) = template_param(&named, &[&header_key]) {
+            rows.push("|-".to_string());
+            rows.push(format!("! colspan=\"2\" | {}", render_templates(header)));
+        } else if let Some(data) = template_param(&named, &[&data_key]) {
+            rows.push("|-".to_string());
+            if let Some(label) = template_param(&named, &[&label_key]) {
+                rows.push(format!("! {}", render_templates(label)));
+                rows.push(format!("| {}", render_templates(data)));
+            } else {
+                rows.push(format!("| colspan=\"2\" | {}", render_templates(data)));
+            }
+        }
+    }
 
     rows.push("|}".to_string());
     rows.join("\n")
