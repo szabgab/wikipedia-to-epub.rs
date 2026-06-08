@@ -1,5 +1,37 @@
 # Codex Session Notes
 
+## 2026-06-08 Wikipedia Template Documentation Links for render_* Functions
+
+### Summary
+
+Added Wikipedia template documentation links as doc-comments (`///`) to all template-rendering helper functions starting with `render_*` in `src/main.rs`. Extracted mappings from the central `render_template` routing table to correctly associate each renderer with its corresponding Wikipedia templates. Verified all quality checks and test suites pass successfully.
+
+### Decisions Made
+
+* Extracted template mappings dynamically from `render_template` in `src/main.rs` to map each function to its templates.
+* Formatted Wikipedia template doc links as: `/// [TemplateName](https://en.wikipedia.org/wiki/Template:TemplateName)`
+* Replaced spaces with underscores and capitalized the first letter of titles for correct Wikipedia URL mapping (e.g., `Template:Historical_populations`).
+* Checked if functions already have doc-comments (such as the user's manual comment on `render_convert_template`) and skipped them to prevent duplicate comments.
+* Checked that the code compiles (`cargo check`, `cargo clippy`) and passes all tests.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Prepended doc comments for all template-rendering helper functions.
+* `docs/codex-notes.md` [MODIFY]
+  * Added session notes at the beginning of the file.
+
+### Tests Run
+
+* `cargo fmt` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 225 unit tests and 33 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Infobox and Infobox settlement Support
 
 ### Summary
