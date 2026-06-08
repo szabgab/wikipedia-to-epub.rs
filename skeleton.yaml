@@ -64,6 +64,13 @@ resources: false
 #   - false : Do not append an "Appendix A" page.
 links_to_pages: false
 
+# How to render same-language Wikipedia links for pages that are not included in the book.
+# Valid values:
+#   - "display"    : Link to Wikipedia without the external-link arrow.
+#   - "emphasize"  : Link to Wikipedia and add the external-link arrow (current behavior).
+#   - "disregard"  : Show the text without a link.
+links_to_excluded_pages: emphasize
+
 # Path to a cover image to be used as the book cover page.
 # Valid values:
 #   - "None" : Do not embed a cover image.

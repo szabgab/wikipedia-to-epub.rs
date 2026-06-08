@@ -43,6 +43,14 @@ pub enum ChapterStyle {
     NumberedTitle,
 }
 
+#[derive(Debug, Deserialize, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum LinksToExcludedPages {
+    Display,
+    Emphasize,
+    Disregard,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct BookConfig {
     pub id: Option<String>,
@@ -55,6 +63,7 @@ pub struct BookConfig {
     #[serde(default)]
     pub resources: bool,
     pub links_to_pages: bool,
+    pub links_to_excluded_pages: LinksToExcludedPages,
     pub cover: Option<String>,
     pub caching: CachingMode,
     pub depth: usize,

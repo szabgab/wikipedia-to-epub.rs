@@ -12,6 +12,7 @@ chapters: numbered-title
 depth: 0
 resources: true
 links_to_pages: true
+links_to_excluded_pages: emphasize
 cover: "./front-page.png"
 front_mater:
   - about.md

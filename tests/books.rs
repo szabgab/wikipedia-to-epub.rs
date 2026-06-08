@@ -653,6 +653,7 @@ metadata:
 output-file: output.epub
 cover: "None"
 links_to_pages: false
+links_to_excluded_pages: emphasize
 caching: none
 depth: 0
 articles:
@@ -725,6 +726,7 @@ metadata:
 output-file: output.epub
 cover: "None"
 links_to_pages: false
+links_to_excluded_pages: emphasize
 caching: none
 depth: 0
 articles:
@@ -819,6 +821,7 @@ metadata:
 output-file: config-output.epub
 cover: "None"
 links_to_pages: false
+links_to_excluded_pages: emphasize
 caching: none
 depth: 0
 articles:

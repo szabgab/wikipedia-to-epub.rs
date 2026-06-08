@@ -80,6 +80,7 @@ fn generate_chapters_hierarchical(
     loaded_pages: &std::collections::HashMap<String, PageResponse>,
     page_source: &dyn PageSource,
     internal_links: &InternalLinks,
+    links_to_excluded_pages: LinksToExcludedPages,
     image_registry: &mut Option<ImageRegistry>,
     added_article_keys: &mut std::collections::HashSet<String>,
     chapters: &mut Vec<Chapter>,
@@ -115,6 +116,7 @@ fn generate_chapters_hierarchical(
                         display_title,
                         internal_links,
                         wikipedia_language,
+                        links_to_excluded_pages,
                         image_registry.as_mut(),
                     )?;
                     let file_name = chapter.file_name.clone();
@@ -174,6 +176,7 @@ fn generate_chapters_hierarchical(
                         loaded_pages,
                         page_source,
                         internal_links,
+                        links_to_excluded_pages,
                         image_registry,
                         added_article_keys,
                         chapters,
@@ -214,6 +217,7 @@ fn generate_chapters_hierarchical(
                             display_title,
                             internal_links,
                             wikipedia_language,
+                            links_to_excluded_pages,
                             image_registry.as_mut(),
                         )?;
                         let file_name = chapter.file_name.clone();
@@ -227,6 +231,7 @@ fn generate_chapters_hierarchical(
                             loaded_pages,
                             page_source,
                             internal_links,
+                            links_to_excluded_pages,
                             image_registry,
                             added_article_keys,
                             chapters,
@@ -407,6 +412,7 @@ fn run(args: CliArgs) -> AppResult<()> {
         &loaded_pages,
         page_source.as_ref(),
         &internal_links,
+        config.links_to_excluded_pages,
         &mut image_registry,
         &mut added_article_keys,
         &mut chapters,
@@ -435,6 +441,7 @@ fn run(args: CliArgs) -> AppResult<()> {
                     display_title,
                     &internal_links,
                     &wikipedia_language,
+                    config.links_to_excluded_pages,
                     image_registry.as_mut(),
                 )?;
                 let file_name = chapter.file_name.clone();
@@ -817,6 +824,7 @@ fn article_file_candidates(article: &str) -> Vec<String> {
     .collect::<Vec<_>>()
 }
 
+#[cfg(test)]
 fn render_wikitext_with_template_counts(
     title: &str,
     wikitext: &str,
@@ -824,8 +832,33 @@ fn render_wikitext_with_template_counts(
     language: &str,
     image_registry: Option<&mut ImageRegistry>,
 ) -> (String, TemplateSkipCounts) {
+    render_wikitext_with_template_counts_and_excluded_links(
+        title,
+        wikitext,
+        internal_links,
+        language,
+        LinksToExcludedPages::Emphasize,
+        image_registry,
+    )
+}
+
+pub(crate) fn render_wikitext_with_template_counts_and_excluded_links(
+    title: &str,
+    wikitext: &str,
+    internal_links: &InternalLinks,
+    language: &str,
+    links_to_excluded_pages: LinksToExcludedPages,
+    image_registry: Option<&mut ImageRegistry>,
+) -> (String, TemplateSkipCounts) {
     with_template_skip_counts(|| {
-        render_wikitext_impl(title, wikitext, internal_links, language, image_registry)
+        render_wikitext_impl(
+            title,
+            wikitext,
+            internal_links,
+            language,
+            links_to_excluded_pages,
+            image_registry,
+        )
     })
 }
 
@@ -859,6 +892,7 @@ fn render_wikitext_impl(
     wikitext: &str,
     internal_links: &InternalLinks,
     language: &str,
+    links_to_excluded_pages: LinksToExcludedPages,
     mut image_registry: Option<&mut ImageRegistry>,
 ) -> String {
     let mut text = wikitext.replace("\r\n", "\n");
@@ -887,12 +921,19 @@ fn render_wikitext_impl(
         .into_owned();
     text = render_templates(&text);
     let mut tables = Vec::new();
-    text = render_wikitext_tables(&text, &mut tables, internal_links, language);
-    text = process_file_links(
+    text = render_wikitext_tables_with_excluded_links(
+        &text,
+        &mut tables,
+        internal_links,
+        language,
+        links_to_excluded_pages,
+    );
+    text = process_file_links_with_excluded_links(
         &text,
         image_registry.as_deref_mut(),
         internal_links,
         language,
+        links_to_excluded_pages,
         title,
     );
 
@@ -955,7 +996,12 @@ fn render_wikitext_impl(
         if let Some(text) = line.strip_prefix("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__") {
             flush_paragraph(&mut html, &mut paragraph_lines);
             flush_list(&mut html, &mut active_list);
-            let text = cleanup_inline_markup(text, internal_links, language);
+            let text = cleanup_inline_markup_with_excluded_links(
+                text,
+                internal_links,
+                language,
+                links_to_excluded_pages,
+            );
             if !text.is_empty() {
                 html.push(format!("<p>{text}</p>"));
             }
@@ -965,7 +1011,12 @@ fn render_wikitext_impl(
         if let Some(source) = line.strip_prefix("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_SOURCE__") {
             flush_paragraph(&mut html, &mut paragraph_lines);
             flush_list(&mut html, &mut active_list);
-            let source = cleanup_inline_markup(source, internal_links, language);
+            let source = cleanup_inline_markup_with_excluded_links(
+                source,
+                internal_links,
+                language,
+                links_to_excluded_pages,
+            );
             if !source.is_empty() {
                 html.push(format!(r#"<p class="blockquote-source">{source}</p>"#));
             }
@@ -976,7 +1027,12 @@ fn render_wikitext_impl(
             flush_paragraph(&mut html, &mut paragraph_lines);
             flush_list(&mut html, &mut active_list);
 
-            let heading = cleanup_inline_markup(&heading, internal_links, language);
+            let heading = cleanup_inline_markup_with_excluded_links(
+                &heading,
+                internal_links,
+                language,
+                links_to_excluded_pages,
+            );
             if !heading.is_empty() {
                 html.push(format!("<h{level}>{heading}</h{level}>"));
             }
@@ -997,7 +1053,12 @@ fn render_wikitext_impl(
                 });
             }
 
-            let item = cleanup_inline_markup(&captures[2], internal_links, language);
+            let item = cleanup_inline_markup_with_excluded_links(
+                &captures[2],
+                internal_links,
+                language,
+                links_to_excluded_pages,
+            );
             if !item.is_empty() {
                 html.push(format!("<li>{item}</li>"));
             }
@@ -1006,7 +1067,12 @@ fn render_wikitext_impl(
 
         flush_list(&mut html, &mut active_list);
 
-        let cleaned = cleanup_inline_markup(line, internal_links, language);
+        let cleaned = cleanup_inline_markup_with_excluded_links(
+            line,
+            internal_links,
+            language,
+            links_to_excluded_pages,
+        );
         if !cleaned.is_empty() {
             paragraph_lines.push(cleaned);
         }
@@ -1101,6 +1167,20 @@ fn split_template_params(params: &str) -> Vec<String> {
 }
 
 fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks, language: &str) -> String {
+    cleanup_inline_markup_with_excluded_links(
+        line,
+        internal_links,
+        language,
+        LinksToExcludedPages::Emphasize,
+    )
+}
+
+fn cleanup_inline_markup_with_excluded_links(
+    line: &str,
+    internal_links: &InternalLinks,
+    language: &str,
+    links_to_excluded_pages: LinksToExcludedPages,
+) -> String {
     let mut text = line.trim().to_string();
     let mut link_placeholders = Vec::new();
 
@@ -1115,6 +1195,7 @@ fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks, language: &
                 &captures[2],
                 internal_links,
                 language,
+                links_to_excluded_pages,
             )
         })
         .into_owned();
@@ -1128,6 +1209,7 @@ fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks, language: &
                 &captures[1],
                 internal_links,
                 language,
+                links_to_excluded_pages,
             )
         })
         .into_owned();
@@ -1329,9 +1411,16 @@ fn wiki_link_placeholder(
     label: &str,
     internal_links: &InternalLinks,
     language: &str,
+    links_to_excluded_pages: LinksToExcludedPages,
 ) -> String {
     let placeholder = format!("__WIKIPEDIA_TO_EPUB_LINK_{}__", links.len());
-    links.push(wikipedia_link_html(target, label, internal_links, language));
+    links.push(wikipedia_link_html(
+        target,
+        label,
+        internal_links,
+        language,
+        links_to_excluded_pages,
+    ));
     placeholder
 }
 
@@ -1340,6 +1429,7 @@ fn wikipedia_link_html(
     label: &str,
     internal_links: &InternalLinks,
     language: &str,
+    links_to_excluded_pages: LinksToExcludedPages,
 ) -> String {
     if let Some(href) = target.strip_prefix("official-url:") {
         return format!(
@@ -1413,11 +1503,19 @@ fn wikipedia_link_html(
         );
     }
 
-    format!(
-        r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
-        encode_double_quoted_attribute(&wikipedia_article_url(target, language)),
-        format_inline_text(label)
-    )
+    match links_to_excluded_pages {
+        LinksToExcludedPages::Display => format!(
+            r#"<a href="{}">{}</a>"#,
+            encode_double_quoted_attribute(&wikipedia_article_url(target, language)),
+            format_inline_text(label)
+        ),
+        LinksToExcludedPages::Emphasize => format!(
+            r#"<a href="{}">{}</a><span class="external-link">↗</span>"#,
+            encode_double_quoted_attribute(&wikipedia_article_url(target, language)),
+            format_inline_text(label)
+        ),
+        LinksToExcludedPages::Disregard => format_inline_text(label),
+    }
 }
 
 fn normalize_external_url(url: &str) -> String {
@@ -1548,11 +1646,28 @@ fn table_marker_id(line: &str) -> Option<usize> {
     }
 }
 
+#[cfg(test)]
 fn render_wikitext_tables(
     text: &str,
     tables: &mut Vec<String>,
     internal_links: &InternalLinks,
     language: &str,
+) -> String {
+    render_wikitext_tables_with_excluded_links(
+        text,
+        tables,
+        internal_links,
+        language,
+        LinksToExcludedPages::Emphasize,
+    )
+}
+
+fn render_wikitext_tables_with_excluded_links(
+    text: &str,
+    tables: &mut Vec<String>,
+    internal_links: &InternalLinks,
+    language: &str,
+    links_to_excluded_pages: LinksToExcludedPages,
 ) -> String {
     let mut output = String::with_capacity(text.len());
     let mut index = 0usize;
@@ -1588,7 +1703,13 @@ fn render_wikitext_tables(
             if is_wikitable_attrs(attrs_line) {
                 // Render the wikitable block (everything between {| and |})
                 let inner = &text[block_start + 2..block_end - 2];
-                let rendered = render_wikitable(inner, attrs_line, internal_links, language);
+                let rendered = render_wikitable(
+                    inner,
+                    attrs_line,
+                    internal_links,
+                    language,
+                    links_to_excluded_pages,
+                );
                 let table_id = tables.len();
                 tables.push(rendered);
                 output.push_str(&format!("__WIKIPEDIA_TO_EPUB_TABLE_{}__", table_id));
@@ -1633,6 +1754,7 @@ fn render_wikitable(
     attrs_line: &str,
     internal_links: &InternalLinks,
     language: &str,
+    links_to_excluded_pages: LinksToExcludedPages,
 ) -> String {
     // Split into lines, skipping the opening attrs line (first line of inner)
     let lines: Vec<&str> = inner.lines().collect();
@@ -1762,7 +1884,12 @@ fn render_wikitable(
         for row in header_rows {
             html.push_str("    <tr>\n");
             for cell in row {
-                let cleaned = cleanup_inline_markup(&cell.content, internal_links, language);
+                let cleaned = cleanup_inline_markup_with_excluded_links(
+                    &cell.content,
+                    internal_links,
+                    language,
+                    links_to_excluded_pages,
+                );
                 let tag = if cell.is_header { "th" } else { "td" };
                 html.push_str(&format!("      <{tag}>{cleaned}</{tag}>\n"));
             }
@@ -1776,7 +1903,12 @@ fn render_wikitable(
         for row in body_rows {
             html.push_str("    <tr>\n");
             for cell in row {
-                let cleaned = cleanup_inline_markup(&cell.content, internal_links, language);
+                let cleaned = cleanup_inline_markup_with_excluded_links(
+                    &cell.content,
+                    internal_links,
+                    language,
+                    links_to_excluded_pages,
+                );
                 let tag = if cell.is_header { "th" } else { "td" };
                 html.push_str(&format!("      <{tag}>{cleaned}</{tag}>\n"));
             }
@@ -1815,9 +1947,27 @@ fn strip_file_links(text: &str) -> String {
 
 fn process_file_links(
     text: &str,
+    image_registry: Option<&mut ImageRegistry>,
+    internal_links: &InternalLinks,
+    language: &str,
+    source_page: &str,
+) -> String {
+    process_file_links_with_excluded_links(
+        text,
+        image_registry,
+        internal_links,
+        language,
+        LinksToExcludedPages::Emphasize,
+        source_page,
+    )
+}
+
+fn process_file_links_with_excluded_links(
+    text: &str,
     mut image_registry: Option<&mut ImageRegistry>,
     internal_links: &InternalLinks,
     language: &str,
+    links_to_excluded_pages: LinksToExcludedPages,
     source_page: &str,
 ) -> String {
     let mut output = String::with_capacity(text.len());
@@ -1832,7 +1982,8 @@ fn process_file_links(
         {
             let content = &text[index + 2..end - 2];
             if let Some(registry) = image_registry.as_deref_mut()
-                && let Some(file_link) = parse_file_link(content, internal_links, language)
+                && let Some(file_link) =
+                    parse_file_link(content, internal_links, language, links_to_excluded_pages)
                 && let Some(image_id) = registry.register(file_link, source_page)
             {
                 output.push('\n');
@@ -1855,6 +2006,7 @@ fn parse_file_link(
     content: &str,
     internal_links: &InternalLinks,
     language: &str,
+    links_to_excluded_pages: LinksToExcludedPages,
 ) -> Option<ParsedFileLink> {
     let params = split_template_params(content)
         .into_iter()
@@ -1872,10 +2024,11 @@ fn parse_file_link(
         if let Some((key, value)) = param.split_once('=')
             && key.trim().eq_ignore_ascii_case("alt")
         {
-            alt = Some(cleanup_inline_markup(
+            alt = Some(cleanup_inline_markup_with_excluded_links(
                 &render_templates(value.trim()),
                 internal_links,
                 language,
+                links_to_excluded_pages,
             ));
             continue;
         }
@@ -1884,10 +2037,11 @@ fn parse_file_link(
             continue;
         }
 
-        caption = Some(cleanup_inline_markup(
+        caption = Some(cleanup_inline_markup_with_excluded_links(
             &render_templates(param),
             internal_links,
             language,
+            links_to_excluded_pages,
         ));
     }
 

@@ -1,10 +1,10 @@
 use crate::cache::PageResponse;
-use crate::config::{BookConfig, Metadata, current_utc_date_string};
+use crate::config::{BookConfig, LinksToExcludedPages, Metadata, current_utc_date_string};
 use crate::error::AppResult;
 use crate::image::{ImageRegistry, ResolvedImage};
 use crate::{
     InternalLinks, TemplateSkipCounts, cleanup_inline_markup, normalize_lookup_key,
-    render_wikitext_with_template_counts,
+    render_wikitext_with_template_counts_and_excluded_links,
 };
 use html_escape::{encode_double_quoted_attribute, encode_text};
 use std::fs::{self, File};
@@ -560,13 +560,15 @@ pub fn load_chapter(
     display_title: String,
     internal_links: &InternalLinks,
     language: &str,
+    links_to_excluded_pages: LinksToExcludedPages,
     image_registry: Option<&mut ImageRegistry>,
 ) -> AppResult<Chapter> {
-    let (rendered, template_skip_counts) = render_wikitext_with_template_counts(
+    let (rendered, template_skip_counts) = render_wikitext_with_template_counts_and_excluded_links(
         &display_title,
         &page.parse.wikitext.text,
         internal_links,
         language,
+        links_to_excluded_pages,
         image_registry,
     );
     info!(

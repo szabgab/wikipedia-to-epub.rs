@@ -38,9 +38,10 @@ metadata:
   license: Creative Commons Attribution-ShareAlike 4.0 License
   language: en
   edition: First edition
-  date: 2026-05-19
 output-file: korea.epub
 images: false
+links_to_pages: false
+links_to_excluded_pages: emphasize
 articles:
   - Korea
   - Seoul
@@ -57,7 +58,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 
 * `''seoul''` becomes `<em>seoul</em>`
 * `'''seoul'''` becomes `<strong>seoul</strong>`
-* `[[Seoul]]` becomes a link to the internal chapter if `Seoul` is listed in `articles`, otherwise it links to the Wikipedia article
+* `[[Seoul]]` becomes a link to the internal chapter if `Seoul` is listed in `articles`; otherwise `links_to_excluded_pages` controls whether it is shown as a plain Wikipedia link (`display`), an emphasized Wikipedia link with an arrow (`emphasize`), or plain text without a link (`disregard`)
 * `[[Seoul|capital city]]` becomes a link with `capital city` as the visible text
 * With `images: true`, `[[File:Ships in Busan.jpg|thumb|alt=Shipyard view|Busan port]]` becomes an embedded EPUB image block with `Shipyard view` as the image alt text and `Busan port` as the caption
 * `{{Korean|hangul=서울|labels=no}}` and `{{ko|hangul=서울|labels=no}}` become `<span title="Korean-language text">Korean: <span lang="ko-Hang">서울</span></span>`
@@ -245,5 +246,4 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * Lines starting with `*` become unordered list items
 * Lines starting with `#` become ordered list items
 * References, unhandled templates, non-wikitable tables, categories, and file/image links are omitted; wikitables are converted into XHTML tables; file/image links are only rendered when `images: true` and the image can be resolved
-
 

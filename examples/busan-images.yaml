@@ -12,6 +12,7 @@ caching: central
 depth: 0
 resources: false
 links_to_pages: false
+links_to_excluded_pages: emphasize
 cover: "None"
 articles:
   - Busan

@@ -1,5 +1,53 @@
 # Codex Session Notes
 
+## 2026-06-08 Add links_to_excluded_pages Configuration
+
+### Summary
+
+Added a new required config field, `links_to_excluded_pages`, to control how same-language Wikipedia links are rendered when the linked page is not included in the generated book. The new modes are `display`, `emphasize`, and `disregard`, with all existing example/test configs set to `emphasize` to preserve current output.
+
+### Decisions Made
+
+* Added `LinksToExcludedPages` to `src/config.rs` and made `BookConfig.links_to_excluded_pages` required.
+* Threaded the excluded-page link policy through chapter rendering so normal paragraphs, headings, table cells, and image captions all honor the same behavior.
+* Kept `emphasize` as the explicit value in all existing YAML configs to preserve the current external-link-arrow behavior.
+* Added unit tests covering `display`, `disregard`, config parsing, and missing-field rejection.
+* Updated `DEVELOPMENT.md`, `skeleton.yaml`, and the commented `examples/Kiso_Mountains.yaml` template docs to describe the new field.
+
+### Files Changed
+
+* `src/config.rs` [MODIFY]
+  * Added the required `LinksToExcludedPages` enum and config field.
+* `src/main.rs` [MODIFY]
+  * Added excluded-page link policy-aware rendering helpers and link handling.
+* `src/epub.rs` [MODIFY]
+  * Passed the config field into chapter rendering.
+* `src/tests.rs` [MODIFY]
+  * Added policy/config tests and updated inline YAML fixtures.
+* `tests/books.rs` [MODIFY]
+  * Updated inline YAML fixtures.
+* `examples/*.yaml` [MODIFY]
+  * Added `links_to_excluded_pages: emphasize` to all existing example configs.
+* `skeleton.yaml` [MODIFY]
+  * Documented the new required field.
+* `examples/Kiso_Mountains.yaml` [MODIFY]
+  * Documented the new required field in the commented example.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new config field and excluded-link behavior.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session note.
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Remove Config Metadata Date Field
 
 ### Summary
@@ -4384,4 +4432,3 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * None.
-

@@ -12,6 +12,7 @@ caching: central
 depth: 1
 resources: false
 links_to_pages: true
+links_to_excluded_pages: emphasize
 cover: "None"
 articles:
   - Macchini

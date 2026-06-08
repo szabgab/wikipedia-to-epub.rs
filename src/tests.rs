@@ -18,7 +18,7 @@ use crate::USER_AGENT;
 use crate::article_file_candidates;
 use crate::cache::CacheSource;
 use crate::cache::PageSource;
-use crate::config::{ArticleConfig, ArticleType, BookConfig, CachingMode};
+use crate::config::{ArticleConfig, ArticleType, BookConfig, CachingMode, LinksToExcludedPages};
 use crate::error::{AppError, AppResult};
 use crate::html_language_attributes;
 use crate::http_failure_detail;
@@ -30,6 +30,7 @@ use crate::read_or_fetch_text_with_stats;
 use crate::render_templates;
 use crate::render_wikitext_tables;
 use crate::render_wikitext_with_template_counts;
+use crate::render_wikitext_with_template_counts_and_excluded_links;
 use crate::strip_file_links;
 use crate::template_log_content;
 use crate::template_name_is_in_csv;
@@ -87,6 +88,37 @@ fn render_wikitext_handles_sections_links_and_lists() {
             unknown: 0
         }
     );
+}
+
+#[test]
+fn excluded_wikipedia_links_can_be_displayed_without_emphasis() {
+    let rendered = render_wikitext_with_excluded_links(
+        "Sample",
+        "See [[Busan]].",
+        &InternalLinks::new(),
+        "en",
+        LinksToExcludedPages::Display,
+    );
+
+    assert!(
+        rendered.contains(r#"<p>See <a href="https://en.wikipedia.org/wiki/Busan">Busan</a>.</p>"#),
+        "{rendered}"
+    );
+    assert!(!rendered.contains(r#"class="external-link""#), "{rendered}");
+}
+
+#[test]
+fn excluded_wikipedia_links_can_be_disregarded() {
+    let rendered = render_wikitext_with_excluded_links(
+        "Sample",
+        "See [[Busan]].",
+        &InternalLinks::new(),
+        "en",
+        LinksToExcludedPages::Disregard,
+    );
+
+    assert!(rendered.contains("<p>See Busan.</p>"), "{rendered}");
+    assert!(!rendered.contains("<a href="), "{rendered}");
 }
 
 #[test]
@@ -2705,6 +2737,7 @@ metadata:
 output-file: sample.epub
 cover: "None"
 links_to_pages: false
+links_to_excluded_pages: emphasize
 caching: none
 depth: 0
 articles:
@@ -2729,6 +2762,7 @@ output-file: sample.epub
 images: true
 cover: "None"
 links_to_pages: false
+links_to_excluded_pages: emphasize
 caching: none
 depth: 0
 articles:
@@ -2738,6 +2772,60 @@ articles:
     .expect("config parses");
 
     assert!(config.images);
+}
+
+#[test]
+fn book_config_parses_links_to_excluded_pages() {
+    let config = serde_yaml::from_str::<BookConfig>(
+        r#"chapters: title
+metadata:
+  title: Sample
+  author: Wikipedia contributors
+  language: en
+  edition: First edition
+output-file: sample.epub
+images: true
+cover: "None"
+links_to_pages: false
+links_to_excluded_pages: display
+caching: none
+depth: 0
+articles:
+  - Sample
+"#,
+    )
+    .expect("config parses");
+
+    assert_eq!(
+        config.links_to_excluded_pages,
+        LinksToExcludedPages::Display
+    );
+}
+
+#[test]
+fn book_config_requires_links_to_excluded_pages() {
+    let error = serde_yaml::from_str::<BookConfig>(
+        r#"chapters: title
+metadata:
+  title: Sample
+  author: Wikipedia contributors
+  language: en
+  edition: First edition
+output-file: sample.epub
+cover: "None"
+links_to_pages: false
+caching: none
+depth: 0
+articles:
+  - Sample
+"#,
+    )
+    .expect_err("config should reject missing links_to_excluded_pages");
+
+    assert!(
+        error.to_string().contains("links_to_excluded_pages"),
+        "{error}"
+    );
 }
 
 #[test]
@@ -3549,6 +3637,7 @@ metadata:
 output-file: sample.epub
 cover: "None"
 links_to_pages: false
+links_to_excluded_pages: emphasize
 caching: none
 depth: 0
 articles:
@@ -3568,6 +3657,7 @@ metadata:
 output-file: sample.epub
 cover: "None"
 links_to_pages: false
+links_to_excluded_pages: emphasize
 caching: local
 depth: 0
 articles:
@@ -3587,6 +3677,7 @@ metadata:
 output-file: sample.epub
 cover: "None"
 links_to_pages: false
+links_to_excluded_pages: emphasize
 caching: central
 depth: 0
 articles:
@@ -4016,6 +4107,7 @@ metadata:
 output-file: planets.epub
 cover: "None"
 links_to_pages: false
+links_to_excluded_pages: emphasize
 caching: none
 depth: 0
 articles:
@@ -4717,6 +4809,24 @@ fn render_wikitext(
     language: &str,
 ) -> String {
     render_wikitext_with_template_counts(title, wikitext, internal_links, language, None).0
+}
+
+fn render_wikitext_with_excluded_links(
+    title: &str,
+    wikitext: &str,
+    internal_links: &InternalLinks,
+    language: &str,
+    links_to_excluded_pages: LinksToExcludedPages,
+) -> String {
+    render_wikitext_with_template_counts_and_excluded_links(
+        title,
+        wikitext,
+        internal_links,
+        language,
+        links_to_excluded_pages,
+        None,
+    )
+    .0
 }
 
 fn strip_wikitext_tables(text: &str) -> String {
