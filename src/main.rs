@@ -2827,7 +2827,7 @@ fn render_jct_template(params: &str) -> String {
     String::new()
 }
 
-/// https://en.wikipedia.org/wiki/Template:Nihongo
+/// [Nihongo](https://en.wikipedia.org/wiki/Template:Nihongo)
 fn render_japanese_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
@@ -4644,7 +4644,7 @@ fn render_hlist_template(params: &str) -> String {
     items.join(", ")
 }
 
-/// https://en.wikipedia.org/wiki/Template:Infobox_mountain
+/// [Infobox mountain](https://en.wikipedia.org/wiki/Template:Infobox_mountain)
 fn render_infobox_mountain_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut rows = Vec::new();
@@ -4727,7 +4727,7 @@ fn render_infobox_mountain_template(params: &str) -> String {
     rows.join("\n")
 }
 
-/// https://en.wikipedia.org/wiki/Template:Infobox_settlement
+/// [Infobox settlement](https://en.wikipedia.org/wiki/Template:Infobox_settlement)
 fn render_infobox_settlement_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut rows = Vec::new();
@@ -4844,7 +4844,7 @@ fn render_infobox_settlement_template(params: &str) -> String {
     rows.join("\n")
 }
 
-/// https://en.wikipedia.org/wiki/Template:Infobox
+/// [Infobox](https://en.wikipedia.org/wiki/Template:Infobox)
 fn render_infobox_generic_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut rows = Vec::new();
@@ -6107,6 +6107,8 @@ fn render_un_population_template(params: &str) -> String {
     }
 }
 
+/// [convert](https://en.wikipedia.org/wiki/Template:Convert)
+/// [cvt](https://en.wikipedia.org/wiki/Template:Convert_abbreviated)
 fn render_convert_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
