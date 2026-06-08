@@ -174,6 +174,14 @@ pub(crate) fn render_convert_template(params: &str) -> String {
         return String::new();
     };
 
+    // helper to detect meter-like units
+    fn is_meter_unit(unit: &str) -> bool {
+        matches!(
+            unit.trim().to_lowercase().as_str(),
+            "m" | "meter" | "metre" | "meters" | "metres"
+        )
+    }
+
     match params.get(1).map(String::as_str) {
         Some("to") if params.len() >= 4 => format!(
             "{} to {} {}",
@@ -188,11 +196,20 @@ pub(crate) fn render_convert_template(params: &str) -> String {
             format_convert_value(&params[2]),
             format_convert_unit(&params[3])
         ),
-        Some(unit) => format!(
-            "{} {}",
-            format_convert_value(value),
-            format_convert_unit(unit)
-        ),
+        Some(unit) => {
+            let orig = format_convert_value(value);
+            let unit_fmt = format_convert_unit(unit);
+
+            // if original unit is meters, try to parse numeric value and show feet in parentheses
+            if is_meter_unit(unit) && let Some(num) = crate::parse_template_number(value) {
+                // convert meters to feet and round to nearest integer
+                let feet = (num * 3.280839895).round();
+                let feet_str = format_number_with_commas(&format!("{:.0}", feet));
+                return format!("{} {} ({} ft)", orig, unit_fmt, feet_str);
+            }
+
+            format!("{} {}", orig, unit_fmt)
+        }
         None => format_convert_value(value),
     }
 }
