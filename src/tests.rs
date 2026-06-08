@@ -1,5 +1,45 @@
-use super::*;
-use reqwest::header::HeaderValue;
+use std::env;
+use std::fs;
+use std::path::Path;
+use std::path::PathBuf;
+
+use reqwest::header::{HeaderMap, HeaderValue, RETRY_AFTER};
+use tracing::Level;
+
+use crate::AppError;
+use crate::AppResult;
+use crate::ArticleConfig;
+use crate::ArticleType;
+use crate::BookConfig;
+use crate::CacheSource;
+use crate::CachingMode;
+use crate::DownloadCache;
+use crate::DownloadStats;
+use crate::FileDownloadSnapshot;
+use crate::FileDownloadStats;
+use crate::FixturePageSource;
+use crate::ImageRegistry;
+use crate::InternalLinks;
+use crate::TemplateSkipCounts;
+use crate::USER_AGENT;
+use crate::article_file_candidates;
+use crate::cache::PageSource;
+use crate::html_language_attributes;
+use crate::http_failure_detail;
+use crate::internal_links;
+use crate::normalized_wikipedia_language;
+use crate::parse_args_from;
+use crate::read_or_fetch_bytes_with_stats;
+use crate::read_or_fetch_text_with_stats;
+use crate::render_templates;
+use crate::render_wikitext_tables;
+use crate::render_wikitext_with_template_counts;
+use crate::strip_file_links;
+use crate::template_log_content;
+use crate::template_name_is_in_csv;
+use crate::wikipedia_article_url;
+use crate::wikipedia_parse_api_url;
+use crate::write_cache_text;
 
 #[test]
 fn article_candidates_cover_common_file_names() {
