@@ -1,6 +1,6 @@
 use std::{
     cell::RefCell,
-    collections::HashMap,
+    collections::{BTreeMap, BTreeSet, HashMap},
     env, fs,
     path::{Path, PathBuf},
 };
@@ -617,7 +617,17 @@ fn run(args: CliArgs) -> AppResult<()> {
         &toc_nodes,
         &cover_image,
     )?;
+    let report_path = html_report_path(&config.output_file);
+    write_html_report(
+        &report_path,
+        &config.metadata.title,
+        &wikipedia_language,
+        &toc_nodes,
+        &loaded_pages,
+        &ordered_articles,
+    )?;
     println!("Created {}", config.output_file.display());
+    println!("Created {}", report_path.display());
     println!(
         "Skipped templates: recognized={}, unknown={}",
         total_template_skip_counts.recognized, total_template_skip_counts.unknown
@@ -1529,6 +1539,190 @@ fn normalize_external_url(url: &str) -> String {
     }
 }
 
+fn html_report_path(output_file: &Path) -> PathBuf {
+    output_file.with_extension("html")
+}
+
+fn collect_excluded_article_links(
+    loaded_pages: &HashMap<String, PageResponse>,
+    ordered_articles: &[String],
+) -> Vec<(String, Vec<String>)> {
+    let included = ordered_articles
+        .iter()
+        .map(|title| normalize_lookup_key(title))
+        .collect::<std::collections::HashSet<_>>();
+
+    let mut excluded: BTreeMap<String, (String, BTreeSet<String>)> = BTreeMap::new();
+
+    for article in ordered_articles {
+        let lookup_key = normalize_lookup_key(article);
+        let Some(page) = loaded_pages.get(&lookup_key) else {
+            continue;
+        };
+
+        for target in extract_internal_links(&page.parse.wikitext.text) {
+            let article_target = target
+                .split_once('#')
+                .map_or(target.as_str(), |(article, _)| article)
+                .trim();
+            if article_target.is_empty() {
+                continue;
+            }
+
+            let target_key = normalize_lookup_key(article_target);
+            if included.contains(&target_key) {
+                continue;
+            }
+
+            let display_title = article_target.replace('_', " ");
+            excluded
+                .entry(target_key)
+                .or_insert_with(|| (display_title, BTreeSet::new()))
+                .1
+                .insert(page.parse.title.clone());
+        }
+    }
+
+    excluded
+        .into_values()
+        .map(|(title, sources)| (title, sources.into_iter().collect()))
+        .collect()
+}
+
+fn render_report_hierarchy(
+    nodes: &[TocNode],
+    included_page_urls: &HashMap<String, String>,
+) -> String {
+    fn should_include_node(node: &TocNode, included_page_urls: &HashMap<String, String>) -> bool {
+        included_page_urls.contains_key(&node.file_name)
+            || node
+                .children
+                .iter()
+                .any(|child| should_include_node(child, included_page_urls))
+    }
+
+    if nodes.is_empty() {
+        return "<p>No included pages.</p>".to_string();
+    }
+
+    fn render_node(node: &TocNode, included_page_urls: &HashMap<String, String>) -> String {
+        let label = if let Some(url) = included_page_urls.get(&node.file_name) {
+            format!(
+                r#"<a href="{}">{}</a>"#,
+                encode_double_quoted_attribute(url),
+                encode_text(&node.title)
+            )
+        } else {
+            encode_text(&node.title).into_owned()
+        };
+
+        if node.children.is_empty() {
+            format!("<li>{label}</li>")
+        } else {
+            let children = node
+                .children
+                .iter()
+                .filter(|child| should_include_node(child, included_page_urls))
+                .map(|child| render_node(child, included_page_urls))
+                .collect::<Vec<_>>()
+                .join("\n");
+            format!("<li>{label}\n<ul>\n{children}\n</ul>\n</li>")
+        }
+    }
+
+    let items = nodes
+        .iter()
+        .filter(|node| should_include_node(node, included_page_urls))
+        .map(|node| render_node(node, included_page_urls))
+        .collect::<Vec<_>>()
+        .join("\n");
+    format!("<ul>\n{items}\n</ul>")
+}
+
+fn write_html_report(
+    report_path: &Path,
+    book_title: &str,
+    wikipedia_language: &str,
+    toc_nodes: &[TocNode],
+    loaded_pages: &HashMap<String, PageResponse>,
+    ordered_articles: &[String],
+) -> AppResult<()> {
+    if let Some(parent) = report_path.parent()
+        && !parent.as_os_str().is_empty()
+    {
+        fs::create_dir_all(parent)?;
+    }
+
+    let generated_date = current_utc_date_string();
+    let included_page_urls = loaded_pages
+        .values()
+        .map(|page| {
+            (
+                sanitize_chapter_filename(&page.parse.title),
+                wikipedia_article_url(&page.parse.title, wikipedia_language),
+            )
+        })
+        .collect::<HashMap<_, _>>();
+    let included_hierarchy = render_report_hierarchy(toc_nodes, &included_page_urls);
+    let excluded_articles = collect_excluded_article_links(loaded_pages, ordered_articles);
+
+    let excluded_section = if excluded_articles.is_empty() {
+        "<p>No excluded Wikipedia pages were linked from the included pages.</p>".to_string()
+    } else {
+        let items = excluded_articles
+            .iter()
+            .map(|(title, sources)| {
+                let linked_from = sources
+                    .iter()
+                    .map(|source| encode_text(source).into_owned())
+                    .collect::<Vec<_>>()
+                    .join(", ");
+                format!(
+                    r#"<li><a href="{}">{}</a> <small>(linked from: {})</small></li>"#,
+                    encode_double_quoted_attribute(&wikipedia_article_url(
+                        title,
+                        wikipedia_language
+                    )),
+                    encode_text(title),
+                    linked_from
+                )
+            })
+            .collect::<Vec<_>>()
+            .join("\n");
+        format!("<ul>\n{items}\n</ul>")
+    };
+
+    let html = format!(
+        r#"<!DOCTYPE html>
+<html lang="{language}">
+  <head>
+    <meta charset="utf-8" />
+    <title>{title} report</title>
+    <style>
+      body {{ font-family: sans-serif; line-height: 1.5; margin: 2rem; }}
+      h1, h2 {{ margin-bottom: 0.5rem; }}
+      ul {{ margin-top: 0.5rem; }}
+      small {{ color: #555; }}
+    </style>
+  </head>
+  <body>
+    <h1>{title} report</h1>
+    <p>Generated on {generated_date}.</p>
+    <p>This report lists the included book hierarchy and the same-language Wikipedia pages that were linked but not included in the book.</p>
+    <h2>Included pages</h2>
+    {included_hierarchy}
+    <h2>Linked Wikipedia pages not included</h2>
+    {excluded_section}
+  </body>
+</html>
+"#,
+        language = encode_double_quoted_attribute(wikipedia_language),
+        title = encode_text(book_title),
+    );
+
+    fs::write(report_path, html)?;
+    Ok(())
+}
 fn openstreetmap_relation_url(relation_id: &str) -> String {
     let relation_id = relation_id.trim();
     format!("https://www.openstreetmap.org/relation/{relation_id}")

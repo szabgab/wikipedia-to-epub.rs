@@ -51,6 +51,8 @@ Set `images: true` to embed resolvable `[[File:...]]` and `[[Image:...]]` links 
 
 Set `chapters: numbered-title` to automatically prepend hierarchical numbers (e.g., `1 `, `1.1 `, `1.2 `) to chapter and subchapter titles both in the Table of Contents and on the actual chapter pages. By default, this is set to `title`, which leaves titles unnumbered.
 
+Each successful run also writes a companion HTML report next to the EPUB output (for example, `korea.html` for `korea.epub`). The report shows the included hierarchy and the same-language Wikipedia pages that were linked from included pages but not added to the book.
+
 
 ## Conversion rules
 
@@ -246,4 +248,3 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * Lines starting with `*` become unordered list items
 * Lines starting with `#` become ordered list items
 * References, unhandled templates, non-wikitable tables, categories, and file/image links are omitted; wikitables are converted into XHTML tables; file/image links are only rendered when `images: true` and the image can be resolved
-

@@ -682,6 +682,8 @@ articles:
 
     let epub_path = work_dir.join("output.epub");
     assert!(epub_path.exists(), "output.epub should be created");
+    let report_path = work_dir.join("output.html");
+    assert!(report_path.exists(), "output.html should be created");
 
     let zip_file = File::open(&epub_path).unwrap();
     let mut archive = ZipArchive::new(zip_file).unwrap();
@@ -705,6 +707,16 @@ articles:
     assert!(
         chapter2_content.contains("<h1>Osaka Info</h1>"),
         "chapter2 should have section title"
+    );
+
+    let report = fs::read_to_string(&report_path).unwrap();
+    assert!(report.contains("<h2>Included pages</h2>"), "{report}");
+    assert!(report.contains("Japan"), "{report}");
+    assert!(report.contains("Osaka Info"), "{report}");
+    assert!(report.contains("Osaka"), "{report}");
+    assert!(
+        report.contains("https://en.wikipedia.org/wiki/Tokyo"),
+        "{report}"
     );
 
     fs::remove_dir_all(&work_dir).unwrap();

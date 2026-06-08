@@ -1,5 +1,43 @@
 # Codex Session Notes
 
+## 2026-06-08 Add HTML Book Report
+
+### Summary
+
+Added generation of a companion HTML report file for each book build. The report shows the included book hierarchy and lists same-language Wikipedia pages that were linked from included pages but were not themselves included, to help authors decide what to add next.
+
+### Decisions Made
+
+* Reused the already-loaded article graph instead of doing extra fetches, so report generation reflects exactly what went into the book.
+* Wrote the report next to the EPUB output, using the same basename and an `.html` extension.
+* Built the included hierarchy from `TocNode` data and filtered out non-article leaf nodes such as auxiliary front-matter/report-only entries.
+* Listed excluded Wikipedia pages as links and included the source pages they were linked from.
+* Added integration coverage that verifies the report file is created and contains included hierarchy entries plus at least one excluded page link.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Added report path derivation, excluded-link collection, report HTML rendering, and report writing.
+* `tests/books.rs` [MODIFY]
+  * Added assertions for report file creation and content.
+* `README.md` [MODIFY]
+  * Documented the generated HTML report.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the companion report behavior.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session note.
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Add links_to_excluded_pages Configuration
 
 ### Summary
