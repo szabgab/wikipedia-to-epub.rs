@@ -1,5 +1,43 @@
 # Codex Session Notes
 
+## 2026-06-08 Remove Config Metadata Date Field
+
+### Summary
+
+Removed the optional `metadata.date` field from the Rust config schema and switched EPUB generation to always stamp the current UTC date at render time. Also removed the leftover date-field comments from the commented YAML templates.
+
+### Decisions Made
+
+* Deleted `date` from `src/config.rs::Metadata` so the config schema no longer models a user-supplied publication date.
+* Simplified `read_config()` so it only deserializes the YAML instead of mutating metadata after load.
+* Added `current_utc_date_string()` and computed the generated book date once in `write_epub()` so front matter and `content.opf` always use the same value.
+* Kept the generated date in the output book, but no longer sourced it from YAML.
+* Removed the obsolete commented publication-date block from `skeleton.yaml` and `examples/Kiso_Mountains.yaml`.
+
+### Files Changed
+
+* `src/config.rs` [MODIFY]
+  * Removed `Metadata.date`, stopped mutating config dates after deserialization, and added `current_utc_date_string()`.
+* `src/epub.rs` [MODIFY]
+  * Switched front matter and OPF date generation to use the runtime-generated current date.
+* `skeleton.yaml` [MODIFY]
+  * Removed commented guidance for the old `metadata.date` field.
+* `examples/Kiso_Mountains.yaml` [MODIFY]
+  * Removed commented guidance for the old `metadata.date` field.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session note.
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Modularize src/main.rs Refactoring Proposal
 
 ### Summary
@@ -4346,5 +4384,4 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * None.
-
 

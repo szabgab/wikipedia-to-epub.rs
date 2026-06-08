@@ -1,5 +1,5 @@
 use crate::cache::PageResponse;
-use crate::config::{BookConfig, Metadata};
+use crate::config::{BookConfig, Metadata, current_utc_date_string};
 use crate::error::AppResult;
 use crate::image::{ImageRegistry, ResolvedImage};
 use crate::{
@@ -39,6 +39,8 @@ pub fn write_epub(
     toc_nodes: &[TocNode],
     cover_image: &Option<(Vec<u8>, String, &'static str)>,
 ) -> AppResult<()> {
+    let generated_date = current_utc_date_string();
+
     if let Some(parent) = config.output_file.parent()
         && !parent.as_os_str().is_empty()
     {
@@ -97,7 +99,7 @@ pub fn write_epub(
         zip.write_all(bytes)?;
     }
 
-    let frontmatter = frontmatter_xhtml(&config.metadata, wikipedia_language);
+    let frontmatter = frontmatter_xhtml(&config.metadata, wikipedia_language, &generated_date);
     zip.start_file("OEBPS/frontmatter.xhtml", deflated)?;
     zip.write_all(frontmatter.as_bytes())?;
 
@@ -122,7 +124,14 @@ pub fn write_epub(
     let cover_info = cover_image
         .as_ref()
         .map(|(_, ext, media_type)| (ext.as_str(), *media_type));
-    let package = content_opf(&identifier, config, chapters, images, cover_info);
+    let package = content_opf(
+        &identifier,
+        config,
+        chapters,
+        images,
+        cover_info,
+        &generated_date,
+    );
     zip.start_file("OEBPS/content.opf", deflated)?;
     zip.write_all(package.as_bytes())?;
 
@@ -172,18 +181,18 @@ h1, h2, h3, h4, h5, h6 {
 "#
 }
 
-fn frontmatter_xhtml(metadata: &Metadata, wikipedia_language: &str) -> String {
+fn frontmatter_xhtml(
+    metadata: &Metadata,
+    wikipedia_language: &str,
+    generated_date: &str,
+) -> String {
     let internal_links = InternalLinks::new();
     let license = metadata
         .license
         .as_deref()
         .map(|license| cleanup_inline_markup(license, &internal_links, wikipedia_language))
         .unwrap_or_default();
-    let date = metadata
-        .date
-        .as_deref()
-        .map(|date| cleanup_inline_markup(date, &internal_links, wikipedia_language))
-        .unwrap_or_default();
+    let date = cleanup_inline_markup(generated_date, &internal_links, wikipedia_language);
     let edition = cleanup_inline_markup(&metadata.edition, &internal_links, wikipedia_language);
 
     let mut details = vec![format!(
@@ -193,9 +202,7 @@ fn frontmatter_xhtml(metadata: &Metadata, wikipedia_language: &str) -> String {
 
     details.push(format!("<p><strong>Edition:</strong> {edition}</p>"));
 
-    if !date.is_empty() {
-        details.push(format!("<p><strong>Date:</strong> {date}</p>"));
-    }
+    details.push(format!("<p><strong>Date:</strong> {date}</p>"));
 
     if !license.is_empty() {
         details.push(format!("<p><strong>License:</strong> {license}</p>"));
@@ -285,6 +292,7 @@ fn content_opf(
     chapters: &[Chapter],
     images: &[ResolvedImage],
     cover_info: Option<(&str, &str)>,
+    generated_date: &str,
 ) -> String {
     let mut manifest_items = vec![
         r#"<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>"#
@@ -331,12 +339,7 @@ fn content_opf(
         .as_deref()
         .map(encode_text)
         .unwrap_or_default();
-    let date = config
-        .metadata
-        .date
-        .as_deref()
-        .map(encode_text)
-        .unwrap_or_default();
+    let date_line = format!("<dc:date>{}</dc:date>", encode_text(generated_date));
 
     let meta_line = if cover_info.is_some() {
         "\n    <meta name=\"cover\" content=\"cover-image\"/>".to_string()
@@ -376,11 +379,7 @@ fn content_opf(
         title = encode_text(&config.metadata.title),
         creator = encode_text(&config.metadata.author),
         language = encode_text(&config.metadata.language),
-        date_line = if date.is_empty() {
-            String::new()
-        } else {
-            format!("<dc:date>{date}</dc:date>")
-        },
+        date_line = date_line,
         rights_line = if rights.is_empty() {
             String::new()
         } else {

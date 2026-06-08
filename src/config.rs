@@ -69,7 +69,6 @@ pub struct Metadata {
     pub author: String,
     pub license: Option<String>,
     pub language: String,
-    pub date: Option<String>,
     pub edition: String,
 }
 
@@ -110,11 +109,7 @@ where
 
 pub fn read_config(path: &Path) -> AppResult<BookConfig> {
     let content = fs::read_to_string(path)?;
-    let mut config: BookConfig = serde_yaml::from_str(&content)?;
-
-    let (year, month, day) = current_utc_date();
-    config.metadata.date = Some(format!("{:04}-{:02}-{:02}", year, month, day));
-
+    let config: BookConfig = serde_yaml::from_str(&content)?;
     Ok(config)
 }
 
@@ -176,6 +171,11 @@ pub fn current_utc_date() -> (i32, i32, i32) {
 
     let day = days + 1;
     (year, month, day)
+}
+
+pub fn current_utc_date_string() -> String {
+    let (year, month, day) = current_utc_date();
+    format!("{year:04}-{month:02}-{day:02}")
 }
 
 pub fn parse_date_string(s: &str) -> Option<(i32, i32, i32)> {

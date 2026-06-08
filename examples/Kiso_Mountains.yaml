@@ -24,9 +24,6 @@ metadata:
   # Value: Any valid ISO 639-1 language code of a live Wikipedia project.
   language: en
 
-  # (Optional) The publication date of the book.
-  # Value: Date string (typically YYYY-MM-DD) or null/omitted.
-
   # The edition designation for the compiled book.
   # Value: Any descriptive string (e.g., "First edition").
   edition: "First edition"
