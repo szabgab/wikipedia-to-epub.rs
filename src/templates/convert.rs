@@ -201,7 +201,9 @@ pub(crate) fn render_convert_template(params: &str) -> String {
             let unit_fmt = format_convert_unit(unit);
 
             // if original unit is meters, try to parse numeric value and show feet in parentheses
-            if is_meter_unit(unit) && let Some(num) = crate::parse_template_number(value) {
+            if is_meter_unit(unit)
+                && let Some(num) = crate::parse_template_number(value)
+            {
                 // convert meters to feet and round to nearest integer
                 let feet = (num * 3.280839895).round();
                 let feet_str = format_number_with_commas(&format!("{:.0}", feet));
