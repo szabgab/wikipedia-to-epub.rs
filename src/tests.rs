@@ -3,6 +3,7 @@ use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
 
+use regex::Regex;
 use reqwest::header::{HeaderMap, HeaderValue, RETRY_AFTER};
 use tracing::Level;
 
@@ -13,6 +14,7 @@ use crate::FileDownloadStats;
 use crate::FixturePageSource;
 use crate::ImageRegistry;
 use crate::InternalLinks;
+use crate::PageResponse;
 use crate::TemplateSkipCounts;
 use crate::USER_AGENT;
 use crate::article_file_candidates;
@@ -1895,7 +1897,7 @@ fn render_wikitext_formats_reference_page_templates() {
         ("A claim.{{Rp|12|15}}", "<p>A claim. pp. 12, 15</p>"),
         (
             "A claim.{{rp|{{convert|5|km|abbr=on}}}}",
-            "<p>A claim. p. 5 km</p>",
+            "<p>A claim. p. 5 km (3.11 mi)</p>",
         ),
     ];
 
@@ -2176,28 +2178,58 @@ fn render_wikitext_formats_un_population_templates() {
 #[test]
 fn render_wikitext_formats_convert_templates() {
     let cases = [
-        ("{{convert|1100|km|abbr=on}}", "1,100 km"),
-        ("{{cvt|314|km|0}}", "314 km"),
-        ("{{Cvt|49.5|km}}", "49.5 km"),
-        ("{{convert|30|°C|°F}}", "30 °C"),
+        ("{{convert|1100|km|abbr=on}}", "1,100 km (684 mi)"),
+        ("{{cvt|314|km|0}}", "314 km (195 mi)"),
+        ("{{Cvt|49.5|km}}", "49.5 km (30.8 mi)"),
+        ("{{convert|30|°C|°F}}", "30 °C (86 °F)"),
         ("{{Convert|24|ug/m3||sp=us}}", "24 ug/m³"),
-        ("{{convert|&minus;3|°C|1|disp=or}}", "−3 °C"),
-        ("{{convert|10|to|47|km2|disp=or|abbr=on}}", "10 to 47 km²"),
-        ("{{convert|15|km|0|abbr=on}}", "15 km"),
-        ("{{convert|2.1|and|−5.5|C|F|1}}", "2.1 °C and −5.5 °C"),
-        ("{{convert|250|km|0|abbr=on}}", "250 km"),
-        ("{{convert|268|km2|mi2|sp=us|abbr=on}}", "268 km²"),
-        ("{{convert|30.0|and|22.9|C|F|0}}", "30.0 °C and 22.9 °C"),
-        ("{{convert|300|km/h|0|abbr=on}}", "300 km/h"),
-        ("{{convert|40|C|F|1}}", "40 °C"),
-        ("{{convert|4|km|mile|sp=us|abbr=on}}", "4 km"),
-        ("{{convert|605.25|km2|sqmi|abbr=unit}}", "605.25 km²"),
-        ("{{convert|613|km2|mi2|sp=us|abbr=on}}", "613 km²"),
-        ("{{convert|940|km|abbr=on}}", "940 km"),
-        ("{{convert|−10|C}}", "−10 °C"),
-        ("{{convert|−15|C}}", "−15 °C"),
-        ("{{convert|−20|C}}", "−20 °C"),
-        ("{{convert|384400|km}}", "384,400 km"),
+        ("{{convert|&minus;3|°C|1|disp=or}}", "−3 °C (26.6 °F)"),
+        (
+            "{{convert|10|to|47|km2|disp=or|abbr=on}}",
+            "10 to 47 km² (3.86 to 18.1 mi²)",
+        ),
+        ("{{convert|15|km|0|abbr=on}}", "15 km (9 mi)"),
+        (
+            "{{convert|2.1|and|−5.5|C|F|1}}",
+            "2.1 °C and −5.5 °C (35.8 °F and 22.1 °F)",
+        ),
+        ("{{convert|250|km|0|abbr=on}}", "250 km (155 mi)"),
+        ("{{convert|268|km2|mi2|sp=us|abbr=on}}", "268 km² (103 mi²)"),
+        (
+            "{{convert|30.0|and|22.9|C|F|0}}",
+            "30.0 °C and 22.9 °C (86 °F and 73 °F)",
+        ),
+        ("{{convert|300|km/h|0|abbr=on}}", "300 km/h (186 mph)"),
+        ("{{convert|40|C|F|1}}", "40 °C (104.0 °F)"),
+        ("{{convert|4|km|mile|sp=us|abbr=on}}", "4 km (2.49 mi)"),
+        (
+            "{{convert|605.25|km2|sqmi|abbr=unit}}",
+            "605.25 km² (234 mi²)",
+        ),
+        ("{{convert|613|km2|mi2|sp=us|abbr=on}}", "613 km² (237 mi²)"),
+        ("{{convert|940|km|abbr=on}}", "940 km (584 mi)"),
+        ("{{convert|−10|C}}", "−10 °C (14 °F)"),
+        ("{{convert|−15|C}}", "−15 °C (5 °F)"),
+        ("{{convert|−20|C}}", "−20 °C (-4 °F)"),
+        ("{{convert|42-56|km}}", "42-56 km (26.1-34.8 mi)"),
+        ("{{convert|20-25|km|mi|abbr=on}}", "20-25 km (12.4-15.5 mi)"),
+        ("{{convert|60|cm}}", "60 cm (23.6 in)"),
+        ("{{cvt|45730|m2}}", "45,730 m² (492,000 ft²)"),
+        (
+            "{{convert|75|mm/year|in/year|abbr=on}}",
+            "75 mm/year (2.95 in/year)",
+        ),
+        (
+            "{{convert|360|GPa|e6psi|abbr=unit|lk=on}}",
+            "360 GPa (52.2 million psi)",
+        ),
+        ("{{convert|384400|km}}", "384,400 km (239,000 mi)"),
+        ("{{convert|737|K|C F|abbr=on}}", "737 K (464 °C, 867 °F)"),
+        ("{{convert|20|C|K C F|0|order=out}}", "20 °C (293 K, 68 °F)"),
+        (
+            "{{convert|1|AU|e6km e6mi|lk=in|abbr=unit}}",
+            "1 AU (150 million km, 93 million mi)",
+        ),
     ];
 
     for (template, expected) in cases {
@@ -2207,6 +2239,110 @@ fn render_wikitext_formats_convert_templates() {
             "convert template {template:?} rendered unexpectedly:\n{rendered}"
         );
     }
+}
+
+#[test]
+fn render_wikitext_shows_secondary_convert_values_for_supported_page_cases() {
+    let template_pattern =
+        Regex::new(r"\{\{(?:convert|cvt)[^{}]*\}\}").expect("valid convert regex");
+    let mut failures = Vec::new();
+
+    for entry in fs::read_dir("pages").expect("pages directory should exist") {
+        let entry = entry.expect("page entry should be readable");
+        let path = entry.path();
+        if path.extension().and_then(|ext| ext.to_str()) != Some("json") {
+            continue;
+        }
+
+        let source = fs::read_to_string(&path).expect("page fixture should be readable");
+        let page: PageResponse = serde_json::from_str(&source).expect("page fixture should parse");
+
+        for template_match in template_pattern.find_iter(&page.parse.wikitext.text) {
+            let template = template_match.as_str();
+            if !convert_template_should_show_secondary_value(template) {
+                continue;
+            }
+
+            let rendered = render_wikitext("Sample", template, &InternalLinks::new(), "en");
+            if !rendered.contains('(') || !rendered.contains(')') {
+                failures.push(format!(
+                    "{}: {} => {}",
+                    path.display(),
+                    template,
+                    rendered.replace('\n', " ")
+                ));
+            }
+        }
+    }
+
+    assert!(
+        failures.is_empty(),
+        "supported convert templates should render secondary values:\n{}",
+        failures.join("\n")
+    );
+}
+
+fn convert_template_should_show_secondary_value(template: &str) -> bool {
+    let template = template
+        .trim()
+        .trim_start_matches("{{")
+        .trim_end_matches("}}");
+    let mut parts = template.split('|');
+    let _name = parts.next();
+    let positional = parts
+        .map(str::trim)
+        .filter(|part| !part.contains('='))
+        .collect::<Vec<_>>();
+
+    if positional.len() < 2 {
+        return false;
+    }
+
+    let (source_unit, explicit_target) = if matches!(positional[1], "to" | "and" | "-" | "–" | "by")
+    {
+        (positional.get(3).copied(), positional.get(4).copied())
+    } else {
+        (positional.get(1).copied(), positional.get(2).copied())
+    };
+
+    if let Some(target) = explicit_target
+        && convert_template_explicit_target(target)
+    {
+        return true;
+    }
+
+    source_unit.is_some_and(convert_template_has_default_target)
+}
+
+fn convert_template_explicit_target(target: &str) -> bool {
+    let trimmed = target.trim();
+    !trimmed.is_empty()
+        && trimmed.parse::<f64>().is_err()
+        && !trimmed.contains('<')
+        && !trimmed.contains('(')
+}
+
+fn convert_template_has_default_target(unit: &str) -> bool {
+    matches!(
+        unit.trim(),
+        "km" | "mi"
+            | "m"
+            | "meter"
+            | "km2"
+            | "km²"
+            | "C"
+            | "°C"
+            | "C-change"
+            | "cm"
+            | "mm"
+            | "km/h"
+            | "km/s"
+            | "m/s2"
+            | "e6km"
+            | "km3"
+            | "m2"
+            | "acres"
+    )
 }
 
 #[test]

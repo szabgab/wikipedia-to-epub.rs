@@ -165,7 +165,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Verse transliteration-translation|稲妻の|inazuma no|the flash}}` renders the original verse, transliterated verse (italicized by default), and its translation sequentially inside a blockquote: `<blockquote><p>稲妻の</p><em>inazuma no</em><p>the flash</p></blockquote>`
 * `{{Percentage|1|4}}` becomes `25%`
 * `{{UN_Population|Dem. People's Republic of Korea}}` becomes `26,100,000`; `{{UN_Population|ref}}` is omitted
-* `{{convert|1100|km|abbr=on}}` and `{{cvt|314|km|0}}` become `1,100 km` and `314 km`; large numeric values are grouped with commas every three digits, and range forms such as `{{convert|10|to|47|km2}}` become `10 to 47 km²`
+* `{{convert|1100|km|abbr=on}}` and `{{cvt|314|km|0}}` become `1,100 km (684 mi)` and `314 km (195 mi)`; large numeric values are grouped with commas every three digits, and range forms such as `{{convert|10|to|47|km2}}` become `10 to 47 km² (3.86 to 18.1 mi²)`. When `convert` supplies multiple alternate units, they are rendered together inside the parentheses, e.g. `{{convert|737|K|C F|abbr=on}}` becomes `737 K (464 °C, 867 °F)`.
 * `{{ill|Ch'ilchŏngsan|ko}}` (along with its aliases `{{illm}}`, `{{Interlanguage link}}`, and `{{Interlanguage link multi}}`) becomes a link to `Ch'ilchŏngsan` followed by `[ko]`
 * `{{Reign|1400|1418}}` becomes `r. 1400–1418`
 * `{{Open access}}` and `{{Free access}}` become an open-lock marker: `<span title="open access">&#128275;</span>`

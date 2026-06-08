@@ -1,5 +1,58 @@
 # Codex Session Notes
 
+## 2026-06-08 Show Both `convert` Values
+
+### Summary
+
+Expanded `convert`/`cvt` rendering so supported page cases now keep the original value and add the converted value in parentheses. Updated the affected expected book fixtures and documented the revised conversion behavior.
+
+### Decisions Made
+
+* Replaced the old meter-only parenthetical fallback with broader `convert` handling that supports explicit alternate units and common default counterparts used by the cached page fixtures.
+* Added coverage for compound convert forms from `pages/`, including ranges, paired values, multi-unit outputs such as `K -> C/F`, and page-backed regression checks that scan fixture content.
+* Regenerated only the expected books whose chapter XHTML changed because of the new parenthetical convert output.
+
+### Files Changed
+
+* `src/templates/convert.rs` [MODIFY]
+  * Added broader convert-unit parsing, conversion, formatting, default target inference, and parenthetical output generation.
+* `src/tests.rs` [MODIFY]
+  * Updated convert expectations and added fixture-backed coverage for supported `convert` cases found in `pages/`.
+* `expected/busan-images/` [MODIFY]
+* `expected/busan/` [MODIFY]
+* `expected/han-dynasty/` [MODIFY]
+* `expected/japan/` [MODIFY]
+* `expected/korea/` [MODIFY]
+* `expected/korean-war/` [MODIFY]
+* `expected/kyoto/` [MODIFY]
+* `expected/north-korea/` [MODIFY]
+* `expected/osaka/` [MODIFY]
+* `expected/planets/` [MODIFY]
+* `expected/sejong-the-great/` [MODIFY]
+* `expected/seoul/` [MODIFY]
+* `expected/south-korea/` [MODIFY]
+  * Updated expected XHTML output to match the new parenthetical convert rendering.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented that convert output now shows secondary values in parentheses.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session note.
+
+### Tests Run
+
+* `cargo test render_wikitext_formats_convert_templates`
+* `cargo test render_wikitext_shows_secondary_convert_values_for_supported_page_cases`
+* `cargo test --test books`
+* `./sort.sh`
+* `cargo fmt`
+* `cargo fmt --check`
+* `cargo test`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Add Infobox military conflict Support
 
 ### Summary
