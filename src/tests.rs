@@ -4784,6 +4784,54 @@ fn render_wikitext_formats_infobox_mountain_template() {
 }
 
 #[test]
+fn render_wikitext_formats_infobox_country_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        r#"{{Infobox country
+| conventional_long_name = Republic of Korea
+| common_name = South Korea
+| native_name = {{lang|ko|대한민국}}
+| image_flag = Flag of South Korea.svg
+| image_coat = Emblem of South Korea.svg
+| symbol_type = Emblem
+| anthem = "[[Aegukga|Patriotic Song]]"
+| capital = [[Seoul]]
+| official_languages = [[Korean language|Korean]]
+| demonym = [[South Koreans|South Korean]]
+| religion = [[Buddhism]]
+| currency = [[South Korean won|Won]]
+| year_start = 1948
+}}"#,
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Name"), "{rendered}");
+    assert!(rendered.contains("Republic of Korea"), "{rendered}");
+    assert!(rendered.contains("Common name"), "{rendered}");
+    assert!(rendered.contains("South Korea"), "{rendered}");
+    assert!(rendered.contains("Native name"), "{rendered}");
+    assert!(rendered.contains("대한민국"), "{rendered}");
+    assert!(rendered.contains("Flag"), "{rendered}");
+    assert!(rendered.contains("Flag of South Korea.svg"), "{rendered}");
+    assert!(rendered.contains("Emblem"), "{rendered}");
+    assert!(rendered.contains("Emblem of South Korea.svg"), "{rendered}");
+    assert!(rendered.contains("Anthem"), "{rendered}");
+    assert!(rendered.contains("Patriotic Song"), "{rendered}");
+    assert!(rendered.contains("Capital"), "{rendered}");
+    assert!(rendered.contains("Seoul</a>"), "{rendered}");
+    assert!(rendered.contains("Official languages"), "{rendered}");
+    assert!(rendered.contains("Korean</a>"), "{rendered}");
+    assert!(rendered.contains("Demonym"), "{rendered}");
+    assert!(rendered.contains("South Korean"), "{rendered}");
+    assert!(rendered.contains("Religion"), "{rendered}");
+    assert!(rendered.contains("Buddhism"), "{rendered}");
+    assert!(rendered.contains("Currency"), "{rendered}");
+    assert!(rendered.contains("Won"), "{rendered}");
+    assert!(rendered.contains("Year established"), "{rendered}");
+    assert!(rendered.contains("1948"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_infobox_settlement_template() {
     let rendered = render_wikitext(
         "Sample",

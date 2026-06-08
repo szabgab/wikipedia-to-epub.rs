@@ -1,5 +1,52 @@
 # Codex Session Notes
 
+## 2026-06-08 Add Infobox country Support
+
+### Summary
+
+Added support for rendering `Infobox country` templates as two-column wikitables so country/state pages now include their infobox content instead of silently dropping it. Updated the affected expected book fixtures and documented the new conversion rule.
+
+### Decisions Made
+
+* Added a dedicated `render_infobox_country_template` renderer in `src/templates/formatting.rs` rather than routing through the generic infobox path, because the cached country pages use a stable set of domain-specific fields.
+* Rendered the core fields actually used by the cached fixtures: long/common/native names, flags/symbols, anthem, motto/status/government, capital/language/demonym/religion/currency, establishment years, and historical event/predecessor/successor rows.
+* Kept media fields consistent with the project’s existing infobox handling by rendering image filenames/symbol content as textual table cell content instead of introducing a separate image pipeline.
+* Updated only the six expected books that actually contain `Infobox country` in their source pages.
+
+### Files Changed
+
+* `src/templates/formatting.rs` [MODIFY]
+  * Added `render_infobox_country_template`.
+* `src/templates/mod.rs` [MODIFY]
+  * Wired `Infobox country` into template dispatch and infobox allowlists.
+* `src/tests.rs` [MODIFY]
+  * Added unit coverage for `Infobox country`.
+* `expected/goguryeo/` [MODIFY]
+* `expected/japan/` [MODIFY]
+* `expected/joseon/` [MODIFY]
+* `expected/north-korea/` [MODIFY]
+* `expected/parhae/` [MODIFY]
+* `expected/south-korea/` [MODIFY]
+  * Updated expected XHTML/metadata files to match rendered country infoboxes.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new `Infobox country` conversion rule.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session note.
+
+### Tests Run
+
+* `./sort.sh`
+* `cargo test render_wikitext_formats_infobox_country_template`
+* `cargo test --test books`
+* `cargo test`
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Add Reflist Rendering
 
 ### Summary

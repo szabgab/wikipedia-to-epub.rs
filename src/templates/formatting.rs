@@ -943,6 +943,133 @@ pub(crate) fn render_infobox_mountain_template(params: &str) -> String {
     rows.join("\n")
 }
 
+/// [Infobox country](https://en.wikipedia.org/wiki/Template:Infobox_country)
+pub(crate) fn render_infobox_country_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut rows = Vec::new();
+
+    rows.push("{| class=\"wikitable\"".to_string());
+
+    let add_row = |rows: &mut Vec<String>, label: &str, keys: &[&str]| {
+        if let Some(val) = template_param(&named, keys) {
+            rows.push("|-".to_string());
+            rows.push(format!("! {}", label));
+            rows.push(format!("| {}", render_templates(val)));
+        }
+    };
+
+    add_row(
+        &mut rows,
+        "Name",
+        &["conventional_long_name", "common_name", "name"],
+    );
+    add_row(&mut rows, "Common name", &["common_name"]);
+    add_row(&mut rows, "Native name", &["native_name"]);
+
+    if let Some(image_flag) = template_param(&named, &["image_flag"]) {
+        rows.push("|-".to_string());
+        rows.push("! Flag".to_string());
+        rows.push(format!("| {}", render_templates(image_flag)));
+    }
+
+    if let Some(image_coat) = template_param(&named, &["image_coat"]) {
+        rows.push("|-".to_string());
+        let label = template_param(&named, &["symbol_type"]).unwrap_or("Symbol");
+        rows.push(format!("! {}", render_templates(label)));
+        rows.push(format!("| {}", render_templates(image_coat)));
+    }
+
+    if let Some(other_symbol) = template_param(&named, &["other_symbol"]) {
+        rows.push("|-".to_string());
+        let label = template_param(&named, &["other_symbol_type"]).unwrap_or("Other symbol");
+        rows.push(format!("! {}", render_templates(label)));
+        rows.push(format!("| {}", render_templates(other_symbol)));
+    }
+
+    add_row(&mut rows, "Anthem", &["anthem", "national_anthem"]);
+    add_row(&mut rows, "Motto", &["national_motto"]);
+    add_row(&mut rows, "Status", &["status"]);
+    add_row(&mut rows, "Government type", &["government_type"]);
+    add_row(&mut rows, "Capital", &["capital"]);
+    add_row(&mut rows, "Largest city", &["largest_city"]);
+    add_row(&mut rows, "Coordinates", &["coordinates"]);
+    add_row(
+        &mut rows,
+        "Official languages",
+        &["official_languages", "common_languages", "languages"],
+    );
+
+    if let (Some(label), Some(value)) = (
+        template_param(&named, &["languages_type", "languages2_type"]),
+        template_param(&named, &["languages", "languages2"]),
+    ) {
+        rows.push("|-".to_string());
+        rows.push(format!("! {}", render_templates(label)));
+        rows.push(format!("| {}", render_templates(value)));
+    }
+
+    add_row(&mut rows, "Ethnic groups", &["ethnic_groups"]);
+    add_row(&mut rows, "Demonym", &["demonym"]);
+    add_row(&mut rows, "Religion", &["religion"]);
+    add_row(&mut rows, "Currency", &["currency"]);
+    add_row(&mut rows, "Area", &["area_km2", "stat_area1"]);
+    add_row(
+        &mut rows,
+        "Population",
+        &["population_total", "stat_pop1", "stat_pop2"],
+    );
+    add_row(&mut rows, "Year established", &["year_start"]);
+    add_row(&mut rows, "Year ended", &["year_end"]);
+    add_row(&mut rows, "Preceded by", &["p1"]);
+    add_row(&mut rows, "Succeeded by", &["s1"]);
+    add_row(&mut rows, "Today", &["today"]);
+
+    for idx in 1..=7 {
+        let event_key = if idx == 1 {
+            "event_start".to_string()
+        } else {
+            format!("event{}", idx - 1)
+        };
+        let date_key = if idx == 1 {
+            "date_start".to_string()
+        } else {
+            format!("date_event{}", idx - 1)
+        };
+        if let Some(event) = template_param_owned(&named, &[event_key]) {
+            let date = template_param_owned(&named, &[date_key]).unwrap_or_default();
+            rows.push("|-".to_string());
+            rows.push("! Event".to_string());
+            if date.is_empty() {
+                rows.push(format!("| {}", render_templates(&event)));
+            } else {
+                rows.push(format!(
+                    "| {} ({})",
+                    render_templates(&event),
+                    render_templates(&date)
+                ));
+            }
+        }
+    }
+
+    if let Some(event_end) = template_param(&named, &["event_end"]) {
+        let date_end = template_param(&named, &["date_end"]).unwrap_or("");
+        rows.push("|-".to_string());
+        rows.push("! End".to_string());
+        if date_end.is_empty() {
+            rows.push(format!("| {}", render_templates(event_end)));
+        } else {
+            rows.push(format!(
+                "| {} ({})",
+                render_templates(event_end),
+                render_templates(date_end)
+            ));
+        }
+    }
+
+    rows.push("|}".to_string());
+    rows.join("\n")
+}
+
 /// [Infobox planet](https://en.wikipedia.org/wiki/Template:Infobox_planet)
 pub(crate) fn render_infobox_planet_template(params: &str) -> String {
     fn render_infobox_file_link_label(value: &str) -> String {
