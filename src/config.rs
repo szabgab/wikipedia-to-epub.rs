@@ -1,6 +1,8 @@
+use crate::cache::normalize_lookup_key;
 use crate::error::{AppError, AppResult};
 use clap::Parser;
 use serde::Deserialize;
+use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 use tracing::Level;
@@ -125,7 +127,7 @@ pub fn read_config(path: &Path) -> AppResult<BookConfig> {
 }
 
 pub(crate) fn parse_config_str(path: &Path, content: &str) -> AppResult<BookConfig> {
-    serde_yaml::from_str(content).map_err(|err| {
+    let config = serde_yaml::from_str(content).map_err(|err| {
         let mut message = format!("invalid configuration in {}", path.display());
         if let Some(location) = err.location() {
             message.push_str(&format!(
@@ -136,7 +138,52 @@ pub(crate) fn parse_config_str(path: &Path, content: &str) -> AppResult<BookConf
         }
         message.push_str(&format!(": {err}"));
         AppError::Message(message)
-    })
+    })?;
+
+    validate_unique_articles(path, &config)?;
+    Ok(config)
+}
+
+fn validate_unique_articles(path: &Path, config: &BookConfig) -> AppResult<()> {
+    let mut seen = HashMap::new();
+    collect_duplicate_articles(path, &config.articles, &mut seen)
+}
+
+fn collect_duplicate_articles(
+    path: &Path,
+    articles: &[ArticleConfig],
+    seen: &mut HashMap<String, String>,
+) -> AppResult<()> {
+    for article in articles {
+        match article {
+            ArticleConfig::Simple(title) => record_article_title(path, title, seen)?,
+            ArticleConfig::Detailed(detailed) => {
+                if detailed.r#type != Some(ArticleType::Section) {
+                    record_article_title(path, &detailed.title, seen)?;
+                }
+                collect_duplicate_articles(path, &detailed.articles, seen)?;
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn record_article_title(
+    path: &Path,
+    title: &str,
+    seen: &mut HashMap<String, String>,
+) -> AppResult<()> {
+    let lookup_key = normalize_lookup_key(title);
+    if let Some(first_title) = seen.get(&lookup_key) {
+        return Err(AppError::Message(format!(
+            "invalid configuration in {}: duplicate page `{title}` (already included as `{first_title}`)",
+            path.display()
+        )));
+    }
+
+    seen.insert(lookup_key, title.to_string());
+    Ok(())
 }
 
 pub fn current_utc_date() -> (i32, i32, i32) {

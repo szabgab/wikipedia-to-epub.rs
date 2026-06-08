@@ -3105,6 +3105,40 @@ articles:
 }
 
 #[test]
+fn read_config_rejects_duplicate_pages_with_clear_error() {
+    let error = parse_config_str(
+        Path::new("sample.yaml"),
+        r#"chapters: title
+metadata:
+  title: Sample
+  author: Wikipedia contributors
+  language: en
+  edition: First edition
+output-file: sample.epub
+cover: "None"
+links_to_pages: false
+links_to_excluded_pages: emphasize
+caching: none
+depth: 0
+articles:
+  - Korea
+  - title: History
+    type: section
+    articles:
+      - Korea
+"#,
+    )
+    .expect_err("config should reject duplicate pages");
+
+    let message = error.to_string();
+    assert!(
+        message.contains("invalid configuration in sample.yaml"),
+        "{message}"
+    );
+    assert!(message.contains("duplicate page `Korea`"), "{message}");
+}
+
+#[test]
 fn fixture_page_source_uses_local_page_dumps() {
     let source = FixturePageSource::new("pages");
     let page = source.load_page("Korea").expect("fixture page should load");

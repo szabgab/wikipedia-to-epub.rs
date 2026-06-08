@@ -1,5 +1,39 @@
 # Codex Session Notes
 
+## 2026-06-08 Reject Duplicate Pages in YAML Config
+
+### Summary
+
+Configuration loading now fails before processing if the same page is listed more than once anywhere in the article tree. Added a focused regression test covering a duplicate page repeated under a nested section.
+
+### Decisions Made
+
+* Enforced duplicate detection during config parsing so invalid configs fail before page loading or EPUB generation starts.
+* Reused the existing page lookup normalization rules for duplicate detection, so equivalent page spellings are treated as the same page.
+* Ignored section container titles when checking duplicates, since only actual page entries should count as included pages.
+
+### Files Changed
+
+* `src/config.rs` [MODIFY]
+  * Added recursive duplicate-page validation for parsed article trees.
+* `src/tests.rs` [MODIFY]
+  * Added coverage for duplicate page rejection in YAML configs.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session note.
+
+### Tests Run
+
+* `cargo test read_config_rejects_duplicate_pages_with_clear_error`
+* `./sort.sh`
+* `cargo fmt`
+* `cargo test`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Reject Invalid YAML Configurations
 
 ### Summary
