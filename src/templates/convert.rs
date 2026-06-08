@@ -327,7 +327,21 @@ pub(crate) fn render_val_template(params: &str) -> String {
 }
 
 pub(crate) fn format_convert_value(value: &str) -> String {
-    value.trim().replace("&minus;", "−")
+    let trimmed = value.trim();
+    let (sign, rest) = if let Some(rest) = trimmed.strip_prefix("&minus;") {
+        ("−", rest)
+    } else if let Some(rest) = trimmed.strip_prefix('−') {
+        ("−", rest)
+    } else if let Some(rest) = trimmed.strip_prefix('-') {
+        ("-", rest)
+    } else if let Some(rest) = trimmed.strip_prefix('+') {
+        ("+", rest)
+    } else {
+        ("", trimmed)
+    };
+
+    let formatted = format_number_with_commas(rest);
+    format!("{sign}{formatted}")
 }
 
 pub(crate) fn format_convert_unit(unit: &str) -> String {

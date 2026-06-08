@@ -2129,7 +2129,7 @@ fn render_wikitext_formats_un_population_templates() {
 #[test]
 fn render_wikitext_formats_convert_templates() {
     let cases = [
-        ("{{convert|1100|km|abbr=on}}", "1100 km"),
+        ("{{convert|1100|km|abbr=on}}", "1,100 km"),
         ("{{cvt|314|km|0}}", "314 km"),
         ("{{Cvt|49.5|km}}", "49.5 km"),
         ("{{convert|30|°C|°F}}", "30 °C"),
@@ -2150,6 +2150,7 @@ fn render_wikitext_formats_convert_templates() {
         ("{{convert|−10|C}}", "−10 °C"),
         ("{{convert|−15|C}}", "−15 °C"),
         ("{{convert|−20|C}}", "−20 °C"),
+        ("{{convert|384400|km}}", "384,400 km"),
     ];
 
     for (template, expected) in cases {
@@ -4794,7 +4795,7 @@ fn render_wikitext_formats_infobox_planet_template() {
     assert!(rendered.contains("Mars.png"), "{rendered}");
     assert!(rendered.contains("Mars in true color"), "{rendered}");
     assert!(rendered.contains("Aphelion"), "{rendered}");
-    assert!(rendered.contains("249261000 km"), "{rendered}");
+    assert!(rendered.contains("249,261,000 km"), "{rendered}");
     assert!(rendered.contains("Mean radius"), "{rendered}");
     assert!(rendered.contains("3389.5 km"), "{rendered}");
     assert!(rendered.contains("Satellites"), "{rendered}");

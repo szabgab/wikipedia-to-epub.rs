@@ -1,5 +1,53 @@
 # Codex Session Notes
 
+## 2026-06-08 Add Comma Grouping to convert Values
+
+### Summary
+
+Updated `convert` template rendering so large numeric values are grouped with commas every three digits from the right, e.g. `384400 km` now renders as `384,400 km`. Refreshed the affected expected book fixtures whose content changed because of the new formatting.
+
+### Decisions Made
+
+* Reused the existing shared `format_number_with_commas()` helper instead of adding a second number-grouping implementation.
+* Applied grouping in `format_convert_value()` so the behavior covers standard `convert` rendering consistently, while preserving the original minus-sign style (`-` vs `−`) from the input.
+* Added a focused test case for `{{convert|384400|km}}`.
+* Regenerated only the affected expected books whose rendered chapter XHTML changed due to comma insertion.
+
+### Files Changed
+
+* `src/templates/convert.rs` [MODIFY]
+  * Applied comma grouping in `format_convert_value()` while preserving sign style.
+* `src/tests.rs` [MODIFY]
+  * Updated convert expectations and added coverage for `384,400 km`.
+* `expected/Kiso_Mountains/` [MODIFY]
+* `expected/han-dynasty/` [MODIFY]
+* `expected/japan/` [MODIFY]
+* `expected/korea/` [MODIFY]
+* `expected/kyoto/` [MODIFY]
+* `expected/north-korea/` [MODIFY]
+* `expected/osaka/` [MODIFY]
+* `expected/planets/` [MODIFY]
+* `expected/south-korea/` [MODIFY]
+  * Updated expected XHTML/EPUB metadata to match the grouped convert output.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented grouped numeric output for `convert`.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session note.
+
+### Tests Run
+
+* `./sort.sh`
+* `cargo test render_wikitext_formats_convert_templates`
+* `cargo test --test books`
+* `cargo test`
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Add Infobox planet Support
 
 ### Summary
