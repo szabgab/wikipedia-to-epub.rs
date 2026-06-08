@@ -4509,6 +4509,59 @@ Hello world! This is a **markdown** paragraph.
     std::fs::remove_file(file_path).ok();
 }
 
+#[test]
+fn render_wikitext_formats_hlist_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{hlist|[[Gifu Prefecture|Gifu]]|[[Nagano Prefecture|Nagano]]}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Gifu</a>")
+            && rendered.contains(", <a")
+            && rendered.contains("Nagano</a>"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_native_name_list_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{native name list |tag1=ja|name1=木曽山脈 |tag2=ja|name2=中央アルプス}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("木曽山脈 (Japanese), 中央アルプス (Japanese)"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_infobox_mountain_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        r#"{{Infobox mountain
+| name = Kiso Mountains
+| native_name = {{native name list |tag1=ja|name1=木曽山脈}}
+| country = [[Japan]]
+| elevation_m = 2956
+}}"#,
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Name"), "{rendered}");
+    assert!(rendered.contains("Kiso Mountains"), "{rendered}");
+    assert!(rendered.contains("Native name"), "{rendered}");
+    assert!(rendered.contains("木曽山脈 (Japanese)"), "{rendered}");
+    assert!(rendered.contains("Country"), "{rendered}");
+    assert!(rendered.contains("Japan</a>"), "{rendered}");
+    assert!(rendered.contains("Elevation"), "{rendered}");
+    assert!(rendered.contains("2956"), "{rendered}");
+}
+
 fn read_or_fetch_text(
     cache_path: &Path,
     refresh: bool,

@@ -1,5 +1,48 @@
 # Codex Session Notes
 
+## 2026-06-07 Infobox Mountain Support for Kiso Mountains
+
+### Summary
+
+Added support for rendering the `Infobox mountain` template as a clean two-column `wikitable` structure containing key properties (Name, Native name, Country, Highest point, Coordinates, etc.). Added support for list and name templates `hlist`/`flatlist` and `native name list` which are nested within the mountain infobox. Updated all unit tests, regenerated the expected `Kiso_Mountains` EPUB XHTML fixture, sorted templates using `./sort.sh`, and verified all compilation checks and tests pass successfully.
+
+### Decisions Made
+
+* Excluded `Infobox mountain` from being skipped silently in `is_silent_template_name`.
+* Implemented `render_infobox_mountain_template` to output a 2-column wikitext table (`{| class="wikitable"` / `|}`) containing populated fields. This feeds perfectly into the existing table rendering pipeline, allowing nested links to be parsed and formatted cleanly.
+* Implemented `render_hlist_template` to render `hlist` and `flatlist` templates, joining items with commas.
+* Implemented `render_native_name_list_template` to render the names and their corresponding language tags recursively (up to 10 entries).
+* Added three new unit tests to `src/tests.rs` for `hlist`, `native name list`, and `Infobox mountain` templates.
+* Updated `DEVELOPMENT.md` to document the new template rendering conversion rules.
+* Regenerated expected `Kiso_Mountains` EPUB book fixtures by unzipping with python3's `zipfile` module.
+* Ran `./sort.sh` to sort the template databases alphabetically.
+
+### Files Changed
+
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented new conversion rules.
+* `src/main.rs` [MODIFY]
+  * Added routing and template renderers for `Infobox mountain`, `native name list`, and `hlist`/`flatlist`.
+* `src/tests.rs` [MODIFY]
+  * Added unit tests.
+* `src/silent.csv` [MODIFY]
+  * Alphabetically sorted templates.
+* `expected/Kiso_Mountains/OEBPS/Kiso_Mountains.xhtml` [MODIFY]
+  * Updated with the newly rendered `Infobox mountain` table content.
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session notes.
+
+### Tests Run
+
+* `cargo fmt -- --check` (passed cleanly)
+* `cargo check` (passed cleanly)
+* `cargo clippy --all-targets -- -D warnings` (passed cleanly)
+* `cargo test` (all 222 unit tests and 33 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-07 Extract Mock Date from Expected EPUB Metadata
 
 ### Summary

@@ -1,18 +1,104 @@
--
 '
+-
 0
 About,                       Linking the reader to other meaning of the same word.     https://en.wikipedia.org/wiki/Template:About
-additional citations needed, Asks for help                                             https://en.wikipedia.org/wiki/Template:Additional_citation_needed
 Advert,                      This article contains promotional content.                https://en.wikipedia.org/wiki/Template:Advert
-ahnentafel
 Americana Poster
-anchor,                      Used for inbound links. Not relevant in epub.             https://en.wikipedia.org/wiki/Template:Anchor
 Attribution needed
 Audio,                       Link to an audio file. Not really relevant in epub files. https://en.wikipedia.org/wiki/Template:Audio
 Authority control,           Validate formats and values                               https://en.wikipedia.org/wiki/Template:Authority_control
 Better source needed,        Ask for help                                              https://en.wikipedia.org/wiki/Template:Better_source_needed
-bots,                        Control if bots can edit the page                         https://en.wikipedia.org/wiki/Template:Bots
+CS1 config
 Campaignbox Korean War
+Cleanup
+Clear left
+Closed access
+Commons
+Commons and category
+Commons category
+Commons category inline
+Commons category-inline
+Commons-inline
+Contains special characters
+Dead link
+Distinguish
+Div end
+Excessive citations inline
+Expand German
+Expand Japanese
+Expand section
+Explain
+FACT
+Gallery
+Hatnote
+Hatnote group
+IMDb name
+ISBN?
+Italic title
+Japanese clan name
+Library resources box
+Librivox author
+Listen
+Meitetsu Group,              A hidden list  https://en.wikipedia.org/wiki/Template:Meitetsu_Group
+More citations needed
+Multiple issues,             Using too many individual article message boxes can distract from the article https://en.wikipedia.org/wiki/Template:Multiple_issues
+Navboxes bottom
+Navboxes top
+Needs update
+New archival link needed
+NoteFoot
+NoteTag
+One source,                  Content that relies on a single source. https://en.wikipedia.org/wiki/Template:One_source
+Original research,           One needs to reference sources. https://en.wikipedia.org/wiki/Template:Original_research
+Overly detailed
+PM20,                        TODO: https://en.wikipedia.org/wiki/Template:PM20
+POV,                         Point of view issue with the content https://en.wikipedia.org/wiki/Template:POV
+Page needed
+Pd-notice
+Pie chart,                   TODO: should be converted on an image https://en.wikipedia.org/wiki/Template:Pie_chart
+Portal bar,                  A visible list of portals https://en.wikipedia.org/wiki/Template:Portal_bar
+Portal,                      A visible list of portals https://en.wikipedia.org/wiki/Template:Portal
+Pp-move
+Pp-pc
+Primary source inline
+Protection padlock
+R
+Redirect
+Redirect-distinguish-text
+Redirect2
+Ref
+Refbegin
+Refend
+Refimprove
+Sfn
+SfnRef
+Short description,              TODO we might want to display this on some kind of an index page or TOC.   https://en.wikipedia.org/wiki/Template:Short_description
+Sister bar
+Sister project links
+Source needed
+Spoken Wikipedia
+Subject bar
+Subscription required
+TOC limit
+TOClimit
+Tokyo Metropolis Labelled Map
+Tone inline
+Unreferenced
+Unreferencedsect
+Unreliable source?
+Unreliable sources
+Update inline
+Weather box
+Wide image
+Wikiatlas
+Wikidata fallback link
+Wikiquote-inline
+Wikisource-inline
+YouTube
+additional citations needed, Asks for help                                             https://en.wikipedia.org/wiki/Template:Additional_citation_needed
+ahnentafel
+anchor,                      Used for inbound links. Not relevant in epub.             https://en.wikipedia.org/wiki/Template:Anchor
+bots,                        Control if bots can edit the page                         https://en.wikipedia.org/wiki/Template:Bots
 category see also
 cbignore
 chart bottom
@@ -20,138 +106,64 @@ chart top
 citation needed
 clarification needed
 clarify
-Cleanup
 clear
-Clear left
-Closed access
 cn
 col-begin
-colbegin
 col-break
-colend
 col-end
+colbegin
+colend
 columns-list
-Commons
-Commons and category
-Commons category
-Commons category inline
-Commons category-inline
 commonscat,                  Link to category in Wikimedia Commons. Alias of Commons category.
-Commons-inline
-Contains special characters
-CS1 config
-Dead link
 disambiguation
 discuss
 disputed section
-Distinguish
 div
 div col
 div col end
-Div end
 dubious
 efn
 efn-ua
-Excessive citations inline
-Expand German
-Expand Japanese
-Expand section
-Explain
 external media
-FACT
 failed verification
 flag
 flagcountry
 flagicon
 flagicon image
 full citation needed
-Gallery
-Hatnote
-Hatnote group
 huh
-IMDb name
-incomplete short citation
 in title
-ISBN?
-Italic title
-ja-linecat
-Japanese clan name
-ja-rail-line
+incomplete short citation
 j-railservice start
 j-route
 j-rserv
-Library resources box
-Librivox author
-Listen
+ja-linecat
+ja-rail-line
 location map+
 long
 look from
-Meitetsu Group,              A hidden list  https://en.wikipedia.org/wiki/Template:Meitetsu_Group
-More citations needed
 more citations needed section
 more cn section
 multiple image
-Multiple issues,             Using too many individual article message boxes can distract from the article https://en.wikipedia.org/wiki/Template:Multiple_issues
-Navboxes bottom
-Navboxes top
-Needs update
-New archival link needed
-NoteFoot
 notelist
 notelist-ua
-NoteTag
-One source,                  Content that relies on a single source. https://en.wikipedia.org/wiki/Template:One_source
-Original research,           One needs to reference sources. https://en.wikipedia.org/wiki/Template:Original_research
-Overly detailed
-Page needed
 party color
-Pd-notice
-Pie chart,                   TODO: should be converted on an image https://en.wikipedia.org/wiki/Template:Pie_chart
-PM20,                        TODO: https://en.wikipedia.org/wiki/Template:PM20
-Portal,                      A visible list of portals https://en.wikipedia.org/wiki/Template:Portal
-Portal bar,                  A visible list of portals https://en.wikipedia.org/wiki/Template:Portal_bar
-POV,                         Point of view issue with the content https://en.wikipedia.org/wiki/Template:POV
 pp-dispute
-Pp-move
 pp-move-indef
-Pp-pc
 pp-protected
 pp-semi-indef
 pp-vandalism
-Primary source inline
 prose
-Protection padlock
-R
-Redirect
-Redirect2
-Redirect-distinguish-text
 redirect-multi
 redirect-several
-Ref
-Refbegin
-Refend
-Refimprove
 reflist
 refn
-Sfn
 sfnm
 sfnp
-SfnRef
-Short description,              TODO we might want to display this on some kind of an index page or TOC.   https://en.wikipedia.org/wiki/Template:Short_description
-Sister bar
-Sister project links
 solar system delta v map.svg
 source-attribution
-Source needed
-Spoken Wikipedia
-Subject bar
-Subscription required
-TOClimit
-TOC limit
 tocright
-Tokyo Metropolis Labelled Map
 tone
-Tone inline
 tree chart
 tree chart/end
 tree chart/start
@@ -161,23 +173,11 @@ tree list/end
 tree list/final branch
 tree list/final branching
 unbalanced opinion
-Unreferenced
-Unreferencedsect
 unreferenced section
-Unreliable source?
-Unreliable sources
 unsolved
-Update inline
 update section
 very long
-Weather box
 when
 who
-Wide image
-Wikiatlas
-Wikidata fallback link
-Wikiquote-inline
 wikisource category
-Wikisource-inline
 wikispecies-inline
-YouTube

@@ -2333,6 +2333,12 @@ fn render_template(content: &str) -> String {
         render_ric_template(params)
     } else if template.eq_ignore_ascii_case("Line link") || template.eq_ignore_ascii_case("lnl") {
         render_lnl_template(params)
+    } else if template.eq_ignore_ascii_case("Infobox mountain") {
+        render_infobox_mountain_template(params)
+    } else if template.eq_ignore_ascii_case("native name list") {
+        render_native_name_list_template(params)
+    } else if template.eq_ignore_ascii_case("hlist") || template.eq_ignore_ascii_case("flatlist") {
+        render_hlist_template(params)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -2617,6 +2623,10 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("lnl")
         || template.eq_ignore_ascii_case("color")
         || template.eq_ignore_ascii_case("colour")
+        || template.eq_ignore_ascii_case("Infobox mountain")
+        || template.eq_ignore_ascii_case("native name list")
+        || template.eq_ignore_ascii_case("hlist")
+        || template.eq_ignore_ascii_case("flatlist")
         || is_silent_template_name(template)
 }
 
@@ -2635,9 +2645,10 @@ fn is_silent_template_name(template: &str) -> bool {
         || template
             .get(.."Use ".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Use "))
-        || template
+        || (template
             .get(.."Infobox".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Infobox"))
+            && !template.eq_ignore_ascii_case("Infobox mountain"))
         || template
             .get(.."Campaignbox".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Campaignbox"))
@@ -4501,6 +4512,126 @@ fn render_unbulleted_list_template(params: &str) -> String {
     } else {
         format!("\n{}", items.join("\n"))
     }
+}
+
+fn render_native_name_list_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+    for i in 1..=10 {
+        let tag_key = format!("tag{}", i);
+        let name_key = format!("name{}", i);
+        if let Some(name) = named.get(&name_key) {
+            let rendered_name = render_templates(name);
+            if let Some(tag) = named.get(&tag_key) {
+                let tag_trimmed = tag.trim().to_lowercase();
+                let lang_name = match tag_trimmed.as_str() {
+                    "ja" => "Japanese",
+                    "ko" => "Korean",
+                    "zh" => "Chinese",
+                    "en" => "English",
+                    other => other,
+                };
+                parts.push(format!("{} ({})", rendered_name, lang_name));
+            } else {
+                parts.push(rendered_name);
+            }
+        }
+    }
+    parts.join(", ")
+}
+
+fn render_hlist_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let mut items = Vec::new();
+    for param in positional {
+        let trimmed = param.trim();
+        if !trimmed.is_empty() {
+            items.push(render_templates(trimmed));
+        }
+    }
+    items.join(", ")
+}
+
+fn render_infobox_mountain_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut rows = Vec::new();
+
+    rows.push("{| class=\"wikitable\"".to_string());
+
+    // 1. Name
+    if let Some(name) = template_param(&named, &["name"]) {
+        rows.push("|-".to_string());
+        rows.push("! Name".to_string());
+        rows.push(format!("| {}", render_templates(name)));
+    }
+
+    // 2. Native name
+    if let Some(native_name) = template_param(&named, &["native_name"]) {
+        rows.push("|-".to_string());
+        rows.push("! Native name".to_string());
+        rows.push(format!("| {}", render_templates(native_name)));
+    }
+
+    // 3. Other name
+    if let Some(other_name) = template_param(&named, &["other_name"]) {
+        rows.push("|-".to_string());
+        rows.push("! Other name".to_string());
+        rows.push(format!("| {}", render_templates(other_name)));
+    }
+
+    // 4. Image
+    if let Some(image) = template_param(&named, &["image"]) {
+        let caption = template_param(&named, &["image_caption"]).unwrap_or("");
+        rows.push("|-".to_string());
+        rows.push("! Image".to_string());
+        if caption.is_empty() {
+            rows.push(format!("| [[File:{}]]", image));
+        } else {
+            rows.push(format!("| [[File:{}|{}]]", image, caption));
+        }
+    }
+
+    let add_row = |rows: &mut Vec<String>, label: &str, keys: &[&str]| {
+        if let Some(val) = template_param(&named, keys) {
+            let rendered_val = render_templates(val);
+            rows.push("|-".to_string());
+            rows.push(format!("! {}", label));
+            rows.push(format!("| {}", rendered_val));
+        }
+    };
+
+    // 5. Country
+    add_row(&mut rows, "Country", &["country"]);
+
+    // 6. Subdivision
+    let subdivision_label = template_param(&named, &["subdivision1_type"]).unwrap_or("Subdivision");
+    add_row(&mut rows, subdivision_label, &["subdivision1"]);
+
+    // 7. Highest point
+    add_row(&mut rows, "Highest point", &["highest"]);
+
+    // 8. Highest location
+    add_row(&mut rows, "Highest location", &["highest_location"]);
+
+    // 9. Elevation
+    add_row(&mut rows, "Elevation", &["elevation_m", "elevation"]);
+
+    // 10. Coordinates
+    add_row(&mut rows, "Coordinates", &["coordinates"]);
+
+    // 11. Geology
+    add_row(&mut rows, "Geology", &["geology"]);
+
+    // 12. Orogeny
+    add_row(&mut rows, "Orogeny", &["orogeny"]);
+
+    // 13. Dimensions
+    add_row(&mut rows, "Length", &["length_km", "length"]);
+    add_row(&mut rows, "Width", &["width_km", "width"]);
+    add_row(&mut rows, "Area", &["area_km2", "area"]);
+
+    rows.push("|}".to_string());
+    rows.join("\n")
 }
 
 fn parse_date_string(s: &str) -> Option<(i32, i32, i32)> {
