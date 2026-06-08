@@ -1,5 +1,42 @@
 # Codex Session Notes
 
+## 2026-06-08 Modularize src/main.rs Refactoring Proposal
+
+### Summary
+
+Proposed a comprehensive refactoring and modularization strategy for `src/main.rs` to break down the 9,700+ line monolith into clean, single-responsibility files and modules. Analyzed the code's structural dependencies, mapped functions to targets, and created a formal refactoring proposal artifact.
+
+### Decisions Made
+
+* Created a structured refactoring proposal in `refactoring_proposal.md` detailing target files, module responsibilities, a Mermaid diagram of dependencies, component-to-file mapping, and an incremental execution plan.
+* Defined the target module architecture:
+  * `src/error.rs` (AppError & Conversions)
+  * `src/config.rs` (CLI & Book Config)
+  * `src/cache.rs` (Caching & Page Sources)
+  * `src/epub.rs` (EPUB writing & chapter loading)
+  * `src/image.rs` (Scraped image registry & download logic)
+  * `src/parser.rs` (Wikitext-to-HTML parser core)
+  * `src/templates/` (Mod-level routing & themed template submodules: citation, lang, formatting, convert)
+* Outlined a step-by-step migration plan starting from leaf dependencies (`error.rs`) up to `parser.rs` to keep the build green and tests passing at every increment.
+* Verified that the current branch is clean and passes all 225 unit tests before proposing architectural changes.
+
+### Files Changed
+
+* `docs/codex-notes.md` [MODIFY]
+  * Appended session summary.
+* `refactoring_proposal.md` [NEW] (located in the artifacts directory)
+  * Created proposal.
+
+### Tests Run
+
+* `git status` (verified working tree clean)
+* `cargo check` (passed cleanly)
+* `cargo test` (all 225 unit tests and 33 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* Solicit user feedback on the proposed modularization architecture.
+
 ## 2026-06-08 Wikipedia Template Documentation Links for render_* Functions
 
 ### Summary
