@@ -4552,6 +4552,7 @@ fn render_hlist_template(params: &str) -> String {
     items.join(", ")
 }
 
+/// https://en.wikipedia.org/wiki/Template:Infobox_mountain
 fn render_infobox_mountain_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut rows = Vec::new();
