@@ -27,3 +27,11 @@ pulldown-cmark = { version = "0.10.3", default-features = false, features = ["ht
 
 [dev-dependencies]
 similar = "2.7.0"
+
+[lints.clippy]
+cargo        = { priority = -1, level = "deny" }
+complexity   = { priority = -1, level = "deny" }
+correctness  = { priority = -1, level = "deny" }
+
+
+multiple_crate_versions = "allow" # I am not sure if we can fix this given that they are all brought in by dependencies
