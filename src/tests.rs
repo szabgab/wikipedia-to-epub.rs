@@ -4832,6 +4832,59 @@ fn render_wikitext_formats_infobox_country_template() {
 }
 
 #[test]
+fn render_wikitext_formats_infobox_military_conflict_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        r#"{{Infobox military conflict
+| conflict = Korean War
+| partof = the [[Cold War]]
+| image = [[File:Battle.jpg]]
+| footer = Clockwise from top left
+| date = 25 June 1950 – 27 July 1953
+| place = [[Korean Peninsula]]
+| territory = [[Korean Demilitarized Zone]] established
+| result = Inconclusive
+| combatant1 = {{Plainlist|* [[South Korea]]|* [[United Nations]]}}
+| combatant2 = {{Plainlist|* [[North Korea]]|* [[China]]}}
+| commander1 = [[Douglas MacArthur]]
+| commander2 = [[Kim Il Sung]]
+| strength1 = 968,302
+| strength2 = 1,642,600
+| casualties1 = 178,236 dead
+| casualties2 = 600,000 dead
+}}"#,
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Conflict"), "{rendered}");
+    assert!(rendered.contains("Korean War"), "{rendered}");
+    assert!(rendered.contains("Part of"), "{rendered}");
+    assert!(rendered.contains("Cold War"), "{rendered}");
+    assert!(rendered.contains("Image"), "{rendered}");
+    assert!(rendered.contains("Clockwise from top left"), "{rendered}");
+    assert!(rendered.contains("Date"), "{rendered}");
+    assert!(rendered.contains("25 June 1950"), "{rendered}");
+    assert!(rendered.contains("Place"), "{rendered}");
+    assert!(rendered.contains("Korean Peninsula"), "{rendered}");
+    assert!(rendered.contains("Territorial changes"), "{rendered}");
+    assert!(rendered.contains("Korean Demilitarized Zone"), "{rendered}");
+    assert!(rendered.contains("Result"), "{rendered}");
+    assert!(rendered.contains("Inconclusive"), "{rendered}");
+    assert!(rendered.contains("Combatant 1"), "{rendered}");
+    assert!(rendered.contains("South Korea"), "{rendered}");
+    assert!(rendered.contains("Combatant 2"), "{rendered}");
+    assert!(rendered.contains("North Korea"), "{rendered}");
+    assert!(rendered.contains("Commander 1"), "{rendered}");
+    assert!(rendered.contains("Douglas MacArthur"), "{rendered}");
+    assert!(rendered.contains("Commander 2"), "{rendered}");
+    assert!(rendered.contains("Kim Il Sung"), "{rendered}");
+    assert!(rendered.contains("Strength 1"), "{rendered}");
+    assert!(rendered.contains("968,302"), "{rendered}");
+    assert!(rendered.contains("Casualties 2"), "{rendered}");
+    assert!(rendered.contains("600,000 dead"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_infobox_settlement_template() {
     let rendered = render_wikitext(
         "Sample",

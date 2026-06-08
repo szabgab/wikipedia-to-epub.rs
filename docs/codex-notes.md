@@ -1,5 +1,47 @@
 # Codex Session Notes
 
+## 2026-06-08 Add Infobox military conflict Support
+
+### Summary
+
+Added support for rendering `Infobox military conflict` templates as two-column wikitables so military-conflict pages now include their infobox content instead of silently dropping it. Updated the affected expected book fixture and documented the new conversion rule.
+
+### Decisions Made
+
+* Added a dedicated `render_infobox_military_conflict_template` renderer in `src/templates/formatting.rs` rather than routing through the generic infobox path, because the cached conflict page uses a stable set of battle-specific fields.
+* Rendered the key fields used by the cached fixture: conflict name, image/caption, part of, date, place, result, territorial changes, combatants, commanders, strength, casualties, and notes.
+* Kept the output in the existing wikitable format used by other supported infoboxes so it flows through the current table-rendering pipeline unchanged.
+* Updated only the affected expected book fixture whose source page contains `Infobox military conflict`.
+
+### Files Changed
+
+* `src/templates/formatting.rs` [MODIFY]
+  * Added `render_infobox_military_conflict_template`.
+* `src/templates/mod.rs` [MODIFY]
+  * Wired `Infobox military conflict` into template dispatch and infobox allowlists.
+* `src/tests.rs` [MODIFY]
+  * Added unit coverage for `Infobox military conflict`.
+* `expected/korean-war/` [MODIFY]
+  * Updated expected XHTML output to include the rendered military conflict infobox.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new `Infobox military conflict` conversion rule.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session note.
+
+### Tests Run
+
+* `./sort.sh`
+* `cargo test render_wikitext_formats_infobox_military_conflict_template`
+* `cargo test --test books`
+* `cargo test`
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Add Infobox country Support
 
 ### Summary

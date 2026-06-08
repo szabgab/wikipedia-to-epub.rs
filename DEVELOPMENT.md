@@ -94,6 +94,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{native name list|tag1=ja|name1=Name}}` renders native name list as a comma-separated list of names and their language tags: `Name (Japanese)`
 * `{{Infobox mountain|name=...}}` renders mountain infoboxes as a two-column wikitable containing properties (e.g. Name, Native name, Country, Highest point, Coordinates, etc.)
 * `{{Infobox country|conventional_long_name=...}}` renders country infoboxes as a two-column wikitable containing core political, symbolic, language, and historical fields used by the cached country pages
+* `{{Infobox military conflict|conflict=...}}` renders military-conflict infoboxes as a two-column wikitable containing conflict metadata, combatants, commanders, strength, casualties, and notes used by the cached conflict page
 * `{{Infobox planet|name=...}}` renders planetary infoboxes as a two-column wikitable containing image/caption, orbital data, physical characteristics, temperature rows, and atmospheric properties
 * `{{Infobox settlement|name=...}}` renders settlement infoboxes as a two-column wikitable containing properties (e.g. Name, Official name, Native name, Country, Governing body, Area, Population, Website, etc.)
 * `{{infobox|title=...|label1=...|data1=...}}` renders generic infoboxes as a two-column wikitable mapping titles, headers, labels, and data fields

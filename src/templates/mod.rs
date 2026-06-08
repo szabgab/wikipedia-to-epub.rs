@@ -493,6 +493,8 @@ pub(crate) fn render_template(content: &str) -> String {
         render_infobox_mountain_template(params)
     } else if template.eq_ignore_ascii_case("Infobox country") {
         render_infobox_country_template(params)
+    } else if template.eq_ignore_ascii_case("Infobox military conflict") {
+        render_infobox_military_conflict_template(params)
     } else if template.eq_ignore_ascii_case("Infobox planet") {
         render_infobox_planet_template(params)
     } else if template.eq_ignore_ascii_case("Infobox settlement") {
@@ -789,6 +791,7 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("colour")
         || template.eq_ignore_ascii_case("Infobox mountain")
         || template.eq_ignore_ascii_case("Infobox country")
+        || template.eq_ignore_ascii_case("Infobox military conflict")
         || template.eq_ignore_ascii_case("Infobox planet")
         || template.eq_ignore_ascii_case("Infobox settlement")
         || template.eq_ignore_ascii_case("Infobox")
@@ -818,6 +821,7 @@ pub(crate) fn is_silent_template_name(template: &str) -> bool {
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Infobox"))
             && !template.eq_ignore_ascii_case("Infobox mountain")
             && !template.eq_ignore_ascii_case("Infobox country")
+            && !template.eq_ignore_ascii_case("Infobox military conflict")
             && !template.eq_ignore_ascii_case("Infobox planet")
             && !template.eq_ignore_ascii_case("Infobox settlement")
             && !template.eq_ignore_ascii_case("Infobox"))

@@ -1070,6 +1070,57 @@ pub(crate) fn render_infobox_country_template(params: &str) -> String {
     rows.join("\n")
 }
 
+/// [Infobox military conflict](https://en.wikipedia.org/wiki/Template:Infobox_military_conflict)
+pub(crate) fn render_infobox_military_conflict_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut rows = Vec::new();
+
+    rows.push("{| class=\"wikitable\"".to_string());
+
+    let add_row = |rows: &mut Vec<String>, label: &str, keys: &[&str]| {
+        if let Some(val) = template_param(&named, keys) {
+            rows.push("|-".to_string());
+            rows.push(format!("! {}", label));
+            rows.push(format!("| {}", render_templates(val)));
+        }
+    };
+
+    add_row(&mut rows, "Conflict", &["conflict"]);
+    add_row(&mut rows, "Part of", &["partof"]);
+
+    if let Some(image) = template_param(&named, &["image"]) {
+        rows.push("|-".to_string());
+        rows.push("! Image".to_string());
+        if let Some(caption) = template_param(&named, &["caption", "footer"]) {
+            rows.push(format!(
+                "| {}__WIKIPEDIA_TO_EPUB_BR__{}",
+                render_templates(image),
+                render_templates(caption)
+            ));
+        } else {
+            rows.push(format!("| {}", render_templates(image)));
+        }
+    }
+
+    add_row(&mut rows, "Date", &["date"]);
+    add_row(&mut rows, "Place", &["place"]);
+    add_row(&mut rows, "Territorial changes", &["territory"]);
+    add_row(&mut rows, "Result", &["result"]);
+    add_row(&mut rows, "Combatant 1", &["combatant1"]);
+    add_row(&mut rows, "Combatant 2", &["combatant2"]);
+    add_row(&mut rows, "Commander 1", &["commander1"]);
+    add_row(&mut rows, "Commander 2", &["commander2"]);
+    add_row(&mut rows, "Strength 1", &["strength1"]);
+    add_row(&mut rows, "Strength 2", &["strength2"]);
+    add_row(&mut rows, "Casualties 1", &["casualties1"]);
+    add_row(&mut rows, "Casualties 2", &["casualties2"]);
+    add_row(&mut rows, "Casualties 3", &["casualties3"]);
+    add_row(&mut rows, "Notes", &["notes"]);
+
+    rows.push("|}".to_string());
+    rows.join("\n")
+}
+
 /// [Infobox planet](https://en.wikipedia.org/wiki/Template:Infobox_planet)
 pub(crate) fn render_infobox_planet_template(params: &str) -> String {
     fn render_infobox_file_link_label(value: &str) -> String {
