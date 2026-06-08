@@ -67,7 +67,7 @@ links_to_pages: false
 # How to render same-language Wikipedia links for pages that are not included in the book.
 # Valid values:
 #   - "display"    : Link to Wikipedia without the external-link arrow.
-#   - "emphasize"  : Link to Wikipedia and add the external-link arrow (current behavior).
+#   - "emphasize"  : Link to Wikipedia and add the external-link arrow.
 #   - "disregard"  : Show the text without a link.
 links_to_excluded_pages: emphasize
 
@@ -94,13 +94,13 @@ chapters: "title"
 articles:
   # Stand-alone article
   - "Earth"
-  
+
   # Parent article with nested sub-pages
   - title: "Solar System"
     articles:
       - "Sun"
       - "Mercury"
-  
+
   # Purely structural section heading/divider
   - title: "Planets Info"
     type: "section"
