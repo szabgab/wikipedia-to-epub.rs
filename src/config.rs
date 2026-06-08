@@ -27,6 +27,7 @@ pub enum ArticleConfig {
 }
 
 #[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct DetailedArticle {
     pub title: String,
     #[serde(rename = "type")]
@@ -52,6 +53,7 @@ pub enum LinksToExcludedPages {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct BookConfig {
     pub id: Option<String>,
     pub chapters: ChapterStyle,
@@ -73,6 +75,7 @@ pub struct BookConfig {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Metadata {
     pub title: String,
     pub author: String,
@@ -118,8 +121,22 @@ where
 
 pub fn read_config(path: &Path) -> AppResult<BookConfig> {
     let content = fs::read_to_string(path)?;
-    let config: BookConfig = serde_yaml::from_str(&content)?;
-    Ok(config)
+    parse_config_str(path, &content)
+}
+
+pub(crate) fn parse_config_str(path: &Path, content: &str) -> AppResult<BookConfig> {
+    serde_yaml::from_str(content).map_err(|err| {
+        let mut message = format!("invalid configuration in {}", path.display());
+        if let Some(location) = err.location() {
+            message.push_str(&format!(
+                " at line {}, column {}",
+                location.line(),
+                location.column()
+            ));
+        }
+        message.push_str(&format!(": {err}"));
+        AppError::Message(message)
+    })
 }
 
 pub fn current_utc_date() -> (i32, i32, i32) {

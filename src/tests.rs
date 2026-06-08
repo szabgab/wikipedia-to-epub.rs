@@ -27,6 +27,7 @@ use crate::http_failure_detail;
 use crate::internal_links;
 use crate::normalized_wikipedia_language;
 use crate::parse_args_from;
+use crate::parse_config_str;
 use crate::read_or_fetch_bytes_with_stats;
 use crate::read_or_fetch_text_with_stats;
 use crate::render_templates;
@@ -3010,6 +3011,97 @@ articles:
         error.to_string().contains("links_to_excluded_pages"),
         "{error}"
     );
+}
+
+#[test]
+fn read_config_rejects_unknown_fields_with_clear_error() {
+    let error = parse_config_str(
+        Path::new("sample.yaml"),
+        r#"chapters: title
+metadata:
+  title: Sample
+  author: Wikipedia contributors
+  language: en
+  edition: First edition
+output-file: sample.epub
+cover: "None"
+links_to_pages: false
+links_to_excluded_pages: emphasize
+caching: none
+depth: 0
+unexpected: true
+articles:
+  - Sample
+"#,
+    )
+    .expect_err("config should reject unknown fields");
+
+    let message = error.to_string();
+    assert!(
+        message.contains("invalid configuration in sample.yaml"),
+        "{message}"
+    );
+    assert!(message.contains("unknown field `unexpected`"), "{message}");
+}
+
+#[test]
+fn read_config_rejects_invalid_values_with_clear_error() {
+    let error = parse_config_str(
+        Path::new("sample.yaml"),
+        r#"chapters: title
+metadata:
+  title: Sample
+  author: Wikipedia contributors
+  language: en
+  edition: First edition
+output-file: sample.epub
+cover: "None"
+links_to_pages: false
+links_to_excluded_pages: emphasize
+caching: remote
+depth: 0
+articles:
+  - Sample
+"#,
+    )
+    .expect_err("config should reject invalid values");
+
+    let message = error.to_string();
+    assert!(
+        message.contains("invalid configuration in sample.yaml"),
+        "{message}"
+    );
+    assert!(message.contains("caching"), "{message}");
+    assert!(message.contains("unknown variant `remote`"), "{message}");
+}
+
+#[test]
+fn read_config_rejects_missing_fields_with_clear_error() {
+    let error = parse_config_str(
+        Path::new("sample.yaml"),
+        r#"chapters: title
+metadata:
+  title: Sample
+  author: Wikipedia contributors
+  language: en
+  edition: First edition
+cover: "None"
+links_to_pages: false
+links_to_excluded_pages: emphasize
+caching: none
+depth: 0
+articles:
+  - Sample
+"#,
+    )
+    .expect_err("config should reject missing required fields");
+
+    let message = error.to_string();
+    assert!(
+        message.contains("invalid configuration in sample.yaml"),
+        "{message}"
+    );
+    assert!(message.contains("missing field `output-file`"), "{message}");
 }
 
 #[test]

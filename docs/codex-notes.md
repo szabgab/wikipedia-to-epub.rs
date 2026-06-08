@@ -1,5 +1,42 @@
 # Codex Session Notes
 
+## 2026-06-08 Reject Invalid YAML Configurations
+
+### Summary
+
+Tightened YAML configuration parsing so unknown fields are rejected and missing or invalid fields surface as clear file-scoped configuration errors before any book processing starts. Added focused tests for unknown-field, invalid-value, and missing-field failures.
+
+### Decisions Made
+
+* Added `serde(deny_unknown_fields)` to the main config structs so stray keys are rejected instead of silently ignored.
+* Wrapped YAML deserialization in a config-specific parser helper that prefixes failures with the config path and line/column when available.
+* Kept the existing field requirements intact and extended tests around the clearer error surface instead of changing the config schema itself.
+
+### Files Changed
+
+* `src/config.rs` [MODIFY]
+  * Rejected unknown fields on config structs and added clearer file-scoped YAML error reporting.
+* `src/tests.rs` [MODIFY]
+  * Added focused tests covering unknown fields, invalid enum values, and missing required fields.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session note.
+
+### Tests Run
+
+* `cargo test read_config_rejects_unknown_fields_with_clear_error`
+* `cargo test read_config_rejects_invalid_values_with_clear_error`
+* `cargo test read_config_rejects_missing_fields_with_clear_error`
+* `cargo test book_config_requires_links_to_excluded_pages`
+* `./sort.sh`
+* `cargo fmt`
+* `cargo test`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Show Both `convert` Values
 
 ### Summary
