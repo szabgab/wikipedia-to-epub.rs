@@ -491,6 +491,8 @@ pub(crate) fn render_template(content: &str) -> String {
         render_lnl_template(params)
     } else if template.eq_ignore_ascii_case("Infobox mountain") {
         render_infobox_mountain_template(params)
+    } else if template.eq_ignore_ascii_case("Infobox planet") {
+        render_infobox_planet_template(params)
     } else if template.eq_ignore_ascii_case("Infobox settlement") {
         render_infobox_settlement_template(params)
     } else if template.eq_ignore_ascii_case("Infobox") {
@@ -784,6 +786,7 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("color")
         || template.eq_ignore_ascii_case("colour")
         || template.eq_ignore_ascii_case("Infobox mountain")
+        || template.eq_ignore_ascii_case("Infobox planet")
         || template.eq_ignore_ascii_case("Infobox settlement")
         || template.eq_ignore_ascii_case("Infobox")
         || template.eq_ignore_ascii_case("native name list")
@@ -811,6 +814,7 @@ pub(crate) fn is_silent_template_name(template: &str) -> bool {
             .get(.."Infobox".len())
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("Infobox"))
             && !template.eq_ignore_ascii_case("Infobox mountain")
+            && !template.eq_ignore_ascii_case("Infobox planet")
             && !template.eq_ignore_ascii_case("Infobox settlement")
             && !template.eq_ignore_ascii_case("Infobox"))
         || template

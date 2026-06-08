@@ -4766,6 +4766,52 @@ fn render_wikitext_formats_infobox_settlement_template() {
 }
 
 #[test]
+fn render_wikitext_formats_infobox_planet_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        r#"{{Infobox planet
+| name = Mars
+| symbol = [[File:Mars symbol (bold).svg|24px|♂|class=skin-invert]]
+| image = Mars.png
+| caption = Mars in true color
+| aphelion = {{convert|249261000|km|AU|abbr=on}}
+| mean_radius = {{val|3389.5|u=km}}
+| satellites = [[Moons of Mars|2]]
+| temp_name2 = Surface
+| min_temp_2 = −110&nbsp;°C
+| mean_temp_2 = −24&nbsp;°C
+| max_temp_2 = 35&nbsp;°C
+| atmosphere_composition = [[Carbon dioxide]]
+}}"#,
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Name"), "{rendered}");
+    assert!(rendered.contains("Mars"), "{rendered}");
+    assert!(rendered.contains("Symbol"), "{rendered}");
+    assert!(rendered.contains("♂"), "{rendered}");
+    assert!(rendered.contains("Image"), "{rendered}");
+    assert!(rendered.contains("Mars.png"), "{rendered}");
+    assert!(rendered.contains("Mars in true color"), "{rendered}");
+    assert!(rendered.contains("Aphelion"), "{rendered}");
+    assert!(rendered.contains("249261000 km"), "{rendered}");
+    assert!(rendered.contains("Mean radius"), "{rendered}");
+    assert!(rendered.contains("3389.5 km"), "{rendered}");
+    assert!(rendered.contains("Satellites"), "{rendered}");
+    assert!(
+        rendered.contains("https://en.wikipedia.org/wiki/Moons_of_Mars"),
+        "{rendered}"
+    );
+    assert!(rendered.contains(">2</a>"), "{rendered}");
+    assert!(rendered.contains("Surface"), "{rendered}");
+    assert!(rendered.contains("min −110"), "{rendered}");
+    assert!(rendered.contains("mean −24"), "{rendered}");
+    assert!(rendered.contains("max 35"), "{rendered}");
+    assert!(rendered.contains("Atmosphere composition"), "{rendered}");
+    assert!(rendered.contains("Carbon dioxide"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_infobox_generic_template() {
     let rendered = render_wikitext(
         "Sample",

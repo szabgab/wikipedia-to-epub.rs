@@ -943,6 +943,189 @@ pub(crate) fn render_infobox_mountain_template(params: &str) -> String {
     rows.join("\n")
 }
 
+/// [Infobox planet](https://en.wikipedia.org/wiki/Template:Infobox_planet)
+pub(crate) fn render_infobox_planet_template(params: &str) -> String {
+    fn render_infobox_file_link_label(value: &str) -> String {
+        let trimmed = value.trim();
+        if !(trimmed.starts_with("[[File:") || trimmed.starts_with("[[Image:"))
+            || !trimmed.ends_with("]]")
+        {
+            return render_templates(trimmed);
+        }
+
+        let inner = &trimmed[2..trimmed.len() - 2];
+        let parts = split_template_params(inner)
+            .into_iter()
+            .map(|part| part.trim().to_string())
+            .collect::<Vec<_>>();
+
+        let display = parts
+            .iter()
+            .skip(1)
+            .rev()
+            .find(|part| {
+                let value = part.trim();
+                !value.is_empty()
+                    && !value.contains('=')
+                    && !matches!(
+                        value.to_ascii_lowercase().as_str(),
+                        "thumb"
+                            | "thumbnail"
+                            | "right"
+                            | "left"
+                            | "center"
+                            | "frame"
+                            | "frameless"
+                            | "border"
+                    )
+                    && !value.to_ascii_lowercase().ends_with("px")
+            })
+            .cloned();
+
+        display
+            .map(|value| render_templates(&value))
+            .unwrap_or_default()
+    }
+
+    let named = template_named_params(params);
+    let mut rows = Vec::new();
+
+    rows.push("{| class=\"wikitable\"".to_string());
+
+    if let Some(name) = template_param(&named, &["name"]) {
+        rows.push("|-".to_string());
+        rows.push("! Name".to_string());
+        rows.push(format!("| {}", render_templates(name)));
+    }
+
+    if let Some(symbol) = template_param(&named, &["symbol"]) {
+        rows.push("|-".to_string());
+        rows.push("! Symbol".to_string());
+        rows.push(format!("| {}", render_infobox_file_link_label(symbol)));
+    }
+
+    if let Some(image) = template_param(&named, &["image"]) {
+        rows.push("|-".to_string());
+        rows.push("! Image".to_string());
+        if let Some(caption) = template_param(&named, &["caption"]) {
+            rows.push(format!(
+                "| {}__WIKIPEDIA_TO_EPUB_BR__{}",
+                render_templates(image),
+                render_templates(caption)
+            ));
+        } else {
+            rows.push(format!("| {}", render_templates(image)));
+        }
+    }
+
+    let add_row = |rows: &mut Vec<String>, label: &str, keys: &[&str]| {
+        if let Some(val) = template_param(&named, keys) {
+            rows.push("|-".to_string());
+            rows.push(format!("! {}", label));
+            rows.push(format!("| {}", render_templates(val)));
+        }
+    };
+
+    add_row(&mut rows, "Alternative names", &["alt_names"]);
+    add_row(&mut rows, "Named after", &["named_after"]);
+    add_row(&mut rows, "Adjectives", &["adjectives"]);
+    add_row(&mut rows, "Pronunciation", &["pronounced"]);
+
+    add_row(&mut rows, "Epoch", &["epoch"]);
+    add_row(&mut rows, "Aphelion", &["aphelion"]);
+    add_row(&mut rows, "Perihelion", &["perihelion"]);
+    add_row(&mut rows, "Time of perihelion", &["time_periastron"]);
+    add_row(&mut rows, "Semi-major axis", &["semimajor"]);
+    add_row(&mut rows, "Eccentricity", &["eccentricity"]);
+    add_row(&mut rows, "Orbital period", &["period"]);
+    add_row(&mut rows, "Synodic period", &["synodic_period"]);
+    add_row(&mut rows, "Average speed", &["avg_speed"]);
+    add_row(&mut rows, "Mean anomaly", &["mean_anomaly"]);
+    add_row(&mut rows, "Inclination", &["inclination"]);
+    add_row(&mut rows, "Ascending node", &["asc_node"]);
+    add_row(&mut rows, "Argument of perihelion", &["arg_peri"]);
+    add_row(&mut rows, "Satellites", &["satellites"]);
+
+    add_row(&mut rows, "Mean radius", &["mean_radius"]);
+    add_row(&mut rows, "Equatorial radius", &["equatorial_radius"]);
+    add_row(&mut rows, "Polar radius", &["polar_radius"]);
+    add_row(&mut rows, "Flattening", &["flattening"]);
+    add_row(&mut rows, "Circumference", &["circumference"]);
+    add_row(&mut rows, "Surface area", &["surface_area"]);
+    add_row(&mut rows, "Volume", &["volume"]);
+    add_row(&mut rows, "Mass", &["mass"]);
+    add_row(&mut rows, "Density", &["density"]);
+    add_row(&mut rows, "Surface gravity", &["surface_grav"]);
+    add_row(
+        &mut rows,
+        "Moment of inertia factor",
+        &["moment_of_inertia_factor"],
+    );
+    add_row(&mut rows, "Escape velocity", &["escape_velocity"]);
+    add_row(&mut rows, "Rotation period", &["rotation"]);
+    add_row(&mut rows, "Sidereal day", &["sidereal_day"]);
+    add_row(&mut rows, "Rotational velocity", &["rot_velocity"]);
+    add_row(&mut rows, "Axial tilt", &["axial_tilt"]);
+    add_row(
+        &mut rows,
+        "North pole right ascension",
+        &["right_asc_north_pole"],
+    );
+    add_row(&mut rows, "North pole declination", &["declination"]);
+    add_row(&mut rows, "Albedo", &["albedo"]);
+    add_row(&mut rows, "Magnitude", &["magnitude"]);
+    add_row(&mut rows, "Absolute magnitude", &["abs_magnitude"]);
+    add_row(&mut rows, "Angular size", &["angular_size"]);
+    add_row(&mut rows, "Single temperature", &["single_temperature"]);
+
+    for idx in 1..=3 {
+        let temp_name_key = format!("temp_name{}", idx);
+        let min_temp_key = format!("min_temp_{}", idx);
+        let mean_temp_key = format!("mean_temp_{}", idx);
+        let max_temp_key = format!("max_temp_{}", idx);
+
+        let name = template_param_owned(&named, &[temp_name_key])
+            .unwrap_or_else(|| format!("Temperature {idx}"));
+        let mut temp_parts = Vec::new();
+        if let Some(value) = template_param_owned(&named, &[min_temp_key]) {
+            temp_parts.push(format!("min {}", render_templates(&value)));
+        }
+        if let Some(value) = template_param_owned(&named, &[mean_temp_key]) {
+            temp_parts.push(format!("mean {}", render_templates(&value)));
+        }
+        if let Some(value) = template_param_owned(&named, &[max_temp_key]) {
+            temp_parts.push(format!("max {}", render_templates(&value)));
+        }
+        if !temp_parts.is_empty() {
+            rows.push("|-".to_string());
+            rows.push(format!("! {}", render_templates(&name)));
+            rows.push(format!("| {}", temp_parts.join("__WIKIPEDIA_TO_EPUB_BR__")));
+        }
+    }
+
+    add_row(
+        &mut rows,
+        "Surface equivalent dose rate",
+        &["surface_equivalent_dose_rate"],
+    );
+    add_row(
+        &mut rows,
+        "Surface absorbed dose rate",
+        &["surface_absorbed_dose_rate"],
+    );
+    add_row(&mut rows, "Atmosphere", &["atmosphere"]);
+    add_row(&mut rows, "Surface pressure", &["surface_pressure"]);
+    add_row(
+        &mut rows,
+        "Atmosphere composition",
+        &["atmosphere_composition"],
+    );
+    add_row(&mut rows, "Notes", &["note"]);
+
+    rows.push("|}".to_string());
+    rows.join("\n")
+}
+
 /// [Infobox settlement](https://en.wikipedia.org/wiki/Template:Infobox_settlement)
 pub(crate) fn render_infobox_settlement_template(params: &str) -> String {
     let named = template_named_params(params);

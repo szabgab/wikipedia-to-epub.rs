@@ -1,5 +1,50 @@
 # Codex Session Notes
 
+## 2026-06-08 Add Infobox planet Support
+
+### Summary
+
+Added support for rendering `Infobox planet` templates as two-column wikitables so planetary article pages now include their infobox content instead of dropping it. Updated the affected `planets` expected EPUB fixtures and documented the new conversion rule.
+
+### Decisions Made
+
+* Added a dedicated `render_infobox_planet_template` renderer in `src/templates/formatting.rs` rather than routing through the generic infobox path, because the planet template has stable domain-specific fields worth labeling explicitly.
+* Rendered key sections including symbol, image/caption, orbital parameters, physical properties, temperature rows, and atmosphere-related fields.
+* Added special handling for file-link-based planet symbols so glyphs like `♂` survive the wikitext cleanup path.
+* Kept the existing table-rendering pipeline by emitting a `wikitable`, including the project’s internal line-break placeholder where multi-line cell content is needed.
+* Regenerated the affected `expected/planets/OEBPS/*.xhtml` fixtures from a fresh local build because the new infobox output intentionally changes chapter XHTML.
+
+### Files Changed
+
+* `src/templates/formatting.rs` [MODIFY]
+  * Added `render_infobox_planet_template`.
+* `src/templates/mod.rs` [MODIFY]
+  * Wired `Infobox planet` into template dispatch and infobox allowlists.
+* `src/tests.rs` [MODIFY]
+  * Added unit coverage for `Infobox planet`.
+* `expected/planets/OEBPS/Earth.xhtml` [MODIFY]
+* `expected/planets/OEBPS/Mars.xhtml` [MODIFY]
+* `expected/planets/OEBPS/Venus.xhtml` [MODIFY]
+  * Updated expected XHTML output to include rendered planetary infobox tables.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented the new `Infobox planet` conversion rule.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session note.
+
+### Tests Run
+
+* `./sort.sh`
+* `cargo test render_wikitext_formats_infobox_planet_template`
+* `cargo test --test books`
+* `cargo test`
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Add HTML Book Report
 
 ### Summary
