@@ -26,7 +26,6 @@ metadata:
 
   # (Optional) The publication date of the book.
   # Value: Date string (typically YYYY-MM-DD) or null/omitted.
-  date: "2026-05-29"
 
   # The edition designation for the compiled book.
   # Value: Any descriptive string (e.g., "First edition").

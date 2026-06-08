@@ -5,7 +5,6 @@ metadata:
   license: "Creative Commons Attribution-ShareAlike 4.0 License"
   language: "en"
   edition: "First edition"
-  date: "2026-06-01"
 output-file: "planets.epub"
 images: false
 caching: "central"
