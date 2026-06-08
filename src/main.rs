@@ -2827,24 +2827,108 @@ fn render_jct_template(params: &str) -> String {
     String::new()
 }
 
+/// https://en.wikipedia.org/wiki/Template:Nihongo
 fn render_japanese_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
-    let term = positional.first().map_or("", |value| value.trim());
-    let japanese = positional.get(1).map_or("", |value| value.trim());
 
-    if japanese.is_empty() {
-        return term.to_string();
+    let english = positional
+        .first()
+        .cloned()
+        .or_else(|| named.get("1").cloned())
+        .or_else(|| named.get("english").cloned())
+        .unwrap_or_default();
+    let kanji = positional
+        .get(1)
+        .cloned()
+        .or_else(|| named.get("2").cloned())
+        .or_else(|| named.get("japanese").cloned())
+        .unwrap_or_default();
+    let romaji = positional
+        .get(2)
+        .cloned()
+        .or_else(|| named.get("3").cloned())
+        .or_else(|| named.get("romaji").cloned())
+        .unwrap_or_default();
+    let extra = positional
+        .get(3)
+        .cloned()
+        .or_else(|| named.get("4").cloned())
+        .or_else(|| named.get("extra").cloned())
+        .unwrap_or_default();
+    let extra2 = positional
+        .get(4)
+        .cloned()
+        .or_else(|| named.get("5").cloned())
+        .or_else(|| named.get("extra2").cloned())
+        .unwrap_or_default();
+    let lead = named.get("lead").cloned().unwrap_or_default();
+
+    let english = render_templates(&english);
+    let kanji = render_templates(&kanji);
+    let romaji = render_templates(&romaji);
+    let extra = render_templates(&extra);
+    let extra2 = render_templates(&extra2);
+
+    let mut parts = Vec::new();
+    if !kanji.trim().is_empty() {
+        let kanji_trimmed = kanji.trim();
+        if lead.eq_ignore_ascii_case("yes") || lead.eq_ignore_ascii_case("y") {
+            parts.push(format!(
+                "Japanese: __WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__{kanji_trimmed}__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__"
+            ));
+        } else {
+            parts.push(format!(
+                "__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__{kanji_trimmed}__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__"
+            ));
+        }
     }
 
-    let extra = template_param(&named, &["extra"])
-        .map(render_templates)
-        .filter(|value| !value.trim().is_empty());
-    let suffix = extra.map_or(String::new(), |extra| format!("; {extra}"));
+    if !romaji.trim().is_empty() {
+        let romaji_trimmed = romaji.trim();
+        if lead.eq_ignore_ascii_case("yes") || lead.eq_ignore_ascii_case("y") {
+            parts.push(format!("Hepburn: ''{romaji_trimmed}''"));
+        } else {
+            parts.push(format!("''{romaji_trimmed}''"));
+        }
+    }
 
-    format!(
-        "{term}__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_START__ (__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__{japanese}__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__{suffix})__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_END__"
-    )
+    let mut inside = parts.join(", ");
+    if !extra.trim().is_empty() {
+        let extra_trimmed = extra.trim();
+        if inside.is_empty() {
+            inside = extra_trimmed.to_string();
+        } else {
+            inside = format!("{inside}; {extra_trimmed}");
+        }
+    }
+
+    let paren_part = if inside.is_empty() {
+        String::new()
+    } else {
+        format!(
+            "__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_START__ ({inside})__WIKIPEDIA_TO_EPUB_JAPANESE_NORMAL_END__"
+        )
+    };
+
+    let mut result = english.trim().to_string();
+    if !paren_part.is_empty() {
+        if !result.is_empty() {
+            result.push_str(&paren_part);
+        } else {
+            result = paren_part;
+        }
+    }
+    if !extra2.trim().is_empty() {
+        let extra2_trimmed = extra2.trim();
+        if !result.is_empty() {
+            result = format!("{result} {extra2_trimmed}");
+        } else {
+            result = extra2_trimmed.to_string();
+        }
+    }
+
+    result
 }
 
 fn render_nihongo_foot_template(params: &str) -> String {

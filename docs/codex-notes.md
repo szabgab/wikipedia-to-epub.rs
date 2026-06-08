@@ -4236,3 +4236,46 @@ Latest verification passed:
 
 * None. All tests pass and the templates are fully supported.
 
+
+## Session Note: 2026-06-08 - Expanded Nihongo Template Handling
+
+### Decisions Made
+
+* Supported additional parameters for the `Nihongo` and `Nihongo4` templates:
+  * Parsed and rendered the third positional parameter (Rōmaji) in italics.
+  * Parsed and rendered the fourth positional parameter (Extra) inside the parentheses.
+  * Parsed and rendered the fifth positional parameter (Extra2) outside the parentheses.
+  * Supported the `lead` parameter (e.g. `lead=yes`) to add the "Japanese:" and "Hepburn:" labels inside the parentheses.
+* Added a new unit test for the extended `Nihongo` template features in `src/tests.rs`.
+* Updated `DEVELOPMENT.md` to document the extended conversion rules.
+* Updated expected XHTML fixtures for all affected integration tests (`Kiso_Mountains`, `buddhist-temples-in-japan`, `japan`, `kyoto`, and `osaka`) using the python-based regeneration process.
+
+### Files Changed
+
+* `src/main.rs`
+  * Updated `render_japanese_template` to support all 5 positional parameters plus the `lead` parameter.
+* `src/tests.rs`
+  * Added `render_wikitext_formats_japanese_nihongo_extended_templates` unit test.
+* `DEVELOPMENT.md`
+  * Updated the example and description of `Nihongo` template conversion.
+* `expected/buddhist-temples-in-japan/`
+* `expected/japan/`
+* `expected/Kiso_Mountains/`
+* `expected/kyoto/`
+* `expected/osaka/`
+  * Regenerated expected XHTML fixtures to match the new template outputs.
+* `docs/codex-notes.md`
+  * Appended the current session notes.
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test` (all 225 unit tests and 33 integration tests pass successfully)
+
+### Pending Follow-Ups
+
+* None.
+
+

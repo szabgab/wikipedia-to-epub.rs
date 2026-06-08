@@ -1398,6 +1398,51 @@ fn render_wikitext_formats_japanese_nihongo_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_japanese_nihongo_extended_templates() {
+    // 1. Test positional romaji
+    let rendered1 = render_wikitext(
+        "Sample",
+        "{{nihongo|'''Kiso Mountains'''|木曽山脈|Kiso Sanmyaku}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered1.contains(
+            r#"<strong>Kiso Mountains</strong><span> (<span title="Japanese-language text"><span lang="ja">木曽山脈</span></span>, <em>Kiso Sanmyaku</em>)</span>"#
+        ),
+        "rendered1: {rendered1}"
+    );
+
+    // 2. Test positional extra and extra2
+    let rendered2 = render_wikitext(
+        "Sample",
+        "{{nihongo|komusō|虚無僧|komusō|extra text|extra2 text}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered2.contains(
+            r#"komusō<span> (<span title="Japanese-language text"><span lang="ja">虚無僧</span></span>, <em>komusō</em>; extra text)</span> extra2 text"#
+        ),
+        "rendered2: {rendered2}"
+    );
+
+    // 3. Test lead=yes parameter
+    let rendered3 = render_wikitext(
+        "Sample",
+        "{{nihongo|Tokyo Tower|東京タワー|Tōkyō tawā|lead=yes}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered3.contains(
+            r#"Tokyo Tower<span> (Japanese: <span title="Japanese-language text"><span lang="ja">東京タワー</span></span>, Hepburn: <em>Tōkyō tawā</em>)</span>"#
+        ),
+        "rendered3: {rendered3}"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_lang_templates() {
     let cases = [
         ("{{lang|ko|서울}}", r#"<p><span lang="ko">서울</span></p>"#),

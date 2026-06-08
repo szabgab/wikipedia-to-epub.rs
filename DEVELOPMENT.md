@@ -62,7 +62,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * With `images: true`, `[[File:Ships in Busan.jpg|thumb|alt=Shipyard view|Busan port]]` becomes an embedded EPUB image block with `Shipyard view` as the image alt text and `Busan port` as the caption
 * `{{Korean|hangul=서울|labels=no}}` and `{{ko|hangul=서울|labels=no}}` become `<span title="Korean-language text">Korean: <span lang="ko-Hang">서울</span></span>`
 * `{{Korean/auto|hangul=부산|hanja=釜山|ko_ipa=pusʰa̠n}}` becomes Korean and Hanja labels followed by `pronounced [pusʰa̠n]`; auto-template markers such as `^` and `_` are removed
-* `{{Nihongo|Busan Japanese School|釜山日本人学校|extra={{lang|ko|부산일본인학교}}}}` becomes the English text followed by Japanese-language text and the extra text
+* `{{Nihongo|Tokyo Tower|東京タワー|Tōkyō tawā|extra text|extra2 text}}` becomes the English text followed by Japanese-language text, italicized Rōmaji, extra text inside the parentheses, and extra2 text outside the parentheses
 * `{{Nihongo4|''[[Edo (Tokyo)|Edo]]''|[[wikt:江戸|江戸]]}}` becomes an italicized `Edo` article link followed by the Japanese text in a `lang="ja"` span
 * `{{lang|ko|서울}}` becomes `<span lang="ko">서울</span>`
 * `{{in lang|ko}}` becomes `(in Korean)`
