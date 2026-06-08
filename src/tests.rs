@@ -50,6 +50,53 @@ fn article_candidates_cover_common_file_names() {
 }
 
 #[test]
+fn render_wikitext_formats_reflist_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        r#"Intro text.<ref>{{cite web|title=Example reference|url=https://example.com|website=Example}}</ref>
+
+== References ==
+{{Reflist}}"#,
+        &InternalLinks::new(),
+        "en",
+    );
+
+    assert!(rendered.contains("<h2>References</h2>"), "{rendered}");
+    assert!(
+        rendered.contains(r#"<ol class="references">"#),
+        "{rendered}"
+    );
+    assert!(rendered.contains("Example reference"), "{rendered}");
+    assert!(rendered.contains(r#"https://example.com"#), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_reflist_with_named_refs_param() {
+    let rendered = render_wikitext(
+        "Sample",
+        r#"Named note text.<ref group="n" name="alpha" />
+
+== Notes ==
+{{Reflist|group=n|refs=
+<ref group="n" name="alpha">{{cite web|title=Named note|url=https://example.com/note}}</ref>
+}}"#,
+        &InternalLinks::new(),
+        "en",
+    );
+
+    assert!(rendered.contains("<h2>Notes</h2>"), "{rendered}");
+    assert!(
+        rendered.contains(r#"<ol class="references">"#),
+        "{rendered}"
+    );
+    assert!(rendered.contains("Named note"), "{rendered}");
+    assert!(
+        rendered.contains(r#"https://example.com/note"#),
+        "{rendered}"
+    );
+}
+
+#[test]
 fn render_wikitext_handles_sections_links_and_lists() {
     let internal_links = internal_links(&["Sample".to_string(), "Seoul".to_string()]);
     let (rendered, counts) = render_wikitext_with_template_counts(
@@ -1296,7 +1343,7 @@ Visible text."#,
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 113,
+            recognized: 112,
             unknown: 0
         }
     );

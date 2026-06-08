@@ -1,5 +1,70 @@
 # Codex Session Notes
 
+## 2026-06-08 Add Reflist Rendering
+
+### Summary
+
+Changed `Reflist` from an ignored template into rendered output. The renderer now collects page `<ref>` tags before the normal cleanup strips them, and inserts ordered reference lists at `{{Reflist}}` locations, including grouped reflists such as `{{Reflist|group=n}}`.
+
+### Decisions Made
+
+* Implemented page-level reference collection in `src/main.rs` rather than a simple template function, because `Reflist` depends on `<ref>` tags that were previously removed before template rendering.
+* Added support for named references, self-closing named references, grouped references, and definitions supplied through `{{Reflist|refs=...}}`.
+* Kept empty `{{Reflist}}` blocks silent so pages without collected references do not gain blank placeholder output.
+* Left `notelist` and related wrappers unchanged; only `Reflist` now renders collected references.
+* Regenerated all affected expected books whose chapter output changed because references are now visible.
+
+### Files Changed
+
+* `src/main.rs` [MODIFY]
+  * Added reference parsing, grouped reference collection, reflist placeholder replacement, and ordered reference list rendering.
+* `src/tests.rs` [MODIFY]
+  * Added reflist unit coverage and updated the metadata-template skip-count expectation.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented rendered `Reflist` behavior and narrowed the omission note to the still-ignored wrappers.
+* `expected/administrative-divisions-of-south-korea/` [MODIFY]
+* `expected/buddhist-temples-in-japan/` [MODIFY]
+* `expected/busan-images/` [MODIFY]
+* `expected/busan/` [MODIFY]
+* `expected/goguryeo/` [MODIFY]
+* `expected/han-dynasty/` [MODIFY]
+* `expected/hangul/` [MODIFY]
+* `expected/history-of-korea/` [MODIFY]
+* `expected/japan/` [MODIFY]
+* `expected/joseon/` [MODIFY]
+* `expected/Kiso_Mountains/` [MODIFY]
+* `expected/korea/` [MODIFY]
+* `expected/korean-language/` [MODIFY]
+* `expected/korean-war/` [MODIFY]
+* `expected/kyoto/` [MODIFY]
+* `expected/macchini-deep/` [MODIFY]
+* `expected/macchini/` [MODIFY]
+* `expected/north-korea/` [MODIFY]
+* `expected/osaka/` [MODIFY]
+* `expected/parhae/` [MODIFY]
+* `expected/planets/` [MODIFY]
+* `expected/sejong-the-great/` [MODIFY]
+* `expected/seoul/` [MODIFY]
+* `expected/south-korea/` [MODIFY]
+  * Updated expected XHTML/metadata files to match rendered reflists.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session note.
+
+### Tests Run
+
+* `cargo test render_wikitext_formats_reflist`
+* `cargo test render_wikitext_silently_skips_metadata_templates`
+* `./sort.sh`
+* `cargo test --test books`
+* `cargo test`
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Add Comma Grouping to convert Values
 
 ### Summary

@@ -1,6 +1,6 @@
 use std::{
     cell::RefCell,
-    collections::{BTreeMap, BTreeSet, HashMap},
+    collections::{BTreeMap, BTreeSet, HashMap, HashSet},
     env, fs,
     path::{Path, PathBuf},
 };
@@ -910,6 +910,16 @@ fn render_wikitext_impl(
         .unwrap()
         .replace_all(&text, "")
         .into_owned();
+    let reference_groups = collect_reference_groups(&text);
+    let mut reflists = Vec::new();
+    text = replace_reflist_templates(
+        &text,
+        &reference_groups,
+        &mut reflists,
+        internal_links,
+        language,
+        links_to_excluded_pages,
+    );
     text = Regex::new(r"(?is)<ref\b[^>/]*/>")
         .unwrap()
         .replace_all(&text, "")
@@ -970,6 +980,15 @@ fn render_wikitext_impl(
             flush_list(&mut html, &mut active_list);
             if let Some(table_html) = tables.get(table_id) {
                 html.push(table_html.clone());
+            }
+            continue;
+        }
+
+        if let Some(reflist_id) = reflist_marker_id(line) {
+            flush_paragraph(&mut html, &mut paragraph_lines);
+            flush_list(&mut html, &mut active_list);
+            if let Some(reflist_html) = reflists.get(reflist_id) {
+                html.push(reflist_html.clone());
             }
             continue;
         }
@@ -1307,6 +1326,216 @@ fn format_inline_text(text: &str) -> String {
     let html = restore_br_spans(&html);
     let html = restore_sub_spans(&html);
     restore_sup_spans(&html)
+}
+
+#[derive(Clone, Debug)]
+struct ReferenceTag {
+    group: String,
+    name: Option<String>,
+    content: Option<String>,
+}
+
+fn normalize_reference_attr(value: &str) -> String {
+    value
+        .trim()
+        .trim_matches('"')
+        .trim_matches('\'')
+        .trim()
+        .to_string()
+}
+
+fn parse_reference_tags(text: &str) -> Vec<ReferenceTag> {
+    let ref_re = Regex::new(r#"(?is)<ref\b([^>/]*?)/>|<ref\b([^>]*)>(.*?)</ref>"#).unwrap();
+    let name_re = Regex::new(r#"(?i)\bname\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))"#).unwrap();
+    let group_re = Regex::new(r#"(?i)\bgroup\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))"#).unwrap();
+
+    ref_re
+        .captures_iter(text)
+        .map(|captures| {
+            let attrs = captures
+                .get(1)
+                .or_else(|| captures.get(2))
+                .map(|m| m.as_str())
+                .unwrap_or("");
+            let name = name_re
+                .captures(attrs)
+                .and_then(|caps| caps.get(1).or_else(|| caps.get(2)).or_else(|| caps.get(3)))
+                .map(|m| normalize_reference_attr(m.as_str()))
+                .filter(|value| !value.is_empty());
+            let group = group_re
+                .captures(attrs)
+                .and_then(|caps| caps.get(1).or_else(|| caps.get(2)).or_else(|| caps.get(3)))
+                .map(|m| normalize_reference_attr(m.as_str()))
+                .unwrap_or_default();
+            let content = captures
+                .get(3)
+                .map(|m| m.as_str().trim().to_string())
+                .filter(|value| !value.is_empty());
+
+            ReferenceTag {
+                group,
+                name,
+                content,
+            }
+        })
+        .collect()
+}
+
+fn strip_reflist_templates(text: &str) -> String {
+    let mut output = String::with_capacity(text.len());
+    let mut offset = 0usize;
+
+    while let Some(start) = text[offset..].find("{{").map(|index| offset + index) {
+        output.push_str(&text[offset..start]);
+        if let Some(end) = matching_template_end(text, start) {
+            let content = &text[start + 2..end];
+            let (template, _) = split_template_name(content);
+            if template.trim().eq_ignore_ascii_case("reflist") {
+                offset = end + 2;
+                continue;
+            }
+        }
+        output.push_str("{{");
+        offset = start + 2;
+    }
+
+    output.push_str(&text[offset..]);
+    output
+}
+
+fn collect_reference_groups(text: &str) -> HashMap<String, Vec<String>> {
+    let mut named_definitions = HashMap::<(String, String), String>::new();
+    for tag in parse_reference_tags(text) {
+        if let (Some(name), Some(content)) = (tag.name, tag.content) {
+            named_definitions.insert((tag.group, name), content);
+        }
+    }
+
+    let mut groups = HashMap::<String, Vec<String>>::new();
+    let mut seen_named = HashSet::<(String, String)>::new();
+    let occurrence_text = strip_reflist_templates(text);
+
+    for tag in parse_reference_tags(&occurrence_text) {
+        match (tag.name, tag.content) {
+            (Some(name), Some(content)) => {
+                if seen_named.insert((tag.group.clone(), name)) {
+                    groups.entry(tag.group).or_default().push(content);
+                }
+            }
+            (Some(name), None) => {
+                let key = (tag.group.clone(), name.clone());
+                if seen_named.insert(key.clone())
+                    && let Some(content) = named_definitions.get(&key)
+                {
+                    groups.entry(tag.group).or_default().push(content.clone());
+                }
+            }
+            (None, Some(content)) => {
+                groups.entry(tag.group).or_default().push(content);
+            }
+            (None, None) => {}
+        }
+    }
+
+    groups
+}
+
+fn render_reference_list(
+    refs: &[String],
+    internal_links: &InternalLinks,
+    language: &str,
+    links_to_excluded_pages: LinksToExcludedPages,
+) -> String {
+    if refs.is_empty() {
+        return String::new();
+    }
+
+    let items = refs
+        .iter()
+        .filter_map(|reference| {
+            let without_refs = Regex::new(r"(?is)<ref\b[^>/]*/>|<ref\b[^>]*>.*?</ref>")
+                .unwrap()
+                .replace_all(reference, "")
+                .into_owned();
+            let rendered_templates = render_templates(&without_refs);
+            let cleaned = cleanup_inline_markup_with_excluded_links(
+                &rendered_templates,
+                internal_links,
+                language,
+                links_to_excluded_pages,
+            );
+            if cleaned.trim().is_empty() {
+                None
+            } else {
+                Some(format!("<li>{cleaned}</li>"))
+            }
+        })
+        .collect::<Vec<_>>();
+
+    if items.is_empty() {
+        String::new()
+    } else {
+        format!(r#"<ol class="references">{}</ol>"#, items.join(""))
+    }
+}
+
+fn replace_reflist_templates(
+    text: &str,
+    reference_groups: &HashMap<String, Vec<String>>,
+    reflists: &mut Vec<String>,
+    internal_links: &InternalLinks,
+    language: &str,
+    links_to_excluded_pages: LinksToExcludedPages,
+) -> String {
+    let mut output = String::with_capacity(text.len());
+    let mut offset = 0usize;
+
+    while let Some(start) = text[offset..].find("{{").map(|index| offset + index) {
+        output.push_str(&text[offset..start]);
+        if let Some(end) = matching_template_end(text, start) {
+            let content = &text[start + 2..end];
+            let (template, params) = split_template_name(content);
+            if template.trim().eq_ignore_ascii_case("reflist") {
+                let named = template_named_params(params);
+                let group = template_param(&named, &["group"])
+                    .map(normalize_reference_attr)
+                    .unwrap_or_default();
+                let rendered = render_reference_list(
+                    reference_groups
+                        .get(&group)
+                        .map(Vec::as_slice)
+                        .unwrap_or(&[]),
+                    internal_links,
+                    language,
+                    links_to_excluded_pages,
+                );
+                if !rendered.is_empty() {
+                    let reflist_id = reflists.len();
+                    reflists.push(rendered);
+                    output.push('\n');
+                    output.push_str(&format!("__WIKIPEDIA_TO_EPUB_REFLIST_{reflist_id}__"));
+                    output.push('\n');
+                }
+                offset = end + 2;
+                continue;
+            }
+        }
+        output.push_str("{{");
+        offset = start + 2;
+    }
+
+    output.push_str(&text[offset..]);
+    output
+}
+
+fn reflist_marker_id(line: &str) -> Option<usize> {
+    let line = line.trim();
+    if line.starts_with("__WIKIPEDIA_TO_EPUB_REFLIST_") && line.ends_with("__") {
+        let number_str = &line["__WIKIPEDIA_TO_EPUB_REFLIST_".len()..line.len() - 2];
+        number_str.parse::<usize>().ok()
+    } else {
+        None
+    }
 }
 
 fn restore_color_box_spans(html: &str) -> String {
