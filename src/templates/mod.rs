@@ -161,6 +161,36 @@ pub(crate) fn render_template(content: &str) -> String {
         render_respell_template(params)
     } else if template.eq_ignore_ascii_case("abbr") {
         render_abbr_template(params)
+    } else if template.eq_ignore_ascii_case("AWOL") {
+        render_awol_template()
+    } else if template.eq_ignore_ascii_case("Assassinated") {
+        render_assassinated_template(params)
+    } else if template.eq_ignore_ascii_case("DOW")
+        || template.eq_ignore_ascii_case("Died of wounds")
+    {
+        render_died_of_wounds_template()
+    } else if template.eq_ignore_ascii_case("Executed") {
+        render_executed_template(params)
+    } else if template.eq_ignore_ascii_case("KIA") {
+        render_kia_template(params)
+    } else if template.eq_ignore_ascii_case("KIA2") {
+        render_kia2_template(params)
+    } else if template.eq_ignore_ascii_case("MIA") {
+        render_mia_template()
+    } else if template.eq_ignore_ascii_case("Natural Causes") {
+        render_natural_causes_template(params)
+    } else if template.eq_ignore_ascii_case("PKIA") {
+        render_pkia_template()
+    } else if template.eq_ignore_ascii_case("POW") {
+        render_pow_template()
+    } else if template.eq_ignore_ascii_case("Suicide") {
+        render_suicide_template(params)
+    } else if template.eq_ignore_ascii_case("Surrendered") {
+        render_surrendered_template(params)
+    } else if template.eq_ignore_ascii_case("Turncoat") {
+        render_turncoat_template(params)
+    } else if template.eq_ignore_ascii_case("WIA") {
+        render_wia_template()
     } else if template.eq_ignore_ascii_case("frac") || template.eq_ignore_ascii_case("fraction") {
         render_frac_template(params)
     } else if template.eq_ignore_ascii_case("floruit") {
@@ -604,6 +634,21 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("IPAc-en")
         || template.eq_ignore_ascii_case("Respell")
         || template.eq_ignore_ascii_case("abbr")
+        || template.eq_ignore_ascii_case("AWOL")
+        || template.eq_ignore_ascii_case("Assassinated")
+        || template.eq_ignore_ascii_case("DOW")
+        || template.eq_ignore_ascii_case("Died of wounds")
+        || template.eq_ignore_ascii_case("Executed")
+        || template.eq_ignore_ascii_case("KIA")
+        || template.eq_ignore_ascii_case("KIA2")
+        || template.eq_ignore_ascii_case("MIA")
+        || template.eq_ignore_ascii_case("Natural Causes")
+        || template.eq_ignore_ascii_case("PKIA")
+        || template.eq_ignore_ascii_case("POW")
+        || template.eq_ignore_ascii_case("Suicide")
+        || template.eq_ignore_ascii_case("Surrendered")
+        || template.eq_ignore_ascii_case("Turncoat")
+        || template.eq_ignore_ascii_case("WIA")
         || template.eq_ignore_ascii_case("frac")
         || template.eq_ignore_ascii_case("fraction")
         || template.eq_ignore_ascii_case("floruit")

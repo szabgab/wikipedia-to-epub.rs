@@ -1,5 +1,29 @@
 # Codex Session Notes
 
+## 2026-06-09 Add Military status/abbreviation templates
+
+### Summary
+
+Added support for all 14 military-related status and abbreviation templates (`AWOL`, `Assassinated`, `DOW`, `Died of wounds`, `Executed`, `KIA`, `KIA2`, `MIA`, `Natural Causes`, `PKIA`, `POW`, `Suicide`, `Surrendered`, `Turncoat`, `WIA`) commonly used within `Infobox military conflict` and battle description tables on Wikipedia. Added comprehensive unit test coverage for each template, and documented their conversion rules in `DEVELOPMENT.md`.
+
+### Decisions Made
+
+* Implemented the templates in `src/templates/formatting.rs` to match the style of other inline formatting and annotation templates.
+* Handled named parameters such as `alt` and `bold` for templates like `KIA`, `Assassinated`, `Natural Causes`, and `Suicide` to output the correct labels, tooltips, and styles.
+* Parsed and rendered inner templates like `{{tooltip|...}}` and `{{abbr|...}}` correctly by routing them through the main `render_templates` engine.
+* Added separate focused unit tests for each of the 14 templates.
+
+### Files Changed
+
+* `src/templates/formatting.rs` [MODIFY]
+  * Appended the 14 military template render functions.
+* `src/templates/mod.rs` [MODIFY]
+  * Registered the 14 new templates in the main dispatcher and handles-list.
+* `src/tests.rs` [MODIFY]
+  * Added unit tests verifying output representation and configuration handling for each template.
+* `DEVELOPMENT.md` [MODIFY]
+  * Added documentation of the new military template conversion rules.
+
 ## 2026-06-09 Add `official` Template Alias
 
 ### Summary

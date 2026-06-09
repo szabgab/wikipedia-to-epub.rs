@@ -3652,6 +3652,186 @@ fn render_wikitext_formats_usurped_template() {
 }
 
 #[test]
+fn render_wikitext_formats_awol_template() {
+    assert_eq!(
+        render_templates("{{AWOL}}"),
+        "&nbsp;([[Absent without leave|__WIKIPEDIA_TO_EPUB_ABBR_START__Desertion__WIKIPEDIA_TO_EPUB_ABBR_VALUE__AWOL__WIKIPEDIA_TO_EPUB_ABBR_END__]])"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_assassinated_template() {
+    assert_eq!(
+        render_templates("{{Assassinated}}"),
+        "&nbsp;[[Assassination|'''X''']]"
+    );
+    assert_eq!(
+        render_templates("{{Assassinated|bold=no}}"),
+        "&nbsp;[[Assassination|X]]"
+    );
+    assert_eq!(
+        render_templates("{{Assassinated|alt=yes}}"),
+        "&nbsp;[[Assassination|(Assassinated)]]"
+    );
+    assert_eq!(
+        render_templates("{{Assassinated|Some custom link|bold=no}}"),
+        "&nbsp;[[Some custom link|X]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_died_of_wounds_template() {
+    assert_eq!(
+        render_templates("{{Died of wounds}}"),
+        "&nbsp;([[Killed in action|__WIKIPEDIA_TO_EPUB_ABBR_START__Died of wounds__WIKIPEDIA_TO_EPUB_ABBR_VALUE__DOW__WIKIPEDIA_TO_EPUB_ABBR_END__]])"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_dow_template() {
+    assert_eq!(
+        render_templates("{{DOW}}"),
+        "&nbsp;([[Killed in action|__WIKIPEDIA_TO_EPUB_ABBR_START__Died of wounds__WIKIPEDIA_TO_EPUB_ABBR_VALUE__DOW__WIKIPEDIA_TO_EPUB_ABBR_END__]])"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_executed_template() {
+    assert_eq!(
+        render_templates("{{Executed}}"),
+        "&nbsp;[[File:Skull and Crossbones.svg|14px|Executed|link=Capital punishment]]"
+    );
+    assert_eq!(
+        render_templates("{{Executed|Some link}}"),
+        "&nbsp;[[File:Skull and Crossbones.svg|14px|Executed|link=Some link]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_kia_template() {
+    assert_eq!(
+        render_templates("{{KIA}}"),
+        "&nbsp;[[Killed in action|'''†''']]"
+    );
+    assert_eq!(
+        render_templates("{{KIA|bold=no}}"),
+        "&nbsp;[[Killed in action|†]]"
+    );
+    assert_eq!(
+        render_templates("{{KIA|alt=yes}}"),
+        "&nbsp;[[Killed in action|(KIA)]]"
+    );
+    assert_eq!(
+        render_templates("{{KIA|Some custom link|alt=yes}}"),
+        "&nbsp;[[Some custom link|(KIA)]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_kia2_template() {
+    assert_eq!(
+        render_templates("{{KIA2}}"),
+        "&nbsp;[[Killed in action|(KIA)]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_mia_template() {
+    assert_eq!(
+        render_templates("{{MIA}}"),
+        "&nbsp;([[Missing in action|__WIKIPEDIA_TO_EPUB_ABBR_START__Missing in action__WIKIPEDIA_TO_EPUB_ABBR_VALUE__MIA__WIKIPEDIA_TO_EPUB_ABBR_END__]])"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_natural_causes_template() {
+    assert_eq!(
+        render_templates("{{Natural Causes}}"),
+        "&nbsp;[[Manner of death#Natural causes of death|__WIKIPEDIA_TO_EPUB_ABBR_START__Natural causes__WIKIPEDIA_TO_EPUB_ABBR_VALUE__'''#'''__WIKIPEDIA_TO_EPUB_ABBR_END__]]"
+    );
+    assert_eq!(
+        render_templates("{{Natural Causes|bold=no}}"),
+        "&nbsp;[[Manner of death#Natural causes of death|__WIKIPEDIA_TO_EPUB_ABBR_START__Natural causes__WIKIPEDIA_TO_EPUB_ABBR_VALUE__#__WIKIPEDIA_TO_EPUB_ABBR_END__]]"
+    );
+    assert_eq!(
+        render_templates("{{Natural Causes|alt=yes}}"),
+        "&nbsp;[[Manner of death#Natural causes of death|__WIKIPEDIA_TO_EPUB_ABBR_START__Natural causes__WIKIPEDIA_TO_EPUB_ABBR_VALUE__(Natural causes)__WIKIPEDIA_TO_EPUB_ABBR_END__]]"
+    );
+    assert_eq!(
+        render_templates("{{Natural Causes|Some link|alt=yes}}"),
+        "&nbsp;[[Some link|__WIKIPEDIA_TO_EPUB_ABBR_START__Natural causes__WIKIPEDIA_TO_EPUB_ABBR_VALUE__(Natural causes)__WIKIPEDIA_TO_EPUB_ABBR_END__]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_pkia_template() {
+    assert_eq!(
+        render_templates("{{PKIA}}"),
+        "&nbsp;([[Killed in action|__WIKIPEDIA_TO_EPUB_ABBR_START__Presumed killed in action__WIKIPEDIA_TO_EPUB_ABBR_VALUE__PKIA__WIKIPEDIA_TO_EPUB_ABBR_END__]])"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_pow_template() {
+    assert_eq!(
+        render_templates("{{POW}}"),
+        "&#x20;<span style=\"white-space:nowrap\">([[Prisoner of war|__WIKIPEDIA_TO_EPUB_ABBR_START__Prisoner of war__WIKIPEDIA_TO_EPUB_ABBR_VALUE__POW__WIKIPEDIA_TO_EPUB_ABBR_END__]])</span>"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_suicide_template() {
+    assert_eq!(
+        render_templates("{{Suicide}}"),
+        "&nbsp;[[Suicide|'''‡‡''']]"
+    );
+    assert_eq!(
+        render_templates("{{Suicide|bold=no}}"),
+        "&nbsp;[[Suicide|‡‡]]"
+    );
+    assert_eq!(
+        render_templates("{{Suicide|alt=yes}}"),
+        "&nbsp;[[Suicide|(__WIKIPEDIA_TO_EPUB_ABBR_START__[[Suicide]]__WIKIPEDIA_TO_EPUB_ABBR_VALUE__Suicide__WIKIPEDIA_TO_EPUB_ABBR_END__)]]"
+    );
+    assert_eq!(
+        render_templates("{{Suicide|Some custom link|bold=no}}"),
+        "&nbsp;[[Some custom link|‡‡]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_surrendered_template() {
+    assert_eq!(
+        render_templates("{{Surrendered}}"),
+        "&nbsp;[[File:White flag icon.svg|14px|Surrendered|link=Surrender (military)]]"
+    );
+    assert_eq!(
+        render_templates("{{Surrendered|Some link}}"),
+        "&nbsp;[[File:White flag icon.svg|14px|Surrendered|link=Some link]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_turncoat_template() {
+    assert_eq!(
+        render_templates("{{Turncoat}}"),
+        "&nbsp;[[File:Black flag icon.svg|14px|Turncoat|link=Turncoat]]"
+    );
+    assert_eq!(
+        render_templates("{{Turncoat|Some link}}"),
+        "&nbsp;[[File:Black flag icon.svg|14px|Turncoat|link=Some link]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_wia_template() {
+    assert_eq!(
+        render_templates("{{WIA}}"),
+        "&nbsp;([[Wounded in action|__WIKIPEDIA_TO_EPUB_ABBR_START__Wounded in action__WIKIPEDIA_TO_EPUB_ABBR_VALUE__WIA__WIKIPEDIA_TO_EPUB_ABBR_END__]])"
+    );
+}
+
+#[test]
 fn render_wikitext_silently_skips_goguryeo_metadata_templates() {
     let (rendered, counts) = render_wikitext_with_template_counts(
         "Sample",

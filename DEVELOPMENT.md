@@ -137,6 +137,20 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{legend|#EF767E|North Korean forces}}` and `{{legend0|#EF767E|North Korean forces}}` become `North Korean forces`
 * `{{numero|3}}` becomes `No. 3`
 * `{{sic|was}}` becomes `was [sic]`
+* `{{AWOL}}` becomes `([Absent without leave|AWOL])` with the label wrapped in an abbreviation tag: `<abbr title="Desertion">AWOL</abbr>`
+* `{{Assassinated}}` and `{{Assassinated|alt=yes}}` render assassination templates: `[[Assassination|'''X''']]` and `[[Assassination|(Assassinated)]]`
+* `{{DOW}}` and `{{Died of wounds}}` become `([[Killed in action|DOW]])` with the label wrapped in an abbreviation tag: `<abbr title="Died of wounds">DOW</abbr>`
+* `{{Executed}}` and `{{Executed|link=Target}}` render execution markers: `[[File:Skull and Crossbones.svg|14px|Executed|link=Target]]`
+* `{{KIA}}` and `{{KIA|alt=yes}}` render killed-in-action templates: `[[Killed in action|'''†''']]` and `[[Killed in action|(KIA)]]`
+* `{{KIA2}}` becomes `[[Killed in action|(KIA)]]`
+* `{{MIA}}` becomes `([[Missing in action|MIA]])` with the label wrapped in an abbreviation tag: `<abbr title="Missing in action">MIA</abbr>`
+* `{{Natural Causes}}` and `{{Natural Causes|alt=yes}}` render natural causes templates with tooltip abbreviation tags
+* `{{PKIA}}` becomes `([[Killed in action|PKIA]])` with the label wrapped in an abbreviation tag: `<abbr title="Presumed killed in action">PKIA</abbr>`
+* `{{POW}}` becomes `([[Prisoner of war|POW]])` with the label wrapped in an abbreviation tag: `<abbr title="Prisoner of war">POW</abbr>`
+* `{{Suicide}}` and `{{Suicide|alt=yes}}` render suicide templates: `[[Suicide|'''‡‡''']]` and `[[Suicide|(Suicide)]]`
+* `{{Surrendered}}` and `{{Surrendered|link=Target}}` render surrender markers: `[[File:White flag icon.svg|14px|Surrendered|link=Target]]`
+* `{{Turncoat}}` and `{{Turncoat|link=Target}}` render turncoat markers: `[[File:Black flag icon.svg|14px|Turncoat|link=Target]]`
+* `{{WIA}}` becomes `([[Wounded in action|WIA]])` with the label wrapped in an abbreviation tag: `<abbr title="Wounded in action">WIA</abbr>`
 * `{{Nowrap|June 10}}` becomes `June 10`
 * `{{su|p=2|b=x}}` becomes `<sup>2</sup><sub>x</sub>`
 * `{{Smaller|note}}` and `{{small|note}}` become `<small>note</small>`

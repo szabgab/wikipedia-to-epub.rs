@@ -3816,3 +3816,186 @@ pub(crate) fn join_plain_items(items: &[String]) -> String {
 pub(crate) fn format_convert_value(value: &str) -> String {
     value.trim().replace("&minus;", "−")
 }
+
+/// [AWOL](https://en.wikipedia.org/wiki/Template:AWOL)
+pub(crate) fn render_awol_template() -> String {
+    render_templates("&nbsp;([[Absent without leave|{{abbr|AWOL|Desertion}}]])")
+}
+
+/// [Assassinated](https://en.wikipedia.org/wiki/Template:Assassinated)
+pub(crate) fn render_assassinated_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let link = positional
+        .first()
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("Assassination");
+    let alt = template_param(&named, &["alt"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let bold = template_param(&named, &["bold"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    let label = if alt == "yes" {
+        "(Assassinated)".to_string()
+    } else if bold == "no" {
+        "X".to_string()
+    } else {
+        "'''X'''".to_string()
+    };
+
+    format!("&nbsp;[[{link}|{label}]]")
+}
+
+/// [DOW](https://en.wikipedia.org/wiki/Template:DOW)
+/// [Died of wounds](https://en.wikipedia.org/wiki/Template:Died_of_wounds)
+pub(crate) fn render_died_of_wounds_template() -> String {
+    render_templates("&nbsp;([[Killed in action|{{abbr|DOW|Died of wounds}}]])")
+}
+
+/// [Executed](https://en.wikipedia.org/wiki/Template:Executed)
+pub(crate) fn render_executed_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let link = positional
+        .first()
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("Capital punishment");
+    format!("&nbsp;[[File:Skull and Crossbones.svg|14px|Executed|link={link}]]")
+}
+
+/// [KIA](https://en.wikipedia.org/wiki/Template:KIA)
+pub(crate) fn render_kia_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let link = positional
+        .first()
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("Killed in action");
+    let alt = template_param(&named, &["alt"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let bold = template_param(&named, &["bold"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    let label = if alt == "yes" {
+        "(KIA)".to_string()
+    } else if bold == "no" {
+        "†".to_string()
+    } else {
+        "'''†'''".to_string()
+    };
+
+    format!("&nbsp;[[{link}|{label}]]")
+}
+
+/// [KIA2](https://en.wikipedia.org/wiki/Template:KIA2)
+pub(crate) fn render_kia2_template(_params: &str) -> String {
+    render_kia_template("alt=yes")
+}
+
+/// [MIA](https://en.wikipedia.org/wiki/Template:MIA)
+pub(crate) fn render_mia_template() -> String {
+    render_templates("&nbsp;([[Missing in action|{{abbr|MIA|Missing in action}}]])")
+}
+
+/// [Natural Causes](https://en.wikipedia.org/wiki/Template:Natural_Causes)
+pub(crate) fn render_natural_causes_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let link = positional
+        .first()
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("Manner of death#Natural causes of death");
+    let alt = template_param(&named, &["alt"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let bold = template_param(&named, &["bold"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    let label = if alt == "yes" {
+        "(Natural causes)".to_string()
+    } else if bold == "no" {
+        "#".to_string()
+    } else {
+        "'''#'''".to_string()
+    };
+
+    let tooltip_wikitext = format!("{{{{tooltip|{label}|Natural causes}}}}");
+    let rendered_tooltip = render_templates(&tooltip_wikitext);
+
+    format!("&nbsp;[[{link}|{rendered_tooltip}]]")
+}
+
+/// [PKIA](https://en.wikipedia.org/wiki/Template:PKIA)
+pub(crate) fn render_pkia_template() -> String {
+    render_templates("&nbsp;([[Killed in action|{{abbr|PKIA|Presumed killed in action}}]])")
+}
+
+/// [POW](https://en.wikipedia.org/wiki/Template:POW)
+pub(crate) fn render_pow_template() -> String {
+    render_templates(
+        "&#x20;<span style=\"white-space:nowrap\">([[Prisoner of war|{{abbr|POW|Prisoner of war}}]])</span>",
+    )
+}
+
+/// [Suicide](https://en.wikipedia.org/wiki/Template:Suicide)
+pub(crate) fn render_suicide_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let link = positional
+        .first()
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("Suicide");
+    let alt = template_param(&named, &["alt"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let bold = template_param(&named, &["bold"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    let label = if alt == "yes" {
+        let abbr_wikitext = "{{abbr|Suicide|[[Suicide]]}}";
+        format!("({})", render_templates(abbr_wikitext))
+    } else if bold == "no" {
+        "‡‡".to_string()
+    } else {
+        "'''‡‡'''".to_string()
+    };
+
+    format!("&nbsp;[[{link}|{label}]]")
+}
+
+/// [Surrendered](https://en.wikipedia.org/wiki/Template:Surrendered)
+pub(crate) fn render_surrendered_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let link = positional
+        .first()
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("Surrender (military)");
+    format!("&nbsp;[[File:White flag icon.svg|14px|Surrendered|link={link}]]")
+}
+
+/// [Turncoat](https://en.wikipedia.org/wiki/Template:Turncoat)
+pub(crate) fn render_turncoat_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let link = positional
+        .first()
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("Turncoat");
+    format!("&nbsp;[[File:Black flag icon.svg|14px|Turncoat|link={link}]]")
+}
+
+/// [WIA](https://en.wikipedia.org/wiki/Template:WIA)
+pub(crate) fn render_wia_template() -> String {
+    render_templates("&nbsp;([[Wounded in action|{{abbr|WIA|Wounded in action}}]])")
+}
