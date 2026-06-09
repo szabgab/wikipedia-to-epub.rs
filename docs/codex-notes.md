@@ -1,5 +1,40 @@
 # Codex Session Notes
 
+## 2026-06-09 Add `official` Template Alias
+
+### Summary
+
+Added support for the `official` template name by routing it through the existing `official website` renderer. This keeps external official-site links working for both template names without changing output format.
+
+### Decisions Made
+
+* Treated `official` as an alias of `official website` instead of creating a separate renderer, since the expected parameters and output format are the same.
+* Added focused unit coverage for the alias form rather than changing any fixtures, because the cached pages currently use `official website` already.
+
+### Files Changed
+
+* `src/templates/mod.rs` [MODIFY]
+  * Wired `official` into template dispatch and recognized-template tracking.
+* `src/tests.rs` [MODIFY]
+  * Added unit coverage for the `official` alias.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented `official` as an alias of `official website`.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session note.
+
+### Tests Run
+
+* `cargo test render_wikitext_formats_official_website_templates`
+* `./sort.sh`
+* `cargo fmt`
+* `cargo test`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Add Google Books Template Support
 
 ### Summary

@@ -185,7 +185,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Wikibooks|1=Book title|2=Chapter title|3=label}}` becomes `Wikibooks:` followed by a link to the Wikibooks chapter
 * `{{Britannica|322222}}` becomes `Britannica:` followed by a link to the Britannica article id
 * `{{Jaanus|w/washi|Washi}}` renders as an external link to the JAANUS database: `<a href="http://www.aisf.or.jp/~jaanus/deta/w/washi.htm">Washi</a> at JAANUS`
-* `{{Official website|https://example.com|name=Example}}` becomes an external link to `https://example.com` with `Example` as the visible text
+* `{{Official website|https://example.com|name=Example}}` (and its alias `{{official|...}}`) becomes an external link to `https://example.com` with `Example` as the visible text
 * `{{URL|1=https://english.seoul.go.kr/|2=Official website}}` becomes an external link to `https://english.seoul.go.kr/` with `Official website` as the visible text
 * `{{osmrelation-inline|2396450}}` and `{{OSM relation|382313}}` become an external link to the OpenStreetMap relation; `{{osmway|131922091}}` and `{{OSM way|131922091}}` similarly link to the OpenStreetMap way
 * `{{Webarchive|url=https://web.archive.org/web/20140703095242/http://example.com/report.pdf|date=3 July 2014}}` becomes an external archive link labelled `Archived on 3 July 2014`

@@ -2619,6 +2619,10 @@ fn render_wikitext_formats_official_website_templates() {
             "{{Official website|url=example.org|title=''Example'' site}}",
             r#"<p><a href="https://example.org"><em>Example</em> site</a><span class="external-link">↗</span></p>"#,
         ),
+        (
+            "{{official|https://example.org|name=Official portal}}",
+            r#"<p><a href="https://example.org">Official portal</a><span class="external-link">↗</span></p>"#,
+        ),
     ];
 
     for (template, expected) in cases {

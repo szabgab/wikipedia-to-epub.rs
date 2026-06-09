@@ -242,7 +242,9 @@ pub(crate) fn render_template(content: &str) -> String {
         render_wikibooks_template(params)
     } else if template.eq_ignore_ascii_case("britannica") {
         render_britannica_template(params)
-    } else if template.eq_ignore_ascii_case("official website") {
+    } else if template.eq_ignore_ascii_case("official website")
+        || template.eq_ignore_ascii_case("official")
+    {
         render_official_website_template(params)
     } else if template.eq_ignore_ascii_case("url") {
         render_url_template(params)
@@ -650,6 +652,7 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("wikibooks")
         || template.eq_ignore_ascii_case("britannica")
         || template.eq_ignore_ascii_case("official website")
+        || template.eq_ignore_ascii_case("official")
         || template.eq_ignore_ascii_case("url")
         || template.eq_ignore_ascii_case("osmrelation-inline")
         || template.eq_ignore_ascii_case("osmway")
