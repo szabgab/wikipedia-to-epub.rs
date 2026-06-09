@@ -436,6 +436,8 @@ pub(crate) fn render_template(content: &str) -> String {
         render_stn_template(params)
     } else if template.eq_ignore_ascii_case("GBurl") {
         render_gburl_template(params)
+    } else if template.eq_ignore_ascii_case("Google books") {
+        render_google_books_template(params)
     } else if template.eq_ignore_ascii_case("cite thesis") {
         render_citation_template(params)
     } else if template.eq_ignore_ascii_case("usurped") {
@@ -717,6 +719,7 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("formatnum")
         || template.eq_ignore_ascii_case("STN")
         || template.eq_ignore_ascii_case("GBurl")
+        || template.eq_ignore_ascii_case("Google books")
         || template.eq_ignore_ascii_case("cite thesis")
         || template.eq_ignore_ascii_case("usurped")
         || template.eq_ignore_ascii_case("Break")

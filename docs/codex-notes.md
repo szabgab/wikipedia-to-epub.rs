@@ -1,5 +1,47 @@
 # Codex Session Notes
 
+## 2026-06-08 Add Google Books Template Support
+
+### Summary
+
+Added support for the `Google books` template so the Joseon fixture now renders its bibliography entry as a clickable Google Books external link instead of dropping the template output.
+
+### Decisions Made
+
+* Reused the existing Google Books URL-building rules from `GBurl` so `id`, `page`, `pg`, and query parameters stay consistent across both templates.
+* Rendered `Google books` as an external link with the supplied label text, defaulting to `Google Books` when the template has no explicit label.
+* Regenerated only the affected Joseon expected fixture whose XHTML changed because the reference entry now includes a live Google Books link.
+
+### Files Changed
+
+* `src/templates/formatting.rs` [MODIFY]
+  * Added `Google books` rendering and shared Google Books URL construction logic.
+* `src/templates/mod.rs` [MODIFY]
+  * Wired `Google books` into template dispatch and recognized-template tracking.
+* `src/tests.rs` [MODIFY]
+  * Added focused unit coverage for the Joseon `Google books` form.
+* `expected/japan/` [MODIFY]
+* `expected/joseon/` [MODIFY]
+  * Updated expected XHTML output for rendered Google Books output in references/citations.
+* `DEVELOPMENT.md` [MODIFY]
+  * Documented `Google books` conversion behavior.
+* `docs/codex-notes.md` [MODIFY]
+  * Added this session note.
+
+### Tests Run
+
+* `cargo test render_wikitext_formats_google_books_template`
+* `cargo test --test books generate_joseon_book_from_local_page_dumps`
+* `./sort.sh`
+* `cargo fmt`
+* `cargo test`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Reject Duplicate Pages in YAML Config
 
 ### Summary

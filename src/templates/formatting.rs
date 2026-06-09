@@ -1785,21 +1785,46 @@ pub(crate) fn render_lnl_template(params: &str) -> String {
 pub(crate) fn render_gburl_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
+    render_google_books_url(&named, &positional).unwrap_or_default()
+}
 
-    let id = template_param(&named, &["id"])
-        .or_else(|| positional.first().map(String::as_str))
-        .map(|s| s.trim())
-        .unwrap_or("");
-
-    if id.is_empty() {
+/// [Google books](https://en.wikipedia.org/wiki/Template:Google_books)
+pub(crate) fn render_google_books_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let Some(url) = render_google_books_url(&named, &positional) else {
         return String::new();
+    };
+
+    if template_param(&named, &["plainurl"])
+        .map(|value| value.trim())
+        .is_some_and(|value| value.eq_ignore_ascii_case("yes") || value.eq_ignore_ascii_case("y"))
+    {
+        return url;
     }
 
+    let label = template_param(&named, &["2", "text", "label", "title"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("Google Books");
+
+    format!("[[official-url:{url}|{}]]", render_templates(label))
+}
+
+fn render_google_books_url(
+    named: &std::collections::HashMap<String, String>,
+    positional: &[String],
+) -> Option<String> {
+    let id = template_param(named, &["id", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())?;
     let mut url = format!("https://books.google.com/books?id={id}");
 
-    if let Some(pg) = template_param(&named, &["pg"]) {
+    if let Some(pg) = template_param(named, &["pg"]) {
         url.push_str(&format!("&pg={pg}"));
-    } else if let Some(p) = template_param(&named, &["p", "page"]) {
+    } else if let Some(p) = template_param(named, &["p", "page"]) {
         if p.chars().all(|c| c.is_ascii_digit()) {
             url.push_str(&format!("&pg=PA{p}"));
         } else {
@@ -1807,13 +1832,13 @@ pub(crate) fn render_gburl_template(params: &str) -> String {
         }
     }
 
-    if let Some(q) = template_param(&named, &["q", "keywords"]) {
+    if let Some(q) = template_param(named, &["q", "keywords"]) {
         url.push_str(&format!("&q={}", q.replace(' ', "+")));
-    } else if let Some(dq) = template_param(&named, &["dq", "text"]) {
+    } else if let Some(dq) = template_param(named, &["dq", "text"]) {
         url.push_str(&format!("&dq={}", dq.replace(' ', "+")));
     }
 
-    url
+    Some(url)
 }
 
 /// [usurped](https://en.wikipedia.org/wiki/Template:Usurped)

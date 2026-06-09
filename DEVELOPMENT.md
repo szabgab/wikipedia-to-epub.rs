@@ -190,6 +190,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{osmrelation-inline|2396450}}` and `{{OSM relation|382313}}` become an external link to the OpenStreetMap relation; `{{osmway|131922091}}` and `{{OSM way|131922091}}` similarly link to the OpenStreetMap way
 * `{{Webarchive|url=https://web.archive.org/web/20140703095242/http://example.com/report.pdf|date=3 July 2014}}` becomes an external archive link labelled `Archived on 3 July 2014`
 * `{{GBurl|id=abc123|p=12}}` and `{{GBurl|id=abc123|pg=PA12|q=search+term}}` become external links to the Google Books page, such as `https://books.google.com/books?id=abc123&pg=PA12&q=search+term`
+* `{{Google books|abc123|''Example'', p. 57|page=57}}` becomes an external link to the matching Google Books page with the supplied label, such as `<a href="https://books.google.com/books?id=abc123&pg=PA57"><em>Example</em>, p. 57</a>`
 * `{{usurped|1=https://web.archive.org/web/20130101000000/http://example.com}}` renders the archive URL as an external link, preserving the wikitext hyperlink format
 * `{{Largest cities|country=Korea|city_1=Seoul|div_1=Seoul|pop_1=9,904,312}}` becomes `Largest cities in Korea:` followed by a list of linked cities with division and population details
 * `{{Historical populations|5=1949|6=1437670|7=1960|8=2445402}}` becomes `Historical populations:` followed by a list of year/population entries such as `1949: 1,437,670`

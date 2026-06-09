@@ -3603,6 +3603,29 @@ fn render_wikitext_formats_gburl_template() {
 }
 
 #[test]
+fn render_wikitext_formats_google_books_template() {
+    assert_eq!(
+        render_templates("{{Google books|0syC6L77dpAC|page=|keywords=|text=|plainurl=yes}}"),
+        "https://books.google.com/books?id=0syC6L77dpAC"
+    );
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Google books|_mh4Qv4lAkQC|''The Koreas,'' p. 57-58.|page=57}}",
+        &InternalLinks::new(),
+        "en",
+    );
+
+    assert!(
+        rendered.contains(
+            r#"<p><a href="https://books.google.com/books?id=_mh4Qv4lAkQC&amp;pg=PA57"><em>The Koreas,</em> p. 57-58.</a><span class="external-link">↗</span></p>"#
+        ),
+        "{rendered}"
+    );
+    assert!(!rendered.contains("{{"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_cite_thesis_template() {
     let rendered = render_wikitext(
         "Sample",
