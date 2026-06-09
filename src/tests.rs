@@ -3990,6 +3990,56 @@ fn render_wikitext_formats_ja_rail_linem_template() {
 }
 
 #[test]
+fn render_wikitext_formats_jpn_template() {
+    assert_eq!(render_templates("{{JPN}}"), "🇯🇵 [[Japan]]");
+    assert_eq!(
+        render_templates("{{JPN|name=Japan Team}}"),
+        "🇯🇵 [[Japan|Japan Team]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_langnf_template() {
+    assert_eq!(
+        render_templates("{{Language with name/for|es|Casa|house}}"),
+        "__WIKIPEDIA_TO_EPUB_LANG_START__es__WIKIPEDIA_TO_EPUB_LANG_VALUE__''Casa''__WIKIPEDIA_TO_EPUB_LANG_END__ ([[Spanish language|Spanish]] for 'house')"
+    );
+    assert_eq!(
+        render_templates("{{langnf|es|Casa|house|break=yes}}"),
+        "__WIKIPEDIA_TO_EPUB_LANG_START__es__WIKIPEDIA_TO_EPUB_LANG_VALUE__''Casa''__WIKIPEDIA_TO_EPUB_LANG_END__<br />([[Spanish language|Spanish]] for 'house')"
+    );
+    assert_eq!(
+        render_templates("{{langnf|es|Casa|house|paren=none}}"),
+        "__WIKIPEDIA_TO_EPUB_LANG_START__es__WIKIPEDIA_TO_EPUB_LANG_VALUE__''Casa''__WIKIPEDIA_TO_EPUB_LANG_END__ [[Spanish language|Spanish]] for 'house'"
+    );
+    assert_eq!(
+        render_templates("{{langnf|es|Casa|term1=house|term2=hut|term3=mansion|italic-term=yes}}"),
+        "__WIKIPEDIA_TO_EPUB_LANG_START__es__WIKIPEDIA_TO_EPUB_LANG_VALUE__''Casa''__WIKIPEDIA_TO_EPUB_LANG_END__ ([[Spanish language|Spanish]] for '<em>house</em>' / '<em>hut</em>' / '<em>mansion</em>')"
+    );
+    assert_eq!(
+        render_templates("{{langnf||kuncannowet|breast|lang-name=Massachusett}}"),
+        "__WIKIPEDIA_TO_EPUB_LANG_START__mis__WIKIPEDIA_TO_EPUB_LANG_VALUE__''kuncannowet''__WIKIPEDIA_TO_EPUB_LANG_END__ ([[Massachusett language|Massachusett]] for 'breast')"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_track_gauge_template() {
+    assert_eq!(
+        render_templates("{{Track gauge|1435 mm}}"),
+        "1,435 mm (4 ft 8+1\u{2044}2 in)"
+    );
+    assert_eq!(
+        render_templates("{{RailGauge|Cape gauge|al=on}}"),
+        "1,067 mm (3 ft 6 in) Cape gauge"
+    );
+    assert_eq!(
+        render_templates("{{Track gauge|1520 mm|allk=on}}"),
+        "1,520 mm (4 ft 11+27\u{2044}32 in) [[5 ft and 1520 mm track gauge|Russian gauge]]"
+    );
+    assert_eq!(render_templates("{{Track gauge|1234 mm}}"), "1234 mm");
+}
+
+#[test]
 fn render_wikitext_silently_skips_goguryeo_metadata_templates() {
     let (rendered, counts) = render_wikitext_with_template_counts(
         "Sample",

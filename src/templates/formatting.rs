@@ -4108,3 +4108,129 @@ pub(crate) fn render_station_template(params: &str) -> String {
 
     format!("[[{target}|{label}]]")
 }
+
+struct TrackGaugeData {
+    formatted: &'static str,
+    alias: &'static str,
+    alias_link: &'static str,
+}
+
+fn normalize_gauge_input(input: &str) -> String {
+    input
+        .to_lowercase()
+        .chars()
+        .filter(|ch| ch.is_ascii_alphanumeric())
+        .collect()
+}
+
+fn lookup_track_gauge(normalized: &str) -> Option<TrackGaugeData> {
+    match normalized {
+        "1435mm" | "1435" | "standardgauge" | "standard" | "4ft812in" | "4ft85in" | "4ft812" => {
+            Some(TrackGaugeData {
+                formatted: "1,435 mm (4 ft 8+1\u{2044}2 in)",
+                alias: "standard gauge",
+                alias_link: "[[standard-gauge railway|standard gauge]]",
+            })
+        }
+        "1067mm" | "1067" | "capegauge" | "cape" | "3ft6in" | "3ft6" => Some(TrackGaugeData {
+            formatted: "1,067 mm (3 ft 6 in)",
+            alias: "Cape gauge",
+            alias_link: "[[Cape gauge]]",
+        }),
+        "1000mm" | "1000" | "metregauge" | "metergauge" | "metre" | "meter" | "3ft338in"
+        | "3ft338" => Some(TrackGaugeData {
+            formatted: "1,000 mm (3 ft 3+3\u{2044}8 in)",
+            alias: "metre gauge",
+            alias_link: "[[Meter gauge|metre gauge]]",
+        }),
+        "1520mm" | "1520" | "russiangauge" | "russian" | "4ft112732in" | "4ft112732" => {
+            Some(TrackGaugeData {
+                formatted: "1,520 mm (4 ft 11+27\u{2044}32 in)",
+                alias: "Russian gauge",
+                alias_link: "[[5 ft and 1520 mm track gauge|Russian gauge]]",
+            })
+        }
+        "1524mm" | "1524" | "5ft" | "5ftgauge" => Some(TrackGaugeData {
+            formatted: "1,524 mm (5 ft)",
+            alias: "5 ft gauge",
+            alias_link: "[[5 ft and 1520 mm track gauge|5 ft gauge]]",
+        }),
+        "1668mm" | "1668" | "iberiangauge" | "iberian" | "5ft52132in" | "5ft52132" => {
+            Some(TrackGaugeData {
+                formatted: "1,668 mm (5 ft 5+21\u{2044}32 in)",
+                alias: "Iberian gauge",
+                alias_link: "[[Iberian gauge]]",
+            })
+        }
+        "1676mm" | "1676" | "indiangauge" | "indian" | "5ft6in" | "5ft6" => Some(TrackGaugeData {
+            formatted: "1,676 mm (5 ft 6 in)",
+            alias: "Indian gauge",
+            alias_link: "[[5 ft 6 in gauge|Indian gauge]]",
+        }),
+        "762mm" | "762" | "2ft6in" | "2ft6" | "762mmgauge" => Some(TrackGaugeData {
+            formatted: "762 mm (2 ft 6 in)",
+            alias: "2 ft 6 in gauge",
+            alias_link: "[[2 ft 6 in gauge]]",
+        }),
+        "600mm" | "600" | "2ft" | "2ftgauge" | "1ft1158in" | "1ft1158" => Some(TrackGaugeData {
+            formatted: "600 mm (1 ft 11+5\u{2044}8 in)",
+            alias: "2 ft gauge",
+            alias_link: "[[2 ft and 600 mm gauge railways|2 ft gauge]]",
+        }),
+        _ => None,
+    }
+}
+
+/// [Track gauge](https://en.wikipedia.org/wiki/Template:Track_gauge)
+/// [RailGauge](https://en.wikipedia.org/wiki/Template:Track_gauge)
+pub(crate) fn render_track_gauge_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let raw_input = positional
+        .first()
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("");
+    if raw_input.is_empty() {
+        return String::new();
+    }
+
+    let normalized = normalize_gauge_input(raw_input);
+
+    let al = template_param(&named, &["al"])
+        .map(|s| s.trim().to_lowercase())
+        .unwrap_or_default();
+    let allk = template_param(&named, &["allk"])
+        .map(|s| s.trim().to_lowercase())
+        .unwrap_or_default();
+    let is_al = al == "on" || al == "yes";
+    let is_allk = allk == "on" || allk == "yes";
+
+    if let Some(gauge) = lookup_track_gauge(&normalized) {
+        let mut result = gauge.formatted.to_string();
+        if is_allk {
+            result.push(' ');
+            result.push_str(gauge.alias_link);
+        } else if is_al {
+            result.push(' ');
+            result.push_str(gauge.alias);
+        }
+        result
+    } else {
+        raw_input.to_string()
+    }
+}
+
+/// [JPN](https://en.wikipedia.org/wiki/Template:JPN)
+pub(crate) fn render_jpn_template(params: &str) -> String {
+    let named = template_named_params(params);
+    if let Some(name) = template_param(&named, &["name"])
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+    {
+        format!("🇯🇵 [[Japan|{name}]]")
+    } else {
+        "🇯🇵 [[Japan]]".to_string()
+    }
+}

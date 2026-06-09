@@ -147,6 +147,10 @@ pub(crate) fn render_template(content: &str) -> String {
         render_literal_template(params)
     } else if template.eq_ignore_ascii_case("translation") {
         render_translation_template(params)
+    } else if template.eq_ignore_ascii_case("Language with name/for")
+        || template.eq_ignore_ascii_case("langnf")
+    {
+        render_langnf_template(params)
     } else if template.eq_ignore_ascii_case("isbn") {
         render_isbn_template(params)
     } else if template.eq_ignore_ascii_case("asin") {
@@ -474,6 +478,12 @@ pub(crate) fn render_template(content: &str) -> String {
         render_stn_template(params)
     } else if template.eq_ignore_ascii_case("Station") {
         render_station_template(params)
+    } else if template.eq_ignore_ascii_case("JPN") {
+        render_jpn_template(params)
+    } else if template.eq_ignore_ascii_case("Track gauge")
+        || template.eq_ignore_ascii_case("RailGauge")
+    {
+        render_track_gauge_template(params)
     } else if template.eq_ignore_ascii_case("GBurl") {
         render_gburl_template(params)
     } else if template.eq_ignore_ascii_case("Google books") {
@@ -637,6 +647,8 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Literal translation")
         || template.eq_ignore_ascii_case("literal")
         || template.eq_ignore_ascii_case("translation")
+        || template.eq_ignore_ascii_case("Language with name/for")
+        || template.eq_ignore_ascii_case("langnf")
         || template.eq_ignore_ascii_case("isbn")
         || template.eq_ignore_ascii_case("asin")
         || template.eq_ignore_ascii_case("script")
@@ -780,6 +792,9 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("formatnum")
         || template.eq_ignore_ascii_case("STN")
         || template.eq_ignore_ascii_case("Station")
+        || template.eq_ignore_ascii_case("JPN")
+        || template.eq_ignore_ascii_case("Track gauge")
+        || template.eq_ignore_ascii_case("RailGauge")
         || template.eq_ignore_ascii_case("GBurl")
         || template.eq_ignore_ascii_case("Google books")
         || template.eq_ignore_ascii_case("cite thesis")

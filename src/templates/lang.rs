@@ -1029,3 +1029,138 @@ pub(crate) fn render_ja_rail_linem_template(params: &str) -> String {
 
     result
 }
+
+/// [Language with name/for](https://en.wikipedia.org/wiki/Template:Language_with_name/for)
+/// [langnf](https://en.wikipedia.org/wiki/Template:Language_with_name/for)
+pub(crate) fn render_langnf_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.contains('='))
+        .collect::<Vec<_>>();
+
+    let lang_tag = template_param(&named, &["lang"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let text = template_param(&named, &["text"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    // If both lang tag and text are empty, return empty
+    if lang_tag.is_empty() && text.is_empty() {
+        return String::new();
+    }
+
+    let lang_name_opt = template_param(&named, &["lang-name"])
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty());
+
+    let language_name = if let Some(custom) = lang_name_opt {
+        custom.to_string()
+    } else if !lang_tag.is_empty() {
+        language_name_for_in_lang(lang_tag).to_string()
+    } else {
+        String::new()
+    };
+
+    let language_link = if language_name.is_empty() {
+        String::new()
+    } else if language_name.contains("[[") {
+        language_name
+    } else {
+        format!("[[{language_name} language|{language_name}]]")
+    };
+
+    // Render foreign text
+    let lang_attr = if !lang_tag.is_empty() {
+        lang_tag.to_string()
+    } else {
+        "mis".to_string()
+    };
+
+    let is_cjk =
+        lang_attr.starts_with("ja") || lang_attr.starts_with("ko") || lang_attr.starts_with("zh");
+    let formatted_text = if is_cjk || (text.starts_with("''") && text.ends_with("''")) {
+        text.to_string()
+    } else {
+        format!("''{text}''")
+    };
+
+    let foreign_span = format!(
+        "__WIKIPEDIA_TO_EPUB_LANG_START__{lang_attr}__WIKIPEDIA_TO_EPUB_LANG_VALUE__{formatted_text}__WIKIPEDIA_TO_EPUB_LANG_END__"
+    );
+
+    // Collect translations (term1 or positional 3, term2, term3, term4, term5)
+    let italic_term = template_param(&named, &["italic-term"])
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .is_some_and(|s| s == "yes" || s == "on");
+
+    let is_break = template_param(&named, &["break"])
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .is_some_and(|s| s == "yes" || s == "on");
+
+    let paren = template_param(&named, &["paren"])
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("");
+
+    let mut terms = Vec::new();
+    if let Some(t1) = template_param(&named, &["term1"])
+        .or_else(|| positional.get(2).map(String::as_str))
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+    {
+        terms.push(t1);
+    }
+    for i in 2..=5 {
+        if let Some(ti) = template_param(&named, &[&format!("term{i}")])
+            .map(|s| s.trim())
+            .filter(|s| !s.is_empty())
+        {
+            terms.push(ti);
+        }
+    }
+
+    let terms_part = if terms.is_empty() {
+        String::new()
+    } else {
+        let formatted_terms = terms
+            .into_iter()
+            .map(|term| {
+                if italic_term {
+                    format!("'<em>{}</em>'", render_templates(term))
+                } else {
+                    format!("'{}'", render_templates(term))
+                }
+            })
+            .collect::<Vec<_>>();
+        formatted_terms.join(" / ")
+    };
+
+    let parenthetical_inner = if terms_part.is_empty() {
+        language_link
+    } else if language_link.is_empty() {
+        format!("for {terms_part}")
+    } else {
+        format!("{language_link} for {terms_part}")
+    };
+
+    let (left_paren, right_paren) = match paren.to_ascii_lowercase().as_str() {
+        "none" => ("", ""),
+        "left" => ("(", ""),
+        _ => ("(", ")"),
+    };
+
+    let separator = if is_break { "<br />" } else { " " };
+
+    if parenthetical_inner.is_empty() {
+        foreign_span
+    } else {
+        format!("{foreign_span}{separator}{left_paren}{parenthetical_inner}{right_paren}")
+    }
+}
