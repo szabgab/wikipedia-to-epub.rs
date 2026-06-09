@@ -1,5 +1,47 @@
 # Codex Session Notes
 
+## 2026-06-09 Support Translation, Station, and ja-rail-linem templates
+
+### Summary
+Added support for three Wikipedia templates:
+1. `Translation`: formats translation values with optional literal annotations and abbreviation tooltips.
+2. `Station`: formats railway station links with customizable capitalization, location suffix, and label parameters.
+3. `ja-rail-linem`: renders Japanese railway line table rows with line colors, station indicators, line names, and directions.
+
+### Decisions Made
+- Added implementation of `Translation` and `ja-rail-linem` in `src/templates/lang.rs`.
+- Added implementation of `Station` in `src/templates/formatting.rs`.
+- Registered the three templates in `src/templates/mod.rs` (in `render_template` and `is_handled_template_name`).
+- Added corresponding unit tests in `src/tests.rs` verifying rendering correctness against spec/examples.
+- Sorted the CSV files in the workspace (causing sorting updates to `src/navigations.csv` and `src/silent.csv`).
+- Updated `DEVELOPMENT.md` to document the new conversion rules.
+
+### Files Changed
+- `src/templates/lang.rs` [MODIFY]
+  - Implemented `render_translation_template` and `render_ja_rail_linem_template`.
+- `src/templates/formatting.rs` [MODIFY]
+  - Implemented `render_station_template`.
+- `src/templates/mod.rs` [MODIFY]
+  - Registered templates in dispatching router.
+- `src/tests.rs` [MODIFY]
+  - Added unit test cases for the three templates.
+- `src/navigations.csv` [MODIFY]
+  - Sorted file alphabetically.
+- `src/silent.csv` [MODIFY]
+  - Sorted file alphabetically.
+- `DEVELOPMENT.md` [MODIFY]
+  - Documented conversion rules for the new templates.
+- `docs/codex-notes.md` [MODIFY]
+  - Appended session notes.
+
+### Tests Run
+- `cargo test render_wikitext_formats_translation_template`
+- `cargo test render_wikitext_formats_station_template`
+- `cargo test render_wikitext_formats_ja_rail_linem_template`
+- `cargo fmt --check`
+- `cargo clippy --all-targets -- -D warnings`
+- `cargo test`
+
 ## 2026-06-09 Add `harvtxt` and `NDLDC` template support
 
 ### Summary

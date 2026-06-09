@@ -214,6 +214,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{sclass|Valiant|harbor tug}}` becomes links to the ship-class article and ship type: `[[Valiant-class harbor tug|''Valiant''-class]] [[harbor tug]]`
 * `{{ROKS|Sejong the Great||2}}` becomes a link to `ROKS Sejong the Great` with the visible label `ROKS Sejong the Great`
 * `{{STN|Ginza}}` and `{{STN|Hamaōtsu|x}}` create railway station links such as `[[Ginza Station|Ginza]]` and `[[Hamaōtsu Station|Hamaōtsu]]`
+* `{{Station|Shibuya|1|Tokyo}}` renders a railway station link with customizable capitalization, location suffix, and label parameters: `[[Shibuya Station (Tokyo)|Shibuya]]`
 * `{{For-multi|topic1|link1|topic2|link2}}` alternates topics and links, rendering as `For topic1, see [[link1]]; for topic2, see [[link2]].`
 * `{{Inflation|US|12|1950}}` and `{{Inflation/year|US}}` adjust values using US CPI table indices (1950 to 2023)
 * `{{FXConvert|KOR|293.823|b|cursign=[[₩]]|year=2020|showdate=no}}` formats and converts historical currency values (e.g. `₩293.82 billion (US$248.95 million)`)
@@ -224,6 +225,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{color|red|text}}` (and its British spelling alias `colour`) renders text with the given foreground color: `<span style="color: red;">text</span>`
 * `{{Ja-rail-color|JY}}` returns the standardized hex color code for the Japanese rail line (e.g. `#80c241`)
 * `{{Ja-platform|pfn=1|name=Yamanote Line|dir=for Tokyo}}` (or `{{jpf}}`, `{{Ja-platform-m}}`, `{{jpfm}}`) renders a Japanese rail platform layout as a table row inside wikitables
+* `{{ja-rail-linem|m|linename=Tokyo Metro|linecol=blue}}` renders a Japanese railway line row inside wikitables, supporting customizable symbol types, line colors, names, and direction descriptions
 * `{{rail-interchange|JR East|JT}}` (or `{{ric}}`, `{{rint}}`) displays railway system/line abbreviations in brackets, e.g. `[JT]`
 * `{{Line link|JR East|JY}}` (or `{{lnl}}`) creates formatted internal links for rail transit lines, e.g. `[[Yamanote Line]]` or `[[Chūō Line (Rapid)|Chūō Line]]`
 * `{{nbndash}}` (or `{{nbnd}}`) renders a non-breaking en-dash: `–`
@@ -255,6 +257,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{±|10|2}}` and `{{±}}` render mathematical plus-minus values or characters: `± 10 2` and `±`
 * `{{cite encyclopedia|title=Solar activity|encyclopedia=Scholarpedia}}` renders encyclopedia references exactly like other journal references, formatting the title in quotes and the encyclopedia in italics
 * `{{Literal translation|Eastern Capital}}` (or `{{lit}}`) displays the literal meaning of a term prefixed by "lit. "
+* `{{Translation|word|literal=yes}}` (or `{{Translation|word}}`) renders translation terms with optional literal annotation, leveraging abbreviation tooltips (e.g. `transl. word` or `lit. transl. word`)
 * `{{N/A}}` (or its aliases `{{NA}}` and `{{Not applicable}}`) displays the text "N/A" or the custom parameter provided inside comparison tables
 * `{{'"}}` and `{{"'}}` display `'"` and `"'` respectively as ordinary text
 * Wikipedia navigation templates listed in `src/navigations.csv`  are omitted; both `src/navigations.csv` and `src/silent.csv` support comma-separated comments, ignoring any text after the comma in the code; template names are normalized by converting underscores to spaces before checking for matches.

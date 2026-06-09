@@ -633,7 +633,10 @@ fn render_wikitext_formats_harvtxt_template() {
         &InternalLinks::new(),
         "en",
     );
-    assert!(rendered.contains("Sohn (2001, Section 1.5.3)"), "{rendered}");
+    assert!(
+        rendered.contains("Sohn (2001, Section 1.5.3)"),
+        "{rendered}"
+    );
 
     let rendered = render_wikitext(
         "Sample",
@@ -666,7 +669,10 @@ fn render_wikitext_formats_ndldc_template() {
         &InternalLinks::new(),
         "en",
     );
-    assert!(rendered.contains("https://dl.ndl.go.jp/info:ndljp/pid/782854/146"), "{rendered}");
+    assert!(
+        rendered.contains("https://dl.ndl.go.jp/info:ndljp/pid/782854/146"),
+        "{rendered}"
+    );
 
     let rendered = render_wikitext(
         "Sample",
@@ -674,7 +680,10 @@ fn render_wikitext_formats_ndldc_template() {
         &InternalLinks::new(),
         "en",
     );
-    assert!(rendered.contains("https://dl.ndl.go.jp/en/pid/782854/146"), "{rendered}");
+    assert!(
+        rendered.contains("https://dl.ndl.go.jp/en/pid/782854/146"),
+        "{rendered}"
+    );
 
     let rendered = render_wikitext(
         "Sample",
@@ -684,9 +693,11 @@ fn render_wikitext_formats_ndldc_template() {
     );
     assert!(rendered.contains("ndlpid"), "{rendered}");
     assert!(rendered.contains("782854/146"), "{rendered}");
-    assert!(!rendered.contains("https://dl.ndl.go.jp/en/pid/782854/146"), "{rendered}");
+    assert!(
+        !rendered.contains("https://dl.ndl.go.jp/en/pid/782854/146"),
+        "{rendered}"
+    );
 }
-
 
 #[test]
 fn render_wikitext_formats_plainlist_templates() {
@@ -3907,6 +3918,74 @@ fn render_wikitext_formats_wia_template() {
     assert_eq!(
         render_templates("{{WIA}}"),
         "&nbsp;([[Wounded in action|__WIKIPEDIA_TO_EPUB_ABBR_START__Wounded in action__WIKIPEDIA_TO_EPUB_ABBR_VALUE__WIA__WIKIPEDIA_TO_EPUB_ABBR_END__]])"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_translation_template() {
+    assert_eq!(
+        render_templates("{{Translation|word}}"),
+        "__WIKIPEDIA_TO_EPUB_ABBR_START__translation__WIKIPEDIA_TO_EPUB_ABBR_VALUE__transl.__WIKIPEDIA_TO_EPUB_ABBR_END__\u{2009}word"
+    );
+    assert_eq!(
+        render_templates("{{Translation|word|literal=yes}}"),
+        "__WIKIPEDIA_TO_EPUB_ABBR_START__literal translation__WIKIPEDIA_TO_EPUB_ABBR_VALUE__lit. transl.__WIKIPEDIA_TO_EPUB_ABBR_END__\u{2009}word"
+    );
+    assert_eq!(
+        render_templates("{{Translation|word|literal=no|i=yes}}"),
+        "''transl.''\u{2009}word"
+    );
+    assert_eq!(
+        render_templates("{{Translation|word1|word2}}"),
+        "__WIKIPEDIA_TO_EPUB_ABBR_START__translation__WIKIPEDIA_TO_EPUB_ABBR_VALUE__transl.__WIKIPEDIA_TO_EPUB_ABBR_END__\u{2009}word1 – transl.\u{2009}word2"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_station_template() {
+    assert_eq!(
+        render_templates("{{Station|Shibuya}}"),
+        "[[Shibuya station|Shibuya]]"
+    );
+    assert_eq!(
+        render_templates("{{Station|Shibuya|1}}"),
+        "[[Shibuya Station|Shibuya]]"
+    );
+    assert_eq!(
+        render_templates("{{Station|Shibuya|1|Tokyo}}"),
+        "[[Shibuya Station (Tokyo)|Shibuya]]"
+    );
+    assert_eq!(
+        render_templates("{{Station|Shibuya|1|Tokyo|Shibuya Stn}}"),
+        "[[Shibuya Station (Tokyo)|Shibuya Stn]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_ja_rail_linem_template() {
+    assert_eq!(
+        render_templates("{{ja-rail-linem|linename=Yamanote Line}}"),
+        "|-\n| <span style=\"color:white\">■</span>&nbsp;[[Yamanote Line]]\n| \n"
+    );
+    assert_eq!(
+        render_templates("{{ja-rail-linem|linename=Yamanote Line|lineindex=JY}}"),
+        "|-\n| <span style=\"color:white\">■</span>&nbsp;[[Yamanote Line|JY]]\n| \n"
+    );
+    assert_eq!(
+        render_templates(
+            "{{ja-rail-linem|linename=Yamanote Line|span=2|pfn=Platform 1|dir=For Tokyo}}"
+        ),
+        "|-\n| rowspan=2 | '''Platform 1'''\n| <span style=\"color:white\">■</span>&nbsp;[[Yamanote Line]]\n| For Tokyo\n"
+    );
+    assert_eq!(
+        render_templates(
+            "{{ja-rail-linem|linename=Yamanote Line|linecol=green|dir=For Tokyo|next=Shinagawa}}"
+        ),
+        "|-\n| <span style=\"color:green\">■</span>&nbsp;[[Yamanote Line]]\n| For Tokyo <small>(Shinagawa)</small>\n"
+    );
+    assert_eq!(
+        render_templates("{{ja-rail-linem|m|linename=Tokyo Metro|linecol=blue}}"),
+        "|-\n| <span style=\"color:blue\">'''○'''</span>&nbsp;[[Tokyo Metro]]\n| \n"
     );
 }
 

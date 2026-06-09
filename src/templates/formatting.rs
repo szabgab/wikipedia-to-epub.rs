@@ -4036,7 +4036,9 @@ pub(crate) fn render_ndldc_template(params: &str) -> String {
                 format!("[[ndlpid (identifier)|ndlpid]]:[https://dl.ndl.go.jp/en/pid/{id} {id}]")
             }
             "ndljp" => {
-                format!("[[ndlpid (identifier)|ndljp]]:[https://dl.ndl.go.jp/info:ndljp/pid/{id} {id}]")
+                format!(
+                    "[[ndlpid (identifier)|ndljp]]:[https://dl.ndl.go.jp/info:ndljp/pid/{id} {id}]"
+                )
             }
             "doi" => {
                 format!("doi:10.11501/{id}")
@@ -4055,7 +4057,9 @@ pub(crate) fn render_ndldc_template(params: &str) -> String {
                 } else {
                     param2
                 };
-                format!("\"[https://dl.ndl.go.jp/info:ndljp/pid/{id} {link_text}]\" - [[National Diet Library#National Diet Library Digital Collections|NDL Digital Collections]]")
+                format!(
+                    "\"[https://dl.ndl.go.jp/info:ndljp/pid/{id} {link_text}]\" - [[National Diet Library#National Diet Library Digital Collections|NDL Digital Collections]]"
+                )
             }
             _ => {
                 format!("https://dl.ndl.go.jp/info:ndljp/pid/{id}")
@@ -4064,3 +4068,43 @@ pub(crate) fn render_ndldc_template(params: &str) -> String {
     }
 }
 
+/// [Station](https://en.wikipedia.org/wiki/Template:Station)
+pub(crate) fn render_station_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let station_name = positional
+        .first()
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("");
+    if station_name.is_empty() {
+        return String::new();
+    }
+
+    let capitalize = positional
+        .get(1)
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .is_some();
+    let suffix = positional
+        .get(2)
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("");
+    let label = template_param(&named, &["alt"])
+        .or_else(|| positional.get(3).map(String::as_str))
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or(station_name);
+
+    let station_word = if capitalize { "Station" } else { "station" };
+
+    let target = if suffix.is_empty() {
+        format!("{station_name} {station_word}")
+    } else {
+        format!("{station_name} {station_word} ({suffix})")
+    };
+
+    format!("[[{target}|{label}]]")
+}

@@ -867,3 +867,165 @@ pub(crate) fn format_interlanguage_link(
         None => link,
     }
 }
+
+/// [Translation](https://en.wikipedia.org/wiki/Template:Translation)
+pub(crate) fn render_translation_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let val1 = positional
+        .first()
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("");
+    let val2 = positional
+        .get(1)
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("");
+
+    let sortable = template_param(&named, &["sortable"])
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .is_some();
+    let italic = template_param(&named, &["i"])
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .is_some();
+    let literal = template_param(&named, &["literal"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    let mut result = String::new();
+
+    if sortable && !val1.is_empty() {
+        result.push_str(&format!(
+            "<span style=\"display:none;\">{}</span>",
+            render_templates(val1)
+        ));
+    }
+
+    if italic {
+        result.push_str("''");
+    }
+
+    match literal {
+        "no" | "off" => result.push_str("transl."),
+        "yes" | "on" => {
+            result.push_str(&render_templates(
+                "{{Abbr|lit. transl.|literal translation}}",
+            ));
+        }
+        _ => {
+            result.push_str(&render_templates("{{Abbr|transl.|translation}}"));
+        }
+    }
+
+    if italic {
+        result.push_str("''");
+    }
+
+    if !val1.is_empty() {
+        result.push_str(&format!("\u{2009}{}", render_templates(val1)));
+    }
+
+    if !val2.is_empty() {
+        result.push_str(&format!(" – transl.\u{2009}{}", render_templates(val2)));
+    }
+
+    result
+}
+
+/// [ja-rail-linem](https://en.wikipedia.org/wiki/Template:Ja-rail-linem)
+pub(crate) fn render_ja_rail_linem_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let span = template_param(&named, &["span"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let pfn = template_param(&named, &["pfn"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let linecol = template_param(&named, &["linecol"])
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("white");
+    let nolinkindex = template_param(&named, &["nolinkindex"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let linename = template_param(&named, &["linename"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let lineindex = template_param(&named, &["lineindex"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let dir = template_param(&named, &["dir"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let next = template_param(&named, &["next"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let nextstop = template_param(&named, &["nextstop"])
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    // Determine symbol type
+    let pos1 = positional.first().map(String::as_str).unwrap_or("");
+    let pos2 = positional.get(1).map(String::as_str).unwrap_or("");
+    let is_m = pos1 == "m" || pos2 == "m";
+    let symbol = if is_m { "'''○'''" } else { "■" };
+
+    // Format line part
+    let line_part = if !nolinkindex.is_empty() {
+        nolinkindex.to_string()
+    } else if !linename.is_empty() {
+        if !lineindex.is_empty() {
+            format!("[[{linename}|{lineindex}]]")
+        } else {
+            format!("[[{linename}]]")
+        }
+    } else {
+        String::new()
+    };
+
+    let line_symbol_part = if line_part.is_empty() {
+        String::new()
+    } else {
+        format!("<span style=\"color:{linecol}\">{symbol}</span>&nbsp;{line_part}")
+    };
+
+    let mut result = String::new();
+    result.push_str("|-\n");
+
+    if !span.is_empty() {
+        let rowspan_attr = if span != "1" && !span.is_empty() {
+            format!(" rowspan={span}")
+        } else {
+            String::new()
+        };
+        result.push_str(&format!(
+            "|{rowspan_attr} | '''{}'''\n",
+            render_templates(pfn)
+        ));
+        result.push_str(&format!("| {}\n", render_templates(&line_symbol_part)));
+
+        let dir_formatted = if !nextstop.is_empty() {
+            format!("{dir} <small>({nextstop})</small>")
+        } else {
+            dir.to_string()
+        };
+        result.push_str(&format!("| {}\n", render_templates(&dir_formatted)));
+    } else {
+        result.push_str(&format!("| {}\n", render_templates(&line_symbol_part)));
+
+        let dir_formatted = if !next.is_empty() {
+            format!("{dir} <small>({next})</small>")
+        } else {
+            dir.to_string()
+        };
+        result.push_str(&format!("| {}\n", render_templates(&dir_formatted)));
+    }
+
+    result
+}

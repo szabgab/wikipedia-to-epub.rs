@@ -145,6 +145,8 @@ pub(crate) fn render_template(content: &str) -> String {
         || template.eq_ignore_ascii_case("literal")
     {
         render_literal_template(params)
+    } else if template.eq_ignore_ascii_case("translation") {
+        render_translation_template(params)
     } else if template.eq_ignore_ascii_case("isbn") {
         render_isbn_template(params)
     } else if template.eq_ignore_ascii_case("asin") {
@@ -470,6 +472,8 @@ pub(crate) fn render_template(content: &str) -> String {
         render_formatnum_template(template, params)
     } else if template.eq_ignore_ascii_case("STN") {
         render_stn_template(params)
+    } else if template.eq_ignore_ascii_case("Station") {
+        render_station_template(params)
     } else if template.eq_ignore_ascii_case("GBurl") {
         render_gburl_template(params)
     } else if template.eq_ignore_ascii_case("Google books") {
@@ -520,6 +524,8 @@ pub(crate) fn render_template(content: &str) -> String {
         || template.eq_ignore_ascii_case("jpfm")
     {
         render_ja_platform_template(params)
+    } else if template.eq_ignore_ascii_case("ja-rail-linem") {
+        render_ja_rail_linem_template(params)
     } else if template.eq_ignore_ascii_case("rail-interchange")
         || template.eq_ignore_ascii_case("ric")
         || template.eq_ignore_ascii_case("rint")
@@ -630,6 +636,7 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("lit")
         || template.eq_ignore_ascii_case("Literal translation")
         || template.eq_ignore_ascii_case("literal")
+        || template.eq_ignore_ascii_case("translation")
         || template.eq_ignore_ascii_case("isbn")
         || template.eq_ignore_ascii_case("asin")
         || template.eq_ignore_ascii_case("script")
@@ -772,6 +779,7 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
             .is_some_and(|prefix| prefix.eq_ignore_ascii_case("formatnum:"))
         || template.eq_ignore_ascii_case("formatnum")
         || template.eq_ignore_ascii_case("STN")
+        || template.eq_ignore_ascii_case("Station")
         || template.eq_ignore_ascii_case("GBurl")
         || template.eq_ignore_ascii_case("Google books")
         || template.eq_ignore_ascii_case("cite thesis")
@@ -839,6 +847,7 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("jpf")
         || template.eq_ignore_ascii_case("Ja-platform-m")
         || template.eq_ignore_ascii_case("jpfm")
+        || template.eq_ignore_ascii_case("ja-rail-linem")
         || template.eq_ignore_ascii_case("rail-interchange")
         || template.eq_ignore_ascii_case("ric")
         || template.eq_ignore_ascii_case("rint")
