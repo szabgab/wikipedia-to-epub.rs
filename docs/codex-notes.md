@@ -1,5 +1,36 @@
 # Codex Session Notes
 
+## 2026-06-09 Add `harvtxt` and `NDLDC` template support
+
+### Summary
+
+Added support for the `harvtxt` (Harvard citation text format) and `NDLDC` (National Diet Library Digital Collection link identifier) templates. Verified that both render correctly in the "Battle of Sekigahara" integration book test and regenerated the expected book output fixtures.
+
+### Decisions Made
+
+* Implemented `harvtxt` in `src/templates/citation.rs` and `NDLDC` in `src/templates/formatting.rs`.
+* Supported `format=url`, `format=pid`, `format=digimeta`, `format=ndljp`, `format=doi`, `format=hdl`, and `format=external` parameters for `NDLDC`.
+* Evaluated positional and named parameters of both templates.
+* Wrote unit tests for both templates, verifying they output correct XHTML content in the parsed EPUB environment.
+* Regenerated the expected fixture files of `examples/Battle_of_Sekigahara.yaml` to include the new template representations.
+
+### Files Changed
+
+* `src/templates/citation.rs` [MODIFY]
+  * Implemented `render_harvtxt_template` parsing logic.
+* `src/templates/formatting.rs` [MODIFY]
+  * Implemented `render_ndldc_template` parsing logic.
+* `src/templates/mod.rs` [MODIFY]
+  * Registered `harvtxt` and `NDLDC` templates in routing maps.
+* `src/tests.rs` [MODIFY]
+  * Added unit tests verifying `harvtxt` and `NDLDC` formatting outputs.
+* `DEVELOPMENT.md` [MODIFY]
+  * Added documentation of the new template conversion rules.
+* `expected/Battle_of_Sekigahara/OEBPS/Battle_of_Sekigahara.xhtml` [MODIFY]
+  * Updated book fixture with parsed citation entries.
+* `src/silent.csv` [MODIFY]
+  * Automatically sorted CSV entries alphabetically.
+
 ## 2026-06-09 Add Military status/abbreviation templates
 
 ### Summary

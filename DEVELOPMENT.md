@@ -82,6 +82,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Script|Hani|神}}` becomes `神`
 * `{{oclc|58053128}}` becomes `OCLC 58053128`
 * `{{doi|10.1080/02757206.2013.726990}}` becomes `doi:10.1080/02757206.2013.726990`
+* `{{NDLDC|782854/146}}` and its formatted variants (e.g. `format=url`, `format=pid`) render National Diet Library Digital Collection link identifiers
 * `{{IPA|ko|haːnɡuk|}}` and `{{IPAc-en|lang|ˈ|tʃ|oʊ|s|ʌ|n}}` become International Phonetic Alphabet spans such as `<span title="International Phonetic Alphabet">[haːnɡuk]</span>` and `<span title="International Phonetic Alphabet">[ˈtʃoʊsʌn]</span>`
 * `{{Respell|CHOH|sun}}` becomes `CHOH-sun`
 * `{{Abbr|c.|circa}}` becomes `<abbr title="circa">c.</abbr>`
@@ -116,6 +117,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{okina}}` becomes `ʻ`
 * `{{'s}}` becomes `'s`
 * `{{harvp|Martin|1966}}` becomes `(Martin 1966)`; multi-author and page/location variants are formatted identically to standard Harvard citations, e.g. `(Sohn 2001, loc=Section 1.5.3)` becomes `(Sohn 2001, Section 1.5.3)`
+* `{{harvtxt|Martin|1966}}` renders Harvard citations with authors outside the parentheses: `Martin (1966)`
 * `{{IPAslink|m}}` becomes an IPA-styled phonetic alphabet span: `<span title="International Phonetic Alphabet">[m]</span>`
 * `{{angbr|a}}` wraps the text in phonetic angle brackets: `⟨a⟩`
 * `{{angbr IPA|◌̧}}` wraps the IPA text in angle brackets and styles the inner text as IPA: `⟨<span lang="und-fonipa">◌̧</span>⟩`

@@ -418,6 +418,10 @@ pub(crate) fn render_template(content: &str) -> String {
         render_harvp_template(params)
     } else if template.eq_ignore_ascii_case("harvnb") {
         render_harvnb_template(params)
+    } else if template.eq_ignore_ascii_case("harvtxt") {
+        render_harvtxt_template(params)
+    } else if template.eq_ignore_ascii_case("NDLDC") {
+        render_ndldc_template(params)
     } else if template.eq_ignore_ascii_case("plainlist") {
         render_plainlist_template(params)
     } else if template.eq_ignore_ascii_case("unbulleted list")
@@ -740,6 +744,8 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("harvp")
         || template.eq_ignore_ascii_case("harv")
         || template.eq_ignore_ascii_case("harvnb")
+        || template.eq_ignore_ascii_case("harvtxt")
+        || template.eq_ignore_ascii_case("NDLDC")
         || template.eq_ignore_ascii_case("plainlist")
         || template.eq_ignore_ascii_case("unbulleted list")
         || template.eq_ignore_ascii_case("ubl")

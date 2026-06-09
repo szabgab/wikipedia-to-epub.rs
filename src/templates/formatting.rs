@@ -3999,3 +3999,68 @@ pub(crate) fn render_turncoat_template(params: &str) -> String {
 pub(crate) fn render_wia_template() -> String {
     render_templates("&nbsp;([[Wounded in action|{{abbr|WIA|Wounded in action}}]])")
 }
+
+/// [NDLDC](https://en.wikipedia.org/wiki/Template:NDLDC)
+pub(crate) fn render_ndldc_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let id = template_param(&named, &["id", "1"])
+        .map(|s| s.trim())
+        .or_else(|| positional.first().map(|s| s.trim()))
+        .unwrap_or("");
+
+    let format_param = template_param(&named, &["format"])
+        .map(|s| s.trim().to_lowercase())
+        .unwrap_or_default();
+
+    if id.is_empty() {
+        return String::new();
+    }
+
+    if format_param.is_empty() {
+        // Raw link format
+        format!("https://dl.ndl.go.jp/info:ndljp/pid/{id}")
+    } else {
+        match format_param.as_str() {
+            "url" => {
+                let param2 = template_param(&named, &["2"])
+                    .or_else(|| positional.get(1).map(|s| s.as_str()))
+                    .unwrap_or("");
+                format!("https://dl.ndl.go.jp/en/pid/{id}{param2}")
+            }
+            "pid" => {
+                format!("[[ndlpid (identifier)|ndlpid]]:[https://dl.ndl.go.jp/en/pid/{id} {id}]")
+            }
+            "digimeta" => {
+                format!("[[ndlpid (identifier)|ndlpid]]:[https://dl.ndl.go.jp/en/pid/{id} {id}]")
+            }
+            "ndljp" => {
+                format!("[[ndlpid (identifier)|ndljp]]:[https://dl.ndl.go.jp/info:ndljp/pid/{id} {id}]")
+            }
+            "doi" => {
+                format!("doi:10.11501/{id}")
+            }
+            "hdl" => {
+                format!("hdl:10.11501/{id}")
+            }
+            "external" => {
+                let param2 = template_param(&named, &["2"])
+                    .or_else(|| positional.get(1).map(|s| s.as_str()))
+                    .map(|s| s.trim())
+                    .filter(|s| !s.is_empty())
+                    .unwrap_or("");
+                let link_text = if param2.is_empty() {
+                    "NDL Digital Collections"
+                } else {
+                    param2
+                };
+                format!("\"[https://dl.ndl.go.jp/info:ndljp/pid/{id} {link_text}]\" - [[National Diet Library#National Diet Library Digital Collections|NDL Digital Collections]]")
+            }
+            _ => {
+                format!("https://dl.ndl.go.jp/info:ndljp/pid/{id}")
+            }
+        }
+    }
+}
+

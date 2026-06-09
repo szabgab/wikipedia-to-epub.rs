@@ -610,6 +610,85 @@ fn render_wikitext_formats_harv_and_harvnb_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_harvtxt_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{harvtxt|Martin|1966}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Martin (1966)"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{harvtxt|Whitman|1985|p=232}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Whitman (1985, p. 232)"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{harvtxt|Sohn|2001|loc=Section 1.5.3}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Sohn (2001, Section 1.5.3)"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{harvtxt|Kang Yoonjung|Han Sungwoo|2013}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Kang Yoonjung &amp; Han Sungwoo (2013)"),
+        "{rendered}"
+    );
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{harvtxt|Choi Jiyoun|Kim Sahyang|Cho Taehong|2020}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Choi Jiyoun, Kim Sahyang, &amp; Cho Taehong (2020)"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_ndldc_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{NDLDC|782854/146}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("https://dl.ndl.go.jp/info:ndljp/pid/782854/146"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{NDLDC|782854/146|format=url}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("https://dl.ndl.go.jp/en/pid/782854/146"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{NDLDC|782854/146|format=pid}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("ndlpid"), "{rendered}");
+    assert!(rendered.contains("782854/146"), "{rendered}");
+    assert!(!rendered.contains("https://dl.ndl.go.jp/en/pid/782854/146"), "{rendered}");
+}
+
+
+#[test]
 fn render_wikitext_formats_plainlist_templates() {
     let rendered = render_wikitext(
         "Sample",

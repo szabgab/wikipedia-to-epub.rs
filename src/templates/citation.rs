@@ -315,6 +315,64 @@ pub(crate) fn render_harvnb_template(params: &str) -> String {
     format_harvard_citation(params)
 }
 
+/// [harvtxt](https://en.wikipedia.org/wiki/Template:Harvtxt)
+pub(crate) fn render_harvtxt_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params)
+        .into_iter()
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .collect::<Vec<_>>();
+
+    if positional.is_empty() {
+        return String::new();
+    }
+
+    let (authors, year) = if positional.len() > 1 {
+        let (auths, y) = positional.split_at(positional.len() - 1);
+        (auths.to_vec(), Some(y[0].clone()))
+    } else {
+        (positional.clone(), None)
+    };
+
+    let authors_formatted = match authors.len() {
+        0 => String::new(),
+        1 => authors[0].clone(),
+        2 => format!("{} & {}", authors[0], authors[1]),
+        _ => {
+            let prefix = authors[0..authors.len() - 1].join(", ");
+            format!("{}, & {}", prefix, authors.last().unwrap())
+        }
+    };
+
+    let mut inner_parts = Vec::new();
+    if let Some(y) = year {
+        inner_parts.push(y);
+    }
+    if let Some(page) = template_param(&named, &["p"]) {
+        inner_parts.push(format!("p. {}", render_templates(page.trim())));
+    } else if let Some(pages) = template_param(&named, &["pp"]) {
+        inner_parts.push(format!("pp. {}", render_templates(pages.trim())));
+    }
+    if let Some(location) = template_param(&named, &["loc"]) {
+        inner_parts.push(render_templates(location.trim()));
+    }
+
+    let inner_formatted = inner_parts.join(", ");
+
+    if authors_formatted.is_empty() {
+        if inner_formatted.is_empty() {
+            String::new()
+        } else {
+            format!("({inner_formatted})")
+        }
+    } else if inner_formatted.is_empty() {
+        authors_formatted
+    } else {
+        format!("{} ({})", authors_formatted, inner_formatted)
+    }
+}
+
 /// [Cite NSRW](https://en.wikipedia.org/wiki/Template:Cite_NSRW)
 pub(crate) fn render_cite_nsrw_template(params: &str) -> String {
     let named = template_named_params(params);
