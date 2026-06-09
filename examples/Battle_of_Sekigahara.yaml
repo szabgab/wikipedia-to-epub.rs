@@ -1,0 +1,96 @@
+# ==============================================================================
+# skeleton.yaml - Book Configuration Template for wikipedia-to-epub
+# ==============================================================================
+# Use this file as a starting point to compile Wikipedia articles into an EPUB.
+
+# (Optional) Unique identifier of the book. If omitted, a random URN is generated.
+id: Battle-of-Sekigahara-fixed-id
+
+# Metadata block for the compiled EPUB book.
+metadata:
+  # The title of the book.
+  # Value: Any descriptive string.
+  title: Battle of Sekigahara
+
+  # The author or compiler of the book.
+  # Value: Any descriptive string.
+  author: "Wikipedia Contributors & Compiler"
+
+  # (Optional) The license under which the book/content is compiled.
+  # Value: A license string or null/omitted.
+  license: "Creative Commons Attribution-ShareAlike 4.0 License"
+
+  # The language of the Wikipedia articles to download (e.g., "en", "es", "he", "ko").
+  # Value: Any valid ISO 639-1 language code of a live Wikipedia project.
+  language: en
+
+  # The edition designation for the compiled book.
+  # Value: Any descriptive string (e.g., "First edition").
+  edition: "First edition"
+
+# The name or path of the output EPUB file to be generated.
+# Value: A valid relative or absolute file path ending in .epub.
+output-file: Battle_of_Sekigahara.epub
+
+# Whether to fetch and embed images found in the articles.
+# Valid values:
+#   - true  : Download and embed matching images as high-quality EPUB assets.
+#   - false : Do not embed images (produces a text-only EPUB).
+images: false
+
+# Cache strategy to use for article metadata, wikitext, and images.
+# Valid values:
+#   - "none"    : Disable caching completely. Always fetches fresh data from live Wikipedia APIs.
+#   - "local"   : Uses a relative ".cache/" directory in the current working directory.
+#   - "central" : Uses a platform-specific user cache directory (e.g. "~/.cache/wikipedia-to-epub" on Linux).
+caching: "central"
+
+# Depth level of link recursion to follow.
+# Valid values:
+#   - 0 : Only download and compile the articles explicitly listed under the 'articles' field.
+#   - 1 : Follow links inside the listed articles. Download and add linked pages to the book
+#         (only following links within the same language Wikipedia, without duplicates, depth-first).
+depth: 0
+
+# Whether to include a resources page listing all the compiled Wikipedia pages at the end of the book.
+# Valid values:
+#   - true  : Generate and append a "Resources" page.
+#   - false : Do not append a resources page.
+resources: false
+
+# Whether to include an "Appendix A" page listing and linking the compiled Wikipedia pages at the end of the book.
+# Valid values:
+#   - true  : Generate and append an "Appendix A" page.
+#   - false : Do not append an "Appendix A" page.
+links_to_pages: false
+
+# How to render same-language Wikipedia links for pages that are not included in the book.
+# Valid values:
+#   - "display"    : Link to Wikipedia without the external-link arrow.
+#   - "emphasize"  : Link to Wikipedia and add the external-link arrow.
+#   - "disregard"  : Show the text without a link.
+links_to_excluded_pages: emphasize
+
+# Path to a cover image to be used as the book cover page.
+# Valid values:
+#   - "None" : Do not embed a cover image.
+#   - A relative or absolute path to an image file (e.g., "./cover.png").
+cover: "None"
+
+# Styling format for chapter and subchapter titles.
+# Valid values:
+#   - "title"          : standard chapter names as they are (default).
+#   - "numbered-title" : automatically prepends hierarchical numbers (e.g. 1, 1.1, 1.2) to titles.
+chapters: "title"
+
+
+# List of Wikipedia article page titles and sections to compile into the book.
+# The book will be constructed in the order listed.
+#
+# Supported formats:
+#   1. Stand-alone page (standard flat string)
+#   2. Main article with nested sub-articles (as an object with 'title' and list of 'articles')
+#   3. Logical section/chapter headings (an object with 'title', 'type: "section"', and list of 'articles')
+articles:
+  - Battle of Sekigahara
+
