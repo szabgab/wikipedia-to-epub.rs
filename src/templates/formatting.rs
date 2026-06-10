@@ -50,18 +50,6 @@ pub(crate) fn render_jct_template(params: &str) -> String {
     String::new()
 }
 
-/// [nbsp](https://en.wikipedia.org/wiki/Template:Nbsp)
-pub(crate) fn render_nonbreaking_space_template() -> String {
-    " ".to_string()
-}
-
-/// [snd](https://en.wikipedia.org/wiki/Template:Snd)
-/// [dash](https://en.wikipedia.org/wiki/Template:Dash)
-/// [snds](https://en.wikipedia.org/wiki/Template:Snds)
-pub(crate) fn render_spaced_endash_template() -> String {
-    " – ".to_string()
-}
-
 /// [mdash](https://en.wikipedia.org/wiki/Template:Mdash)
 pub(crate) fn render_emdash_template() -> String {
     "—".to_string()

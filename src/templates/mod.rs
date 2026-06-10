@@ -49,25 +49,25 @@ use formatting::{
     render_legend_template, render_lnl_template, render_main_list_template, render_main_template,
     render_mia_template, render_mpl_dash_template, render_mpl_template,
     render_multiple_images_template, render_native_name_list_template,
-    render_natural_causes_template, render_ndldc_template, render_nonbreaking_space_template,
-    render_note_template, render_numero_template, render_oclc_template,
-    render_official_website_template, render_open_access_template,
-    render_openstreetmap_relation_template, render_openstreetmap_way_template,
-    render_passthrough_template, render_pkia_template, render_plainlist_template,
-    render_plus_minus_template, render_poem_quote_template, render_pow_template,
-    render_proto_template, render_reference_page_template, render_reign_template,
-    render_republic_of_korea_ship_template, render_ric_template, render_route_box_template,
-    render_section_link_template, render_see_also_template, render_ship_class_template,
-    render_ship_template, render_sic_template, render_singular_template, render_smaller_template,
-    render_soft_hyphen_template, render_solar_radius_template, render_spaced_endash_template,
-    render_spaces_template, render_station_template, render_stn_template, render_su_template,
-    render_sub_template, render_suicide_template, render_sup_template, render_surrendered_template,
-    render_tooltip_template, render_track_gauge_template, render_turncoat_template,
-    render_unbulleted_list_template, render_url_template, render_usurped_template,
-    render_verse_translation_template, render_verse_transliteration_translation_template,
-    render_visible_anchor_template, render_webarchive_template, render_wia_template,
-    render_wikibooks_template, render_wikisource_template, render_wikivoyage_template,
-    render_wiktionary_template, render_worldhistory_template,
+    render_natural_causes_template, render_ndldc_template, render_note_template,
+    render_numero_template, render_oclc_template, render_official_website_template,
+    render_open_access_template, render_openstreetmap_relation_template,
+    render_openstreetmap_way_template, render_passthrough_template, render_pkia_template,
+    render_plainlist_template, render_plus_minus_template, render_poem_quote_template,
+    render_pow_template, render_proto_template, render_reference_page_template,
+    render_reign_template, render_republic_of_korea_ship_template, render_ric_template,
+    render_route_box_template, render_section_link_template, render_see_also_template,
+    render_ship_class_template, render_ship_template, render_sic_template,
+    render_singular_template, render_smaller_template, render_soft_hyphen_template,
+    render_solar_radius_template, render_spaces_template, render_station_template,
+    render_stn_template, render_su_template, render_sub_template, render_suicide_template,
+    render_sup_template, render_surrendered_template, render_tooltip_template,
+    render_track_gauge_template, render_turncoat_template, render_unbulleted_list_template,
+    render_url_template, render_usurped_template, render_verse_translation_template,
+    render_verse_transliteration_translation_template, render_visible_anchor_template,
+    render_webarchive_template, render_wia_template, render_wikibooks_template,
+    render_wikisource_template, render_wikivoyage_template, render_wiktionary_template,
+    render_worldhistory_template,
 };
 use lang::{
     render_angbr_ipa_template, render_angbr_template, render_chinese_lang_template,
@@ -130,14 +130,29 @@ pub(crate) fn matching_template_end(text: &str, start: usize) -> Option<usize> {
     None
 }
 
+/// [nbsp](https://en.wikipedia.org/wiki/Template:Nbsp)
+/// [snd](https://en.wikipedia.org/wiki/Template:Snd)
+/// [dash](https://en.wikipedia.org/wiki/Template:Dash)
+/// [snds](https://en.wikipedia.org/wiki/Template:Snds)
+
 pub(crate) fn render_template(content: &str) -> String {
     let (template, params) = split_template_name(content);
     let template_normalized = template.trim().replace('_', " ");
     let template = template_normalized.as_str();
 
-    let fixed: HashMap<&str, &str> = HashMap::from([("'\"", "'\""), ("\"'", "\"'")]);
-    if fixed.contains_key(template) {
-        return fixed.get(template).unwrap().to_string();
+    let fixed: HashMap<&str, &str> = HashMap::from([
+        ("'\"", "'\""),
+        ("\"'", "\"'"),
+        ("!", "|"),
+        ("nbsp", " "),
+        ("snd", " – "),
+        ("dash", " – "),
+        ("snds", " – "),
+    ]);
+
+    let lower = template.to_lowercase();
+    if fixed.contains_key(&lower.as_str()) {
+        return fixed.get(lower.as_str()).unwrap().to_string();
     }
 
     if template.eq_ignore_ascii_case("Korean")
@@ -145,20 +160,11 @@ pub(crate) fn render_template(content: &str) -> String {
         || template.eq_ignore_ascii_case("ko")
     {
         render_korean_template(params)
-    } else if template.eq_ignore_ascii_case("!") {
-        "|".to_string()
     } else if template.eq_ignore_ascii_case("Nihongo4") || template.eq_ignore_ascii_case("Nihongo")
     {
         render_japanese_template(params)
     } else if template.eq_ignore_ascii_case("Nihongo foot") {
         render_nihongo_foot_template(params)
-    } else if template.eq_ignore_ascii_case("nbsp") {
-        render_nonbreaking_space_template()
-    } else if template.eq_ignore_ascii_case("snd")
-        || template.eq_ignore_ascii_case("dash")
-        || template.eq_ignore_ascii_case("snds")
-    {
-        render_spaced_endash_template()
     } else if template.eq_ignore_ascii_case("mdash") {
         render_emdash_template()
     } else if template.eq_ignore_ascii_case("nowrap") {
