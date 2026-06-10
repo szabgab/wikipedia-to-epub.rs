@@ -10,9 +10,12 @@
 
 * At the end of each response how much did your work cost.
 
-Never use `*` in a `use` statement. Always list explicitely every import.
+* Never use `*` in a `use` statement. Always list explicitely every import.
+
+* Never make any changes except what I explicitely asked for.
 
 Skills can be found in the `.agents/skills/` folder.
+
 
 ## TOOLS
 
