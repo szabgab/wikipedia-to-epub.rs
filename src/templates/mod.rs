@@ -56,17 +56,16 @@ use formatting::{
     render_pow_template, render_proto_template, render_reference_page_template,
     render_reign_template, render_republic_of_korea_ship_template, render_ric_template,
     render_route_box_template, render_section_link_template, render_see_also_template,
-    render_ship_class_template, render_ship_template, render_sic_template,
-    render_singular_template, render_smaller_template, render_soft_hyphen_template,
-    render_solar_radius_template, render_spaces_template, render_station_template,
-    render_stn_template, render_su_template, render_sub_template, render_suicide_template,
-    render_sup_template, render_surrendered_template, render_tooltip_template,
-    render_track_gauge_template, render_turncoat_template, render_unbulleted_list_template,
-    render_url_template, render_usurped_template, render_verse_translation_template,
-    render_verse_transliteration_translation_template, render_visible_anchor_template,
-    render_webarchive_template, render_wia_template, render_wikibooks_template,
-    render_wikisource_template, render_wikivoyage_template, render_wiktionary_template,
-    render_worldhistory_template,
+    render_ship_class_template, render_ship_template, render_sic_template, render_smaller_template,
+    render_soft_hyphen_template, render_solar_radius_template, render_spaces_template,
+    render_station_template, render_stn_template, render_su_template, render_sub_template,
+    render_suicide_template, render_sup_template, render_surrendered_template,
+    render_tooltip_template, render_track_gauge_template, render_turncoat_template,
+    render_unbulleted_list_template, render_url_template, render_usurped_template,
+    render_verse_translation_template, render_verse_transliteration_translation_template,
+    render_visible_anchor_template, render_webarchive_template, render_wia_template,
+    render_wikibooks_template, render_wikisource_template, render_wikivoyage_template,
+    render_wiktionary_template, render_worldhistory_template,
 };
 use lang::{
     render_angbr_ipa_template, render_angbr_template, render_chinese_lang_template,
@@ -129,7 +128,6 @@ pub(crate) fn matching_template_end(text: &str, start: usize) -> Option<usize> {
     None
 }
 
-
 /// [nbsp](https://en.wikipedia.org/wiki/Template:Nbsp)
 ///
 /// [snd](https://en.wikipedia.org/wiki/Template:Snd)
@@ -144,6 +142,8 @@ pub(crate) fn matching_template_end(text: &str, start: usize) -> Option<usize> {
 /// [nbnd](https://en.wikipedia.org/wiki/Template:Nbnd)
 /// [en dash](https://en.wikipedia.org/wiki/Template:En_dash)
 /// [En dash](https://en.wikipedia.org/wiki/Template:En_dash)
+///
+/// [singular](https://en.wikipedia.org/wiki/Template:Singular)
 pub(crate) fn render_template(content: &str) -> String {
     let (template, params) = split_template_name(content);
     let template_normalized = template.trim().replace('_', " ");
@@ -163,6 +163,10 @@ pub(crate) fn render_template(content: &str) -> String {
         ("nbndash", "–"),
         ("nbnd", "–"),
         ("en dash", "–"),
+        (
+            "singular",
+            "__WIKIPEDIA_TO_EPUB_ABBR_START__singular form__WIKIPEDIA_TO_EPUB_ABBR_VALUE__sg.__WIKIPEDIA_TO_EPUB_ABBR_END__",
+        ),
     ]);
 
     let lower = template.to_lowercase();
@@ -196,8 +200,6 @@ pub(crate) fn render_template(content: &str) -> String {
         render_verse_transliteration_translation_template(params)
     } else if template.eq_ignore_ascii_case("center") {
         render_passthrough_template(params)
-    } else if template.eq_ignore_ascii_case("singular") {
-        render_singular_template()
     } else if template.eq_ignore_ascii_case("smaller") || template.eq_ignore_ascii_case("small") {
         render_smaller_template(params)
     } else if template.eq_ignore_ascii_case("sic") {

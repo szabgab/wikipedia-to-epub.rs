@@ -50,14 +50,6 @@ pub(crate) fn render_jct_template(params: &str) -> String {
     String::new()
 }
 
-/// [singular](https://en.wikipedia.org/wiki/Template:Singular)
-pub(crate) fn render_singular_template() -> String {
-    format!(
-        "__WIKIPEDIA_TO_EPUB_ABBR_START__{}__WIKIPEDIA_TO_EPUB_ABBR_VALUE__{}__WIKIPEDIA_TO_EPUB_ABBR_END__",
-        "singular form", "sg."
-    )
-}
-
 /// [nowrap](https://en.wikipedia.org/wiki/Template:Nowrap)
 /// [center](https://en.wikipedia.org/wiki/Template:Center)
 /// [crossreference](https://en.wikipedia.org/wiki/Template:Crossreference)
