@@ -433,6 +433,46 @@ pub(crate) fn render_template(content: &str) -> String {
             "columns list",
             render_columns_list_template as TemplateHandler,
         ),
+        (
+            "annotated link",
+            render_annotated_link_template as TemplateHandler,
+        ),
+        ("dp", render_dp_template as TemplateHandler),
+        (
+            "visible anchor",
+            render_visible_anchor_template as TemplateHandler,
+        ),
+        (
+            "cite eb1911",
+            render_cite_eb1911_template as TemplateHandler,
+        ),
+        ("spaces", render_spaces_template as TemplateHandler),
+        ("mpl-", render_mpl_dash_template as TemplateHandler),
+        ("chem", render_chem_template as TemplateHandler),
+        (
+            "solar radius",
+            render_solar_radius_template as TemplateHandler,
+        ),
+        ("±", render_plus_minus_template as TemplateHandler),
+        (
+            "collapsible list",
+            render_collapsible_list_template as TemplateHandler,
+        ),
+        (
+            "internet archive short film",
+            render_internet_archive_short_film_template as TemplateHandler,
+        ),
+        (
+            "worldhistory",
+            render_worldhistory_template as TemplateHandler,
+        ),
+        ("nihongo2", render_nihongo2_template as TemplateHandler),
+        ("gloss", render_gloss_template as TemplateHandler),
+        ("xref", render_passthrough_template as TemplateHandler),
+        ("shy", render_soft_hyphen_template as TemplateHandler),
+        ("color box", render_color_box_template as TemplateHandler),
+        ("color", render_color_template as TemplateHandler),
+        ("colour", render_color_template as TemplateHandler),
     ]);
 
     if lookup.contains_key(&lower.as_str()) {
@@ -469,14 +509,6 @@ pub(crate) fn render_template(content: &str) -> String {
         render_ship_template("USS", params)
     } else if template.eq_ignore_ascii_case("HMS") {
         render_ship_template("HMS", params)
-    } else if template.eq_ignore_ascii_case("annotated link") {
-        render_annotated_link_template(params)
-    } else if template.eq_ignore_ascii_case("Dp") || template.eq_ignore_ascii_case("dp") {
-        render_dp_template(params)
-    } else if template.eq_ignore_ascii_case("Visible anchor")
-        || template.eq_ignore_ascii_case("visible anchor")
-    {
-        render_visible_anchor_template(params)
     } else if template.eq_ignore_ascii_case("L1") {
         render_lagrange_template("1")
     } else if template.eq_ignore_ascii_case("L2") {
@@ -487,36 +519,6 @@ pub(crate) fn render_template(content: &str) -> String {
         render_lagrange_template("4")
     } else if template.eq_ignore_ascii_case("L5") {
         render_lagrange_template("5")
-    } else if template.eq_ignore_ascii_case("Cite EB1911") {
-        render_cite_eb1911_template(params)
-    } else if template.eq_ignore_ascii_case("spaces") {
-        render_spaces_template(params)
-    } else if template.eq_ignore_ascii_case("mpl-") {
-        render_mpl_dash_template(params)
-    } else if template.eq_ignore_ascii_case("chem") {
-        render_chem_template(params)
-    } else if template.eq_ignore_ascii_case("solar radius") {
-        render_solar_radius_template(params)
-    } else if template.eq_ignore_ascii_case("±") {
-        render_plus_minus_template(params)
-    } else if template.eq_ignore_ascii_case("Collapsible list") {
-        render_collapsible_list_template(params)
-    } else if template.eq_ignore_ascii_case("Internet Archive short film") {
-        render_internet_archive_short_film_template(params)
-    } else if template.eq_ignore_ascii_case("worldhistory") {
-        render_worldhistory_template(params)
-    } else if template.eq_ignore_ascii_case("nihongo2") {
-        render_nihongo2_template(params)
-    } else if template.eq_ignore_ascii_case("gloss") {
-        render_gloss_template(params)
-    } else if template.eq_ignore_ascii_case("xref") {
-        render_passthrough_template(params)
-    } else if template.eq_ignore_ascii_case("Shy") {
-        render_soft_hyphen_template(params)
-    } else if template.eq_ignore_ascii_case("color box") {
-        render_color_box_template(params)
-    } else if template.eq_ignore_ascii_case("color") || template.eq_ignore_ascii_case("colour") {
-        render_color_template(params)
     } else if template.eq_ignore_ascii_case("pb") {
         "__WIKIPEDIA_TO_EPUB_PB__".to_string()
     } else if template.eq_ignore_ascii_case("OSM relation") {
