@@ -254,41 +254,11 @@ fn generate_chapters_hierarchical(
 
 fn run(args: CliArgs) -> AppResult<()> {
     let mut config = read_config(&args.config_path)?;
+
+    let cover_image = get_cover_image(&args, &config)?;
+
     if let Some(output) = args.output {
         config.output_file = output;
-    }
-    let mut cover_image = None;
-    if let Some(ref cover_str) = config.cover
-        && cover_str != "None"
-        && !cover_str.is_empty()
-    {
-        let path = PathBuf::from(cover_str);
-        let resolved_path = if path.is_absolute() {
-            path
-        } else {
-            let config_parent = args.config_path.parent().unwrap_or_else(|| Path::new("."));
-            config_parent.join(path)
-        };
-        if !resolved_path.is_file() {
-            return Err(AppError::Message(format!(
-                "cover image file not found: {}",
-                resolved_path.display()
-            )));
-        }
-        let bytes = fs::read(&resolved_path)?;
-        let ext = resolved_path
-            .extension()
-            .and_then(|e| e.to_str())
-            .unwrap_or("")
-            .to_lowercase();
-        let media_type = match ext.as_str() {
-            "jpg" | "jpeg" => "image/jpeg",
-            "png" => "image/png",
-            "gif" => "image/gif",
-            "svg" => "image/svg+xml",
-            _ => "image/jpeg",
-        };
-        cover_image = Some((bytes, ext, media_type));
     }
 
     let wikipedia_language = normalized_wikipedia_language(&config.metadata.language)?;
@@ -635,6 +605,46 @@ fn run(args: CliArgs) -> AppResult<()> {
     log_download_stats(&download_stats);
 
     Ok(())
+}
+
+fn get_cover_image(
+    args: &CliArgs,
+    config: &BookConfig,
+) -> Result<Option<(Vec<u8>, String, &'static str)>, AppError> {
+    let mut cover_image = None;
+    if let Some(ref cover_str) = config.cover
+        && cover_str != "None"
+        && !cover_str.is_empty()
+    {
+        let path = PathBuf::from(cover_str);
+        let resolved_path = if path.is_absolute() {
+            path
+        } else {
+            let config_parent = args.config_path.parent().unwrap_or_else(|| Path::new("."));
+            config_parent.join(path)
+        };
+        if !resolved_path.is_file() {
+            return Err(AppError::Message(format!(
+                "cover image file not found: {}",
+                resolved_path.display()
+            )));
+        }
+        let bytes = fs::read(&resolved_path)?;
+        let ext = resolved_path
+            .extension()
+            .and_then(|e| e.to_str())
+            .unwrap_or("")
+            .to_lowercase();
+        let media_type = match ext.as_str() {
+            "jpg" | "jpeg" => "image/jpeg",
+            "png" => "image/png",
+            "gif" => "image/gif",
+            "svg" => "image/svg+xml",
+            _ => "image/jpeg",
+        };
+        cover_image = Some((bytes, ext, media_type));
+    }
+    Ok(cover_image)
 }
 
 fn init_logging(level: Level, logfile: Option<&Path>) {
