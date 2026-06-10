@@ -37,8 +37,8 @@ use crate::render_wikitext_tables;
 use crate::render_wikitext_with_template_counts;
 use crate::render_wikitext_with_template_counts_and_excluded_links;
 use crate::strip_file_links;
-use crate::template_log_content;
-use crate::template_name_is_in_csv;
+use crate::templates::template_log_content;
+use crate::templates::template_name_is_in_csv;
 use crate::wikipedia_article_url;
 
 #[test]

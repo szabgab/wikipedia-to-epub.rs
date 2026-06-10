@@ -5015,3 +5015,39 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * None.
+
+
+## Session Note: 2026-06-10 - Replace Wildcard Imports
+
+### Decisions Made
+
+* Replaced all wildcard imports (`use ...::*;`) with explicit listings across the codebase:
+  * `src/main.rs`: Replaced `pub(crate) use templates::*;` with explicit template function imports. Changed the logging setup to import the required traits (`Layer`, `SubscriberExt`, `SubscriberInitExt`) explicitly rather than using `tracing_subscriber::prelude::*`.
+  * `src/templates/mod.rs`: Replaced wildcard re-exports of submodules (`citation`, `convert`, `formatting`, `lang`) with explicit public re-exports and private imports.
+  * `src/templates/lang.rs`: Replaced `use crate::templates::*;` with explicit imports for `join_plain_items`, `render_templates`, `template_named_params`, `template_param`, and `template_positional_params`.
+  * `src/templates/citation.rs`: Fixed `PersonRole` and `citation_people` root-level imports to reference `crate::templates` directly.
+  * `src/tests.rs`: Fixed imports of `template_log_content` and `template_name_is_in_csv` to import from `crate::templates::` since they are no longer re-exported to the root level.
+* Resolved Clippy warnings/errors in `src/main.rs`:
+  * Created `CoverImage` type alias for the complex return type of `get_cover_image`.
+  * Adjusted `wikipedia_language` parameters from `&String` to `&str` and `ordered_articles` from `&Vec<String>` to `&[String]`.
+* Formatted the modified code and ran checks, lints, and all tests.
+
+### Files Changed
+
+* `src/main.rs`
+* `src/tests.rs`
+* `src/templates/mod.rs`
+* `src/templates/lang.rs`
+* `src/templates/citation.rs`
+* `docs/codex-notes.md`
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test` (all 263 unit tests and 34 integration tests passed successfully)
+
+### Pending Follow-Ups
+
+* None.

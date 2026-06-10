@@ -36,9 +36,13 @@ pub(crate) use error::{AppError, AppResult};
 pub(crate) use image::{
     ImageRegistry, ParsedFileLink, image_marker_id, render_image_html, resolve_images,
 };
-pub(crate) use templates::*;
+pub(crate) use templates::{
+    matching_template_end, render_templates, split_template_name, template_named_params,
+    template_param,
+};
 
 type InternalLinks = HashMap<String, String>;
+type CoverImage = (Vec<u8>, String, &'static str);
 const USER_AGENT: &str = concat!(
     env!("CARGO_PKG_NAME"),
     "/",
@@ -496,8 +500,8 @@ fn run(args: CliArgs) -> AppResult<()> {
 
 fn add_links_to_pages(
     config: &BookConfig,
-    wikipedia_language: &String,
-    ordered_articles: &Vec<String>,
+    wikipedia_language: &str,
+    ordered_articles: &[String],
     loaded_pages: &HashMap<String, PageResponse>,
     chapters: &mut Vec<Chapter>,
     toc_nodes: &mut Vec<TocNode>,
@@ -553,8 +557,8 @@ fn add_links_to_pages(
 
 fn add_resources_page(
     config: &BookConfig,
-    wikipedia_language: &String,
-    ordered_articles: &Vec<String>,
+    wikipedia_language: &str,
+    ordered_articles: &[String],
     loaded_pages: &HashMap<String, PageResponse>,
     chapters: &mut Vec<Chapter>,
     toc_nodes: &mut Vec<TocNode>,
@@ -660,7 +664,7 @@ fn visit_hierarchical_articles(
 fn get_cover_image(
     args: &CliArgs,
     config: &BookConfig,
-) -> Result<Option<(Vec<u8>, String, &'static str)>, AppError> {
+) -> Result<Option<CoverImage>, AppError> {
     let mut cover_image = None;
     if let Some(ref cover_str) = config.cover
         && cover_str != "None"
@@ -698,7 +702,9 @@ fn get_cover_image(
 }
 
 fn init_logging(level: Level, logfile: Option<&Path>) {
-    use tracing_subscriber::prelude::*;
+    use tracing_subscriber::Layer;
+    use tracing_subscriber::layer::SubscriberExt;
+    use tracing_subscriber::util::SubscriberInitExt;
     let level_filter = tracing_subscriber::filter::LevelFilter::from_level(level);
 
     let stdout_layer = tracing_fmt::layer()

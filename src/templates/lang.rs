@@ -1,5 +1,8 @@
 use crate::split_template_params;
-use crate::templates::*;
+use crate::templates::{
+    join_plain_items, render_templates, template_named_params, template_param,
+    template_positional_params,
+};
 use std::collections::HashMap;
 
 /// [Korean](https://en.wikipedia.org/wiki/Template:Korean)

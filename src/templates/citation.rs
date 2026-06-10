@@ -1,8 +1,6 @@
-use crate::PersonRole;
-use crate::citation_people;
 use crate::templates::{
-    render_templates, template_named_params, template_param, template_param_owned,
-    template_positional_params,
+    PersonRole, citation_people, render_templates, template_named_params, template_param,
+    template_param_owned, template_positional_params,
 };
 use std::collections::HashMap;
 
