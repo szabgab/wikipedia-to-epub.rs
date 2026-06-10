@@ -174,42 +174,50 @@ pub(crate) fn render_template(content: &str) -> String {
         return fixed.get(lower.as_str()).unwrap().to_string();
     }
 
-    if template.eq_ignore_ascii_case("Korean")
-        || template.eq_ignore_ascii_case("Korean/auto")
-        || template.eq_ignore_ascii_case("ko")
-    {
-        render_korean_template(params)
-    } else if template.eq_ignore_ascii_case("Nihongo4") || template.eq_ignore_ascii_case("Nihongo")
-    {
-        render_japanese_template(params)
-    } else if template.eq_ignore_ascii_case("Nihongo foot") {
-        render_nihongo_foot_template(params)
-    } else if template.eq_ignore_ascii_case("nowrap") {
-        render_passthrough_template(params)
-    } else if template.eq_ignore_ascii_case("citation needed span") {
-        render_citation_needed_span_template(params)
-    } else if template.eq_ignore_ascii_case("Quote box") || template.eq_ignore_ascii_case("Quote") {
-        render_blockquote_template(params)
-    } else if template.eq_ignore_ascii_case("Poem quote")
-        || template.eq_ignore_ascii_case("poemquote")
-    {
-        render_poem_quote_template(params)
-    } else if template.eq_ignore_ascii_case("Verse translation") {
-        render_verse_translation_template(params)
-    } else if template.eq_ignore_ascii_case("Verse transliteration-translation") {
-        render_verse_transliteration_translation_template(params)
-    } else if template.eq_ignore_ascii_case("center") {
-        render_passthrough_template(params)
-    } else if template.eq_ignore_ascii_case("smaller") || template.eq_ignore_ascii_case("small") {
-        render_smaller_template(params)
-    } else if template.eq_ignore_ascii_case("sic") {
-        render_sic_template(params)
-    } else if template.eq_ignore_ascii_case("circa")
-        || template.eq_ignore_ascii_case("c.")
-        || template.eq_ignore_ascii_case("cx")
-    {
-        render_circa_template(params)
-    } else if template.eq_ignore_ascii_case("lang") {
+    type TemplateHandler = fn(&str) -> String;
+    type DispatchTable = HashMap<&'static str, TemplateHandler>;
+
+    let lookup: DispatchTable = HashMap::from([
+        ("korean", render_korean_template as TemplateHandler),
+        ("korean/auto", render_korean_template as TemplateHandler),
+        ("ko", render_korean_template as TemplateHandler),
+        ("nihongo4", render_japanese_template as TemplateHandler),
+        ("nihongo", render_japanese_template as TemplateHandler),
+        (
+            "nihongo foot",
+            render_nihongo_foot_template as TemplateHandler,
+        ),
+        ("nowrap", render_passthrough_template as TemplateHandler),
+        (
+            "citation needed span",
+            render_citation_needed_span_template as TemplateHandler,
+        ),
+        ("quote box", render_blockquote_template as TemplateHandler),
+        ("quote", render_blockquote_template as TemplateHandler),
+        ("poem quote", render_poem_quote_template as TemplateHandler),
+        ("poemquote", render_poem_quote_template as TemplateHandler),
+        (
+            "verse translation",
+            render_verse_translation_template as TemplateHandler,
+        ),
+        (
+            "verse transliteration-translation",
+            render_verse_transliteration_translation_template as TemplateHandler,
+        ),
+        ("center", render_passthrough_template as TemplateHandler),
+        ("smaller", render_smaller_template as TemplateHandler),
+        ("small", render_smaller_template as TemplateHandler),
+        ("sic", render_sic_template as TemplateHandler),
+        ("circa", render_circa_template as TemplateHandler),
+        ("c.", render_circa_template as TemplateHandler),
+        ("cx", render_circa_template as TemplateHandler),
+    ]);
+
+    if lookup.contains_key(&lower.as_str()) {
+        return lookup.get(lower.as_str()).unwrap()(params);
+    }
+
+    if template.eq_ignore_ascii_case("lang") {
         render_lang_template(params)
     } else if template.eq_ignore_ascii_case("in lang") {
         render_in_lang_template(params)
