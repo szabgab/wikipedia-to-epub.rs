@@ -167,6 +167,9 @@ pub(crate) fn render_template(content: &str) -> String {
             "singular",
             "__WIKIPEDIA_TO_EPUB_ABBR_START__singular form__WIKIPEDIA_TO_EPUB_ABBR_VALUE__sg.__WIKIPEDIA_TO_EPUB_ABBR_END__",
         ),
+        ("pb", "__WIKIPEDIA_TO_EPUB_PB__"),
+        ("okina", "ʻ"),
+        ("'s", "'s"),
     ]);
 
     let lower = template.to_lowercase();
@@ -473,6 +476,61 @@ pub(crate) fn render_template(content: &str) -> String {
         ("color box", render_color_box_template as TemplateHandler),
         ("color", render_color_template as TemplateHandler),
         ("colour", render_color_template as TemplateHandler),
+        (
+            "osm relation",
+            render_openstreetmap_relation_template as TemplateHandler,
+        ),
+        (
+            "osm way",
+            render_openstreetmap_way_template as TemplateHandler,
+        ),
+        ("harvp", render_harvp_template as TemplateHandler),
+        ("harv", render_harvp_template as TemplateHandler),
+        ("harvnb", render_harvnb_template as TemplateHandler),
+        ("harvtxt", render_harvtxt_template as TemplateHandler),
+        ("ndldc", render_ndldc_template as TemplateHandler),
+        ("plainlist", render_plainlist_template as TemplateHandler),
+        (
+            "unbulleted list",
+            render_unbulleted_list_template as TemplateHandler,
+        ),
+        ("ubl", render_unbulleted_list_template as TemplateHandler),
+        ("ubli", render_unbulleted_list_template as TemplateHandler),
+        (
+            "unbulleted indent list",
+            render_unbulleted_list_template as TemplateHandler,
+        ),
+        ("ipaslink", render_ipa_link_template as TemplateHandler),
+        ("angbr", render_angbr_template as TemplateHandler),
+        ("angbr ipa", render_angbr_ipa_template as TemplateHandler),
+        ("unichar", render_unichar_template as TemplateHandler),
+        ("xlit", render_transliteration_template as TemplateHandler),
+        ("note", render_note_template as TemplateHandler),
+        (
+            "fs interlinear",
+            render_fs_interlinear_template as TemplateHandler,
+        ),
+        ("tooltip", render_tooltip_template as TemplateHandler),
+        (
+            "nihongo krt",
+            render_nihongo_krt_template as TemplateHandler,
+        ),
+        ("jaanus", render_jaanus_template as TemplateHandler),
+        ("nihongo3", render_nihongo3_template as TemplateHandler),
+        (
+            "easy css image crop",
+            render_easy_css_image_crop_template as TemplateHandler,
+        ),
+        (
+            "multiple images",
+            render_multiple_images_template as TemplateHandler,
+        ),
+        (
+            "multiple image",
+            render_multiple_images_template as TemplateHandler,
+        ),
+        ("issn", render_issn_template as TemplateHandler),
+        ("cite nsrw", render_cite_nsrw_template as TemplateHandler),
     ]);
 
     if lookup.contains_key(&lower.as_str()) {
@@ -519,64 +577,6 @@ pub(crate) fn render_template(content: &str) -> String {
         render_lagrange_template("4")
     } else if template.eq_ignore_ascii_case("L5") {
         render_lagrange_template("5")
-    } else if template.eq_ignore_ascii_case("pb") {
-        "__WIKIPEDIA_TO_EPUB_PB__".to_string()
-    } else if template.eq_ignore_ascii_case("OSM relation") {
-        render_openstreetmap_relation_template(params)
-    } else if template.eq_ignore_ascii_case("OSM way") {
-        render_openstreetmap_way_template(params)
-    } else if template.eq_ignore_ascii_case("okina") {
-        "ʻ".to_string()
-    } else if template.eq_ignore_ascii_case("'s") {
-        "'s".to_string()
-    } else if template.eq_ignore_ascii_case("harvp") || template.eq_ignore_ascii_case("harv") {
-        render_harvp_template(params)
-    } else if template.eq_ignore_ascii_case("harvnb") {
-        render_harvnb_template(params)
-    } else if template.eq_ignore_ascii_case("harvtxt") {
-        render_harvtxt_template(params)
-    } else if template.eq_ignore_ascii_case("NDLDC") {
-        render_ndldc_template(params)
-    } else if template.eq_ignore_ascii_case("plainlist") {
-        render_plainlist_template(params)
-    } else if template.eq_ignore_ascii_case("unbulleted list")
-        || template.eq_ignore_ascii_case("ubl")
-        || template.eq_ignore_ascii_case("ubli")
-        || template.eq_ignore_ascii_case("unbulleted indent list")
-    {
-        render_unbulleted_list_template(params)
-    } else if template.eq_ignore_ascii_case("IPAslink") {
-        render_ipa_link_template(params)
-    } else if template.eq_ignore_ascii_case("angbr") {
-        render_angbr_template(params)
-    } else if template.eq_ignore_ascii_case("angbr IPA") {
-        render_angbr_ipa_template(params)
-    } else if template.eq_ignore_ascii_case("unichar") {
-        render_unichar_template(params)
-    } else if template.eq_ignore_ascii_case("xlit") {
-        render_transliteration_template(params)
-    } else if template.eq_ignore_ascii_case("note") {
-        render_note_template(params)
-    } else if template.eq_ignore_ascii_case("fs interlinear") {
-        render_fs_interlinear_template(params)
-    } else if template.eq_ignore_ascii_case("Tooltip") {
-        render_tooltip_template(params)
-    } else if template.eq_ignore_ascii_case("Nihongo krt") {
-        render_nihongo_krt_template(params)
-    } else if template.eq_ignore_ascii_case("Jaanus") {
-        render_jaanus_template(params)
-    } else if template.eq_ignore_ascii_case("nihongo3") {
-        render_nihongo3_template(params)
-    } else if template.eq_ignore_ascii_case("Easy CSS image crop") {
-        render_easy_css_image_crop_template(params)
-    } else if template.eq_ignore_ascii_case("Multiple images")
-        || template.eq_ignore_ascii_case("Multiple image")
-    {
-        render_multiple_images_template(params)
-    } else if template.eq_ignore_ascii_case("ISSN") {
-        render_issn_template(params)
-    } else if template.eq_ignore_ascii_case("Cite NSRW") {
-        render_cite_nsrw_template(params)
     } else if template
         .get(.."formatnum:".len())
         .is_some_and(|prefix| prefix.eq_ignore_ascii_case("formatnum:"))
