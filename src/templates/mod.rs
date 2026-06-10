@@ -211,61 +211,59 @@ pub(crate) fn render_template(content: &str) -> String {
         ("circa", render_circa_template as TemplateHandler),
         ("c.", render_circa_template as TemplateHandler),
         ("cx", render_circa_template as TemplateHandler),
+        ("lang", render_lang_template as TemplateHandler),
+        ("langx", render_langx_template as TemplateHandler),
+        ("in lang", render_in_lang_template as TemplateHandler),
+        ("linktext", render_linktext_template as TemplateHandler),
+        ("lang-zh", render_chinese_lang_template as TemplateHandler),
+        ("zh", render_chinese_lang_template as TemplateHandler),
+        ("zhi", render_chinese_lang_template as TemplateHandler),
+        (
+            "transliteration",
+            render_transliteration_template as TemplateHandler,
+        ),
+        (
+            "translit",
+            render_transliteration_template as TemplateHandler,
+        ),
+        (
+            "tlit",
+            render_transliteration_like_template as TemplateHandler,
+        ),
+        (
+            "ko-translit",
+            render_korean_transliteration_template as TemplateHandler,
+        ),
+        ("lit", render_literal_template as TemplateHandler),
+        (
+            "literal translation",
+            render_literal_template as TemplateHandler,
+        ),
+        ("literal", render_literal_template as TemplateHandler),
+        (
+            "translation",
+            render_translation_template as TemplateHandler,
+        ),
+        (
+            "language with name/for",
+            render_langnf_template as TemplateHandler,
+        ),
+        ("langnf", render_langnf_template as TemplateHandler),
+        ("isbn", render_isbn_template as TemplateHandler),
+        ("asin", render_asin_template as TemplateHandler),
+        ("script", render_script_template as TemplateHandler),
+        ("oclc", render_oclc_template as TemplateHandler),
+        ("ipa", render_ipa_template as TemplateHandler),
+        ("ipac-en", render_english_ipa_template as TemplateHandler),
+        ("respell", render_respell_template as TemplateHandler),
+        ("abbr", render_abbr_template as TemplateHandler),
     ]);
 
     if lookup.contains_key(&lower.as_str()) {
         return lookup.get(lower.as_str()).unwrap()(params);
     }
 
-    if template.eq_ignore_ascii_case("lang") {
-        render_lang_template(params)
-    } else if template.eq_ignore_ascii_case("in lang") {
-        render_in_lang_template(params)
-    } else if template.eq_ignore_ascii_case("langx") {
-        render_langx_template(params)
-    } else if template.eq_ignore_ascii_case("linktext") {
-        render_linktext_template(params)
-    } else if template.eq_ignore_ascii_case("lang-zh")
-        || template.eq_ignore_ascii_case("zh")
-        || template.eq_ignore_ascii_case("zhi")
-    {
-        render_chinese_lang_template(params)
-    } else if template.eq_ignore_ascii_case("transliteration")
-        || template.eq_ignore_ascii_case("translit")
-    {
-        render_transliteration_template(params)
-    } else if template.eq_ignore_ascii_case("tlit") {
-        render_transliteration_like_template(params)
-    } else if template.eq_ignore_ascii_case("ko-translit") {
-        render_korean_transliteration_template(params)
-    } else if template.eq_ignore_ascii_case("lit")
-        || template.eq_ignore_ascii_case("Literal translation")
-        || template.eq_ignore_ascii_case("literal")
-    {
-        render_literal_template(params)
-    } else if template.eq_ignore_ascii_case("translation") {
-        render_translation_template(params)
-    } else if template.eq_ignore_ascii_case("Language with name/for")
-        || template.eq_ignore_ascii_case("langnf")
-    {
-        render_langnf_template(params)
-    } else if template.eq_ignore_ascii_case("isbn") {
-        render_isbn_template(params)
-    } else if template.eq_ignore_ascii_case("asin") {
-        render_asin_template(params)
-    } else if template.eq_ignore_ascii_case("script") {
-        render_script_template(params)
-    } else if template.eq_ignore_ascii_case("oclc") {
-        render_oclc_template(params)
-    } else if template.eq_ignore_ascii_case("ipa") {
-        render_ipa_template(params)
-    } else if template.eq_ignore_ascii_case("IPAc-en") {
-        render_english_ipa_template(params)
-    } else if template.eq_ignore_ascii_case("Respell") {
-        render_respell_template(params)
-    } else if template.eq_ignore_ascii_case("abbr") {
-        render_abbr_template(params)
-    } else if template.eq_ignore_ascii_case("AWOL") {
+    if template.eq_ignore_ascii_case("AWOL") {
         render_awol_template()
     } else if template.eq_ignore_ascii_case("Assassinated") {
         render_assassinated_template(params)
