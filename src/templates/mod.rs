@@ -337,6 +337,55 @@ pub(crate) fn render_template(content: &str) -> String {
         ("excerpt", render_excerpt_template as TemplateHandler),
         ("main", render_main_template as TemplateHandler),
         ("main article", render_main_template as TemplateHandler),
+        ("main list", render_main_list_template as TemplateHandler),
+        ("see also", render_see_also_template as TemplateHandler),
+        ("also", render_see_also_template as TemplateHandler),
+        ("further", render_further_template as TemplateHandler),
+        ("wiktionary", render_wiktionary_template as TemplateHandler),
+        ("wikivoyage", render_wikivoyage_template as TemplateHandler),
+        (
+            "wikivoyage-inline",
+            render_wikivoyage_template as TemplateHandler,
+        ),
+        (
+            "wikivoyage inline",
+            render_wikivoyage_template as TemplateHandler,
+        ),
+        ("wikisource", render_wikisource_template as TemplateHandler),
+        ("wikibooks", render_wikibooks_template as TemplateHandler),
+        ("britannica", render_britannica_template as TemplateHandler),
+        (
+            "official website",
+            render_official_website_template as TemplateHandler,
+        ),
+        (
+            "official",
+            render_official_website_template as TemplateHandler,
+        ),
+        ("url", render_url_template as TemplateHandler),
+        (
+            "osmrelation-inline",
+            render_openstreetmap_relation_template as TemplateHandler,
+        ),
+        (
+            "osmway",
+            render_openstreetmap_way_template as TemplateHandler,
+        ),
+        ("webarchive", render_webarchive_template as TemplateHandler),
+        (
+            "largest cities",
+            render_largest_cities_template as TemplateHandler,
+        ),
+        (
+            "historical populations",
+            render_historical_populations_template as TemplateHandler,
+        ),
+        (
+            "climate chart",
+            render_climate_chart_template as TemplateHandler,
+        ),
+        ("sclass", render_ship_class_template as TemplateHandler),
+        ("nobold", render_passthrough_template as TemplateHandler),
     ]);
 
     if lookup.contains_key(&lower.as_str()) {
@@ -363,48 +412,7 @@ pub(crate) fn render_template(content: &str) -> String {
         return empty_lookup.get(lower.as_str()).unwrap()();
     }
 
-    if template.eq_ignore_ascii_case("Main list") {
-        render_main_list_template(params)
-    } else if template.eq_ignore_ascii_case("see also") || template.eq_ignore_ascii_case("also") {
-        render_see_also_template(params)
-    } else if template.eq_ignore_ascii_case("further") {
-        render_further_template(params)
-    } else if template.eq_ignore_ascii_case("wiktionary") {
-        render_wiktionary_template(params)
-    } else if template.eq_ignore_ascii_case("wikivoyage")
-        || template.eq_ignore_ascii_case("wikivoyage-inline")
-        || template.eq_ignore_ascii_case("wikivoyage inline")
-    {
-        render_wikivoyage_template(params)
-    } else if template.eq_ignore_ascii_case("wikisource") {
-        render_wikisource_template(params)
-    } else if template.eq_ignore_ascii_case("wikibooks") {
-        render_wikibooks_template(params)
-    } else if template.eq_ignore_ascii_case("britannica") {
-        render_britannica_template(params)
-    } else if template.eq_ignore_ascii_case("official website")
-        || template.eq_ignore_ascii_case("official")
-    {
-        render_official_website_template(params)
-    } else if template.eq_ignore_ascii_case("url") {
-        render_url_template(params)
-    } else if template.eq_ignore_ascii_case("osmrelation-inline") {
-        render_openstreetmap_relation_template(params)
-    } else if template.eq_ignore_ascii_case("osmway") {
-        render_openstreetmap_way_template(params)
-    } else if template.eq_ignore_ascii_case("webarchive") {
-        render_webarchive_template(params)
-    } else if template.eq_ignore_ascii_case("largest cities") {
-        render_largest_cities_template(params)
-    } else if template.eq_ignore_ascii_case("historical populations") {
-        render_historical_populations_template(params)
-    } else if template.eq_ignore_ascii_case("climate chart") {
-        render_climate_chart_template(params)
-    } else if template.eq_ignore_ascii_case("sclass") {
-        render_ship_class_template(params)
-    } else if template.eq_ignore_ascii_case("nobold") {
-        render_passthrough_template(params)
-    } else if template.eq_ignore_ascii_case("Arrow") {
+    if template.eq_ignore_ascii_case("Arrow") {
         render_arrow_template(params)
     } else if template.eq_ignore_ascii_case("ROKS") {
         render_republic_of_korea_ship_template(params)
