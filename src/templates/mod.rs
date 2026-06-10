@@ -592,6 +592,36 @@ pub(crate) fn render_template(content: &str) -> String {
         ("rint", render_ric_template as TemplateHandler),
         ("line link", render_lnl_template as TemplateHandler),
         ("lnl", render_lnl_template as TemplateHandler),
+        (
+            "infobox mountain",
+            render_infobox_mountain_template as TemplateHandler,
+        ),
+        (
+            "infobox country",
+            render_infobox_country_template as TemplateHandler,
+        ),
+        (
+            "infobox military conflict",
+            render_infobox_military_conflict_template as TemplateHandler,
+        ),
+        (
+            "infobox planet",
+            render_infobox_planet_template as TemplateHandler,
+        ),
+        (
+            "infobox settlement",
+            render_infobox_settlement_template as TemplateHandler,
+        ),
+        (
+            "infobox",
+            render_infobox_generic_template as TemplateHandler,
+        ),
+        (
+            "native name list",
+            render_native_name_list_template as TemplateHandler,
+        ),
+        ("hlist", render_hlist_template as TemplateHandler),
+        ("flatlist", render_hlist_template as TemplateHandler),
     ]);
 
     if lookup.contains_key(&lower.as_str()) {
@@ -644,22 +674,6 @@ pub(crate) fn render_template(content: &str) -> String {
         || template.eq_ignore_ascii_case("formatnum")
     {
         render_formatnum_template(template, params)
-    } else if template.eq_ignore_ascii_case("Infobox mountain") {
-        render_infobox_mountain_template(params)
-    } else if template.eq_ignore_ascii_case("Infobox country") {
-        render_infobox_country_template(params)
-    } else if template.eq_ignore_ascii_case("Infobox military conflict") {
-        render_infobox_military_conflict_template(params)
-    } else if template.eq_ignore_ascii_case("Infobox planet") {
-        render_infobox_planet_template(params)
-    } else if template.eq_ignore_ascii_case("Infobox settlement") {
-        render_infobox_settlement_template(params)
-    } else if template.eq_ignore_ascii_case("Infobox") {
-        render_infobox_generic_template(params)
-    } else if template.eq_ignore_ascii_case("native name list") {
-        render_native_name_list_template(params)
-    } else if template.eq_ignore_ascii_case("hlist") || template.eq_ignore_ascii_case("flatlist") {
-        render_hlist_template(params)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
