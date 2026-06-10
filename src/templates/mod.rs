@@ -129,14 +129,15 @@ pub(crate) fn matching_template_end(text: &str, start: usize) -> Option<usize> {
     None
 }
 
-/// [nbsp](https://en.wikipedia.org/wiki/Template:Nbsp)
 
+/// [nbsp](https://en.wikipedia.org/wiki/Template:Nbsp)
+///
 /// [snd](https://en.wikipedia.org/wiki/Template:Snd)
 /// [dash](https://en.wikipedia.org/wiki/Template:Dash)
 /// [snds](https://en.wikipedia.org/wiki/Template:Snds)
-
+///
 /// [mdash](https://en.wikipedia.org/wiki/Template:Mdash)
-
+///
 /// [ndash](https://en.wikipedia.org/wiki/Template:Ndash)
 /// [endash](https://en.wikipedia.org/wiki/Template:Endash)
 /// [nbndash](https://en.wikipedia.org/wiki/Template:Nbndash)
