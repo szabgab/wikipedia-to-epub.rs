@@ -309,6 +309,34 @@ pub(crate) fn render_template(content: &str) -> String {
             render_citation_template as TemplateHandler,
         ),
         ("citation", render_citation_template as TemplateHandler),
+        ("harvc", render_harvc_template as TemplateHandler),
+        ("as of", render_as_of_template as TemplateHandler),
+        ("died-in", render_died_in_template as TemplateHandler),
+        ("blockquote", render_blockquote_template as TemplateHandler),
+        ("percentage", render_percentage_template as TemplateHandler),
+        (
+            "un population",
+            render_un_population_template as TemplateHandler,
+        ),
+        ("convert", render_convert_template as TemplateHandler),
+        ("cvt", render_convert_template as TemplateHandler),
+        ("for", render_for_template as TemplateHandler),
+        (
+            "for timeline",
+            render_for_timeline_template as TemplateHandler,
+        ),
+        (
+            "crossreference",
+            render_passthrough_template as TemplateHandler,
+        ),
+        ("slink", render_section_link_template as TemplateHandler),
+        ("legend", render_legend_template as TemplateHandler),
+        ("legend0", render_legend_template as TemplateHandler),
+        ("numero", render_numero_template as TemplateHandler),
+        ("anl", render_article_link_template as TemplateHandler),
+        ("excerpt", render_excerpt_template as TemplateHandler),
+        ("main", render_main_template as TemplateHandler),
+        ("main article", render_main_template as TemplateHandler),
     ]);
 
     if lookup.contains_key(&lower.as_str()) {
@@ -335,40 +363,7 @@ pub(crate) fn render_template(content: &str) -> String {
         return empty_lookup.get(lower.as_str()).unwrap()();
     }
 
-    if template.eq_ignore_ascii_case("harvc") {
-        render_harvc_template(params)
-    } else if template.eq_ignore_ascii_case("as of") {
-        render_as_of_template(params)
-    } else if template.eq_ignore_ascii_case("died-in") {
-        render_died_in_template(params)
-    } else if template.eq_ignore_ascii_case("blockquote") {
-        render_blockquote_template(params)
-    } else if template.eq_ignore_ascii_case("percentage") {
-        render_percentage_template(params)
-    } else if template.eq_ignore_ascii_case("UN Population") {
-        render_un_population_template(params)
-    } else if template.eq_ignore_ascii_case("convert") || template.eq_ignore_ascii_case("cvt") {
-        render_convert_template(params)
-    } else if template.eq_ignore_ascii_case("for") {
-        render_for_template(params)
-    } else if template.eq_ignore_ascii_case("for timeline") {
-        render_for_timeline_template(params)
-    } else if template.eq_ignore_ascii_case("crossreference") {
-        render_passthrough_template(params)
-    } else if template.eq_ignore_ascii_case("slink") {
-        render_section_link_template(params)
-    } else if template.eq_ignore_ascii_case("legend") || template.eq_ignore_ascii_case("legend0") {
-        render_legend_template(params)
-    } else if template.eq_ignore_ascii_case("numero") {
-        render_numero_template(params)
-    } else if template.eq_ignore_ascii_case("anl") {
-        render_article_link_template(params)
-    } else if template.eq_ignore_ascii_case("excerpt") {
-        render_excerpt_template(params)
-    } else if template.eq_ignore_ascii_case("main") || template.eq_ignore_ascii_case("Main article")
-    {
-        render_main_template(params)
-    } else if template.eq_ignore_ascii_case("Main list") {
+    if template.eq_ignore_ascii_case("Main list") {
         render_main_list_template(params)
     } else if template.eq_ignore_ascii_case("see also") || template.eq_ignore_ascii_case("also") {
         render_see_also_template(params)
