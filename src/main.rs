@@ -315,53 +315,6 @@ fn run(args: CliArgs) -> AppResult<()> {
     let mut ordered_articles = Vec::new();
     let mut loaded_pages = HashMap::new();
 
-    fn visit_hierarchical_articles(
-        entries: &[ArticleConfig],
-        depth: usize,
-        page_source: &dyn PageSource,
-        visited: &mut std::collections::HashSet<String>,
-        ordered_articles: &mut Vec<String>,
-        loaded_pages: &mut HashMap<String, PageResponse>,
-    ) -> AppResult<()> {
-        for entry in entries {
-            match entry {
-                ArticleConfig::Simple(title) => {
-                    dfs_visit(
-                        title,
-                        0,
-                        depth,
-                        page_source,
-                        visited,
-                        ordered_articles,
-                        loaded_pages,
-                    )?;
-                }
-                ArticleConfig::Detailed(detailed) => {
-                    if detailed.r#type.is_none() {
-                        dfs_visit(
-                            &detailed.title,
-                            0,
-                            depth,
-                            page_source,
-                            visited,
-                            ordered_articles,
-                            loaded_pages,
-                        )?;
-                    }
-                    visit_hierarchical_articles(
-                        &detailed.articles,
-                        depth,
-                        page_source,
-                        visited,
-                        ordered_articles,
-                        loaded_pages,
-                    )?;
-                }
-            }
-        }
-        Ok(())
-    }
-
     visit_hierarchical_articles(
         &config.articles,
         config.depth,
@@ -604,6 +557,53 @@ fn run(args: CliArgs) -> AppResult<()> {
     );
     log_download_stats(&download_stats);
 
+    Ok(())
+}
+
+fn visit_hierarchical_articles(
+    entries: &[ArticleConfig],
+    depth: usize,
+    page_source: &dyn PageSource,
+    visited: &mut std::collections::HashSet<String>,
+    ordered_articles: &mut Vec<String>,
+    loaded_pages: &mut HashMap<String, PageResponse>,
+) -> AppResult<()> {
+    for entry in entries {
+        match entry {
+            ArticleConfig::Simple(title) => {
+                dfs_visit(
+                    title,
+                    0,
+                    depth,
+                    page_source,
+                    visited,
+                    ordered_articles,
+                    loaded_pages,
+                )?;
+            }
+            ArticleConfig::Detailed(detailed) => {
+                if detailed.r#type.is_none() {
+                    dfs_visit(
+                        &detailed.title,
+                        0,
+                        depth,
+                        page_source,
+                        visited,
+                        ordered_articles,
+                        loaded_pages,
+                    )?;
+                }
+                visit_hierarchical_articles(
+                    &detailed.articles,
+                    depth,
+                    page_source,
+                    visited,
+                    ordered_articles,
+                    loaded_pages,
+                )?;
+            }
+        }
+    }
     Ok(())
 }
 
