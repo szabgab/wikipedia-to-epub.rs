@@ -386,6 +386,53 @@ pub(crate) fn render_template(content: &str) -> String {
         ),
         ("sclass", render_ship_class_template as TemplateHandler),
         ("nobold", render_passthrough_template as TemplateHandler),
+        ("arrow", render_arrow_template as TemplateHandler),
+        (
+            "roks",
+            render_republic_of_korea_ship_template as TemplateHandler,
+        ),
+        ("ill", render_interlanguage_link_template as TemplateHandler),
+        (
+            "illm",
+            render_interlanguage_link_template as TemplateHandler,
+        ),
+        (
+            "interlanguage link",
+            render_interlanguage_link_template as TemplateHandler,
+        ),
+        (
+            "interlanguage link multi",
+            render_interlanguage_link_template as TemplateHandler,
+        ),
+        ("reign", render_reign_template as TemplateHandler),
+        ("for-multi", render_for_multi_template as TemplateHandler),
+        ("inflation", render_inflation_template as TemplateHandler),
+        (
+            "inflation/year",
+            render_inflation_year_template as TemplateHandler,
+        ),
+        ("stack", render_passthrough_template as TemplateHandler),
+        ("ship", render_generic_ship_template as TemplateHandler),
+        ("proto", render_proto_template as TemplateHandler),
+        (
+            "infobox",
+            render_infobox_generic_template as TemplateHandler,
+        ),
+        ("wktl", render_lang_template as TemplateHandler),
+        ("wikt-lang", render_lang_template as TemplateHandler),
+        ("langr", render_lang_template as TemplateHandler),
+        ("val", render_val_template as TemplateHandler),
+        ("value", render_val_template as TemplateHandler),
+        ("chem2", render_chem2_template as TemplateHandler),
+        ("e", render_e_template as TemplateHandler),
+        ("sup", render_sup_template as TemplateHandler),
+        ("sub", render_sub_template as TemplateHandler),
+        ("su", render_su_template as TemplateHandler),
+        ("mpl", render_mpl_template as TemplateHandler),
+        (
+            "columns list",
+            render_columns_list_template as TemplateHandler,
+        ),
     ]);
 
     if lookup.contains_key(&lower.as_str()) {
@@ -406,69 +453,22 @@ pub(crate) fn render_template(content: &str) -> String {
         ("pow", render_pow_template as EmptyHandler),
         ("mia", render_mia_template as EmptyHandler),
         ("wia", render_wia_template as EmptyHandler),
+        ("open access", render_open_access_template as EmptyHandler),
+        ("free access", render_open_access_template as EmptyHandler),
+        (
+            "nb5",
+            render_five_nonbreaking_spaces_template as EmptyHandler,
+        ),
     ]);
 
     if empty_lookup.contains_key(&lower.as_str()) {
         return empty_lookup.get(lower.as_str()).unwrap()();
     }
 
-    if template.eq_ignore_ascii_case("Arrow") {
-        render_arrow_template(params)
-    } else if template.eq_ignore_ascii_case("ROKS") {
-        render_republic_of_korea_ship_template(params)
-    } else if template.eq_ignore_ascii_case("ill")
-        || template.eq_ignore_ascii_case("illm")
-        || template.eq_ignore_ascii_case("Interlanguage link")
-        || template.eq_ignore_ascii_case("Interlanguage link multi")
-    {
-        render_interlanguage_link_template(params)
-    } else if template.eq_ignore_ascii_case("reign") {
-        render_reign_template(params)
-    } else if template.eq_ignore_ascii_case("open access")
-        || template.eq_ignore_ascii_case("free access")
-    {
-        render_open_access_template()
-    } else if template.eq_ignore_ascii_case("For-multi") {
-        render_for_multi_template(params)
-    } else if template.eq_ignore_ascii_case("Inflation") {
-        render_inflation_template(params)
-    } else if template.eq_ignore_ascii_case("Inflation/year") {
-        render_inflation_year_template(params)
-    } else if template.eq_ignore_ascii_case("stack") {
-        render_passthrough_template(params)
-    } else if template.eq_ignore_ascii_case("USS") {
+    if template.eq_ignore_ascii_case("USS") {
         render_ship_template("USS", params)
     } else if template.eq_ignore_ascii_case("HMS") {
         render_ship_template("HMS", params)
-    } else if template.eq_ignore_ascii_case("ship") {
-        render_generic_ship_template(params)
-    } else if template.eq_ignore_ascii_case("Nb5") {
-        render_five_nonbreaking_spaces_template()
-    } else if template.eq_ignore_ascii_case("Proto") {
-        render_proto_template(params)
-    } else if template.eq_ignore_ascii_case("wktl")
-        || template.eq_ignore_ascii_case("wikt-lang")
-        || template.eq_ignore_ascii_case("langr")
-    {
-        render_lang_template(params)
-    } else if template.eq_ignore_ascii_case("val") {
-        render_val_template(params)
-    } else if template.eq_ignore_ascii_case("chem2") {
-        render_chem2_template(params)
-    } else if template.eq_ignore_ascii_case("Value") || template.eq_ignore_ascii_case("value") {
-        render_val_template(params)
-    } else if template.eq_ignore_ascii_case("e") {
-        render_e_template(params)
-    } else if template.eq_ignore_ascii_case("sup") {
-        render_sup_template(params)
-    } else if template.eq_ignore_ascii_case("sub") {
-        render_sub_template(params)
-    } else if template.eq_ignore_ascii_case("su") {
-        render_su_template(params)
-    } else if template.eq_ignore_ascii_case("mpl") {
-        render_mpl_template(params)
-    } else if template.eq_ignore_ascii_case("columns list") {
-        render_columns_list_template(params)
     } else if template.eq_ignore_ascii_case("annotated link") {
         render_annotated_link_template(params)
     } else if template.eq_ignore_ascii_case("Dp") || template.eq_ignore_ascii_case("dp") {
