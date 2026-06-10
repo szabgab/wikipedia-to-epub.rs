@@ -269,6 +269,46 @@ pub(crate) fn render_template(content: &str) -> String {
             render_natural_causes_template as TemplateHandler,
         ),
         ("suicide", render_suicide_template as TemplateHandler),
+        (
+            "surrendered",
+            render_surrendered_template as TemplateHandler,
+        ),
+        ("turncoat", render_turncoat_template as TemplateHandler),
+        ("frac", render_frac_template as TemplateHandler),
+        ("fraction", render_frac_template as TemplateHandler),
+        ("floruit", render_floruit_template as TemplateHandler),
+        ("coord", render_coord_template as TemplateHandler),
+        ("rp", render_reference_page_template as TemplateHandler),
+        (
+            "reference page",
+            render_reference_page_template as TemplateHandler,
+        ),
+        ("cite web", render_cite_web_template as TemplateHandler),
+        ("cite book", render_cite_book_template as TemplateHandler),
+        (
+            "cite journal",
+            render_cite_journal_template as TemplateHandler,
+        ),
+        (
+            "cite magazine",
+            render_cite_journal_template as TemplateHandler,
+        ),
+        ("cite news", render_cite_journal_template as TemplateHandler),
+        (
+            "cite encyclopedia",
+            render_cite_journal_template as TemplateHandler,
+        ),
+        (
+            "cite report",
+            render_cite_report_template as TemplateHandler,
+        ),
+        ("cite eccp", render_cite_eccp_template as TemplateHandler),
+        ("cite gvp", render_cite_gvp_template as TemplateHandler),
+        (
+            "cite conference",
+            render_citation_template as TemplateHandler,
+        ),
+        ("citation", render_citation_template as TemplateHandler),
     ]);
 
     if lookup.contains_key(&lower.as_str()) {
@@ -288,48 +328,14 @@ pub(crate) fn render_template(content: &str) -> String {
         ("pkia", render_pkia_template as EmptyHandler),
         ("pow", render_pow_template as EmptyHandler),
         ("mia", render_mia_template as EmptyHandler),
+        ("wia", render_wia_template as EmptyHandler),
     ]);
 
     if empty_lookup.contains_key(&lower.as_str()) {
         return empty_lookup.get(lower.as_str()).unwrap()();
     }
 
-    if template.eq_ignore_ascii_case("Surrendered") {
-        render_surrendered_template(params)
-    } else if template.eq_ignore_ascii_case("Turncoat") {
-        render_turncoat_template(params)
-    } else if template.eq_ignore_ascii_case("WIA") {
-        render_wia_template()
-    } else if template.eq_ignore_ascii_case("frac") || template.eq_ignore_ascii_case("fraction") {
-        render_frac_template(params)
-    } else if template.eq_ignore_ascii_case("floruit") {
-        render_floruit_template(params)
-    } else if template.eq_ignore_ascii_case("coord") {
-        render_coord_template(params)
-    } else if template.eq_ignore_ascii_case("rp") || template.eq_ignore_ascii_case("Reference page")
-    {
-        render_reference_page_template(params)
-    } else if template.eq_ignore_ascii_case("cite web") {
-        render_cite_web_template(params)
-    } else if template.eq_ignore_ascii_case("cite book") {
-        render_cite_book_template(params)
-    } else if template.eq_ignore_ascii_case("cite journal")
-        || template.eq_ignore_ascii_case("cite magazine")
-        || template.eq_ignore_ascii_case("cite news")
-        || template.eq_ignore_ascii_case("cite encyclopedia")
-    {
-        render_cite_journal_template(params)
-    } else if template.eq_ignore_ascii_case("cite report") {
-        render_cite_report_template(params)
-    } else if template.eq_ignore_ascii_case("cite ECCP") {
-        render_cite_eccp_template(params)
-    } else if template.eq_ignore_ascii_case("cite gvp") {
-        render_cite_gvp_template(params)
-    } else if template.eq_ignore_ascii_case("cite conference")
-        || template.eq_ignore_ascii_case("citation")
-    {
-        render_citation_template(params)
-    } else if template.eq_ignore_ascii_case("harvc") {
+    if template.eq_ignore_ascii_case("harvc") {
         render_harvc_template(params)
     } else if template.eq_ignore_ascii_case("as of") {
         render_as_of_template(params)
