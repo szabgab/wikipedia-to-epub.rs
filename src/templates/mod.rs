@@ -531,6 +531,67 @@ pub(crate) fn render_template(content: &str) -> String {
         ),
         ("issn", render_issn_template as TemplateHandler),
         ("cite nsrw", render_cite_nsrw_template as TemplateHandler),
+        ("stn", render_stn_template as TemplateHandler),
+        ("station", render_station_template as TemplateHandler),
+        ("jpn", render_jpn_template as TemplateHandler),
+        (
+            "track gauge",
+            render_track_gauge_template as TemplateHandler,
+        ),
+        ("railgauge", render_track_gauge_template as TemplateHandler),
+        ("gburl", render_gburl_template as TemplateHandler),
+        (
+            "google books",
+            render_google_books_template as TemplateHandler,
+        ),
+        ("cite thesis", render_citation_template as TemplateHandler),
+        ("usurped", render_usurped_template as TemplateHandler),
+        ("break", render_break_template as TemplateHandler),
+        ("br", render_break_template as TemplateHandler),
+        ("brk", render_break_template as TemplateHandler),
+        ("crlf", render_break_template as TemplateHandler),
+        ("jct", render_jct_template as TemplateHandler),
+        ("fxconvert", render_fx_convert_template as TemplateHandler),
+        ("jpy", render_jpy_template as TemplateHandler),
+        ("dts", render_dts_template as TemplateHandler),
+        ("doi", render_doi_template as TemplateHandler),
+        ("age", render_age_template as TemplateHandler),
+        (
+            "birth date and age",
+            render_birth_date_and_age_template as TemplateHandler,
+        ),
+        ("ayd", render_ayd_template as TemplateHandler),
+        (
+            "age in years and days nts",
+            render_ayd_template as TemplateHandler,
+        ),
+        ("routebox", render_route_box_template as TemplateHandler),
+        (
+            "ja-rail-color",
+            render_ja_rail_color_template as TemplateHandler,
+        ),
+        ("n/a", render_na_template as TemplateHandler),
+        ("na", render_na_template as TemplateHandler),
+        ("not applicable", render_na_template as TemplateHandler),
+        (
+            "ja-platform",
+            render_ja_platform_template as TemplateHandler,
+        ),
+        ("jpf", render_ja_platform_template as TemplateHandler),
+        (
+            "ja-platform-m",
+            render_ja_platform_template as TemplateHandler,
+        ),
+        ("jpfm", render_ja_platform_template as TemplateHandler),
+        (
+            "ja-rail-linem",
+            render_ja_rail_linem_template as TemplateHandler,
+        ),
+        ("rail-interchange", render_ric_template as TemplateHandler),
+        ("ric", render_ric_template as TemplateHandler),
+        ("rint", render_ric_template as TemplateHandler),
+        ("line link", render_lnl_template as TemplateHandler),
+        ("lnl", render_lnl_template as TemplateHandler),
     ]);
 
     if lookup.contains_key(&lower.as_str()) {
@@ -583,75 +644,6 @@ pub(crate) fn render_template(content: &str) -> String {
         || template.eq_ignore_ascii_case("formatnum")
     {
         render_formatnum_template(template, params)
-    } else if template.eq_ignore_ascii_case("STN") {
-        render_stn_template(params)
-    } else if template.eq_ignore_ascii_case("Station") {
-        render_station_template(params)
-    } else if template.eq_ignore_ascii_case("JPN") {
-        render_jpn_template(params)
-    } else if template.eq_ignore_ascii_case("Track gauge")
-        || template.eq_ignore_ascii_case("RailGauge")
-    {
-        render_track_gauge_template(params)
-    } else if template.eq_ignore_ascii_case("GBurl") {
-        render_gburl_template(params)
-    } else if template.eq_ignore_ascii_case("Google books") {
-        render_google_books_template(params)
-    } else if template.eq_ignore_ascii_case("cite thesis") {
-        render_citation_template(params)
-    } else if template.eq_ignore_ascii_case("usurped") {
-        render_usurped_template(params)
-    } else if template.eq_ignore_ascii_case("Break")
-        || template.eq_ignore_ascii_case("br")
-        || template.eq_ignore_ascii_case("brk")
-        || template.eq_ignore_ascii_case("crlf")
-    {
-        render_break_template(params)
-    } else if template.eq_ignore_ascii_case("jct") {
-        render_jct_template(params)
-    } else if template.eq_ignore_ascii_case("FXConvert") {
-        render_fx_convert_template(params)
-    } else if template.eq_ignore_ascii_case("JPY") {
-        render_jpy_template(params)
-    } else if template.eq_ignore_ascii_case("dts") {
-        render_dts_template(params)
-    } else if template.eq_ignore_ascii_case("doi") {
-        render_doi_template(params)
-    } else if template.eq_ignore_ascii_case("age") {
-        render_age_template(params)
-    } else if template.eq_ignore_ascii_case("Birth date and age")
-        || template.eq_ignore_ascii_case("birth date and age")
-    {
-        render_birth_date_and_age_template(params)
-    } else if template.eq_ignore_ascii_case("ayd")
-        || template.eq_ignore_ascii_case("age in years and days nts")
-        || template.eq_ignore_ascii_case("Age in years and days nts")
-    {
-        render_ayd_template(params)
-    } else if template.eq_ignore_ascii_case("RouteBox") {
-        render_route_box_template(params)
-    } else if template.eq_ignore_ascii_case("Ja-rail-color") {
-        render_ja_rail_color_template(params)
-    } else if template.eq_ignore_ascii_case("N/A")
-        || template.eq_ignore_ascii_case("NA")
-        || template.eq_ignore_ascii_case("Not applicable")
-    {
-        render_na_template(params)
-    } else if template.eq_ignore_ascii_case("Ja-platform")
-        || template.eq_ignore_ascii_case("jpf")
-        || template.eq_ignore_ascii_case("Ja-platform-m")
-        || template.eq_ignore_ascii_case("jpfm")
-    {
-        render_ja_platform_template(params)
-    } else if template.eq_ignore_ascii_case("ja-rail-linem") {
-        render_ja_rail_linem_template(params)
-    } else if template.eq_ignore_ascii_case("rail-interchange")
-        || template.eq_ignore_ascii_case("ric")
-        || template.eq_ignore_ascii_case("rint")
-    {
-        render_ric_template(params)
-    } else if template.eq_ignore_ascii_case("Line link") || template.eq_ignore_ascii_case("lnl") {
-        render_lnl_template(params)
     } else if template.eq_ignore_ascii_case("Infobox mountain") {
         render_infobox_mountain_template(params)
     } else if template.eq_ignore_ascii_case("Infobox country") {
