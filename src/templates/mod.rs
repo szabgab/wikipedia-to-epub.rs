@@ -33,12 +33,11 @@ use formatting::{
     render_color_template, render_columns_list_template, render_coord_template,
     render_died_in_template, render_died_of_wounds_template, render_doi_template,
     render_dp_template, render_dts_template, render_e_template,
-    render_easy_css_image_crop_template, render_emdash_template, render_endash_template,
-    render_excerpt_template, render_executed_template, render_five_nonbreaking_spaces_template,
-    render_floruit_template, render_for_multi_template, render_for_template,
-    render_for_timeline_template, render_formatnum_template, render_frac_template,
-    render_fs_interlinear_template, render_further_template, render_gburl_template,
-    render_generic_ship_template, render_google_books_template,
+    render_easy_css_image_crop_template, render_excerpt_template, render_executed_template,
+    render_five_nonbreaking_spaces_template, render_floruit_template, render_for_multi_template,
+    render_for_template, render_for_timeline_template, render_formatnum_template,
+    render_frac_template, render_fs_interlinear_template, render_further_template,
+    render_gburl_template, render_generic_ship_template, render_google_books_template,
     render_historical_populations_template, render_hlist_template, render_infobox_country_template,
     render_infobox_generic_template, render_infobox_military_conflict_template,
     render_infobox_mountain_template, render_infobox_planet_template,
@@ -131,10 +130,19 @@ pub(crate) fn matching_template_end(text: &str, start: usize) -> Option<usize> {
 }
 
 /// [nbsp](https://en.wikipedia.org/wiki/Template:Nbsp)
+
 /// [snd](https://en.wikipedia.org/wiki/Template:Snd)
 /// [dash](https://en.wikipedia.org/wiki/Template:Dash)
 /// [snds](https://en.wikipedia.org/wiki/Template:Snds)
 
+/// [mdash](https://en.wikipedia.org/wiki/Template:Mdash)
+
+/// [ndash](https://en.wikipedia.org/wiki/Template:Ndash)
+/// [endash](https://en.wikipedia.org/wiki/Template:Endash)
+/// [nbndash](https://en.wikipedia.org/wiki/Template:Nbndash)
+/// [nbnd](https://en.wikipedia.org/wiki/Template:Nbnd)
+/// [en dash](https://en.wikipedia.org/wiki/Template:En_dash)
+/// [En dash](https://en.wikipedia.org/wiki/Template:En_dash)
 pub(crate) fn render_template(content: &str) -> String {
     let (template, params) = split_template_name(content);
     let template_normalized = template.trim().replace('_', " ");
@@ -148,6 +156,12 @@ pub(crate) fn render_template(content: &str) -> String {
         ("snd", " – "),
         ("dash", " – "),
         ("snds", " – "),
+        ("mdash", "—"),
+        ("ndash", "–"),
+        ("endash", "–"),
+        ("nbndash", "–"),
+        ("nbnd", "–"),
+        ("en dash", "–"),
     ]);
 
     let lower = template.to_lowercase();
@@ -165,18 +179,10 @@ pub(crate) fn render_template(content: &str) -> String {
         render_japanese_template(params)
     } else if template.eq_ignore_ascii_case("Nihongo foot") {
         render_nihongo_foot_template(params)
-    } else if template.eq_ignore_ascii_case("mdash") {
-        render_emdash_template()
     } else if template.eq_ignore_ascii_case("nowrap") {
         render_passthrough_template(params)
     } else if template.eq_ignore_ascii_case("citation needed span") {
         render_citation_needed_span_template(params)
-    } else if template.eq_ignore_ascii_case("ndash")
-        || template.eq_ignore_ascii_case("endash")
-        || template.eq_ignore_ascii_case("nbndash")
-        || template.eq_ignore_ascii_case("nbnd")
-    {
-        render_endash_template()
     } else if template.eq_ignore_ascii_case("Quote box") || template.eq_ignore_ascii_case("Quote") {
         render_blockquote_template(params)
     } else if template.eq_ignore_ascii_case("Poem quote")
@@ -436,11 +442,6 @@ pub(crate) fn render_template(content: &str) -> String {
         render_su_template(params)
     } else if template.eq_ignore_ascii_case("mpl") {
         render_mpl_template(params)
-    } else if template.eq_ignore_ascii_case("en dash")
-        || template.eq_ignore_ascii_case("En dash")
-        || template.eq_ignore_ascii_case("endash")
-    {
-        render_endash_template()
     } else if template.eq_ignore_ascii_case("columns list") {
         render_columns_list_template(params)
     } else if template.eq_ignore_ascii_case("annotated link") {

@@ -50,21 +50,6 @@ pub(crate) fn render_jct_template(params: &str) -> String {
     String::new()
 }
 
-/// [mdash](https://en.wikipedia.org/wiki/Template:Mdash)
-pub(crate) fn render_emdash_template() -> String {
-    "—".to_string()
-}
-
-/// [ndash](https://en.wikipedia.org/wiki/Template:Ndash)
-/// [endash](https://en.wikipedia.org/wiki/Template:Endash)
-/// [nbndash](https://en.wikipedia.org/wiki/Template:Nbndash)
-/// [nbnd](https://en.wikipedia.org/wiki/Template:Nbnd)
-/// [en dash](https://en.wikipedia.org/wiki/Template:En_dash)
-/// [En dash](https://en.wikipedia.org/wiki/Template:En_dash)
-pub(crate) fn render_endash_template() -> String {
-    "–".to_string()
-}
-
 /// [singular](https://en.wikipedia.org/wiki/Template:Singular)
 pub(crate) fn render_singular_template() -> String {
     format!(
