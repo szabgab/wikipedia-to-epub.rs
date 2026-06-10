@@ -661,10 +661,7 @@ fn visit_hierarchical_articles(
     Ok(())
 }
 
-fn get_cover_image(
-    args: &CliArgs,
-    config: &BookConfig,
-) -> Result<Option<CoverImage>, AppError> {
+fn get_cover_image(args: &CliArgs, config: &BookConfig) -> Result<Option<CoverImage>, AppError> {
     let mut cover_image = None;
     if let Some(ref cover_str) = config.cover
         && cover_str != "None"
