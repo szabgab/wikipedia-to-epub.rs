@@ -392,53 +392,14 @@ fn run(args: CliArgs) -> AppResult<()> {
         );
     }
 
-    if config.links_to_pages {
-        let mut appendix_list = String::new();
-        for article in &ordered_articles {
-            let lookup_key = normalize_lookup_key(article);
-            if let Some(page) = loaded_pages.get(&lookup_key) {
-                let canonical_title = &page.parse.title;
-                let url = wikipedia_article_url(canonical_title, &wikipedia_language);
-                appendix_list.push_str(&format!(
-                    "      <li><a href=\"{}\">{}</a></li>\n",
-                    encode_text(&url),
-                    encode_text(canonical_title)
-                ));
-            }
-        }
-
-        let content = format!(
-            r#"<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" {language_attributes}>
-  <head>
-    <title>Appendix A</title>
-    <link rel="stylesheet" type="text/css" href="style.css" />
-  </head>
-  <body>
-    <h1>Appendix A</h1>
-    <ul>
-{}    </ul>
-  </body>
-</html>
-"#,
-            appendix_list,
-            language_attributes = html_language_attributes(&wikipedia_language),
-        );
-
-        let file_name = sanitize_chapter_filename("Appendix A");
-        chapters.push(Chapter {
-            title: "Appendix A".to_string(),
-            file_name: file_name.clone(),
-            content,
-            template_skip_counts: TemplateSkipCounts::default(),
-        });
-
-        toc_nodes.push(TocNode {
-            title: "Appendix A".to_string(),
-            file_name,
-            children: Vec::new(),
-        });
-    }
+    add_links_to_pages(
+        &config,
+        &wikipedia_language,
+        &ordered_articles,
+        &loaded_pages,
+        &mut chapters,
+        &mut toc_nodes,
+    );
 
     let total_template_skip_counts =
         chapters
@@ -520,6 +481,63 @@ fn run(args: CliArgs) -> AppResult<()> {
     log_download_stats(&download_stats);
 
     Ok(())
+}
+
+fn add_links_to_pages(
+    config: &BookConfig,
+    wikipedia_language: &String,
+    ordered_articles: &Vec<String>,
+    loaded_pages: &HashMap<String, PageResponse>,
+    chapters: &mut Vec<Chapter>,
+    toc_nodes: &mut Vec<TocNode>,
+) {
+    if config.links_to_pages {
+        let mut appendix_list = String::new();
+        for article in ordered_articles {
+            let lookup_key = normalize_lookup_key(article);
+            if let Some(page) = loaded_pages.get(&lookup_key) {
+                let canonical_title = &page.parse.title;
+                let url = wikipedia_article_url(canonical_title, wikipedia_language);
+                appendix_list.push_str(&format!(
+                    "      <li><a href=\"{}\">{}</a></li>\n",
+                    encode_text(&url),
+                    encode_text(canonical_title)
+                ));
+            }
+        }
+
+        let content = format!(
+            r#"<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" {language_attributes}>
+  <head>
+    <title>Appendix A</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <h1>Appendix A</h1>
+    <ul>
+{}    </ul>
+  </body>
+</html>
+"#,
+            appendix_list,
+            language_attributes = html_language_attributes(wikipedia_language),
+        );
+
+        let file_name = sanitize_chapter_filename("Appendix A");
+        chapters.push(Chapter {
+            title: "Appendix A".to_string(),
+            file_name: file_name.clone(),
+            content,
+            template_skip_counts: TemplateSkipCounts::default(),
+        });
+
+        toc_nodes.push(TocNode {
+            title: "Appendix A".to_string(),
+            file_name,
+            children: Vec::new(),
+        });
+    }
 }
 
 fn add_resources_page(
