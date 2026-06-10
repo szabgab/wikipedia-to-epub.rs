@@ -382,15 +382,13 @@ fn run(args: CliArgs) -> AppResult<()> {
         }
     }
 
-    if config.resources {
-        add_resources_page(
-            &wikipedia_language,
-            &ordered_articles,
-            &loaded_pages,
-            &mut chapters,
-            &mut toc_nodes,
-        );
-    }
+    add_resources_page(
+        &config & wikipedia_language,
+        &ordered_articles,
+        &loaded_pages,
+        &mut chapters,
+        &mut toc_nodes,
+    );
 
     add_links_to_pages(
         &config,
@@ -541,12 +539,17 @@ fn add_links_to_pages(
 }
 
 fn add_resources_page(
+    config: &BookConfig,
     wikipedia_language: &String,
     ordered_articles: &Vec<String>,
     loaded_pages: &HashMap<String, PageResponse>,
     chapters: &mut Vec<Chapter>,
     toc_nodes: &mut Vec<TocNode>,
 ) {
+    if !config.resources {
+        return;
+    }
+
     let mut resources_list = String::new();
     for article in ordered_articles {
         let lookup_key = normalize_lookup_key(article);
