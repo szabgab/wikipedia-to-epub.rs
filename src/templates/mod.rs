@@ -257,37 +257,44 @@ pub(crate) fn render_template(content: &str) -> String {
         ("ipac-en", render_english_ipa_template as TemplateHandler),
         ("respell", render_respell_template as TemplateHandler),
         ("abbr", render_abbr_template as TemplateHandler),
+        (
+            "assassinated",
+            render_assassinated_template as TemplateHandler,
+        ),
+        ("executed", render_executed_template as TemplateHandler),
+        ("kia", render_kia_template as TemplateHandler),
+        ("kia2", render_kia2_template as TemplateHandler),
+        (
+            "natural causes",
+            render_natural_causes_template as TemplateHandler,
+        ),
+        ("suicide", render_suicide_template as TemplateHandler),
     ]);
 
     if lookup.contains_key(&lower.as_str()) {
         return lookup.get(lower.as_str()).unwrap()(params);
     }
 
-    if template.eq_ignore_ascii_case("AWOL") {
-        render_awol_template()
-    } else if template.eq_ignore_ascii_case("Assassinated") {
-        render_assassinated_template(params)
-    } else if template.eq_ignore_ascii_case("DOW")
-        || template.eq_ignore_ascii_case("Died of wounds")
-    {
-        render_died_of_wounds_template()
-    } else if template.eq_ignore_ascii_case("Executed") {
-        render_executed_template(params)
-    } else if template.eq_ignore_ascii_case("KIA") {
-        render_kia_template(params)
-    } else if template.eq_ignore_ascii_case("KIA2") {
-        render_kia2_template(params)
-    } else if template.eq_ignore_ascii_case("MIA") {
-        render_mia_template()
-    } else if template.eq_ignore_ascii_case("Natural Causes") {
-        render_natural_causes_template(params)
-    } else if template.eq_ignore_ascii_case("PKIA") {
-        render_pkia_template()
-    } else if template.eq_ignore_ascii_case("POW") {
-        render_pow_template()
-    } else if template.eq_ignore_ascii_case("Suicide") {
-        render_suicide_template(params)
-    } else if template.eq_ignore_ascii_case("Surrendered") {
+    type EmptyHandler = fn() -> String;
+    type EmptyDispatchTable = HashMap<&'static str, EmptyHandler>;
+
+    let empty_lookup: EmptyDispatchTable = HashMap::from([
+        ("awol", render_awol_template as EmptyHandler),
+        (
+            "died of wounds",
+            render_died_of_wounds_template as EmptyHandler,
+        ),
+        ("dow", render_died_of_wounds_template as EmptyHandler),
+        ("pkia", render_pkia_template as EmptyHandler),
+        ("pow", render_pow_template as EmptyHandler),
+        ("mia", render_mia_template as EmptyHandler),
+    ]);
+
+    if empty_lookup.contains_key(&lower.as_str()) {
+        return empty_lookup.get(lower.as_str()).unwrap()();
+    }
+
+    if template.eq_ignore_ascii_case("Surrendered") {
         render_surrendered_template(params)
     } else if template.eq_ignore_ascii_case("Turncoat") {
         render_turncoat_template(params)
