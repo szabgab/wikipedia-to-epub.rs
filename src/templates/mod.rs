@@ -3,6 +3,8 @@ pub mod convert;
 pub mod formatting;
 pub mod lang;
 
+use std::collections::HashMap;
+
 pub(crate) use formatting::{
     PersonRole, citation_people, format_number_with_commas, join_plain_items,
     template_named_params, template_param, template_param_owned, template_positional_params,
@@ -133,11 +135,12 @@ pub(crate) fn render_template(content: &str) -> String {
     let template_normalized = template.trim().replace('_', " ");
     let template = template_normalized.as_str();
 
-    if template == "'\"" {
-        "'\"".to_string()
-    } else if template == "\"'" {
-        "\"'".to_string()
-    } else if template.eq_ignore_ascii_case("Korean")
+    let fixed: HashMap<&str, &str> = HashMap::from([("'\"", "'\""), ("\"'", "\"'")]);
+    if fixed.contains_key(template) {
+        return fixed.get(template).unwrap().to_string();
+    }
+
+    if template.eq_ignore_ascii_case("Korean")
         || template.eq_ignore_ascii_case("Korean/auto")
         || template.eq_ignore_ascii_case("ko")
     {
