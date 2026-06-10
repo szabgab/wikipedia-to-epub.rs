@@ -19,11 +19,23 @@ pub(crate) mod error;
 pub(crate) mod image;
 pub(crate) mod templates;
 
-pub(crate) use cache::*;
-pub(crate) use config::*;
-pub(crate) use epub::*;
-pub(crate) use error::*;
-pub(crate) use image::*;
+pub(crate) use cache::{
+    DownloadCache, DownloadStats, FixturePageSource, PageResponse, PageSource,
+    WikipediaApiPageSource, default_cache_root, log_download_stats, normalize_lookup_key,
+    normalized_wikipedia_language,
+};
+pub(crate) use config::{
+    ArticleConfig, ArticleType, BookConfig, CachingMode, ChapterStyle, CliArgs,
+    LinksToExcludedPages, current_utc_date_string, parse_args, read_config,
+};
+pub(crate) use epub::{
+    Chapter, TocNode, html_language_attributes, internal_links, load_chapter,
+    load_markdown_chapter, sanitize_chapter_filename, write_epub,
+};
+pub(crate) use error::{AppError, AppResult};
+pub(crate) use image::{
+    ImageRegistry, ParsedFileLink, image_marker_id, render_image_html, resolve_images,
+};
 pub(crate) use templates::*;
 
 type InternalLinks = HashMap<String, String>;
@@ -383,7 +395,8 @@ fn run(args: CliArgs) -> AppResult<()> {
     }
 
     add_resources_page(
-        &config & wikipedia_language,
+        &config,
+        &wikipedia_language,
         &ordered_articles,
         &loaded_pages,
         &mut chapters,

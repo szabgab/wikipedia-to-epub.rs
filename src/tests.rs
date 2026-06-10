@@ -9,8 +9,6 @@ use tracing::Level;
 
 use crate::DownloadCache;
 use crate::DownloadStats;
-use crate::FileDownloadSnapshot;
-use crate::FileDownloadStats;
 use crate::FixturePageSource;
 use crate::ImageRegistry;
 use crate::InternalLinks;
@@ -19,17 +17,21 @@ use crate::TemplateSkipCounts;
 use crate::USER_AGENT;
 use crate::article_file_candidates;
 use crate::cache::CacheSource;
+use crate::cache::FileDownloadSnapshot;
+use crate::cache::FileDownloadStats;
 use crate::cache::PageSource;
+use crate::cache::http_failure_detail;
+use crate::cache::read_or_fetch_bytes_with_stats;
+use crate::cache::read_or_fetch_text_with_stats;
+use crate::cache::wikipedia_parse_api_url;
+use crate::cache::write_cache_text;
+use crate::config::parse_args_from;
+use crate::config::parse_config_str;
 use crate::config::{ArticleConfig, ArticleType, BookConfig, CachingMode, LinksToExcludedPages};
 use crate::error::{AppError, AppResult};
 use crate::html_language_attributes;
-use crate::http_failure_detail;
 use crate::internal_links;
 use crate::normalized_wikipedia_language;
-use crate::parse_args_from;
-use crate::parse_config_str;
-use crate::read_or_fetch_bytes_with_stats;
-use crate::read_or_fetch_text_with_stats;
 use crate::render_templates;
 use crate::render_wikitext_tables;
 use crate::render_wikitext_with_template_counts;
@@ -38,8 +40,6 @@ use crate::strip_file_links;
 use crate::template_log_content;
 use crate::template_name_is_in_csv;
 use crate::wikipedia_article_url;
-use crate::wikipedia_parse_api_url;
-use crate::write_cache_text;
 
 #[test]
 fn article_candidates_cover_common_file_names() {
