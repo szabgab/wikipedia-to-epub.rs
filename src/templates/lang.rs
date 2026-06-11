@@ -1,8 +1,8 @@
-use crate::split_template_params;
 use crate::templates::{
     join_plain_items, render_templates, template_named_params, template_param,
     template_positional_params,
 };
+use crate::tools::split_template_params;
 use crate::types::{DispatchTable, TemplateHandler};
 use std::collections::HashMap;
 

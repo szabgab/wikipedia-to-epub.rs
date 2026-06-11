@@ -1,7 +1,7 @@
 use crate::config::current_utc_date;
 use crate::config::parse_date_string;
-use crate::split_template_params;
 use crate::templates::{format_interlanguage_link, render_templates};
+use crate::tools::split_template_params;
 use regex::Regex;
 use std::collections::HashMap;
 
