@@ -393,7 +393,7 @@ fn render_note_template(params: &str) -> String {
 }
 
 /// [fs interlinear](https://en.wikipedia.org/wiki/Template:Fs_interlinear)
-pub(crate) fn render_fs_interlinear_template(params: &str) -> String {
+fn render_fs_interlinear_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -462,7 +462,7 @@ pub(crate) fn render_fs_interlinear_template(params: &str) -> String {
 }
 
 /// [Tooltip](https://en.wikipedia.org/wiki/Template:Tooltip)
-pub(crate) fn render_tooltip_template(params: &str) -> String {
+fn render_tooltip_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(text) = positional.first().filter(|t| !t.trim().is_empty()) else {
         return String::new();
@@ -478,7 +478,7 @@ pub(crate) fn render_tooltip_template(params: &str) -> String {
 }
 
 /// [Jaanus](https://en.wikipedia.org/wiki/Template:Jaanus)
-pub(crate) fn render_jaanus_template(params: &str) -> String {
+fn render_jaanus_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -510,7 +510,7 @@ pub(crate) fn render_jaanus_template(params: &str) -> String {
 }
 
 /// [Easy CSS image crop](https://en.wikipedia.org/wiki/Template:Easy_CSS_image_crop)
-pub(crate) fn render_easy_css_image_crop_template(params: &str) -> String {
+fn render_easy_css_image_crop_template(params: &str) -> String {
     let named = template_named_params(params);
     let Some(image) = template_param(&named, &["Image", "image"]) else {
         return String::new();
@@ -536,7 +536,7 @@ pub(crate) fn render_easy_css_image_crop_template(params: &str) -> String {
 
 /// [Multiple images](https://en.wikipedia.org/wiki/Template:Multiple_images)
 /// [Multiple image](https://en.wikipedia.org/wiki/Template:Multiple_image)
-pub(crate) fn render_multiple_images_template(params: &str) -> String {
+fn render_multiple_images_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut rendered_images = Vec::new();
 
@@ -595,7 +595,7 @@ pub(crate) fn render_multiple_images_template(params: &str) -> String {
 }
 
 /// [ISSN](https://en.wikipedia.org/wiki/Template:ISSN)
-pub(crate) fn render_issn_template(params: &str) -> String {
+fn render_issn_template(params: &str) -> String {
     let Some(issn) = template_positional_params(params)
         .first()
         .filter(|v| !v.trim().is_empty())
@@ -659,7 +659,7 @@ pub(crate) fn render_formatnum_template(template: &str, params: &str) -> String 
 }
 
 /// [doi](https://en.wikipedia.org/wiki/Template:Doi)
-pub(crate) fn render_doi_template(params: &str) -> String {
+fn render_doi_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let named = template_named_params(params);
     let Some(doi) = positional
@@ -672,7 +672,7 @@ pub(crate) fn render_doi_template(params: &str) -> String {
     format!("doi:{}", render_templates(&doi))
 }
 
-pub(crate) fn calculate_age(y1: i32, m1: i32, d1: i32, y2: i32, m2: i32, d2: i32) -> i32 {
+fn calculate_age(y1: i32, m1: i32, d1: i32, y2: i32, m2: i32, d2: i32) -> i32 {
     let mut age = y2 - y1;
     if y1 < 0 && y2 > 0 {
         age -= 1;
@@ -684,7 +684,7 @@ pub(crate) fn calculate_age(y1: i32, m1: i32, d1: i32, y2: i32, m2: i32, d2: i32
 }
 
 /// [age](https://en.wikipedia.org/wiki/Template:Age)
-pub(crate) fn render_age_template(params: &str) -> String {
+fn render_age_template(params: &str) -> String {
     let positional = template_positional_params(params);
 
     let nums: Vec<i32> = positional
@@ -715,7 +715,7 @@ pub(crate) fn render_age_template(params: &str) -> String {
 
 /// [Birth date and age](https://en.wikipedia.org/wiki/Template:Birth_date_and_age)
 /// [birth date and age](https://en.wikipedia.org/wiki/Template:Birth_date_and_age)
-pub(crate) fn render_birth_date_and_age_template(params: &str) -> String {
+fn render_birth_date_and_age_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let nums: Vec<i32> = positional
         .iter()
@@ -770,7 +770,7 @@ pub(crate) fn render_birth_date_and_age_template(params: &str) -> String {
 /// [ubl](https://en.wikipedia.org/wiki/Template:Ubl)
 /// [ubli](https://en.wikipedia.org/wiki/Template:Ubli)
 /// [unbulleted indent list](https://en.wikipedia.org/wiki/Template:Unbulleted_indent_list)
-pub(crate) fn render_unbulleted_list_template(params: &str) -> String {
+fn render_unbulleted_list_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let mut items = Vec::new();
     for param in positional {
@@ -787,7 +787,7 @@ pub(crate) fn render_unbulleted_list_template(params: &str) -> String {
 }
 
 /// [native name list](https://en.wikipedia.org/wiki/Template:Native_name_list)
-pub(crate) fn render_native_name_list_template(params: &str) -> String {
+fn render_native_name_list_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
     for i in 1..=10 {
@@ -815,7 +815,7 @@ pub(crate) fn render_native_name_list_template(params: &str) -> String {
 
 /// [hlist](https://en.wikipedia.org/wiki/Template:Hlist)
 /// [flatlist](https://en.wikipedia.org/wiki/Template:Flatlist)
-pub(crate) fn render_hlist_template(params: &str) -> String {
+fn render_hlist_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let mut items = Vec::new();
     for param in positional {
