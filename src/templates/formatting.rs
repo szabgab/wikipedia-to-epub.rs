@@ -8,7 +8,7 @@ use crate::tools::split_template_params;
 use crate::types::{DispatchTable, TemplateHandler};
 
 /// [jct](https://en.wikipedia.org/wiki/Template:Jct)
-pub(crate) fn render_jct_template(params: &str) -> String {
+fn render_jct_template(params: &str) -> String {
     let mut country = None;
     let mut state = None;
     let mut positional = Vec::new();
@@ -58,7 +58,7 @@ pub(crate) fn render_jct_template(params: &str) -> String {
 /// [nobold](https://en.wikipedia.org/wiki/Template:Nobold)
 /// [stack](https://en.wikipedia.org/wiki/Template:Stack)
 /// [xref](https://en.wikipedia.org/wiki/Template:Xref)
-pub(crate) fn render_passthrough_template(params: &str) -> String {
+fn render_passthrough_template(params: &str) -> String {
     template_positional_params(params)
         .into_iter()
         .map(|param| render_templates(&param))
@@ -69,7 +69,7 @@ pub(crate) fn render_passthrough_template(params: &str) -> String {
 
 /// [smaller](https://en.wikipedia.org/wiki/Template:Smaller)
 /// [small](https://en.wikipedia.org/wiki/Template:Small)
-pub(crate) fn render_smaller_template(params: &str) -> String {
+fn render_smaller_template(params: &str) -> String {
     let text = render_passthrough_template(params);
     if text.is_empty() {
         return String::new();
@@ -79,7 +79,7 @@ pub(crate) fn render_smaller_template(params: &str) -> String {
 }
 
 /// [sic](https://en.wikipedia.org/wiki/Template:Sic)
-pub(crate) fn render_sic_template(params: &str) -> String {
+fn render_sic_template(params: &str) -> String {
     let text = render_passthrough_template(params);
     if text.is_empty() {
         "[sic]".to_string()
@@ -91,7 +91,7 @@ pub(crate) fn render_sic_template(params: &str) -> String {
 /// [circa](https://en.wikipedia.org/wiki/Template:Circa)
 /// [c.](https://en.wikipedia.org/wiki/Template:C.)
 /// [cx](https://en.wikipedia.org/wiki/Template:Cx)
-pub(crate) fn render_circa_template(params: &str) -> String {
+fn render_circa_template(params: &str) -> String {
     let text = render_passthrough_template(params);
     if text.is_empty() {
         "c.".to_string()
@@ -101,7 +101,7 @@ pub(crate) fn render_circa_template(params: &str) -> String {
 }
 
 /// [isbn](https://en.wikipedia.org/wiki/Template:Isbn)
-pub(crate) fn render_isbn_template(params: &str) -> String {
+fn render_isbn_template(params: &str) -> String {
     let Some(isbn) = template_positional_params(params)
         .into_iter()
         .find(|value| !value.trim().is_empty())
@@ -113,7 +113,7 @@ pub(crate) fn render_isbn_template(params: &str) -> String {
 }
 
 /// [asin](https://en.wikipedia.org/wiki/Template:Asin)
-pub(crate) fn render_asin_template(params: &str) -> String {
+fn render_asin_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -140,7 +140,7 @@ pub(crate) fn render_asin_template(params: &str) -> String {
 }
 
 /// [oclc](https://en.wikipedia.org/wiki/Template:Oclc)
-pub(crate) fn render_oclc_template(params: &str) -> String {
+fn render_oclc_template(params: &str) -> String {
     let Some(oclc) = template_positional_params(params)
         .into_iter()
         .find(|value| !value.trim().is_empty())
@@ -152,7 +152,7 @@ pub(crate) fn render_oclc_template(params: &str) -> String {
 }
 
 /// [abbr](https://en.wikipedia.org/wiki/Template:Abbr)
-pub(crate) fn render_abbr_template(params: &str) -> String {
+fn render_abbr_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -175,7 +175,7 @@ pub(crate) fn render_abbr_template(params: &str) -> String {
 
 /// [frac](https://en.wikipedia.org/wiki/Template:Frac)
 /// [fraction](https://en.wikipedia.org/wiki/Template:Fraction)
-pub(crate) fn render_frac_template(params: &str) -> String {
+fn render_frac_template(params: &str) -> String {
     let params = template_positional_params(params)
         .into_iter()
         .map(|param| render_templates(&param))
@@ -191,7 +191,7 @@ pub(crate) fn render_frac_template(params: &str) -> String {
 }
 
 /// [floruit](https://en.wikipedia.org/wiki/Template:Floruit)
-pub(crate) fn render_floruit_template(params: &str) -> String {
+fn render_floruit_template(params: &str) -> String {
     let text = render_passthrough_template(params);
     if text.is_empty() {
         "fl.".to_string()
@@ -201,7 +201,7 @@ pub(crate) fn render_floruit_template(params: &str) -> String {
 }
 
 /// [coord](https://en.wikipedia.org/wiki/Template:Coord)
-pub(crate) fn render_coord_template(params: &str) -> String {
+fn render_coord_template(params: &str) -> String {
     let named = template_named_params(params);
     // For now both inline and title will display inline
     if let Some(display) = template_param(&named, &["display"]) {
@@ -223,11 +223,11 @@ pub(crate) fn render_coord_template(params: &str) -> String {
     format_coord_components(&positional).unwrap_or_default()
 }
 
-pub(crate) fn format_coord_components(params: &[String]) -> Option<String> {
+fn format_coord_components(params: &[String]) -> Option<String> {
     format_hemisphere_coordinates(params).or_else(|| format_decimal_coordinates(params))
 }
 
-pub(crate) fn format_hemisphere_coordinates(params: &[String]) -> Option<String> {
+fn format_hemisphere_coordinates(params: &[String]) -> Option<String> {
     let lat_hemisphere_index = params
         .iter()
         .position(|param| matches_direction(param, ['N', 'S']))?;
@@ -257,7 +257,7 @@ pub(crate) fn format_hemisphere_coordinates(params: &[String]) -> Option<String>
     Some(format!("{latitude} {longitude}"))
 }
 
-pub(crate) fn format_coord_axis(parts: &[String], hemisphere: char) -> Option<String> {
+fn format_coord_axis(parts: &[String], hemisphere: char) -> Option<String> {
     if parts.is_empty()
         || parts.len() > 3
         || !parts.iter().all(|part| coord_component_is_number(part))
@@ -282,7 +282,7 @@ pub(crate) fn format_coord_axis(parts: &[String], hemisphere: char) -> Option<St
     Some(rendered)
 }
 
-pub(crate) fn format_decimal_coordinates(params: &[String]) -> Option<String> {
+fn format_decimal_coordinates(params: &[String]) -> Option<String> {
     let latitude = params.first()?.trim();
     let longitude = params.get(1)?.trim();
     if !coord_component_is_number(latitude) || !coord_component_is_number(longitude) {
@@ -292,11 +292,11 @@ pub(crate) fn format_decimal_coordinates(params: &[String]) -> Option<String> {
     Some(format!("{latitude}, {longitude}"))
 }
 
-pub(crate) fn coord_component_is_number(value: &str) -> bool {
+fn coord_component_is_number(value: &str) -> bool {
     value.trim().parse::<f64>().is_ok()
 }
 
-pub(crate) fn matches_direction(value: &str, allowed: [char; 2]) -> bool {
+fn matches_direction(value: &str, allowed: [char; 2]) -> bool {
     let trimmed = value.trim();
     trimmed.len() == 1
         && trimmed.chars().next().is_some_and(|ch| {
@@ -307,7 +307,7 @@ pub(crate) fn matches_direction(value: &str, allowed: [char; 2]) -> bool {
 }
 
 /// [worldhistory](https://en.wikipedia.org/wiki/Template:Worldhistory)
-pub(crate) fn render_worldhistory_template(params: &str) -> String {
+fn render_worldhistory_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
 
@@ -322,7 +322,7 @@ pub(crate) fn render_worldhistory_template(params: &str) -> String {
 }
 
 /// [Shy](https://en.wikipedia.org/wiki/Template:Shy)
-pub(crate) fn render_soft_hyphen_template(params: &str) -> String {
+fn render_soft_hyphen_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let parts = positional
         .into_iter()
@@ -332,7 +332,7 @@ pub(crate) fn render_soft_hyphen_template(params: &str) -> String {
 }
 
 /// [color box](https://en.wikipedia.org/wiki/Template:Color_box)
-pub(crate) fn render_color_box_template(params: &str) -> String {
+fn render_color_box_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(color) = positional.first().filter(|c| !c.trim().is_empty()) else {
         return "■".to_string();
@@ -343,7 +343,7 @@ pub(crate) fn render_color_box_template(params: &str) -> String {
 
 /// [color](https://en.wikipedia.org/wiki/Template:Color)
 /// [colour](https://en.wikipedia.org/wiki/Template:Colour)
-pub(crate) fn render_color_template(params: &str) -> String {
+fn render_color_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -371,7 +371,7 @@ pub(crate) fn render_color_template(params: &str) -> String {
 }
 
 /// [plainlist](https://en.wikipedia.org/wiki/Template:Plainlist)
-pub(crate) fn render_plainlist_template(params: &str) -> String {
+fn render_plainlist_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -384,7 +384,7 @@ pub(crate) fn render_plainlist_template(params: &str) -> String {
 }
 
 /// [note](https://en.wikipedia.org/wiki/Template:Note)
-pub(crate) fn render_note_template(params: &str) -> String {
+fn render_note_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(label) = positional.get(1).filter(|l| !l.trim().is_empty()) else {
         return String::new();
