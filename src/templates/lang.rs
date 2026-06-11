@@ -3,6 +3,7 @@ use crate::templates::{
     join_plain_items, render_templates, template_named_params, template_param,
     template_positional_params,
 };
+use crate::types::{DispatchTable, TemplateHandler};
 use std::collections::HashMap;
 
 /// [Korean](https://en.wikipedia.org/wiki/Template:Korean)
@@ -1231,4 +1232,18 @@ pub(crate) fn render_native_name_template(params: &str) -> String {
             format!("{} ({})", formatted_name, lang_name)
         }
     }
+}
+
+pub(crate) fn get_dispatch_table() -> DispatchTable {
+    HashMap::from([
+        ("korean", render_korean_template as TemplateHandler),
+        ("korean/auto", render_korean_template as TemplateHandler),
+        ("ko", render_korean_template as TemplateHandler),
+        ("nihongo4", render_japanese_template as TemplateHandler),
+        ("nihongo", render_japanese_template as TemplateHandler),
+        (
+            "nihongo foot",
+            render_nihongo_foot_template as TemplateHandler,
+        ),
+    ])
 }

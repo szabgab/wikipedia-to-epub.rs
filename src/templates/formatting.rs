@@ -5,6 +5,8 @@ use crate::templates::{format_interlanguage_link, render_templates};
 use regex::Regex;
 use std::collections::HashMap;
 
+use crate::types::{DispatchTable, TemplateHandler};
+
 /// [jct](https://en.wikipedia.org/wiki/Template:Jct)
 pub(crate) fn render_jct_template(params: &str) -> String {
     let mut country = None;
@@ -4246,4 +4248,19 @@ pub(crate) fn render_ra_template(params: &str) -> String {
 /// [Hyphen](https://en.wikipedia.org/wiki/Template:Hyphen)
 pub(crate) fn render_hyphen_template(_params: &str) -> String {
     "-".to_string()
+}
+
+pub(crate) fn get_dispatch_table() -> DispatchTable {
+    HashMap::from([
+        ("nowrap", render_passthrough_template as TemplateHandler),
+        ("center", render_passthrough_template as TemplateHandler),
+        (
+            "crossreference",
+            render_passthrough_template as TemplateHandler,
+        ),
+        ("nobold", render_passthrough_template as TemplateHandler),
+        ("stack", render_passthrough_template as TemplateHandler),
+        ("longitem", render_passthrough_template as TemplateHandler),
+        ("xref", render_passthrough_template as TemplateHandler),
+    ])
 }

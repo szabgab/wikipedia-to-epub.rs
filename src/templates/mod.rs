@@ -59,9 +59,9 @@ use formatting::{
     render_natural_causes_template, render_ndldc_template, render_note_template,
     render_numero_template, render_oclc_template, render_official_website_template,
     render_open_access_template, render_openstreetmap_relation_template,
-    render_openstreetmap_way_template, render_passthrough_template, render_pkia_template,
-    render_plainlist_template, render_plus_minus_template, render_poem_quote_template,
-    render_pow_template, render_pprime_template, render_proto_template, render_ra_template,
+    render_openstreetmap_way_template, render_pkia_template, render_plainlist_template,
+    render_plus_minus_template, render_poem_quote_template, render_pow_template,
+    render_pprime_template, render_proto_template, render_ra_template,
     render_reference_page_template, render_reign_template, render_republic_of_korea_ship_template,
     render_ric_template, render_route_box_template, render_section_link_template,
     render_see_also_template, render_ship_class_template, render_ship_template,
@@ -80,11 +80,10 @@ use lang::{
     render_angbr_ipa_template, render_angbr_template, render_chinese_lang_template,
     render_english_ipa_template, render_gloss_template, render_in_lang_template,
     render_ipa_link_template, render_ipa_template, render_ja_platform_template,
-    render_ja_rail_color_template, render_ja_rail_linem_template, render_japanese_template,
-    render_korean_template, render_korean_transliteration_template, render_lang_template,
-    render_langnf_template, render_langx_template, render_linktext_template,
-    render_literal_template, render_na_template, render_native_name_template,
-    render_nihongo_foot_template, render_nihongo_krt_template, render_nihongo2_template,
+    render_ja_rail_color_template, render_ja_rail_linem_template,
+    render_korean_transliteration_template, render_lang_template, render_langnf_template,
+    render_langx_template, render_linktext_template, render_literal_template, render_na_template,
+    render_native_name_template, render_nihongo_krt_template, render_nihongo2_template,
     render_nihongo3_template, render_respell_template, render_script_template,
     render_translation_template, render_transliteration_like_template,
     render_transliteration_template, render_unichar_template,
@@ -182,17 +181,7 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
 
 #[cached]
 fn get_dispatch_table() -> DispatchTable {
-    HashMap::from([
-        ("korean", render_korean_template as TemplateHandler),
-        ("korean/auto", render_korean_template as TemplateHandler),
-        ("ko", render_korean_template as TemplateHandler),
-        ("nihongo4", render_japanese_template as TemplateHandler),
-        ("nihongo", render_japanese_template as TemplateHandler),
-        (
-            "nihongo foot",
-            render_nihongo_foot_template as TemplateHandler,
-        ),
-        ("nowrap", render_passthrough_template as TemplateHandler),
+    let mut table = HashMap::from([
         (
             "citation needed span",
             render_citation_needed_span_template as TemplateHandler,
@@ -209,7 +198,6 @@ fn get_dispatch_table() -> DispatchTable {
             "verse transliteration-translation",
             render_verse_transliteration_translation_template as TemplateHandler,
         ),
-        ("center", render_passthrough_template as TemplateHandler),
         ("smaller", render_smaller_template as TemplateHandler),
         ("small", render_smaller_template as TemplateHandler),
         ("sic", render_sic_template as TemplateHandler),
@@ -363,10 +351,6 @@ fn get_dispatch_table() -> DispatchTable {
             "for timeline",
             render_for_timeline_template as TemplateHandler,
         ),
-        (
-            "crossreference",
-            render_passthrough_template as TemplateHandler,
-        ),
         ("slink", render_section_link_template as TemplateHandler),
         ("legend", render_legend_template as TemplateHandler),
         ("legend0", render_legend_template as TemplateHandler),
@@ -423,7 +407,6 @@ fn get_dispatch_table() -> DispatchTable {
             render_climate_chart_template as TemplateHandler,
         ),
         ("sclass", render_ship_class_template as TemplateHandler),
-        ("nobold", render_passthrough_template as TemplateHandler),
         ("arrow", render_arrow_template as TemplateHandler),
         (
             "roks",
@@ -449,8 +432,6 @@ fn get_dispatch_table() -> DispatchTable {
             "inflation/year",
             render_inflation_year_template as TemplateHandler,
         ),
-        ("stack", render_passthrough_template as TemplateHandler),
-        ("longitem", render_passthrough_template as TemplateHandler),
         ("flagdeco", render_flagdeco_template as TemplateHandler),
         ("pprime", render_pprime_template as TemplateHandler),
         ("ra", render_ra_template as TemplateHandler),
@@ -536,7 +517,6 @@ fn get_dispatch_table() -> DispatchTable {
         ),
         ("nihongo2", render_nihongo2_template as TemplateHandler),
         ("gloss", render_gloss_template as TemplateHandler),
-        ("xref", render_passthrough_template as TemplateHandler),
         ("shy", render_soft_hyphen_template as TemplateHandler),
         ("color box", render_color_box_template as TemplateHandler),
         ("color", render_color_template as TemplateHandler),
@@ -687,7 +667,16 @@ fn get_dispatch_table() -> DispatchTable {
         ),
         ("hlist", render_hlist_template as TemplateHandler),
         ("flatlist", render_hlist_template as TemplateHandler),
-    ])
+    ]);
+
+    for (key, value) in crate::templates::lang::get_dispatch_table() {
+        table.insert(key, value);
+    }
+    for (key, value) in crate::templates::formatting::get_dispatch_table() {
+        table.insert(key, value);
+    }
+
+    table
 }
 
 pub(crate) fn render_template(content: &str) -> String {
