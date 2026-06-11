@@ -9,10 +9,9 @@ use cached::macros::cached;
 
 use crate::types::{DispatchTable, EmptyDispatchTable, EmptyHandler};
 pub(crate) use formatting::{
-    PersonRole, citation_people, format_number_with_commas, join_plain_items,
-    template_named_params, template_param, template_param_owned, template_positional_params,
+    PersonRole, citation_people, format_number_with_commas, template_named_params, template_param,
+    template_param_owned, template_positional_params,
 };
-pub(crate) use lang::format_interlanguage_link;
 
 use formatting::{
     render_awol_template, render_died_of_wounds_template, render_five_nonbreaking_spaces_template,

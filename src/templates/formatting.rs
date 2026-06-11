@@ -1,10 +1,11 @@
-use crate::config::current_utc_date;
-use crate::config::parse_date_string;
-use crate::templates::{format_interlanguage_link, render_templates};
-use crate::tools::split_template_params;
 use regex::Regex;
 use std::collections::HashMap;
 
+use crate::config::current_utc_date;
+use crate::config::parse_date_string;
+use crate::templates::lang::format_interlanguage_link;
+use crate::templates::render_templates;
+use crate::tools::split_template_params;
 use crate::types::{DispatchTable, TemplateHandler};
 
 /// [jct](https://en.wikipedia.org/wiki/Template:Jct)

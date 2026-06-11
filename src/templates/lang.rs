@@ -1,15 +1,16 @@
-use crate::templates::{
-    join_plain_items, render_templates, template_named_params, template_param,
-    template_positional_params,
+use std::collections::HashMap;
+
+use crate::templates::formatting::{
+    join_plain_items, template_named_params, template_param, template_positional_params,
 };
+use crate::templates::render_templates;
 use crate::tools::split_template_params;
 use crate::types::{DispatchTable, TemplateHandler};
-use std::collections::HashMap;
 
 /// [Korean](https://en.wikipedia.org/wiki/Template:Korean)
 /// [Korean/auto](https://en.wikipedia.org/wiki/Template:Korean/auto)
 /// [ko](https://en.wikipedia.org/wiki/Template:Ko)
-pub(crate) fn render_korean_template(params: &str) -> String {
+fn render_korean_template(params: &str) -> String {
     let mut hangul = None;
     let mut hanja = None;
     let mut ko_ipa = None;
@@ -68,7 +69,7 @@ pub(crate) fn render_korean_template(params: &str) -> String {
     )
 }
 
-pub(crate) fn clean_korean_auto_value(value: &str) -> String {
+fn clean_korean_auto_value(value: &str) -> String {
     value
         .trim()
         .chars()
@@ -77,7 +78,7 @@ pub(crate) fn clean_korean_auto_value(value: &str) -> String {
 }
 
 /// [Nihongo](https://en.wikipedia.org/wiki/Template:Nihongo)
-pub(crate) fn render_japanese_template(params: &str) -> String {
+fn render_japanese_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -181,7 +182,7 @@ pub(crate) fn render_japanese_template(params: &str) -> String {
 }
 
 /// [Nihongo foot](https://en.wikipedia.org/wiki/Template:Nihongo_foot)
-pub(crate) fn render_nihongo_foot_template(params: &str) -> String {
+fn render_nihongo_foot_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -240,7 +241,7 @@ pub(crate) fn render_nihongo_foot_template(params: &str) -> String {
 /// [N/A](https://en.wikipedia.org/wiki/Template:N/A)
 /// [NA](https://en.wikipedia.org/wiki/Template:NA)
 /// [Not applicable](https://en.wikipedia.org/wiki/Template:Not_applicable)
-pub(crate) fn render_na_template(params: &str) -> String {
+fn render_na_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let text = positional
         .first()
@@ -251,7 +252,7 @@ pub(crate) fn render_na_template(params: &str) -> String {
 }
 
 /// [nihongo3](https://en.wikipedia.org/wiki/Template:Nihongo3)
-pub(crate) fn render_nihongo3_template(params: &str) -> String {
+fn render_nihongo3_template(params: &str) -> String {
     let positional = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -310,7 +311,7 @@ pub(crate) fn render_nihongo3_template(params: &str) -> String {
 /// [wktl](https://en.wikipedia.org/wiki/Template:Wktl)
 /// [wikt-lang](https://en.wikipedia.org/wiki/Template:Wikt-lang)
 /// [langr](https://en.wikipedia.org/wiki/Template:Langr)
-pub(crate) fn render_lang_template(params: &str) -> String {
+fn render_lang_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -349,7 +350,7 @@ pub(crate) fn render_lang_template(params: &str) -> String {
 }
 
 /// [in lang](https://en.wikipedia.org/wiki/Template:In_lang)
-pub(crate) fn render_in_lang_template(params: &str) -> String {
+fn render_in_lang_template(params: &str) -> String {
     let languages = template_positional_params(params)
         .into_iter()
         .map(|language| language_name_for_in_lang(&language).to_string())
@@ -363,7 +364,7 @@ pub(crate) fn render_in_lang_template(params: &str) -> String {
     }
 }
 
-pub(crate) fn language_name_for_in_lang(language: &str) -> &str {
+fn language_name_for_in_lang(language: &str) -> &str {
     match language.trim().to_ascii_lowercase().as_str() {
         "ar" => "Arabic",
         "de" => "German",
@@ -381,7 +382,7 @@ pub(crate) fn language_name_for_in_lang(language: &str) -> &str {
 }
 
 /// [linktext](https://en.wikipedia.org/wiki/Template:Linktext)
-pub(crate) fn render_linktext_template(params: &str) -> String {
+fn render_linktext_template(params: &str) -> String {
     template_positional_params(params)
         .into_iter()
         .map(|param| render_templates(&param))
@@ -390,7 +391,7 @@ pub(crate) fn render_linktext_template(params: &str) -> String {
 }
 
 /// [langx](https://en.wikipedia.org/wiki/Template:Langx)
-pub(crate) fn render_langx_template(params: &str) -> String {
+fn render_langx_template(params: &str) -> String {
     let mut positional = Vec::new();
     let mut named = HashMap::new();
 
@@ -435,7 +436,7 @@ pub(crate) fn render_langx_template(params: &str) -> String {
 /// [lang-zh](https://en.wikipedia.org/wiki/Template:Lang-zh)
 /// [zh](https://en.wikipedia.org/wiki/Template:Zh)
 /// [zhi](https://en.wikipedia.org/wiki/Template:Zhi)
-pub(crate) fn render_chinese_lang_template(params: &str) -> String {
+fn render_chinese_lang_template(params: &str) -> String {
     let mut positional = Vec::new();
     let mut named = HashMap::new();
 
@@ -481,7 +482,7 @@ pub(crate) fn render_chinese_lang_template(params: &str) -> String {
 /// [transliteration](https://en.wikipedia.org/wiki/Template:Transliteration)
 /// [translit](https://en.wikipedia.org/wiki/Template:Translit)
 /// [xlit](https://en.wikipedia.org/wiki/Template:Xlit)
-pub(crate) fn render_transliteration_template(params: &str) -> String {
+fn render_transliteration_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -515,7 +516,7 @@ pub(crate) fn render_transliteration_template(params: &str) -> String {
 }
 
 /// [tlit](https://en.wikipedia.org/wiki/Template:Tlit)
-pub(crate) fn render_transliteration_like_template(params: &str) -> String {
+fn render_transliteration_like_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -549,7 +550,7 @@ pub(crate) fn render_transliteration_like_template(params: &str) -> String {
 }
 
 /// [ko-translit](https://en.wikipedia.org/wiki/Template:Ko-translit)
-pub(crate) fn render_korean_transliteration_template(params: &str) -> String {
+fn render_korean_transliteration_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -575,7 +576,7 @@ pub(crate) fn render_korean_transliteration_template(params: &str) -> String {
 /// [lit](https://en.wikipedia.org/wiki/Template:Lit)
 /// [Literal translation](https://en.wikipedia.org/wiki/Template:Literal_translation)
 /// [literal](https://en.wikipedia.org/wiki/Template:Literal)
-pub(crate) fn render_literal_template(params: &str) -> String {
+fn render_literal_template(params: &str) -> String {
     let Some(text) = template_positional_params(params)
         .into_iter()
         .find(|value| !value.trim().is_empty())
@@ -587,7 +588,7 @@ pub(crate) fn render_literal_template(params: &str) -> String {
 }
 
 /// [script](https://en.wikipedia.org/wiki/Template:Script)
-pub(crate) fn render_script_template(params: &str) -> String {
+fn render_script_template(params: &str) -> String {
     let positional = template_positional_params(params);
     if positional.len() >= 2 {
         render_templates(&positional[1])
@@ -599,7 +600,7 @@ pub(crate) fn render_script_template(params: &str) -> String {
 }
 
 /// [ipa](https://en.wikipedia.org/wiki/Template:Ipa)
-pub(crate) fn render_ipa_template(params: &str) -> String {
+fn render_ipa_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -617,7 +618,7 @@ pub(crate) fn render_ipa_template(params: &str) -> String {
 }
 
 /// [IPAc-en](https://en.wikipedia.org/wiki/Template:IPAc-en)
-pub(crate) fn render_english_ipa_template(params: &str) -> String {
+fn render_english_ipa_template(params: &str) -> String {
     let ipa = template_positional_params(params)
         .into_iter()
         .filter(|param| {
@@ -638,7 +639,7 @@ pub(crate) fn render_english_ipa_template(params: &str) -> String {
 }
 
 /// [Respell](https://en.wikipedia.org/wiki/Template:Respell)
-pub(crate) fn render_respell_template(params: &str) -> String {
+fn render_respell_template(params: &str) -> String {
     template_positional_params(params)
         .into_iter()
         .map(|param| render_templates(&param))
@@ -648,7 +649,7 @@ pub(crate) fn render_respell_template(params: &str) -> String {
 }
 
 /// [nihongo2](https://en.wikipedia.org/wiki/Template:Nihongo2)
-pub(crate) fn render_nihongo2_template(params: &str) -> String {
+fn render_nihongo2_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(text) = positional.first().filter(|t| !t.trim().is_empty()) else {
         return String::new();
@@ -660,7 +661,7 @@ pub(crate) fn render_nihongo2_template(params: &str) -> String {
 }
 
 /// [gloss](https://en.wikipedia.org/wiki/Template:Gloss)
-pub(crate) fn render_gloss_template(params: &str) -> String {
+fn render_gloss_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
     let Some(text) = positional.first().filter(|t| !t.trim().is_empty()) else {
@@ -675,7 +676,7 @@ pub(crate) fn render_gloss_template(params: &str) -> String {
 }
 
 /// [IPAslink](https://en.wikipedia.org/wiki/Template:IPAslink)
-pub(crate) fn render_ipa_link_template(params: &str) -> String {
+fn render_ipa_link_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(symbol) = positional.first().filter(|s| !s.trim().is_empty()) else {
         return String::new();
@@ -691,7 +692,7 @@ pub(crate) fn render_ipa_link_template(params: &str) -> String {
 }
 
 /// [angbr](https://en.wikipedia.org/wiki/Template:Angbr)
-pub(crate) fn render_angbr_template(params: &str) -> String {
+fn render_angbr_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(text) = positional.first().filter(|t| !t.trim().is_empty()) else {
         return String::new();
@@ -700,7 +701,7 @@ pub(crate) fn render_angbr_template(params: &str) -> String {
 }
 
 /// [angbr IPA](https://en.wikipedia.org/wiki/Template:Angbr_IPA)
-pub(crate) fn render_angbr_ipa_template(params: &str) -> String {
+fn render_angbr_ipa_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(text) = positional.first().filter(|t| !t.trim().is_empty()) else {
         return String::new();
@@ -712,7 +713,7 @@ pub(crate) fn render_angbr_ipa_template(params: &str) -> String {
 }
 
 /// [unichar](https://en.wikipedia.org/wiki/Template:Unichar)
-pub(crate) fn render_unichar_template(params: &str) -> String {
+fn render_unichar_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
     let Some(hex_str) = positional.first().filter(|s| !s.trim().is_empty()) else {
@@ -748,7 +749,7 @@ pub(crate) fn render_unichar_template(params: &str) -> String {
 }
 
 /// [Nihongo krt](https://en.wikipedia.org/wiki/Template:Nihongo_krt)
-pub(crate) fn render_nihongo_krt_template(params: &str) -> String {
+fn render_nihongo_krt_template(params: &str) -> String {
     let positional = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -783,7 +784,7 @@ pub(crate) fn render_nihongo_krt_template(params: &str) -> String {
 }
 
 /// [Ja-rail-color](https://en.wikipedia.org/wiki/Template:Ja-rail-color)
-pub(crate) fn render_ja_rail_color_template(params: &str) -> String {
+fn render_ja_rail_color_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(code) = positional.first().map(|s| s.to_ascii_uppercase()) else {
         return "#333333".to_string();
@@ -819,7 +820,7 @@ pub(crate) fn render_ja_rail_color_template(params: &str) -> String {
 /// [jpf](https://en.wikipedia.org/wiki/Template:Jpf)
 /// [Ja-platform-m](https://en.wikipedia.org/wiki/Template:Ja-platform-m)
 /// [jpfm](https://en.wikipedia.org/wiki/Template:Jpfm)
-pub(crate) fn render_ja_platform_template(params: &str) -> String {
+fn render_ja_platform_template(params: &str) -> String {
     let named = template_named_params(params);
 
     let pfn = template_param(&named, &["pfn"])
@@ -873,7 +874,7 @@ pub(crate) fn format_interlanguage_link(
 }
 
 /// [Translation](https://en.wikipedia.org/wiki/Template:Translation)
-pub(crate) fn render_translation_template(params: &str) -> String {
+fn render_translation_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -941,7 +942,7 @@ pub(crate) fn render_translation_template(params: &str) -> String {
 }
 
 /// [ja-rail-linem](https://en.wikipedia.org/wiki/Template:Ja-rail-linem)
-pub(crate) fn render_ja_rail_linem_template(params: &str) -> String {
+fn render_ja_rail_linem_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -1036,7 +1037,7 @@ pub(crate) fn render_ja_rail_linem_template(params: &str) -> String {
 
 /// [Language with name/for](https://en.wikipedia.org/wiki/Template:Language_with_name/for)
 /// [langnf](https://en.wikipedia.org/wiki/Template:Language_with_name/for)
-pub(crate) fn render_langnf_template(params: &str) -> String {
+fn render_langnf_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = split_template_params(params)
         .into_iter()
@@ -1191,7 +1192,7 @@ fn get_lang_name(tag: &str) -> &'static str {
 }
 
 /// [native name](https://en.wikipedia.org/wiki/Template:Native_name)
-pub(crate) fn render_native_name_template(params: &str) -> String {
+fn render_native_name_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
