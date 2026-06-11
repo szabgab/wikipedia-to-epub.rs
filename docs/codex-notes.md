@@ -1,5 +1,25 @@
 # Codex Session Notes
 
+## 2026-06-11 Remove pub(crate) from Unused Template Functions
+
+### Summary
+Removed `pub(crate)` visibility modifier from 150 functions across `src/templates/mod.rs`, `src/templates/formatting.rs`, `src/templates/citation.rs`, and `src/templates/convert.rs` that are not referenced outside of their defining module files.
+
+### Decisions Made
+- Wrote an automated analysis script to check function usages across files and safely change `pub(crate) fn` to private `fn`.
+- Validated that the code continues to compile cleanly and all unit/integration tests pass.
+
+### Files Changed
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+- [src/templates/convert.rs](file:///opt/src/templates/convert.rs) [MODIFY]
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+
+### Tests Run
+- Checked compilation: `cargo check` and `cargo clippy --all-targets -- -D warnings` (Passed cleanly, no warnings).
+- Formatted codebase: `cargo fmt` (Passed cleanly).
+- Executed unit and integration tests: `cargo test` (All 284 unit tests and 34 integration tests passed successfully).
+
 ## 2026-06-11 Refactor Template Dispatch Table
 
 ### Summary

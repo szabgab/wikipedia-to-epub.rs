@@ -205,7 +205,7 @@ pub(crate) fn render_template(content: &str) -> String {
     }
 }
 
-pub(crate) fn log_and_count_nested_skipped_templates(text: &str) {
+fn log_and_count_nested_skipped_templates(text: &str) {
     let mut offset = 0;
 
     while let Some(start) = text[offset..].find("{{").map(|index| offset + index) {
@@ -235,7 +235,7 @@ pub(crate) fn template_log_content(content: &str) -> String {
     content.chars().take(80).collect()
 }
 
-pub(crate) fn is_handled_template_name(template: &str) -> bool {
+fn is_handled_template_name(template: &str) -> bool {
     template.eq_ignore_ascii_case("Korean")
         || template.eq_ignore_ascii_case("Korean/auto")
         || template.eq_ignore_ascii_case("ko")
@@ -538,7 +538,7 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || is_silent_template_name(template)
 }
 
-pub(crate) fn is_silent_template_name(template: &str) -> bool {
+fn is_silent_template_name(template: &str) -> bool {
     let template = template.trim();
     template.starts_with('#')
         || template_name_is_in_csv(template, include_str!("../silent.csv"))
@@ -568,7 +568,7 @@ pub(crate) fn is_silent_template_name(template: &str) -> bool {
         || is_observed_navigation_template_name(template)
 }
 
-pub(crate) fn is_observed_navigation_template_name(template: &str) -> bool {
+fn is_observed_navigation_template_name(template: &str) -> bool {
     template_name_is_in_csv(template.trim(), include_str!("../navigations.csv"))
 }
 
@@ -588,7 +588,7 @@ pub(crate) fn template_name_is_in_csv(template: &str, csv: &str) -> bool {
     })
 }
 
-pub(crate) fn is_succession_template_name(template: &str) -> bool {
+fn is_succession_template_name(template: &str) -> bool {
     template
         .get(.."s-".len())
         .is_some_and(|prefix| prefix.eq_ignore_ascii_case("s-"))

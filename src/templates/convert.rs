@@ -8,7 +8,7 @@ use crate::types::{DispatchTable, TemplateHandler};
 use std::collections::HashMap;
 
 /// [JPY](https://en.wikipedia.org/wiki/Template:JPY)
-pub(crate) fn render_jpy_template(params: &str) -> String {
+fn render_jpy_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -27,7 +27,7 @@ pub(crate) fn render_jpy_template(params: &str) -> String {
 }
 
 /// [FXConvert](https://en.wikipedia.org/wiki/Template:FXConvert)
-pub(crate) fn render_fx_convert_template(params: &str) -> String {
+fn render_fx_convert_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let named = template_named_params(params);
 
@@ -113,7 +113,7 @@ pub(crate) fn render_fx_convert_template(params: &str) -> String {
 }
 
 /// [percentage](https://en.wikipedia.org/wiki/Template:Percentage)
-pub(crate) fn render_percentage_template(params: &str) -> String {
+fn render_percentage_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| render_templates(param.trim()).trim().to_string())
@@ -148,7 +148,7 @@ pub(crate) fn render_percentage_template(params: &str) -> String {
 }
 
 /// [UN Population](https://en.wikipedia.org/wiki/Template:UN_Population)
-pub(crate) fn render_un_population_template(params: &str) -> String {
+fn render_un_population_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -166,7 +166,7 @@ pub(crate) fn render_un_population_template(params: &str) -> String {
 
 /// [convert](https://en.wikipedia.org/wiki/Template:Convert)
 /// [cvt](https://en.wikipedia.org/wiki/Template:Convert_abbreviated)
-pub(crate) fn render_convert_template(params: &str) -> String {
+fn render_convert_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -741,7 +741,7 @@ fn trim_trailing_zeroes(value: &str) -> String {
 }
 
 /// [Inflation](https://en.wikipedia.org/wiki/Template:Inflation)
-pub(crate) fn render_inflation_template(params: &str) -> String {
+fn render_inflation_template(params: &str) -> String {
     let positional = template_positional_params(params);
     if positional.len() < 3 {
         return String::new();
@@ -775,14 +775,14 @@ pub(crate) fn render_inflation_template(params: &str) -> String {
 }
 
 /// [Inflation/year](https://en.wikipedia.org/wiki/Template:Inflation/year)
-pub(crate) fn render_inflation_year_template(_params: &str) -> String {
+fn render_inflation_year_template(_params: &str) -> String {
     "2023".to_string()
 }
 
 /// [val](https://en.wikipedia.org/wiki/Template:Val)
 /// [Value](https://en.wikipedia.org/wiki/Template:Value)
 /// [value](https://en.wikipedia.org/wiki/Template:Value)
-pub(crate) fn render_val_template(params: &str) -> String {
+fn render_val_template(params: &str) -> String {
     let raw_parts = split_template_params(params);
     let mut positional = Vec::new();
     let mut unit = String::new();
@@ -868,7 +868,7 @@ pub(crate) fn format_convert_value(value: &str) -> String {
     format!("{sign}{formatted}")
 }
 
-pub(crate) fn format_convert_unit(unit: &str) -> String {
+fn format_convert_unit(unit: &str) -> String {
     match normalize_convert_unit_key(unit) {
         Some("c") => "°C".to_string(),
         Some("f") => "°F".to_string(),

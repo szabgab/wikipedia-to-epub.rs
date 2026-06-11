@@ -828,7 +828,7 @@ fn render_hlist_template(params: &str) -> String {
 }
 
 /// [Infobox mountain](https://en.wikipedia.org/wiki/Template:Infobox_mountain)
-pub(crate) fn render_infobox_mountain_template(params: &str) -> String {
+fn render_infobox_mountain_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut rows = Vec::new();
 
@@ -911,7 +911,7 @@ pub(crate) fn render_infobox_mountain_template(params: &str) -> String {
 }
 
 /// [Infobox country](https://en.wikipedia.org/wiki/Template:Infobox_country)
-pub(crate) fn render_infobox_country_template(params: &str) -> String {
+fn render_infobox_country_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut rows = Vec::new();
 
@@ -1038,7 +1038,7 @@ pub(crate) fn render_infobox_country_template(params: &str) -> String {
 }
 
 /// [Infobox military conflict](https://en.wikipedia.org/wiki/Template:Infobox_military_conflict)
-pub(crate) fn render_infobox_military_conflict_template(params: &str) -> String {
+fn render_infobox_military_conflict_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut rows = Vec::new();
 
@@ -1089,7 +1089,7 @@ pub(crate) fn render_infobox_military_conflict_template(params: &str) -> String 
 }
 
 /// [Infobox planet](https://en.wikipedia.org/wiki/Template:Infobox_planet)
-pub(crate) fn render_infobox_planet_template(params: &str) -> String {
+fn render_infobox_planet_template(params: &str) -> String {
     fn render_infobox_file_link_label(value: &str) -> String {
         let trimmed = value.trim();
         if !(trimmed.starts_with("[[File:") || trimmed.starts_with("[[Image:"))
@@ -1272,7 +1272,7 @@ pub(crate) fn render_infobox_planet_template(params: &str) -> String {
 }
 
 /// [Infobox settlement](https://en.wikipedia.org/wiki/Template:Infobox_settlement)
-pub(crate) fn render_infobox_settlement_template(params: &str) -> String {
+fn render_infobox_settlement_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut rows = Vec::new();
 
@@ -1389,7 +1389,7 @@ pub(crate) fn render_infobox_settlement_template(params: &str) -> String {
 }
 
 /// [Infobox](https://en.wikipedia.org/wiki/Template:Infobox)
-pub(crate) fn render_infobox_generic_template(params: &str) -> String {
+fn render_infobox_generic_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut rows = Vec::new();
 
@@ -1436,7 +1436,7 @@ pub(crate) fn render_infobox_generic_template(params: &str) -> String {
     rows.join("\n")
 }
 
-pub(crate) fn get_date_from_params(
+fn get_date_from_params(
     positional: &[String],
     start_idx: usize,
     len: usize,
@@ -1457,7 +1457,7 @@ pub(crate) fn get_date_from_params(
     }
 }
 
-pub(crate) fn days_from_year_zero(year: i32, month: i32, day: i32) -> i32 {
+fn days_from_year_zero(year: i32, month: i32, day: i32) -> i32 {
     let mut y = year;
     if y < 0 {
         y += 1;
@@ -1480,13 +1480,13 @@ pub(crate) fn days_from_year_zero(year: i32, month: i32, day: i32) -> i32 {
     days
 }
 
-pub(crate) fn days_between_dates(y1: i32, m1: i32, d1: i32, y2: i32, m2: i32, d2: i32) -> i32 {
+fn days_between_dates(y1: i32, m1: i32, d1: i32, y2: i32, m2: i32, d2: i32) -> i32 {
     let days1 = days_from_year_zero(y1, m1, d1);
     let days2 = days_from_year_zero(y2, m2, d2);
     days2 - days1
 }
 
-pub(crate) fn calculate_age_in_years_and_days(
+fn calculate_age_in_years_and_days(
     y1: i32,
     m1: i32,
     d1: i32,
@@ -1516,7 +1516,7 @@ pub(crate) fn calculate_age_in_years_and_days(
 /// [ayd](https://en.wikipedia.org/wiki/Template:Ayd)
 /// [age in years and days nts](https://en.wikipedia.org/wiki/Template:Age_in_years_and_days_nts)
 /// [Age in years and days nts](https://en.wikipedia.org/wiki/Template:Age_in_years_and_days_nts)
-pub(crate) fn render_ayd_template(params: &str) -> String {
+fn render_ayd_template(params: &str) -> String {
     let positional = template_positional_params(params);
 
     let date1_opt;
@@ -1565,7 +1565,7 @@ pub(crate) fn render_ayd_template(params: &str) -> String {
 }
 
 /// [RouteBox](https://en.wikipedia.org/wiki/Template:RouteBox)
-pub(crate) fn render_route_box_template(params: &str) -> String {
+fn render_route_box_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let named = template_named_params(params);
 
@@ -1611,7 +1611,7 @@ pub(crate) fn render_route_box_template(params: &str) -> String {
 }
 
 /// [STN](https://en.wikipedia.org/wiki/Template:STN)
-pub(crate) fn render_stn_template(params: &str) -> String {
+fn render_stn_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|p| p.trim().to_string())
@@ -1662,7 +1662,7 @@ pub(crate) fn render_stn_template(params: &str) -> String {
 /// [rail-interchange](https://en.wikipedia.org/wiki/Template:Rail-interchange)
 /// [ric](https://en.wikipedia.org/wiki/Template:Ric)
 /// [rint](https://en.wikipedia.org/wiki/Template:Rint)
-pub(crate) fn render_ric_template(params: &str) -> String {
+fn render_ric_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let named = template_named_params(params);
 
@@ -1690,7 +1690,7 @@ pub(crate) fn render_ric_template(params: &str) -> String {
 
 /// [Line link](https://en.wikipedia.org/wiki/Template:Line_link)
 /// [lnl](https://en.wikipedia.org/wiki/Template:Lnl)
-pub(crate) fn render_lnl_template(params: &str) -> String {
+fn render_lnl_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let named = template_named_params(params);
 
@@ -1749,14 +1749,14 @@ pub(crate) fn render_lnl_template(params: &str) -> String {
 }
 
 /// [GBurl](https://en.wikipedia.org/wiki/Template:GBurl)
-pub(crate) fn render_gburl_template(params: &str) -> String {
+fn render_gburl_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
     render_google_books_url(&named, &positional).unwrap_or_default()
 }
 
 /// [Google books](https://en.wikipedia.org/wiki/Template:Google_books)
-pub(crate) fn render_google_books_template(params: &str) -> String {
+fn render_google_books_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
     let Some(url) = render_google_books_url(&named, &positional) else {
@@ -1809,7 +1809,7 @@ fn render_google_books_url(
 }
 
 /// [usurped](https://en.wikipedia.org/wiki/Template:Usurped)
-pub(crate) fn render_usurped_template(params: &str) -> String {
+fn render_usurped_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -1825,7 +1825,7 @@ pub(crate) fn render_usurped_template(params: &str) -> String {
 /// [br](https://en.wikipedia.org/wiki/Template:Br)
 /// [brk](https://en.wikipedia.org/wiki/Template:Brk)
 /// [crlf](https://en.wikipedia.org/wiki/Template:Crlf)
-pub(crate) fn render_break_template(params: &str) -> String {
+fn render_break_template(params: &str) -> String {
     let n = template_positional_params(params)
         .first()
         .and_then(|val| val.trim().parse::<usize>().ok())
@@ -1834,7 +1834,7 @@ pub(crate) fn render_break_template(params: &str) -> String {
 }
 
 /// [as of](https://en.wikipedia.org/wiki/Template:As_of)
-pub(crate) fn render_as_of_template(params: &str) -> String {
+fn render_as_of_template(params: &str) -> String {
     let named = template_named_params(params);
     if let Some(alt) = template_param(&named, &["alt"]) {
         return render_templates(alt);
@@ -1866,7 +1866,7 @@ pub(crate) fn render_as_of_template(params: &str) -> String {
 }
 
 /// [died-in](https://en.wikipedia.org/wiki/Template:Died-in)
-pub(crate) fn render_died_in_template(params: &str) -> String {
+fn render_died_in_template(params: &str) -> String {
     let date = render_passthrough_template(params);
     if date.trim().is_empty() {
         String::new()
@@ -1875,7 +1875,7 @@ pub(crate) fn render_died_in_template(params: &str) -> String {
     }
 }
 
-pub(crate) fn as_of_date(positional: &[String], date_format: Option<&str>) -> String {
+fn as_of_date(positional: &[String], date_format: Option<&str>) -> String {
     let year = positional.first().map(String::as_str).unwrap_or_default();
     let Some(month) = positional.get(1).map(String::as_str) else {
         return year.to_string();
@@ -1893,7 +1893,7 @@ pub(crate) fn as_of_date(positional: &[String], date_format: Option<&str>) -> St
     }
 }
 
-pub(crate) fn as_of_month_name(month: &str) -> Option<&'static str> {
+fn as_of_month_name(month: &str) -> Option<&'static str> {
     match month.trim().parse::<usize>().ok()? {
         1 => Some("January"),
         2 => Some("February"),
@@ -1911,7 +1911,7 @@ pub(crate) fn as_of_month_name(month: &str) -> Option<&'static str> {
     }
 }
 
-pub(crate) fn template_param_truthy(named: &HashMap<String, String>, keys: &[&str]) -> bool {
+fn template_param_truthy(named: &HashMap<String, String>, keys: &[&str]) -> bool {
     template_param(named, keys).is_some_and(|value| {
         value.eq_ignore_ascii_case("y")
             || value.eq_ignore_ascii_case("yes")
@@ -1923,7 +1923,7 @@ pub(crate) fn template_param_truthy(named: &HashMap<String, String>, keys: &[&st
 /// [Quote box](https://en.wikipedia.org/wiki/Template:Quote_box)
 /// [Quote](https://en.wikipedia.org/wiki/Template:Quote)
 /// [blockquote](https://en.wikipedia.org/wiki/Template:Blockquote)
-pub(crate) fn render_blockquote_template(params: &str) -> String {
+fn render_blockquote_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -1959,7 +1959,7 @@ pub(crate) fn render_blockquote_template(params: &str) -> String {
 
 /// [Poem quote](https://en.wikipedia.org/wiki/Template:Poem_quote)
 /// [poemquote](https://en.wikipedia.org/wiki/Template:Poemquote)
-pub(crate) fn render_poem_quote_template(params: &str) -> String {
+fn render_poem_quote_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -1999,7 +1999,7 @@ pub(crate) fn render_poem_quote_template(params: &str) -> String {
 }
 
 /// [Verse translation](https://en.wikipedia.org/wiki/Template:Verse_translation)
-pub(crate) fn render_verse_translation_template(params: &str) -> String {
+fn render_verse_translation_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -2056,7 +2056,7 @@ pub(crate) fn render_verse_translation_template(params: &str) -> String {
 }
 
 /// [Verse transliteration-translation](https://en.wikipedia.org/wiki/Template:Verse_transliteration-translation)
-pub(crate) fn render_verse_transliteration_translation_template(params: &str) -> String {
+fn render_verse_transliteration_translation_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -2217,7 +2217,7 @@ pub(crate) fn citation_people(named: &HashMap<String, String>, role: PersonRole)
     }
 }
 
-pub(crate) fn person_first_keys(base: &str, index: usize) -> Vec<String> {
+fn person_first_keys(base: &str, index: usize) -> Vec<String> {
     if index == 0 {
         match base {
             "first" => vec!["first".to_string(), "given".to_string()],
@@ -2241,7 +2241,7 @@ pub(crate) fn person_first_keys(base: &str, index: usize) -> Vec<String> {
     }
 }
 
-pub(crate) fn person_last_keys(base: &str, index: usize) -> Vec<String> {
+fn person_last_keys(base: &str, index: usize) -> Vec<String> {
     if index == 0 {
         match base {
             "last" => vec!["last".to_string(), "surname".to_string()],
@@ -2265,7 +2265,7 @@ pub(crate) fn person_last_keys(base: &str, index: usize) -> Vec<String> {
     }
 }
 
-pub(crate) fn person_link_keys(base: &str, index: usize) -> Vec<String> {
+fn person_link_keys(base: &str, index: usize) -> Vec<String> {
     if index == 0 {
         match base {
             "author-link" => vec!["author-link".to_string(), "authorlink".to_string()],
@@ -2328,7 +2328,7 @@ pub(crate) fn template_param_owned(
 }
 
 /// [for timeline](https://en.wikipedia.org/wiki/Template:For_timeline)
-pub(crate) fn render_for_timeline_template(params: &str) -> String {
+fn render_for_timeline_template(params: &str) -> String {
     let articles = template_article_params(params);
 
     match articles.as_slice() {
@@ -2340,7 +2340,7 @@ pub(crate) fn render_for_timeline_template(params: &str) -> String {
 
 /// [legend](https://en.wikipedia.org/wiki/Template:Legend)
 /// [legend0](https://en.wikipedia.org/wiki/Template:Legend0)
-pub(crate) fn render_legend_template(params: &str) -> String {
+fn render_legend_template(params: &str) -> String {
     let params = template_positional_params(params);
     let Some(label) = params.get(1).map(String::as_str) else {
         return String::new();
@@ -2350,7 +2350,7 @@ pub(crate) fn render_legend_template(params: &str) -> String {
 }
 
 /// [numero](https://en.wikipedia.org/wiki/Template:Numero)
-pub(crate) fn render_numero_template(params: &str) -> String {
+fn render_numero_template(params: &str) -> String {
     let number = render_passthrough_template(params);
     if number.trim().is_empty() {
         String::new()
@@ -2360,7 +2360,7 @@ pub(crate) fn render_numero_template(params: &str) -> String {
 }
 
 /// [anl](https://en.wikipedia.org/wiki/Template:Anl)
-pub(crate) fn render_article_link_template(params: &str) -> String {
+fn render_article_link_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(article) = positional
         .first()
@@ -2379,7 +2379,7 @@ pub(crate) fn render_article_link_template(params: &str) -> String {
 }
 
 /// [for](https://en.wikipedia.org/wiki/Template:For)
-pub(crate) fn render_for_template(params: &str) -> String {
+fn render_for_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(topic) = positional
         .first()
@@ -2407,7 +2407,7 @@ pub(crate) fn render_for_template(params: &str) -> String {
 }
 
 /// [excerpt](https://en.wikipedia.org/wiki/Template:Excerpt)
-pub(crate) fn render_excerpt_template(params: &str) -> String {
+fn render_excerpt_template(params: &str) -> String {
     let articles = template_article_params(params);
 
     match articles.as_slice() {
@@ -2419,7 +2419,7 @@ pub(crate) fn render_excerpt_template(params: &str) -> String {
 
 /// [main](https://en.wikipedia.org/wiki/Template:Main)
 /// [Main article](https://en.wikipedia.org/wiki/Template:Main_article)
-pub(crate) fn render_main_template(params: &str) -> String {
+fn render_main_template(params: &str) -> String {
     let articles = template_article_params(params);
 
     match articles.as_slice() {
@@ -2430,7 +2430,7 @@ pub(crate) fn render_main_template(params: &str) -> String {
 }
 
 /// [Main list](https://en.wikipedia.org/wiki/Template:Main_list)
-pub(crate) fn render_main_list_template(params: &str) -> String {
+fn render_main_list_template(params: &str) -> String {
     let named = template_named_params(params);
     let articles = template_article_params(params);
     let more = template_param(&named, &["more"])
@@ -2459,7 +2459,7 @@ pub(crate) fn render_main_list_template(params: &str) -> String {
 }
 
 /// [dts](https://en.wikipedia.org/wiki/Template:Dts)
-pub(crate) fn render_dts_template(params: &str) -> String {
+fn render_dts_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -2551,7 +2551,7 @@ pub(crate) fn render_dts_template(params: &str) -> String {
 
 /// [see also](https://en.wikipedia.org/wiki/Template:See_also)
 /// [also](https://en.wikipedia.org/wiki/Template:Also)
-pub(crate) fn render_see_also_template(params: &str) -> String {
+fn render_see_also_template(params: &str) -> String {
     let articles = template_article_params(params);
 
     if articles.is_empty() {
@@ -2562,7 +2562,7 @@ pub(crate) fn render_see_also_template(params: &str) -> String {
 }
 
 /// [slink](https://en.wikipedia.org/wiki/Template:Slink)
-pub(crate) fn render_section_link_template(params: &str) -> String {
+fn render_section_link_template(params: &str) -> String {
     let params = template_positional_params(params);
     let Some(first) = params.first().map(String::as_str) else {
         return String::new();
@@ -2590,7 +2590,7 @@ pub(crate) fn render_section_link_template(params: &str) -> String {
 }
 
 /// [further](https://en.wikipedia.org/wiki/Template:Further)
-pub(crate) fn render_further_template(params: &str) -> String {
+fn render_further_template(params: &str) -> String {
     let named = template_named_params(params);
     let articles = template_article_params(params);
 
@@ -2608,7 +2608,7 @@ pub(crate) fn render_further_template(params: &str) -> String {
 }
 
 /// [wiktionary](https://en.wikipedia.org/wiki/Template:Wiktionary)
-pub(crate) fn render_wiktionary_template(params: &str) -> String {
+fn render_wiktionary_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -2627,7 +2627,7 @@ pub(crate) fn render_wiktionary_template(params: &str) -> String {
 /// [wikivoyage](https://en.wikipedia.org/wiki/Template:Wikivoyage)
 /// [wikivoyage-inline](https://en.wikipedia.org/wiki/Template:Wikivoyage-inline)
 /// [wikivoyage inline](https://en.wikipedia.org/wiki/Template:Wikivoyage_inline)
-pub(crate) fn render_wikivoyage_template(params: &str) -> String {
+fn render_wikivoyage_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -2644,7 +2644,7 @@ pub(crate) fn render_wikivoyage_template(params: &str) -> String {
 }
 
 /// [wikisource](https://en.wikipedia.org/wiki/Template:Wikisource)
-pub(crate) fn render_wikisource_template(params: &str) -> String {
+fn render_wikisource_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -2661,7 +2661,7 @@ pub(crate) fn render_wikisource_template(params: &str) -> String {
 }
 
 /// [wikibooks](https://en.wikipedia.org/wiki/Template:Wikibooks)
-pub(crate) fn render_wikibooks_template(params: &str) -> String {
+fn render_wikibooks_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
     let book = template_param(&named, &["1"])
@@ -2691,7 +2691,7 @@ pub(crate) fn render_wikibooks_template(params: &str) -> String {
 }
 
 /// [britannica](https://en.wikipedia.org/wiki/Template:Britannica)
-pub(crate) fn render_britannica_template(params: &str) -> String {
+fn render_britannica_template(params: &str) -> String {
     let params = template_positional_params(params);
     let Some(article_id) = params
         .first()
@@ -2714,7 +2714,7 @@ pub(crate) fn render_britannica_template(params: &str) -> String {
 }
 
 /// [official website](https://en.wikipedia.org/wiki/Template:Official_website)
-pub(crate) fn render_official_website_template(params: &str) -> String {
+fn render_official_website_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let named = template_named_params(params);
 
@@ -2737,7 +2737,7 @@ pub(crate) fn render_official_website_template(params: &str) -> String {
 }
 
 /// [url](https://en.wikipedia.org/wiki/Template:Url)
-pub(crate) fn render_url_template(params: &str) -> String {
+fn render_url_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let named = template_named_params(params);
 
@@ -2759,7 +2759,7 @@ pub(crate) fn render_url_template(params: &str) -> String {
 
 /// [osmrelation-inline](https://en.wikipedia.org/wiki/Template:Osmrelation-inline)
 /// [OSM relation](https://en.wikipedia.org/wiki/Template:OSM_relation)
-pub(crate) fn render_openstreetmap_relation_template(params: &str) -> String {
+fn render_openstreetmap_relation_template(params: &str) -> String {
     let params = template_positional_params(params);
     let Some(relation_id) = params.first().map(String::as_str) else {
         return String::new();
@@ -2774,7 +2774,7 @@ pub(crate) fn render_openstreetmap_relation_template(params: &str) -> String {
 
 /// [osmway](https://en.wikipedia.org/wiki/Template:Osmway)
 /// [OSM way](https://en.wikipedia.org/wiki/Template:OSM_way)
-pub(crate) fn render_openstreetmap_way_template(params: &str) -> String {
+fn render_openstreetmap_way_template(params: &str) -> String {
     let params = template_positional_params(params);
     let Some(way_id) = params.first().map(String::as_str) else {
         return String::new();
@@ -2788,7 +2788,7 @@ pub(crate) fn render_openstreetmap_way_template(params: &str) -> String {
 }
 
 /// [webarchive](https://en.wikipedia.org/wiki/Template:Webarchive)
-pub(crate) fn render_webarchive_template(params: &str) -> String {
+fn render_webarchive_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let named = template_named_params(params);
 
@@ -2811,7 +2811,7 @@ pub(crate) fn render_webarchive_template(params: &str) -> String {
     format!("[[official-url:{url}|{label}]]")
 }
 
-pub(crate) fn template_url_value(value: &str) -> Option<&str> {
+fn template_url_value(value: &str) -> Option<&str> {
     let value = value.trim();
     if value.starts_with("http://") || value.starts_with("https://") || value.starts_with("//") {
         Some(value)
@@ -2821,7 +2821,7 @@ pub(crate) fn template_url_value(value: &str) -> Option<&str> {
 }
 
 /// [largest cities](https://en.wikipedia.org/wiki/Template:Largest_cities)
-pub(crate) fn render_largest_cities_template(params: &str) -> String {
+fn render_largest_cities_template(params: &str) -> String {
     let named = template_named_params(params);
     let country = template_param(&named, &["country"])
         .map(render_templates)
@@ -2877,7 +2877,7 @@ pub(crate) fn render_largest_cities_template(params: &str) -> String {
 }
 
 /// [historical populations](https://en.wikipedia.org/wiki/Template:Historical_populations)
-pub(crate) fn render_historical_populations_template(params: &str) -> String {
+fn render_historical_populations_template(params: &str) -> String {
     let entries = historical_population_entries(params);
     if entries.is_empty() {
         return String::new();
@@ -2891,7 +2891,7 @@ pub(crate) fn render_historical_populations_template(params: &str) -> String {
 }
 
 /// [climate chart](https://en.wikipedia.org/wiki/Template:Climate_chart)
-pub(crate) fn render_climate_chart_template(params: &str) -> String {
+fn render_climate_chart_template(params: &str) -> String {
     let params = template_positional_params(params)
         .into_iter()
         .map(|param| render_templates(&param).trim().to_string())
@@ -2930,7 +2930,7 @@ pub(crate) fn render_climate_chart_template(params: &str) -> String {
     )
 }
 
-pub(crate) fn historical_population_entries(params: &str) -> Vec<(String, String)> {
+fn historical_population_entries(params: &str) -> Vec<(String, String)> {
     let values = split_template_params(params)
         .into_iter()
         .filter_map(|param| {
@@ -2963,7 +2963,7 @@ pub(crate) fn historical_population_entries(params: &str) -> Vec<(String, String
         .collect()
 }
 
-pub(crate) fn format_historical_population(value: &str) -> String {
+fn format_historical_population(value: &str) -> String {
     let trimmed = value.trim();
     match trimmed.parse::<i64>() {
         Ok(number) => format_population_number(number),
@@ -2971,7 +2971,7 @@ pub(crate) fn format_historical_population(value: &str) -> String {
     }
 }
 
-pub(crate) fn format_population_number(value: i64) -> String {
+fn format_population_number(value: i64) -> String {
     let digits = value.abs().to_string();
     let grouped = digits
         .as_bytes()
@@ -2988,7 +2988,7 @@ pub(crate) fn format_population_number(value: i64) -> String {
     }
 }
 
-pub(crate) fn render_largest_city_name(city: &str) -> String {
+fn render_largest_city_name(city: &str) -> String {
     let city = render_templates(city).trim().to_string();
     if city.contains("[[") {
         city
@@ -2998,7 +2998,7 @@ pub(crate) fn render_largest_city_name(city: &str) -> String {
 }
 
 /// [sclass](https://en.wikipedia.org/wiki/Template:Sclass)
-pub(crate) fn render_ship_class_template(params: &str) -> String {
+fn render_ship_class_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| render_templates(param.trim()).trim().to_string())
@@ -3044,7 +3044,7 @@ pub(crate) fn render_ship_class_template(params: &str) -> String {
 }
 
 /// [Arrow](https://en.wikipedia.org/wiki/Template:Arrow)
-pub(crate) fn render_arrow_template(params: &str) -> String {
+fn render_arrow_template(params: &str) -> String {
     let params = template_positional_params(params);
     match params
         .first()
@@ -3063,7 +3063,7 @@ pub(crate) fn render_arrow_template(params: &str) -> String {
 }
 
 /// [ROKS](https://en.wikipedia.org/wiki/Template:ROKS)
-pub(crate) fn render_republic_of_korea_ship_template(params: &str) -> String {
+fn render_republic_of_korea_ship_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| render_templates(&param).trim().to_string())
@@ -3091,7 +3091,7 @@ pub(crate) fn render_republic_of_korea_ship_template(params: &str) -> String {
 }
 
 /// [For-multi](https://en.wikipedia.org/wiki/Template:For-multi)
-pub(crate) fn render_for_multi_template(params: &str) -> String {
+fn render_for_multi_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let mut chunks = Vec::new();
     let mut iter = positional.into_iter();
@@ -3162,7 +3162,7 @@ pub(crate) fn render_five_nonbreaking_spaces_template() -> String {
 }
 
 /// [ship](https://en.wikipedia.org/wiki/Template:Ship)
-pub(crate) fn render_generic_ship_template(params: &str) -> String {
+fn render_generic_ship_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(prefix) = positional
         .first()
@@ -3214,7 +3214,7 @@ pub(crate) fn render_generic_ship_template(params: &str) -> String {
 }
 
 /// [Proto](https://en.wikipedia.org/wiki/Template:Proto)
-pub(crate) fn render_proto_template(params: &str) -> String {
+fn render_proto_template(params: &str) -> String {
     let parts = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -3241,7 +3241,7 @@ pub(crate) fn render_proto_template(params: &str) -> String {
 }
 
 /// [chem2](https://en.wikipedia.org/wiki/Template:Chem2)
-pub(crate) fn render_chem2_template(params: &str) -> String {
+fn render_chem2_template(params: &str) -> String {
     let positional = template_positional_params(params);
     if let Some(formula) = positional.first() {
         let re = Regex::new(r"([a-zA-Z])([0-9]+)").unwrap();
@@ -3256,7 +3256,7 @@ pub(crate) fn render_chem2_template(params: &str) -> String {
 }
 
 /// [sup](https://en.wikipedia.org/wiki/Template:Sup)
-pub(crate) fn render_sup_template(params: &str) -> String {
+fn render_sup_template(params: &str) -> String {
     let positional = template_positional_params(params);
     if let Some(text) = positional.first() {
         format!(
@@ -3269,7 +3269,7 @@ pub(crate) fn render_sup_template(params: &str) -> String {
 }
 
 /// [sub](https://en.wikipedia.org/wiki/Template:Sub)
-pub(crate) fn render_sub_template(params: &str) -> String {
+fn render_sub_template(params: &str) -> String {
     let positional = template_positional_params(params);
     if let Some(text) = positional.first() {
         format!(
@@ -3282,7 +3282,7 @@ pub(crate) fn render_sub_template(params: &str) -> String {
 }
 
 /// [su](https://en.wikipedia.org/wiki/Template:Su)
-pub(crate) fn render_su_template(params: &str) -> String {
+fn render_su_template(params: &str) -> String {
     let named = template_named_params(params);
     let p = template_param(&named, &["p"]);
     let b = template_param(&named, &["b"]);
@@ -3302,7 +3302,7 @@ pub(crate) fn render_su_template(params: &str) -> String {
 }
 
 /// [e](https://en.wikipedia.org/wiki/Template:E)
-pub(crate) fn render_e_template(params: &str) -> String {
+fn render_e_template(params: &str) -> String {
     let positional = template_positional_params(params);
     if let Some(power) = positional.first() {
         format!(
@@ -3315,13 +3315,13 @@ pub(crate) fn render_e_template(params: &str) -> String {
 }
 
 /// [mpl](https://en.wikipedia.org/wiki/Template:Mpl)
-pub(crate) fn render_mpl_template(params: &str) -> String {
+fn render_mpl_template(params: &str) -> String {
     let positional = template_positional_params(params);
     positional.join("")
 }
 
 /// [columns list](https://en.wikipedia.org/wiki/Template:Columns_list)
-pub(crate) fn render_columns_list_template(params: &str) -> String {
+fn render_columns_list_template(params: &str) -> String {
     let positional = template_positional_params(params);
     if let Some(content) = positional.first() {
         render_templates(content)
@@ -3331,7 +3331,7 @@ pub(crate) fn render_columns_list_template(params: &str) -> String {
 }
 
 /// [annotated link](https://en.wikipedia.org/wiki/Template:Annotated_link)
-pub(crate) fn render_annotated_link_template(params: &str) -> String {
+fn render_annotated_link_template(params: &str) -> String {
     let positional = template_positional_params(params);
     if let Some(target) = positional.first() {
         format!("[[{}]]", target)
@@ -3342,7 +3342,7 @@ pub(crate) fn render_annotated_link_template(params: &str) -> String {
 
 /// [Dp](https://en.wikipedia.org/wiki/Template:Dp)
 /// [dp](https://en.wikipedia.org/wiki/Template:Dp)
-pub(crate) fn render_dp_template(params: &str) -> String {
+fn render_dp_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(name) = positional.first() else {
         return String::new();
@@ -3364,7 +3364,7 @@ pub(crate) fn render_dp_template(params: &str) -> String {
 
 /// [Visible anchor](https://en.wikipedia.org/wiki/Template:Visible_anchor)
 /// [visible anchor](https://en.wikipedia.org/wiki/Template:Visible_anchor)
-pub(crate) fn render_visible_anchor_template(params: &str) -> String {
+fn render_visible_anchor_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -3391,7 +3391,7 @@ pub(crate) fn render_lagrange_template(point: &str) -> String {
 }
 
 /// [spaces](https://en.wikipedia.org/wiki/Template:Spaces)
-pub(crate) fn render_spaces_template(params: &str) -> String {
+fn render_spaces_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let count = positional
         .first()
@@ -3401,7 +3401,7 @@ pub(crate) fn render_spaces_template(params: &str) -> String {
 }
 
 /// [mpl-](https://en.wikipedia.org/wiki/Template:Mpl-)
-pub(crate) fn render_mpl_dash_template(params: &str) -> String {
+fn render_mpl_dash_template(params: &str) -> String {
     let positional = template_positional_params(params);
     if positional.len() >= 3 {
         let number = &positional[0];
@@ -3420,7 +3420,7 @@ pub(crate) fn render_mpl_dash_template(params: &str) -> String {
 }
 
 /// [chem](https://en.wikipedia.org/wiki/Template:Chem)
-pub(crate) fn render_chem_template(params: &str) -> String {
+fn render_chem_template(params: &str) -> String {
     fn is_charge(s: &str) -> bool {
         if s == "+" || s == "-" {
             return true;
@@ -3456,7 +3456,7 @@ pub(crate) fn render_chem_template(params: &str) -> String {
 }
 
 /// [solar radius](https://en.wikipedia.org/wiki/Template:Solar_radius)
-pub(crate) fn render_solar_radius_template(params: &str) -> String {
+fn render_solar_radius_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let value = positional.first().map(String::as_str).unwrap_or("");
     let symbol = "R__WIKIPEDIA_TO_EPUB_SUB_START__☉__WIKIPEDIA_TO_EPUB_SUB_END__";
@@ -3468,7 +3468,7 @@ pub(crate) fn render_solar_radius_template(params: &str) -> String {
 }
 
 /// [±](https://en.wikipedia.org/wiki/Template:%C2%B1)
-pub(crate) fn render_plus_minus_template(params: &str) -> String {
+fn render_plus_minus_template(params: &str) -> String {
     let positional = template_positional_params(params);
     if positional.is_empty() {
         "±".to_string()
@@ -3478,7 +3478,7 @@ pub(crate) fn render_plus_minus_template(params: &str) -> String {
 }
 
 /// [Collapsible list](https://en.wikipedia.org/wiki/Template:Collapsible_list)
-pub(crate) fn render_collapsible_list_template(params: &str) -> String {
+fn render_collapsible_list_template(params: &str) -> String {
     let named = template_named_params(params);
     let title = template_param(&named, &["title"]);
     let positional = template_positional_params(params);
@@ -3506,7 +3506,7 @@ pub(crate) fn render_collapsible_list_template(params: &str) -> String {
 }
 
 /// [Internet Archive short film](https://en.wikipedia.org/wiki/Template:Internet_Archive_short_film)
-pub(crate) fn render_internet_archive_short_film_template(params: &str) -> String {
+fn render_internet_archive_short_film_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let named = template_named_params(params);
 
@@ -3535,7 +3535,7 @@ pub(crate) fn render_internet_archive_short_film_template(params: &str) -> Strin
 /// [illm](https://en.wikipedia.org/wiki/Template:Illm)
 /// [Interlanguage link](https://en.wikipedia.org/wiki/Template:Interlanguage_link)
 /// [Interlanguage link multi](https://en.wikipedia.org/wiki/Template:Interlanguage_link_multi)
-pub(crate) fn render_interlanguage_link_template(params: &str) -> String {
+fn render_interlanguage_link_template(params: &str) -> String {
     let params = split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -3566,7 +3566,7 @@ pub(crate) fn render_interlanguage_link_template(params: &str) -> String {
 }
 
 /// [reign](https://en.wikipedia.org/wiki/Template:Reign)
-pub(crate) fn render_reign_template(params: &str) -> String {
+fn render_reign_template(params: &str) -> String {
     let mut positional = Vec::new();
     let mut named = HashMap::new();
 
@@ -3645,7 +3645,7 @@ pub(crate) fn render_open_access_template() -> String {
 
 /// [rp](https://en.wikipedia.org/wiki/Template:Rp)
 /// [Reference page](https://en.wikipedia.org/wiki/Template:Reference_page)
-pub(crate) fn render_reference_page_template(params: &str) -> String {
+fn render_reference_page_template(params: &str) -> String {
     let named = template_named_params(params);
 
     if let Some(pages_val) = template_param(&named, &["pages"]) {
@@ -3675,7 +3675,7 @@ pub(crate) fn render_reference_page_template(params: &str) -> String {
     }
 }
 
-pub(crate) fn reign_label(named: &HashMap<String, String>) -> String {
+fn reign_label(named: &HashMap<String, String>) -> String {
     if let Some(label) = named.get("label").filter(|value| !value.trim().is_empty()) {
         return label.trim().to_string();
     }
@@ -3737,7 +3737,7 @@ pub(crate) fn reign_label(named: &HashMap<String, String>) -> String {
     }
 }
 
-pub(crate) fn format_reign_range(start: Option<&str>, end: Option<&str>) -> String {
+fn format_reign_range(start: Option<&str>, end: Option<&str>) -> String {
     let start = start.unwrap_or("").trim();
     let end = end.unwrap_or("").trim();
     let start = if start.is_empty() { "?" } else { start };
@@ -3750,7 +3750,7 @@ pub(crate) fn format_reign_range(start: Option<&str>, end: Option<&str>) -> Stri
     format!("{start}{separator}{end}")
 }
 
-pub(crate) fn template_article_params(params: &str) -> Vec<String> {
+fn template_article_params(params: &str) -> Vec<String> {
     split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
@@ -3758,7 +3758,7 @@ pub(crate) fn template_article_params(params: &str) -> Vec<String> {
         .collect::<Vec<_>>()
 }
 
-pub(crate) fn join_template_articles(articles: &[String]) -> String {
+fn join_template_articles(articles: &[String]) -> String {
     let links = articles
         .iter()
         .map(|article| format!("[[{article}]]"))
@@ -3780,7 +3780,7 @@ pub(crate) fn join_plain_items(items: &[String]) -> String {
     }
 }
 
-pub(crate) fn format_convert_value(value: &str) -> String {
+fn format_convert_value(value: &str) -> String {
     value.trim().replace("&minus;", "−")
 }
 
@@ -3790,7 +3790,7 @@ pub(crate) fn render_awol_template() -> String {
 }
 
 /// [Assassinated](https://en.wikipedia.org/wiki/Template:Assassinated)
-pub(crate) fn render_assassinated_template(params: &str) -> String {
+fn render_assassinated_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
     let link = positional
@@ -3823,7 +3823,7 @@ pub(crate) fn render_died_of_wounds_template() -> String {
 }
 
 /// [Executed](https://en.wikipedia.org/wiki/Template:Executed)
-pub(crate) fn render_executed_template(params: &str) -> String {
+fn render_executed_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let link = positional
         .first()
@@ -3834,7 +3834,7 @@ pub(crate) fn render_executed_template(params: &str) -> String {
 }
 
 /// [KIA](https://en.wikipedia.org/wiki/Template:KIA)
-pub(crate) fn render_kia_template(params: &str) -> String {
+fn render_kia_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
     let link = positional
@@ -3861,7 +3861,7 @@ pub(crate) fn render_kia_template(params: &str) -> String {
 }
 
 /// [KIA2](https://en.wikipedia.org/wiki/Template:KIA2)
-pub(crate) fn render_kia2_template(_params: &str) -> String {
+fn render_kia2_template(_params: &str) -> String {
     render_kia_template("alt=yes")
 }
 
@@ -3871,7 +3871,7 @@ pub(crate) fn render_mia_template() -> String {
 }
 
 /// [Natural Causes](https://en.wikipedia.org/wiki/Template:Natural_Causes)
-pub(crate) fn render_natural_causes_template(params: &str) -> String {
+fn render_natural_causes_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
     let link = positional
@@ -3913,7 +3913,7 @@ pub(crate) fn render_pow_template() -> String {
 }
 
 /// [Suicide](https://en.wikipedia.org/wiki/Template:Suicide)
-pub(crate) fn render_suicide_template(params: &str) -> String {
+fn render_suicide_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
     let link = positional
@@ -3941,7 +3941,7 @@ pub(crate) fn render_suicide_template(params: &str) -> String {
 }
 
 /// [Surrendered](https://en.wikipedia.org/wiki/Template:Surrendered)
-pub(crate) fn render_surrendered_template(params: &str) -> String {
+fn render_surrendered_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let link = positional
         .first()
@@ -3952,7 +3952,7 @@ pub(crate) fn render_surrendered_template(params: &str) -> String {
 }
 
 /// [Turncoat](https://en.wikipedia.org/wiki/Template:Turncoat)
-pub(crate) fn render_turncoat_template(params: &str) -> String {
+fn render_turncoat_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let link = positional
         .first()
@@ -3968,7 +3968,7 @@ pub(crate) fn render_wia_template() -> String {
 }
 
 /// [NDLDC](https://en.wikipedia.org/wiki/Template:NDLDC)
-pub(crate) fn render_ndldc_template(params: &str) -> String {
+fn render_ndldc_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -4036,7 +4036,7 @@ pub(crate) fn render_ndldc_template(params: &str) -> String {
 }
 
 /// [Station](https://en.wikipedia.org/wiki/Template:Station)
-pub(crate) fn render_station_template(params: &str) -> String {
+fn render_station_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -4150,7 +4150,7 @@ fn lookup_track_gauge(normalized: &str) -> Option<TrackGaugeData> {
 
 /// [Track gauge](https://en.wikipedia.org/wiki/Template:Track_gauge)
 /// [RailGauge](https://en.wikipedia.org/wiki/Template:Track_gauge)
-pub(crate) fn render_track_gauge_template(params: &str) -> String {
+fn render_track_gauge_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -4190,7 +4190,7 @@ pub(crate) fn render_track_gauge_template(params: &str) -> String {
 }
 
 /// [JPN](https://en.wikipedia.org/wiki/Template:JPN)
-pub(crate) fn render_jpn_template(params: &str) -> String {
+fn render_jpn_template(params: &str) -> String {
     let named = template_named_params(params);
     if let Some(name) = template_param(&named, &["name"])
         .map(|s| s.trim())
@@ -4203,19 +4203,19 @@ pub(crate) fn render_jpn_template(params: &str) -> String {
 }
 
 /// [flagdeco](https://en.wikipedia.org/wiki/Template:Flagdeco)
-pub(crate) fn render_flagdeco_template(_params: &str) -> String {
+fn render_flagdeco_template(_params: &str) -> String {
     String::new()
 }
 
 /// [pprime](https://en.wikipedia.org/wiki/Template:Pprime)
-pub(crate) fn render_pprime_template(params: &str) -> String {
+fn render_pprime_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let first = positional.first().cloned().unwrap_or_default();
     format!("{}″", first.trim())
 }
 
 /// [RA](https://en.wikipedia.org/wiki/Template:Right_ascension)
-pub(crate) fn render_ra_template(params: &str) -> String {
+fn render_ra_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let mut parts = Vec::new();
     if let Some(h) = positional.first()
@@ -4246,7 +4246,7 @@ pub(crate) fn render_ra_template(params: &str) -> String {
 }
 
 /// [Hyphen](https://en.wikipedia.org/wiki/Template:Hyphen)
-pub(crate) fn render_hyphen_template(_params: &str) -> String {
+fn render_hyphen_template(_params: &str) -> String {
     "-".to_string()
 }
 

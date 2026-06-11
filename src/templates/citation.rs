@@ -7,7 +7,7 @@ use std::collections::HashMap;
 use crate::types::{DispatchTable, TemplateHandler};
 
 /// [citation needed span](https://en.wikipedia.org/wiki/Template:Citation_needed_span)
-pub(crate) fn render_citation_needed_span_template(params: &str) -> String {
+fn render_citation_needed_span_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -21,7 +21,7 @@ pub(crate) fn render_citation_needed_span_template(params: &str) -> String {
 }
 
 /// [cite web](https://en.wikipedia.org/wiki/Template:Cite_web)
-pub(crate) fn render_cite_web_template(params: &str) -> String {
+fn render_cite_web_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
 
@@ -65,7 +65,7 @@ pub(crate) fn render_cite_web_template(params: &str) -> String {
 }
 
 /// [cite book](https://en.wikipedia.org/wiki/Template:Cite_book)
-pub(crate) fn render_cite_book_template(params: &str) -> String {
+fn render_cite_book_template(params: &str) -> String {
     render_citation_template(params)
 }
 
@@ -73,7 +73,7 @@ pub(crate) fn render_cite_book_template(params: &str) -> String {
 /// [cite magazine](https://en.wikipedia.org/wiki/Template:Cite_magazine)
 /// [cite news](https://en.wikipedia.org/wiki/Template:Cite_news)
 /// [cite encyclopedia](https://en.wikipedia.org/wiki/Template:Cite_encyclopedia)
-pub(crate) fn render_cite_journal_template(params: &str) -> String {
+fn render_cite_journal_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
 
@@ -142,7 +142,7 @@ pub(crate) fn render_cite_journal_template(params: &str) -> String {
 }
 
 /// [cite report](https://en.wikipedia.org/wiki/Template:Cite_report)
-pub(crate) fn render_cite_report_template(params: &str) -> String {
+fn render_cite_report_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
 
@@ -183,7 +183,7 @@ pub(crate) fn render_cite_report_template(params: &str) -> String {
 }
 
 /// [cite ECCP](https://en.wikipedia.org/wiki/Template:Cite_ECCP)
-pub(crate) fn render_cite_eccp_template(params: &str) -> String {
+fn render_cite_eccp_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
 
@@ -210,7 +210,7 @@ pub(crate) fn render_cite_eccp_template(params: &str) -> String {
 }
 
 /// [cite gvp](https://en.wikipedia.org/wiki/Template:Cite_gvp)
-pub(crate) fn render_cite_gvp_template(params: &str) -> String {
+fn render_cite_gvp_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -242,7 +242,7 @@ pub(crate) fn render_cite_gvp_template(params: &str) -> String {
     parts.join(". ")
 }
 
-pub(crate) fn format_harvard_citation(params: &str) -> String {
+fn format_harvard_citation(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params)
         .into_iter()
@@ -301,7 +301,7 @@ pub(crate) fn format_harvard_citation(params: &str) -> String {
 
 /// [harvp](https://en.wikipedia.org/wiki/Template:Harvp)
 /// [harv](https://en.wikipedia.org/wiki/Template:Harv)
-pub(crate) fn render_harvp_template(params: &str) -> String {
+fn render_harvp_template(params: &str) -> String {
     let formatted = format_harvard_citation(params);
     if formatted.is_empty() {
         String::new()
@@ -311,12 +311,12 @@ pub(crate) fn render_harvp_template(params: &str) -> String {
 }
 
 /// [harvnb](https://en.wikipedia.org/wiki/Template:Harvnb)
-pub(crate) fn render_harvnb_template(params: &str) -> String {
+fn render_harvnb_template(params: &str) -> String {
     format_harvard_citation(params)
 }
 
 /// [harvtxt](https://en.wikipedia.org/wiki/Template:Harvtxt)
-pub(crate) fn render_harvtxt_template(params: &str) -> String {
+fn render_harvtxt_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params)
         .into_iter()
@@ -374,7 +374,7 @@ pub(crate) fn render_harvtxt_template(params: &str) -> String {
 }
 
 /// [Cite NSRW](https://en.wikipedia.org/wiki/Template:Cite_NSRW)
-pub(crate) fn render_cite_nsrw_template(params: &str) -> String {
+fn render_cite_nsrw_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
     let title = template_param(&named, &["wstitle", "title"])
@@ -396,7 +396,7 @@ pub(crate) fn render_cite_nsrw_template(params: &str) -> String {
 /// [cite conference](https://en.wikipedia.org/wiki/Template:Cite_conference)
 /// [citation](https://en.wikipedia.org/wiki/Template:Citation)
 /// [cite thesis](https://en.wikipedia.org/wiki/Template:Cite_thesis)
-pub(crate) fn render_citation_template(params: &str) -> String {
+fn render_citation_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
 
@@ -467,7 +467,7 @@ pub(crate) fn render_citation_template(params: &str) -> String {
 }
 
 /// [harvc](https://en.wikipedia.org/wiki/Template:Harvc)
-pub(crate) fn render_harvc_template(params: &str) -> String {
+fn render_harvc_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
 
@@ -507,7 +507,7 @@ pub(crate) fn render_harvc_template(params: &str) -> String {
     parts.join(". ")
 }
 
-pub(crate) fn harvc_source(named: &HashMap<String, String>) -> String {
+fn harvc_source(named: &HashMap<String, String>) -> String {
     let source_authors = (1..=4)
         .filter_map(|index| {
             let keys = if index == 1 {
@@ -532,7 +532,7 @@ pub(crate) fn harvc_source(named: &HashMap<String, String>) -> String {
 }
 
 /// [Cite EB1911](https://en.wikipedia.org/wiki/Template:Cite_EB1911)
-pub(crate) fn render_cite_eb1911_template(params: &str) -> String {
+fn render_cite_eb1911_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
     let title = template_param(&named, &["wstitle", "title"])
@@ -552,7 +552,7 @@ pub(crate) fn render_cite_eb1911_template(params: &str) -> String {
 }
 
 /// [cite dictionary](https://en.wikipedia.org/wiki/Template:Cite_dictionary)
-pub(crate) fn render_cite_dictionary_template(params: &str) -> String {
+fn render_cite_dictionary_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
 
@@ -597,7 +597,7 @@ pub(crate) fn render_cite_dictionary_template(params: &str) -> String {
 }
 
 /// [cite press release](https://en.wikipedia.org/wiki/Template:Cite_press_release)
-pub(crate) fn render_cite_press_release_template(params: &str) -> String {
+fn render_cite_press_release_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
 
@@ -699,7 +699,7 @@ fn parse_date_to_yymmdd(date_str: &str) -> Option<String> {
 }
 
 /// [Cite APOD](https://en.wikipedia.org/wiki/Template:Cite_APOD)
-pub(crate) fn render_cite_apod_template(params: &str) -> String {
+fn render_cite_apod_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
 
@@ -730,7 +730,7 @@ pub(crate) fn render_cite_apod_template(params: &str) -> String {
 }
 
 /// [Cite OED](https://en.wikipedia.org/wiki/Template:Cite_OED)
-pub(crate) fn render_cite_oed_template(params: &str) -> String {
+fn render_cite_oed_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -784,7 +784,7 @@ pub(crate) fn render_cite_oed_template(params: &str) -> String {
 }
 
 /// [Cite AV media](https://en.wikipedia.org/wiki/Template:Cite_AV_media)
-pub(crate) fn render_cite_av_media_template(params: &str) -> String {
+fn render_cite_av_media_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
 
@@ -832,7 +832,7 @@ pub(crate) fn render_cite_av_media_template(params: &str) -> String {
 }
 
 /// [Cite American Heritage Dictionary](https://en.wikipedia.org/wiki/Template:Cite_American_Heritage_Dictionary)
-pub(crate) fn render_cite_american_heritage_dictionary_template(params: &str) -> String {
+fn render_cite_american_heritage_dictionary_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -867,7 +867,7 @@ pub(crate) fn render_cite_american_heritage_dictionary_template(params: &str) ->
 }
 
 /// [Cite wikisource](https://en.wikipedia.org/wiki/Template:Cite_wikisource)
-pub(crate) fn render_cite_wikisource_template(params: &str) -> String {
+fn render_cite_wikisource_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -924,7 +924,7 @@ pub(crate) fn render_cite_wikisource_template(params: &str) -> String {
 }
 
 /// [Cite CIA World Factbook](https://en.wikipedia.org/wiki/Template:Cite_CIA_World_Factbook)
-pub(crate) fn render_cite_cia_world_factbook_template(params: &str) -> String {
+fn render_cite_cia_world_factbook_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -972,7 +972,7 @@ pub(crate) fn render_cite_cia_world_factbook_template(params: &str) -> String {
 }
 
 /// [Cite letter](https://en.wikipedia.org/wiki/Template:Cite_letter)
-pub(crate) fn render_cite_letter_template(params: &str) -> String {
+fn render_cite_letter_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
 
@@ -1012,7 +1012,7 @@ pub(crate) fn render_cite_letter_template(params: &str) -> String {
 }
 
 /// [Cite arXiv](https://en.wikipedia.org/wiki/Template:Cite_arXiv)
-pub(crate) fn render_cite_arxiv_template(params: &str) -> String {
+fn render_cite_arxiv_template(params: &str) -> String {
     let named = template_named_params(params);
     let mut parts = Vec::new();
 
@@ -1055,7 +1055,7 @@ pub(crate) fn render_cite_arxiv_template(params: &str) -> String {
 }
 
 /// [Cite Q](https://en.wikipedia.org/wiki/Template:Cite_Q)
-pub(crate) fn render_cite_q_template(params: &str) -> String {
+fn render_cite_q_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -1082,7 +1082,7 @@ pub(crate) fn render_cite_q_template(params: &str) -> String {
 }
 
 /// [cite merriam-webster](https://en.wikipedia.org/wiki/Template:Cite_Merriam-Webster)
-pub(crate) fn render_cite_merriam_webster_template(params: &str) -> String {
+fn render_cite_merriam_webster_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
