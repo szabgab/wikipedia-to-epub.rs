@@ -7,6 +7,7 @@ use std::collections::HashMap;
 
 use cached::macros::cached;
 
+use crate::types::{DispatchTable, EmptyDispatchTable, EmptyHandler, TemplateHandler};
 pub(crate) use formatting::{
     PersonRole, citation_people, format_number_with_commas, join_plain_items,
     template_named_params, template_param, template_param_owned, template_positional_params,
@@ -189,9 +190,6 @@ pub(crate) fn render_template(content: &str) -> String {
     if fixed.contains_key(&lower.as_str()) {
         return fixed.get(lower.as_str()).unwrap().to_string();
     }
-
-    type TemplateHandler = fn(&str) -> String;
-    type DispatchTable = HashMap<&'static str, TemplateHandler>;
 
     let lookup: DispatchTable = HashMap::from([
         ("korean", render_korean_template as TemplateHandler),
@@ -703,9 +701,6 @@ pub(crate) fn render_template(content: &str) -> String {
     if lookup.contains_key(&lower.as_str()) {
         return lookup.get(lower.as_str()).unwrap()(params);
     }
-
-    type EmptyHandler = fn() -> String;
-    type EmptyDispatchTable = HashMap<&'static str, EmptyHandler>;
 
     let empty_lookup: EmptyDispatchTable = HashMap::from([
         ("awol", render_awol_template as EmptyHandler),

@@ -18,6 +18,7 @@ pub(crate) mod epub;
 pub(crate) mod error;
 pub(crate) mod image;
 pub(crate) mod templates;
+mod types;
 
 pub(crate) use cache::{
     DownloadCache, DownloadStats, FixturePageSource, PageResponse, PageSource,
