@@ -4,6 +4,7 @@ pub mod formatting;
 pub mod lang;
 
 use std::collections::HashMap;
+use std::hash::Hash;
 
 pub(crate) use formatting::{
     PersonRole, citation_people, format_number_with_commas, join_plain_items,
@@ -135,6 +136,31 @@ pub(crate) fn matching_template_end(text: &str, start: usize) -> Option<usize> {
     None
 }
 
+fn get_fixed() -> HashMap<&'static str, &'static str> {
+    HashMap::from([
+        ("'\"", "'\""),
+        ("\"'", "\"'"),
+        ("!", "|"),
+        ("nbsp", " "),
+        ("snd", " – "),
+        ("dash", " – "),
+        ("snds", " – "),
+        ("mdash", "—"),
+        ("ndash", "–"),
+        ("endash", "–"),
+        ("nbndash", "–"),
+        ("nbnd", "–"),
+        ("en dash", "–"),
+        (
+            "singular",
+            "__WIKIPEDIA_TO_EPUB_ABBR_START__singular form__WIKIPEDIA_TO_EPUB_ABBR_VALUE__sg.__WIKIPEDIA_TO_EPUB_ABBR_END__",
+        ),
+        ("pb", "__WIKIPEDIA_TO_EPUB_PB__"),
+        ("okina", "ʻ"),
+        ("'s", "'s"),
+    ])
+}
+
 /// [nbsp](https://en.wikipedia.org/wiki/Template:Nbsp)
 ///
 /// [snd](https://en.wikipedia.org/wiki/Template:Snd)
@@ -156,29 +182,7 @@ pub(crate) fn render_template(content: &str) -> String {
     let template_normalized = template.trim().replace('_', " ");
     let template = template_normalized.as_str();
 
-    let fixed: HashMap<&str, &str> = HashMap::from([
-        ("'\"", "'\""),
-        ("\"'", "\"'"),
-        ("!", "|"),
-        ("nbsp", " "),
-        ("snd", " – "),
-        ("dash", " – "),
-        ("snds", " – "),
-        ("mdash", "—"),
-        ("ndash", "–"),
-        ("endash", "–"),
-        ("nbndash", "–"),
-        ("nbnd", "–"),
-        ("en dash", "–"),
-        (
-            "singular",
-            "__WIKIPEDIA_TO_EPUB_ABBR_START__singular form__WIKIPEDIA_TO_EPUB_ABBR_VALUE__sg.__WIKIPEDIA_TO_EPUB_ABBR_END__",
-        ),
-        ("pb", "__WIKIPEDIA_TO_EPUB_PB__"),
-        ("okina", "ʻ"),
-        ("'s", "'s"),
-    ]);
-
+    let fixed = get_fixed();
     let lower = template.to_lowercase();
     if fixed.contains_key(&lower.as_str()) {
         return fixed.get(lower.as_str()).unwrap().to_string();
