@@ -4,7 +4,8 @@ pub mod formatting;
 pub mod lang;
 
 use std::collections::HashMap;
-use std::hash::Hash;
+
+use cached::macros::cached;
 
 pub(crate) use formatting::{
     PersonRole, citation_people, format_number_with_commas, join_plain_items,
@@ -136,6 +137,7 @@ pub(crate) fn matching_template_end(text: &str, start: usize) -> Option<usize> {
     None
 }
 
+#[cached]
 fn get_fixed() -> HashMap<&'static str, &'static str> {
     HashMap::from([
         ("'\"", "'\""),
