@@ -11,6 +11,7 @@ sub main {
     #print Dumper $pages;
     create_yaml_config_file($lang, $pages);
     execute('cargo', 'run', '--', '--logfile', "all-$lang.log", '--log', 'debug', "examples/all-$lang.yaml");
+    #, '--local', 'pages'
 }
 
 sub get_pages {
@@ -34,7 +35,7 @@ sub create_yaml_config_file {
         $row =~ s/^  title: .*/  title: All $lang/;
         $row =~ s/^id: .*/id: all-$lang-fixed-id/;
         $row =~ s/^  language: .*/  language: $lang/;
-        $row =~ s/^images .*/images: true/;
+        $row =~ s/^images: .*/images: true/;
         $row =~ s/^output-file: .*/output-file: all-$lang.epub/;
         push @content, $row;
         if ($row =~ /^articles:/) {
