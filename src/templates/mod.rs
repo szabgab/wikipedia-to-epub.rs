@@ -180,18 +180,9 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
     ])
 }
 
-pub(crate) fn render_template(content: &str) -> String {
-    let (template, params) = split_template_name(content);
-    let template_normalized = template.trim().replace('_', " ");
-    let template = template_normalized.as_str();
-
-    let fixed = get_fixed();
-    let lower = template.to_lowercase();
-    if fixed.contains_key(&lower.as_str()) {
-        return fixed.get(lower.as_str()).unwrap().to_string();
-    }
-
-    let lookup: DispatchTable = HashMap::from([
+#[cached]
+fn get_dispatch_table() -> DispatchTable {
+    HashMap::from([
         ("korean", render_korean_template as TemplateHandler),
         ("korean/auto", render_korean_template as TemplateHandler),
         ("ko", render_korean_template as TemplateHandler),
@@ -696,8 +687,21 @@ pub(crate) fn render_template(content: &str) -> String {
         ),
         ("hlist", render_hlist_template as TemplateHandler),
         ("flatlist", render_hlist_template as TemplateHandler),
-    ]);
+    ])
+}
 
+pub(crate) fn render_template(content: &str) -> String {
+    let (template, params) = split_template_name(content);
+    let template_normalized = template.trim().replace('_', " ");
+    let template = template_normalized.as_str();
+
+    let fixed = get_fixed();
+    let lower = template.to_lowercase();
+    if fixed.contains_key(&lower.as_str()) {
+        return fixed.get(lower.as_str()).unwrap().to_string();
+    }
+
+    let lookup = get_dispatch_table();
     if lookup.contains_key(&lower.as_str()) {
         return lookup.get(lower.as_str()).unwrap()(params);
     }
