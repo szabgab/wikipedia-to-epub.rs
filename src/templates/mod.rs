@@ -137,6 +137,22 @@ pub(crate) fn matching_template_end(text: &str, start: usize) -> Option<usize> {
     None
 }
 
+/// [nbsp](https://en.wikipedia.org/wiki/Template:Nbsp)
+///
+/// [snd](https://en.wikipedia.org/wiki/Template:Snd)
+/// [dash](https://en.wikipedia.org/wiki/Template:Dash)
+/// [snds](https://en.wikipedia.org/wiki/Template:Snds)
+///
+/// [mdash](https://en.wikipedia.org/wiki/Template:Mdash)
+///
+/// [ndash](https://en.wikipedia.org/wiki/Template:Ndash)
+/// [endash](https://en.wikipedia.org/wiki/Template:Endash)
+/// [nbndash](https://en.wikipedia.org/wiki/Template:Nbndash)
+/// [nbnd](https://en.wikipedia.org/wiki/Template:Nbnd)
+/// [en dash](https://en.wikipedia.org/wiki/Template:En_dash)
+/// [En dash](https://en.wikipedia.org/wiki/Template:En_dash)
+///
+/// [singular](https://en.wikipedia.org/wiki/Template:Singular)
 #[cached]
 fn get_fixed() -> HashMap<&'static str, &'static str> {
     HashMap::from([
@@ -163,22 +179,6 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
     ])
 }
 
-/// [nbsp](https://en.wikipedia.org/wiki/Template:Nbsp)
-///
-/// [snd](https://en.wikipedia.org/wiki/Template:Snd)
-/// [dash](https://en.wikipedia.org/wiki/Template:Dash)
-/// [snds](https://en.wikipedia.org/wiki/Template:Snds)
-///
-/// [mdash](https://en.wikipedia.org/wiki/Template:Mdash)
-///
-/// [ndash](https://en.wikipedia.org/wiki/Template:Ndash)
-/// [endash](https://en.wikipedia.org/wiki/Template:Endash)
-/// [nbndash](https://en.wikipedia.org/wiki/Template:Nbndash)
-/// [nbnd](https://en.wikipedia.org/wiki/Template:Nbnd)
-/// [en dash](https://en.wikipedia.org/wiki/Template:En_dash)
-/// [En dash](https://en.wikipedia.org/wiki/Template:En_dash)
-///
-/// [singular](https://en.wikipedia.org/wiki/Template:Singular)
 pub(crate) fn render_template(content: &str) -> String {
     let (template, params) = split_template_name(content);
     let template_normalized = template.trim().replace('_', " ");
