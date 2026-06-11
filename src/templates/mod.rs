@@ -452,6 +452,7 @@ pub(crate) fn render_template(content: &str) -> String {
             render_inflation_year_template as TemplateHandler,
         ),
         ("stack", render_passthrough_template as TemplateHandler),
+        ("longitem", render_passthrough_template as TemplateHandler),
         ("ship", render_generic_ship_template as TemplateHandler),
         ("proto", render_proto_template as TemplateHandler),
         (
@@ -826,6 +827,7 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("WIA")
         || template.eq_ignore_ascii_case("frac")
         || template.eq_ignore_ascii_case("fraction")
+        || template.eq_ignore_ascii_case("longitem")
         || template.eq_ignore_ascii_case("floruit")
         || template.eq_ignore_ascii_case("coord")
         || template.eq_ignore_ascii_case("rp")

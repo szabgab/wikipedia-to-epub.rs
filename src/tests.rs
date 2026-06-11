@@ -5085,6 +5085,17 @@ fn render_wikitext_formats_cite_eb1911_template() {
 }
 
 #[test]
+fn render_wikitext_formats_longitem_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "A{{longitem|B <br /> C}}D",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<p>AB CD</p>"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_spaces_template() {
     let rendered = render_wikitext("Sample", "A{{spaces|3}}B", &InternalLinks::new(), "en");
     assert!(rendered.contains("<p>A B</p>"), "{rendered}");

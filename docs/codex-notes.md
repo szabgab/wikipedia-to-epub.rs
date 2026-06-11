@@ -1,5 +1,28 @@
 # Codex Session Notes
 
+## 2026-06-11 Support Longitem Template
+
+### Summary
+Added support for the `longitem` Wikipedia template. It acts as a passthrough wrapper for its content.
+
+### Decisions Made
+- Registered `longitem` in the template dispatch table mapping to `render_passthrough_template` in [src/templates/mod.rs](file:///opt/src/templates/mod.rs).
+- Added `longitem` to `is_handled_template_name` in [src/templates/mod.rs](file:///opt/src/templates/mod.rs).
+- Added `render_wikitext_formats_longitem_template` unit test in [src/tests.rs](file:///opt/src/tests.rs).
+- Regenerated the expected integration test fixtures for the `planets` book because the `Sun` article uses `longitem` in its infobox and now correctly renders its labels rather than skipping them.
+- Updated [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) and sorted the template CSV files using `./sort.sh`.
+
+### Files Changed
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- `src/navigations.csv`, `src/silent.csv` [MODIFY]
+- `expected/planets/OEBPS/Sun.xhtml` [MODIFY]
+
+### Tests Run
+- `cargo test` (All 276 unit tests and 34 integration tests passed successfully)
+- `cargo fmt` and `cargo clippy --all-targets -- -D warnings` (Clean)
+
 ## 2026-06-11 Support New Citation Templates
 
 ### Summary
