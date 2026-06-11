@@ -4199,3 +4199,51 @@ pub(crate) fn render_jpn_template(params: &str) -> String {
         "🇯🇵 [[Japan]]".to_string()
     }
 }
+
+/// [flagdeco](https://en.wikipedia.org/wiki/Template:Flagdeco)
+pub(crate) fn render_flagdeco_template(_params: &str) -> String {
+    String::new()
+}
+
+/// [pprime](https://en.wikipedia.org/wiki/Template:Pprime)
+pub(crate) fn render_pprime_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let first = positional.first().cloned().unwrap_or_default();
+    format!("{}″", first.trim())
+}
+
+/// [RA](https://en.wikipedia.org/wiki/Template:Right_ascension)
+pub(crate) fn render_ra_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let mut parts = Vec::new();
+    if let Some(h) = positional.first()
+        && !h.trim().is_empty()
+    {
+        parts.push(format!(
+            "{}__WIKIPEDIA_TO_EPUB_SUP_START__h__WIKIPEDIA_TO_EPUB_SUP_END__",
+            h.trim()
+        ));
+    }
+    if let Some(m) = positional.get(1)
+        && !m.trim().is_empty()
+    {
+        parts.push(format!(
+            "{}__WIKIPEDIA_TO_EPUB_SUP_START__m__WIKIPEDIA_TO_EPUB_SUP_END__",
+            m.trim()
+        ));
+    }
+    if let Some(s) = positional.get(2)
+        && !s.trim().is_empty()
+    {
+        parts.push(format!(
+            "{}__WIKIPEDIA_TO_EPUB_SUP_START__s__WIKIPEDIA_TO_EPUB_SUP_END__",
+            s.trim()
+        ));
+    }
+    parts.join(" ")
+}
+
+/// [Hyphen](https://en.wikipedia.org/wiki/Template:Hyphen)
+pub(crate) fn render_hyphen_template(_params: &str) -> String {
+    "-".to_string()
+}

@@ -244,6 +244,14 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{nbndash}}` (or `{{nbnd}}`) renders a non-breaking en-dash: `–`
 * `{{RouteBox|JY|Yamanote Line|#80c241|white}}` renders a route box badge with colored background and text wrapping a wikilink to the route: `<span style="background-color: #80c241; color: white; ...">[[Yamanote Line|JY]]</span>`
 * `{{plainlist|1=* Item}}` renders as a standard plain list without bullet styling
+* `{{indented plainlist|1=* Item}}` creates an unbulleted list (wrapped identically to `{{plainlist}}`)
+* `{{bulleted list|Item 1|Item 2}}` (and its alias `{{blist}}`) renders bulleted list items
+* `{{flagdeco|United Nations}}` renders as an empty string (silent placeholder for decorative flags)
+* `{{pprime|9.7}}` displays a double prime symbol (″) after the given text (e.g. `9.7″`)
+* `{{RA|18|11|2}}` formats astronomical Right Ascension coordinates (e.g. `18<sup>h</sup> 11<sup>m</sup> 2<sup>s</sup>`)
+* `{{MW|Venusian}}` (and `{{Cite Merriam-Webster}}`) formats a dictionary citation referencing Merriam-Webster
+* `{{Hyphen}}` explicitly renders a standard hyphen-minus `-` character
+* `{{native phrase|ko|渤海}}` (and `{{native name}}`) displays a term in its native language followed by its language name in parentheses (e.g. *渤海* (Korean))
 
 * `{{harv|Davis|1999}}` and `{{harvnb|Davis|1999}}` render as formatted inline Harvard citations: `(Davis 1999)` and `Davis 1999`
 * `{{Collapsible list|title=Title|Item A|Item B}}` renders a title followed by bulleted items on newlines

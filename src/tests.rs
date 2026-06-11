@@ -5096,6 +5096,110 @@ fn render_wikitext_formats_longitem_template() {
 }
 
 #[test]
+fn render_wikitext_formats_flagdeco_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "A{{flagdeco|United Nations}}B",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<p>AB</p>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_pprime_template() {
+    let rendered = render_wikitext("Sample", "A{{pprime|9.7}}B", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<p>A9.7″B</p>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_ra_template() {
+    let rendered = render_wikitext("Sample", "A{{RA|18|11|2}}B", &InternalLinks::new(), "en");
+    assert!(
+        rendered.contains("<p>A18<sup>h</sup> 11<sup>m</sup> 2<sup>s</sup>B</p>"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_mw_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "A{{MW|Venusian|access-date=2026-06-11}}B",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("href=\"https://www.merriam-webster.com/dictionary/Venusian\""),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains("<em>Merriam-Webster.com Dictionary</em>"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("Retrieved 2026-06-11"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_indented_plainlist_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{indented plainlist|* Item 1\n* Item 2}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<li>Item 1</li>"), "{rendered}");
+    assert!(rendered.contains("<li>Item 2</li>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_bulleted_list_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{bulleted list|Item 1|Item 2}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<li>Item 1</li>"), "{rendered}");
+    assert!(rendered.contains("<li>Item 2</li>"), "{rendered}");
+
+    let rendered2 = render_wikitext(
+        "Sample",
+        "{{blist|Item X|Item Y}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered2.contains("<li>Item X</li>"), "{rendered2}");
+    assert!(rendered2.contains("<li>Item Y</li>"), "{rendered2}");
+}
+
+#[test]
+fn render_wikitext_formats_hyphen_template() {
+    let rendered = render_wikitext("Sample", "A{{Hyphen}}B", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<p>A-B</p>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_native_phrase_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "A{{native phrase|ko|渤海}}B",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<em>渤海</em> (Korean)"), "{rendered}");
+
+    let rendered2 = render_wikitext(
+        "Sample",
+        "A{{native name|ko|高句麗|paren=omit}}B",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered2.contains("<em>高句麗</em>"), "{rendered2}");
+    assert!(!rendered2.contains("(Korean)"), "{rendered2}");
+}
+
+#[test]
 fn render_wikitext_formats_spaces_template() {
     let rendered = render_wikitext("Sample", "A{{spaces|3}}B", &InternalLinks::new(), "en");
     assert!(rendered.contains("<p>A B</p>"), "{rendered}");

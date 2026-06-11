@@ -1,5 +1,40 @@
 # Codex Session Notes
 
+## 2026-06-11 Support Additional Formatting, Citation, and Language Templates
+
+### Summary
+Added support for 8 additional Wikipedia templates:
+1. `flagdeco`: Silent placeholder template for decorative flags (renders empty string).
+2. `pprime`: Renders a double prime symbol (″) after the given text.
+3. `RA`: Formats Right Ascension coordinates with superscript hour, minute, and second tags using superscript markers (`__WIKIPEDIA_TO_EPUB_SUP_START__`, etc.).
+4. `MW` / `Cite Merriam-Webster`: Formats online Merriam-Webster dictionary citations (supporting learners and medical dictionary types) with official-url formatting.
+5. `indented plainlist`: Standard unbulleted list (wrapped identically to `plainlist`).
+6. `bulleted list` / `blist`: Standard bulleted list yielding bulleted items.
+7. `Hyphen`: Renders a standard hyphen `-` character.
+8. `native phrase` / `native name`: Formats a term in its native language followed by its parenthesized language name.
+
+### Decisions Made
+- Implemented and registered the 8 new template handlers in [src/templates/mod.rs](file:///opt/src/templates/mod.rs), [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs), [src/templates/citation.rs](file:///opt/src/templates/citation.rs), and [src/templates/lang.rs](file:///opt/src/templates/lang.rs).
+- Added comprehensive unit tests for each new template in [src/tests.rs](file:///opt/src/tests.rs).
+- Regenerated the expected integration test fixtures for affected books (`parhae`, `north-korea`, `south-korea`, `planets`) because these books now correctly render their native names, page hyphens, and coordinates instead of leaving them blank/unrendered.
+- Updated [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+- [src/templates/lang.rs](file:///opt/src/templates/lang.rs) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- `expected/parhae/OEBPS/*` [MODIFY]
+- `expected/north-korea/OEBPS/*` [MODIFY]
+- `expected/south-korea/OEBPS/*` [MODIFY]
+- `expected/planets/OEBPS/*` [MODIFY]
+
+### Tests Run
+- `cargo test` (All 284 unit tests and 34 integration tests passed successfully)
+- `cargo fmt` and `cargo clippy --all-targets -- -D warnings` (Clean)
+
 ## 2026-06-11 Support Longitem Template
 
 ### Summary

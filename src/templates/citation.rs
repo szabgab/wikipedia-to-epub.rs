@@ -1078,3 +1078,59 @@ pub(crate) fn render_cite_q_template(params: &str) -> String {
         qid, qid
     )
 }
+
+/// [cite merriam-webster](https://en.wikipedia.org/wiki/Template:Cite_Merriam-Webster)
+pub(crate) fn render_cite_merriam_webster_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let word = positional
+        .first()
+        .or_else(|| named.get("word"))
+        .or_else(|| named.get("entry"))
+        .cloned()
+        .unwrap_or_default();
+    let word_trimmed = word.trim();
+    if word_trimmed.is_empty() {
+        return String::new();
+    }
+
+    let dict_type = positional
+        .get(1)
+        .map(|s| s.trim().to_lowercase())
+        .unwrap_or_default();
+
+    let (url, work) = if dict_type == "learners" {
+        (
+            format!(
+                "https://www.learnersdictionary.com/definition/{}",
+                word_trimmed
+            ),
+            "''Merriam-Webster's Learner's Dictionary''".to_string(),
+        )
+    } else if dict_type == "medical" {
+        (
+            format!("https://www.merriam-webster.com/medical/{}", word_trimmed),
+            "''Merriam-Webster's Medical Dictionary''".to_string(),
+        )
+    } else {
+        (
+            format!(
+                "https://www.merriam-webster.com/dictionary/{}",
+                word_trimmed
+            ),
+            "''Merriam-Webster.com Dictionary''".to_string(),
+        )
+    };
+
+    let mut parts = Vec::new();
+    parts.push(format!("[[official-url:{}|\"{}\"]]", url, word_trimmed));
+    parts.push(work);
+    parts.push("Merriam-Webster".to_string());
+
+    if let Some(access_date) = named.get("access-date").or_else(|| named.get("accessdate")) {
+        parts.push(format!("Retrieved {}", render_templates(access_date)));
+    }
+
+    parts.join(". ")
+}

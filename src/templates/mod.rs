@@ -17,10 +17,11 @@ use citation::{
     render_cite_arxiv_template, render_cite_av_media_template, render_cite_book_template,
     render_cite_cia_world_factbook_template, render_cite_dictionary_template,
     render_cite_eb1911_template, render_cite_eccp_template, render_cite_gvp_template,
-    render_cite_journal_template, render_cite_letter_template, render_cite_nsrw_template,
-    render_cite_oed_template, render_cite_press_release_template, render_cite_q_template,
-    render_cite_report_template, render_cite_web_template, render_cite_wikisource_template,
-    render_harvc_template, render_harvnb_template, render_harvp_template, render_harvtxt_template,
+    render_cite_journal_template, render_cite_letter_template,
+    render_cite_merriam_webster_template, render_cite_nsrw_template, render_cite_oed_template,
+    render_cite_press_release_template, render_cite_q_template, render_cite_report_template,
+    render_cite_web_template, render_cite_wikisource_template, render_harvc_template,
+    render_harvnb_template, render_harvp_template, render_harvtxt_template,
 };
 use convert::{
     render_convert_template, render_fx_convert_template, render_inflation_template,
@@ -38,38 +39,39 @@ use formatting::{
     render_died_in_template, render_died_of_wounds_template, render_doi_template,
     render_dp_template, render_dts_template, render_e_template,
     render_easy_css_image_crop_template, render_excerpt_template, render_executed_template,
-    render_five_nonbreaking_spaces_template, render_floruit_template, render_for_multi_template,
-    render_for_template, render_for_timeline_template, render_formatnum_template,
-    render_frac_template, render_fs_interlinear_template, render_further_template,
-    render_gburl_template, render_generic_ship_template, render_google_books_template,
-    render_historical_populations_template, render_hlist_template, render_infobox_country_template,
-    render_infobox_generic_template, render_infobox_military_conflict_template,
-    render_infobox_mountain_template, render_infobox_planet_template,
-    render_infobox_settlement_template, render_interlanguage_link_template,
-    render_internet_archive_short_film_template, render_isbn_template, render_issn_template,
-    render_jaanus_template, render_jct_template, render_jpn_template, render_kia_template,
-    render_kia2_template, render_lagrange_template, render_largest_cities_template,
-    render_legend_template, render_lnl_template, render_main_list_template, render_main_template,
-    render_mia_template, render_mpl_dash_template, render_mpl_template,
-    render_multiple_images_template, render_native_name_list_template,
+    render_five_nonbreaking_spaces_template, render_flagdeco_template, render_floruit_template,
+    render_for_multi_template, render_for_template, render_for_timeline_template,
+    render_formatnum_template, render_frac_template, render_fs_interlinear_template,
+    render_further_template, render_gburl_template, render_generic_ship_template,
+    render_google_books_template, render_historical_populations_template, render_hlist_template,
+    render_hyphen_template, render_infobox_country_template, render_infobox_generic_template,
+    render_infobox_military_conflict_template, render_infobox_mountain_template,
+    render_infobox_planet_template, render_infobox_settlement_template,
+    render_interlanguage_link_template, render_internet_archive_short_film_template,
+    render_isbn_template, render_issn_template, render_jaanus_template, render_jct_template,
+    render_jpn_template, render_kia_template, render_kia2_template, render_lagrange_template,
+    render_largest_cities_template, render_legend_template, render_lnl_template,
+    render_main_list_template, render_main_template, render_mia_template, render_mpl_dash_template,
+    render_mpl_template, render_multiple_images_template, render_native_name_list_template,
     render_natural_causes_template, render_ndldc_template, render_note_template,
     render_numero_template, render_oclc_template, render_official_website_template,
     render_open_access_template, render_openstreetmap_relation_template,
     render_openstreetmap_way_template, render_passthrough_template, render_pkia_template,
     render_plainlist_template, render_plus_minus_template, render_poem_quote_template,
-    render_pow_template, render_proto_template, render_reference_page_template,
-    render_reign_template, render_republic_of_korea_ship_template, render_ric_template,
-    render_route_box_template, render_section_link_template, render_see_also_template,
-    render_ship_class_template, render_ship_template, render_sic_template, render_smaller_template,
-    render_soft_hyphen_template, render_solar_radius_template, render_spaces_template,
-    render_station_template, render_stn_template, render_su_template, render_sub_template,
-    render_suicide_template, render_sup_template, render_surrendered_template,
-    render_tooltip_template, render_track_gauge_template, render_turncoat_template,
-    render_unbulleted_list_template, render_url_template, render_usurped_template,
-    render_verse_translation_template, render_verse_transliteration_translation_template,
-    render_visible_anchor_template, render_webarchive_template, render_wia_template,
-    render_wikibooks_template, render_wikisource_template, render_wikivoyage_template,
-    render_wiktionary_template, render_worldhistory_template,
+    render_pow_template, render_pprime_template, render_proto_template, render_ra_template,
+    render_reference_page_template, render_reign_template, render_republic_of_korea_ship_template,
+    render_ric_template, render_route_box_template, render_section_link_template,
+    render_see_also_template, render_ship_class_template, render_ship_template,
+    render_sic_template, render_smaller_template, render_soft_hyphen_template,
+    render_solar_radius_template, render_spaces_template, render_station_template,
+    render_stn_template, render_su_template, render_sub_template, render_suicide_template,
+    render_sup_template, render_surrendered_template, render_tooltip_template,
+    render_track_gauge_template, render_turncoat_template, render_unbulleted_list_template,
+    render_url_template, render_usurped_template, render_verse_translation_template,
+    render_verse_transliteration_translation_template, render_visible_anchor_template,
+    render_webarchive_template, render_wia_template, render_wikibooks_template,
+    render_wikisource_template, render_wikivoyage_template, render_wiktionary_template,
+    render_worldhistory_template,
 };
 use lang::{
     render_angbr_ipa_template, render_angbr_template, render_chinese_lang_template,
@@ -78,10 +80,11 @@ use lang::{
     render_ja_rail_color_template, render_ja_rail_linem_template, render_japanese_template,
     render_korean_template, render_korean_transliteration_template, render_lang_template,
     render_langnf_template, render_langx_template, render_linktext_template,
-    render_literal_template, render_na_template, render_nihongo_foot_template,
-    render_nihongo_krt_template, render_nihongo2_template, render_nihongo3_template,
-    render_respell_template, render_script_template, render_translation_template,
-    render_transliteration_like_template, render_transliteration_template, render_unichar_template,
+    render_literal_template, render_na_template, render_native_name_template,
+    render_nihongo_foot_template, render_nihongo_krt_template, render_nihongo2_template,
+    render_nihongo3_template, render_respell_template, render_script_template,
+    render_translation_template, render_transliteration_like_template,
+    render_transliteration_template, render_unichar_template,
 };
 
 use crate::increment_recognized_skipped_template_count;
@@ -453,6 +456,35 @@ pub(crate) fn render_template(content: &str) -> String {
         ),
         ("stack", render_passthrough_template as TemplateHandler),
         ("longitem", render_passthrough_template as TemplateHandler),
+        ("flagdeco", render_flagdeco_template as TemplateHandler),
+        ("pprime", render_pprime_template as TemplateHandler),
+        ("ra", render_ra_template as TemplateHandler),
+        (
+            "mw",
+            render_cite_merriam_webster_template as TemplateHandler,
+        ),
+        (
+            "cite merriam-webster",
+            render_cite_merriam_webster_template as TemplateHandler,
+        ),
+        (
+            "indented plainlist",
+            render_plainlist_template as TemplateHandler,
+        ),
+        (
+            "bulleted list",
+            render_unbulleted_list_template as TemplateHandler,
+        ),
+        ("blist", render_unbulleted_list_template as TemplateHandler),
+        ("hyphen", render_hyphen_template as TemplateHandler),
+        (
+            "native phrase",
+            render_native_name_template as TemplateHandler,
+        ),
+        (
+            "native name",
+            render_native_name_template as TemplateHandler,
+        ),
         ("ship", render_generic_ship_template as TemplateHandler),
         ("proto", render_proto_template as TemplateHandler),
         (
@@ -828,6 +860,17 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("frac")
         || template.eq_ignore_ascii_case("fraction")
         || template.eq_ignore_ascii_case("longitem")
+        || template.eq_ignore_ascii_case("flagdeco")
+        || template.eq_ignore_ascii_case("pprime")
+        || template.eq_ignore_ascii_case("ra")
+        || template.eq_ignore_ascii_case("mw")
+        || template.eq_ignore_ascii_case("cite merriam-webster")
+        || template.eq_ignore_ascii_case("indented plainlist")
+        || template.eq_ignore_ascii_case("bulleted list")
+        || template.eq_ignore_ascii_case("blist")
+        || template.eq_ignore_ascii_case("hyphen")
+        || template.eq_ignore_ascii_case("native phrase")
+        || template.eq_ignore_ascii_case("native name")
         || template.eq_ignore_ascii_case("floruit")
         || template.eq_ignore_ascii_case("coord")
         || template.eq_ignore_ascii_case("rp")

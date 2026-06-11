@@ -1167,3 +1167,68 @@ pub(crate) fn render_langnf_template(params: &str) -> String {
         format!("{foreign_span}{separator}{left_paren}{parenthetical_inner}{right_paren}")
     }
 }
+
+fn get_lang_name(tag: &str) -> &'static str {
+    match tag.trim().to_lowercase().as_str() {
+        "ja" => "Japanese",
+        "ko" => "Korean",
+        "zh" => "Chinese",
+        "en" => "English",
+        "fr" => "French",
+        "de" => "German",
+        "es" => "Spanish",
+        "it" => "Italian",
+        "ru" => "Russian",
+        "ar" => "Arabic",
+        "he" => "Hebrew",
+        "la" => "Latin",
+        "grc" => "Ancient Greek",
+        "el" => "Greek",
+        "vi" => "Vietnamese",
+        _ => "",
+    }
+}
+
+/// [native name](https://en.wikipedia.org/wiki/Template:Native_name)
+pub(crate) fn render_native_name_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let lang_code = positional.first().cloned().unwrap_or_default();
+    let name = positional.get(1).cloned().unwrap_or_default();
+    let name_trimmed = name.trim();
+    if name_trimmed.is_empty() {
+        return String::new();
+    }
+
+    let italics = named
+        .get("italics")
+        .or_else(|| named.get("italic"))
+        .map(|s| s.trim().to_lowercase())
+        .unwrap_or_default();
+    let use_italics = italics != "off" && italics != "no";
+
+    let formatted_name = if use_italics {
+        format!("''{}''", name_trimmed)
+    } else {
+        name_trimmed.to_string()
+    };
+
+    let paren = named
+        .get("paren")
+        .or_else(|| named.get("icon"))
+        .map(|s| s.trim().to_lowercase())
+        .unwrap_or_default();
+    let omit_paren = paren == "omit" || paren == "off" || paren == "no";
+
+    if omit_paren {
+        formatted_name
+    } else {
+        let lang_name = get_lang_name(&lang_code);
+        if lang_name.is_empty() {
+            formatted_name
+        } else {
+            format!("{} ({})", formatted_name, lang_name)
+        }
+    }
+}
