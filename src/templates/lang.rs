@@ -852,27 +852,6 @@ fn render_ja_platform_template(params: &str) -> String {
     format!("|-\n| '''{}'''\n| {}\n| {}\n", pfn, cell_line, dir)
 }
 
-pub(crate) fn format_interlanguage_link(
-    article: &str,
-    label: Option<&str>,
-    language: Option<&String>,
-) -> String {
-    let link = if let Some(label) = label {
-        format!("[[{article}|{label}]]")
-    } else {
-        format!("[[{article}]]")
-    };
-
-    match language
-        .map(String::as_str)
-        .map(str::trim)
-        .filter(|value| !value.is_empty())
-    {
-        Some(language) => format!("{link} [{language}]"),
-        None => link,
-    }
-}
-
 /// [Translation](https://en.wikipedia.org/wiki/Template:Translation)
 fn render_translation_template(params: &str) -> String {
     let named = template_named_params(params);

@@ -3,7 +3,6 @@ use std::collections::HashMap;
 
 use crate::config::current_utc_date;
 use crate::config::parse_date_string;
-use crate::templates::lang::format_interlanguage_link;
 use crate::templates::render_templates;
 use crate::tools::split_template_params;
 use crate::types::{DispatchTable, TemplateHandler};
@@ -4249,6 +4248,27 @@ pub(crate) fn render_ra_template(params: &str) -> String {
 /// [Hyphen](https://en.wikipedia.org/wiki/Template:Hyphen)
 pub(crate) fn render_hyphen_template(_params: &str) -> String {
     "-".to_string()
+}
+
+fn format_interlanguage_link(
+    article: &str,
+    label: Option<&str>,
+    language: Option<&String>,
+) -> String {
+    let link = if let Some(label) = label {
+        format!("[[{article}|{label}]]")
+    } else {
+        format!("[[{article}]]")
+    };
+
+    match language
+        .map(String::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
+        Some(language) => format!("{link} [{language}]"),
+        None => link,
+    }
 }
 
 pub(crate) fn get_dispatch_table() -> DispatchTable {
