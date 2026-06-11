@@ -905,5 +905,19 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
     HashMap::from([
         ("convert", render_convert_template as TemplateHandler),
         ("cvt", render_convert_template as TemplateHandler),
+        ("percentage", render_percentage_template as TemplateHandler),
+        (
+            "un population",
+            render_un_population_template as TemplateHandler,
+        ),
+        ("inflation", render_inflation_template as TemplateHandler),
+        (
+            "inflation/year",
+            render_inflation_year_template as TemplateHandler,
+        ),
+        ("val", render_val_template as TemplateHandler),
+        ("value", render_val_template as TemplateHandler),
+        ("fxconvert", render_fx_convert_template as TemplateHandler),
+        ("jpy", render_jpy_template as TemplateHandler),
     ])
 }

@@ -1,5 +1,32 @@
 # Codex Session Notes
 
+## 2026-06-11 Refactor Template Dispatch Table
+
+### Summary
+Moved all template key-value pairs from the `get_dispatch_table` monolith in `src/templates/mod.rs` to the respective template modules: `src/templates/citation.rs`, `src/templates/formatting.rs`, `src/templates/lang.rs`, and `src/templates/convert.rs`.
+
+### Decisions Made
+- Reorganized `get_dispatch_table` functions in all template files so that each template file defines and returns its own local dispatch mappings.
+- Cleaned up `src/templates/mod.rs` to import only the template functions actually used directly by it, removing unused template handlers and types like `TemplateHandler`.
+- Kept the main template routing mechanism green and all existing tests passing.
+
+### Files Changed
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+  - Replaced the large inline `HashMap::from` in `get_dispatch_table` with `HashMap::new()` and let it pull the submodule dispatch tables. Cleaned up unused template imports.
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+  - Registered citation-related template key-value pairs in its `get_dispatch_table`.
+- [src/templates/convert.rs](file:///opt/src/templates/convert.rs) [MODIFY]
+  - Registered convert-related template key-value pairs in its `get_dispatch_table`.
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+  - Registered formatting-related template key-value pairs in its `get_dispatch_table`.
+- [src/templates/lang.rs](file:///opt/src/templates/lang.rs) [MODIFY]
+  - Registered language-related template key-value pairs in its `get_dispatch_table`.
+
+### Tests Run
+- Checked compilation: `cargo check` and `cargo clippy --all-targets -- -D warnings` (Passed cleanly, no warnings).
+- Formatted codebase: `cargo fmt` (Passed cleanly).
+- Executed unit and integration tests: `cargo test` (All 284 unit tests and 34 integration tests passed successfully).
+
 ## 2026-06-11 Support Additional Formatting, Citation, and Language Templates
 
 ### Summary

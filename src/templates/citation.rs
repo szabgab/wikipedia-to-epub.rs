@@ -1138,8 +1138,88 @@ pub(crate) fn render_cite_merriam_webster_template(params: &str) -> String {
 }
 
 pub(crate) fn get_dispatch_table() -> DispatchTable {
-    HashMap::from([(
-        "citation needed span",
-        render_citation_needed_span_template as TemplateHandler,
-    )])
+    HashMap::from([
+        (
+            "citation needed span",
+            render_citation_needed_span_template as TemplateHandler,
+        ),
+        ("cite web", render_cite_web_template as TemplateHandler),
+        ("cite book", render_cite_book_template as TemplateHandler),
+        (
+            "cite dictionary",
+            render_cite_dictionary_template as TemplateHandler,
+        ),
+        (
+            "cite press release",
+            render_cite_press_release_template as TemplateHandler,
+        ),
+        ("cite apod", render_cite_apod_template as TemplateHandler),
+        ("cite oed", render_cite_oed_template as TemplateHandler),
+        ("oed", render_cite_oed_template as TemplateHandler),
+        (
+            "cite av media",
+            render_cite_av_media_template as TemplateHandler,
+        ),
+        (
+            "cite american heritage dictionary",
+            render_cite_american_heritage_dictionary_template as TemplateHandler,
+        ),
+        (
+            "cite wikisource",
+            render_cite_wikisource_template as TemplateHandler,
+        ),
+        (
+            "cite cia world factbook",
+            render_cite_cia_world_factbook_template as TemplateHandler,
+        ),
+        (
+            "cite letter",
+            render_cite_letter_template as TemplateHandler,
+        ),
+        ("cite arxiv", render_cite_arxiv_template as TemplateHandler),
+        ("cite q", render_cite_q_template as TemplateHandler),
+        (
+            "cite journal",
+            render_cite_journal_template as TemplateHandler,
+        ),
+        (
+            "cite magazine",
+            render_cite_journal_template as TemplateHandler,
+        ),
+        ("cite news", render_cite_journal_template as TemplateHandler),
+        (
+            "cite encyclopedia",
+            render_cite_journal_template as TemplateHandler,
+        ),
+        (
+            "cite report",
+            render_cite_report_template as TemplateHandler,
+        ),
+        ("cite eccp", render_cite_eccp_template as TemplateHandler),
+        ("cite gvp", render_cite_gvp_template as TemplateHandler),
+        (
+            "cite conference",
+            render_citation_template as TemplateHandler,
+        ),
+        ("citation", render_citation_template as TemplateHandler),
+        ("harvc", render_harvc_template as TemplateHandler),
+        (
+            "mw",
+            render_cite_merriam_webster_template as TemplateHandler,
+        ),
+        (
+            "cite merriam-webster",
+            render_cite_merriam_webster_template as TemplateHandler,
+        ),
+        (
+            "cite eb1911",
+            render_cite_eb1911_template as TemplateHandler,
+        ),
+        ("harvp", render_harvp_template as TemplateHandler),
+        ("harv", render_harvp_template as TemplateHandler),
+        ("harvnb", render_harvnb_template as TemplateHandler),
+        ("harvtxt", render_harvtxt_template as TemplateHandler),
+        ("cite nsrw", render_cite_nsrw_template as TemplateHandler),
+        ("cite thesis", render_citation_template as TemplateHandler),
+    ])
 }
