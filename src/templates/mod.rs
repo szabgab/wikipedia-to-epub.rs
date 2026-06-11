@@ -302,6 +302,7 @@ pub(crate) fn render_template(content: &str) -> String {
         ),
         ("cite apod", render_cite_apod_template as TemplateHandler),
         ("cite oed", render_cite_oed_template as TemplateHandler),
+        ("oed", render_cite_oed_template as TemplateHandler),
         (
             "cite av media",
             render_cite_av_media_template as TemplateHandler,
@@ -835,6 +836,7 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("cite press release")
         || template.eq_ignore_ascii_case("cite apod")
         || template.eq_ignore_ascii_case("cite oed")
+        || template.eq_ignore_ascii_case("oed")
         || template.eq_ignore_ascii_case("cite av media")
         || template.eq_ignore_ascii_case("cite american heritage dictionary")
         || template.eq_ignore_ascii_case("cite wikisource")

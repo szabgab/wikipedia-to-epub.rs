@@ -5745,6 +5745,25 @@ fn render_wikitext_formats_cite_oed_template() {
 }
 
 #[test]
+fn render_wikitext_formats_oed_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{OED |entry=Word |id=12345 |date=2015 |access-date=2016}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("\"Word\""), "{rendered}");
+    assert!(
+        rendered.contains("<em>Oxford English Dictionary</em> (Online ed.)"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("Oxford University Press"), "{rendered}");
+    assert!(rendered.contains("2015"), "{rendered}");
+    assert!(rendered.contains("Retrieved 2016"), "{rendered}");
+    assert!(!rendered.contains("href=\"http"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_cite_av_media_template() {
     let rendered = render_wikitext(
         "Sample",

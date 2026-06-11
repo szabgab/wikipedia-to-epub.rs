@@ -163,6 +163,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{cite press release |last=Doe |first=Jane |title=New Release |publisher=Company |date=2021}}` becomes `Jane Doe. "New Release" (Press release). Company. 2021`
 * `{{cite apod |title=Nebula |date=2020-04-15 |access-date=2020-05-01}}` becomes `R. Nemiroff & J. Bonnell, eds. (2020-04-15). "Nebula". <em>Astronomy Picture of the Day</em>. NASA. Retrieved 2020-05-01`
 * `{{cite OED |entry=Word |id=12345 |date=2015 |access-date=2016}}` becomes `"Word". <em>Oxford English Dictionary</em> (Online ed.). Oxford University Press. 2015. Retrieved 2016`
+* `{{OED |entry=Word |id=12345 |date=2015 |access-date=2016}}` becomes `"Word". <em>Oxford English Dictionary</em> (Online ed.). Oxford University Press. 2015. Retrieved 2016`
 * `{{cite AV media |last=Director |first=A. |title=Movie |format=Film |publisher=Studio |via=YouTube |date=2010}}` becomes `A. Director. "Movie" (Film). Studio. YouTube. 2010`
 * `{{cite American Heritage Dictionary |1=Lexicon |date=2018 |access-date=2019}}` becomes `"Lexicon". <em>The American Heritage Dictionary of the English Language</em>. 2018. Retrieved 2019`
 * `{{cite wikisource |last=Author |first=B. |title=Book Title |wslink=Book Title |publisher=Paris |year=1800}}` becomes `B. Author. <em>[[src:Book Title|Book Title]]</em>. Paris, 1800. [[Wikisource]]`
