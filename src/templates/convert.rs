@@ -4,6 +4,9 @@ use crate::templates::{
     format_number_with_commas, render_templates, template_named_params, template_positional_params,
 };
 
+use crate::types::{DispatchTable, TemplateHandler};
+use std::collections::HashMap;
+
 /// [JPY](https://en.wikipedia.org/wiki/Template:JPY)
 pub(crate) fn render_jpy_template(params: &str) -> String {
     let named = template_named_params(params);
@@ -896,4 +899,11 @@ pub(crate) fn format_convert_unit(unit: &str) -> String {
         Some("e6psi") => "million psi".to_string(),
         _ => unit.trim().to_string(),
     }
+}
+
+pub(crate) fn get_dispatch_table() -> DispatchTable {
+    HashMap::from([
+        ("convert", render_convert_template as TemplateHandler),
+        ("cvt", render_convert_template as TemplateHandler),
+    ])
 }

@@ -4,6 +4,8 @@ use crate::templates::{
 };
 use std::collections::HashMap;
 
+use crate::types::{DispatchTable, TemplateHandler};
+
 /// [citation needed span](https://en.wikipedia.org/wiki/Template:Citation_needed_span)
 pub(crate) fn render_citation_needed_span_template(params: &str) -> String {
     let named = template_named_params(params);
@@ -1133,4 +1135,11 @@ pub(crate) fn render_cite_merriam_webster_template(params: &str) -> String {
     }
 
     parts.join(". ")
+}
+
+pub(crate) fn get_dispatch_table() -> DispatchTable {
+    HashMap::from([(
+        "citation needed span",
+        render_citation_needed_span_template as TemplateHandler,
+    )])
 }

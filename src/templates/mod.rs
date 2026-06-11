@@ -15,21 +15,20 @@ pub(crate) use formatting::{
 pub(crate) use lang::format_interlanguage_link;
 
 use citation::{
-    render_citation_needed_span_template, render_citation_template,
-    render_cite_american_heritage_dictionary_template, render_cite_apod_template,
-    render_cite_arxiv_template, render_cite_av_media_template, render_cite_book_template,
-    render_cite_cia_world_factbook_template, render_cite_dictionary_template,
-    render_cite_eb1911_template, render_cite_eccp_template, render_cite_gvp_template,
-    render_cite_journal_template, render_cite_letter_template,
+    render_citation_template, render_cite_american_heritage_dictionary_template,
+    render_cite_apod_template, render_cite_arxiv_template, render_cite_av_media_template,
+    render_cite_book_template, render_cite_cia_world_factbook_template,
+    render_cite_dictionary_template, render_cite_eb1911_template, render_cite_eccp_template,
+    render_cite_gvp_template, render_cite_journal_template, render_cite_letter_template,
     render_cite_merriam_webster_template, render_cite_nsrw_template, render_cite_oed_template,
     render_cite_press_release_template, render_cite_q_template, render_cite_report_template,
     render_cite_web_template, render_cite_wikisource_template, render_harvc_template,
     render_harvnb_template, render_harvp_template, render_harvtxt_template,
 };
 use convert::{
-    render_convert_template, render_fx_convert_template, render_inflation_template,
-    render_inflation_year_template, render_jpy_template, render_percentage_template,
-    render_un_population_template, render_val_template,
+    render_fx_convert_template, render_inflation_template, render_inflation_year_template,
+    render_jpy_template, render_percentage_template, render_un_population_template,
+    render_val_template,
 };
 use formatting::{
     render_abbr_template, render_age_template, render_annotated_link_template,
@@ -182,10 +181,6 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
 #[cached]
 fn get_dispatch_table() -> DispatchTable {
     let mut table = HashMap::from([
-        (
-            "citation needed span",
-            render_citation_needed_span_template as TemplateHandler,
-        ),
         ("quote box", render_blockquote_template as TemplateHandler),
         ("quote", render_blockquote_template as TemplateHandler),
         ("poem quote", render_poem_quote_template as TemplateHandler),
@@ -344,8 +339,6 @@ fn get_dispatch_table() -> DispatchTable {
             "un population",
             render_un_population_template as TemplateHandler,
         ),
-        ("convert", render_convert_template as TemplateHandler),
-        ("cvt", render_convert_template as TemplateHandler),
         ("for", render_for_template as TemplateHandler),
         (
             "for timeline",
@@ -672,10 +665,18 @@ fn get_dispatch_table() -> DispatchTable {
     for (key, value) in crate::templates::lang::get_dispatch_table() {
         table.insert(key, value);
     }
+
     for (key, value) in crate::templates::formatting::get_dispatch_table() {
         table.insert(key, value);
     }
 
+    for (key, value) in crate::templates::citation::get_dispatch_table() {
+        table.insert(key, value);
+    }
+
+    for (key, value) in crate::templates::convert::get_dispatch_table() {
+        table.insert(key, value);
+    }
     table
 }
 
