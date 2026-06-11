@@ -12,11 +12,15 @@ pub(crate) use formatting::{
 pub(crate) use lang::format_interlanguage_link;
 
 use citation::{
-    render_citation_needed_span_template, render_citation_template, render_cite_book_template,
+    render_citation_needed_span_template, render_citation_template,
+    render_cite_american_heritage_dictionary_template, render_cite_apod_template,
+    render_cite_arxiv_template, render_cite_av_media_template, render_cite_book_template,
+    render_cite_cia_world_factbook_template, render_cite_dictionary_template,
     render_cite_eb1911_template, render_cite_eccp_template, render_cite_gvp_template,
-    render_cite_journal_template, render_cite_nsrw_template, render_cite_report_template,
-    render_cite_web_template, render_harvc_template, render_harvnb_template, render_harvp_template,
-    render_harvtxt_template,
+    render_cite_journal_template, render_cite_letter_template, render_cite_nsrw_template,
+    render_cite_oed_template, render_cite_press_release_template, render_cite_q_template,
+    render_cite_report_template, render_cite_web_template, render_cite_wikisource_template,
+    render_harvc_template, render_harvnb_template, render_harvp_template, render_harvtxt_template,
 };
 use convert::{
     render_convert_template, render_fx_convert_template, render_inflation_template,
@@ -288,6 +292,38 @@ pub(crate) fn render_template(content: &str) -> String {
         ),
         ("cite web", render_cite_web_template as TemplateHandler),
         ("cite book", render_cite_book_template as TemplateHandler),
+        (
+            "cite dictionary",
+            render_cite_dictionary_template as TemplateHandler,
+        ),
+        (
+            "cite press release",
+            render_cite_press_release_template as TemplateHandler,
+        ),
+        ("cite apod", render_cite_apod_template as TemplateHandler),
+        ("cite oed", render_cite_oed_template as TemplateHandler),
+        (
+            "cite av media",
+            render_cite_av_media_template as TemplateHandler,
+        ),
+        (
+            "cite american heritage dictionary",
+            render_cite_american_heritage_dictionary_template as TemplateHandler,
+        ),
+        (
+            "cite wikisource",
+            render_cite_wikisource_template as TemplateHandler,
+        ),
+        (
+            "cite cia world factbook",
+            render_cite_cia_world_factbook_template as TemplateHandler,
+        ),
+        (
+            "cite letter",
+            render_cite_letter_template as TemplateHandler,
+        ),
+        ("cite arxiv", render_cite_arxiv_template as TemplateHandler),
+        ("cite q", render_cite_q_template as TemplateHandler),
         (
             "cite journal",
             render_cite_journal_template as TemplateHandler,
@@ -795,6 +831,17 @@ pub(crate) fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Reference page")
         || template.eq_ignore_ascii_case("cite web")
         || template.eq_ignore_ascii_case("cite book")
+        || template.eq_ignore_ascii_case("cite dictionary")
+        || template.eq_ignore_ascii_case("cite press release")
+        || template.eq_ignore_ascii_case("cite apod")
+        || template.eq_ignore_ascii_case("cite oed")
+        || template.eq_ignore_ascii_case("cite av media")
+        || template.eq_ignore_ascii_case("cite american heritage dictionary")
+        || template.eq_ignore_ascii_case("cite wikisource")
+        || template.eq_ignore_ascii_case("cite cia world factbook")
+        || template.eq_ignore_ascii_case("cite letter")
+        || template.eq_ignore_ascii_case("cite arxiv")
+        || template.eq_ignore_ascii_case("cite q")
         || template.eq_ignore_ascii_case("cite journal")
         || template.eq_ignore_ascii_case("cite magazine")
         || template.eq_ignore_ascii_case("cite news")

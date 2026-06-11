@@ -1,5 +1,48 @@
 # Codex Session Notes
 
+## 2026-06-11 Support New Citation Templates
+
+### Summary
+Added support for 11 new Wikipedia citation templates:
+1. `cite dictionary`: Formats dictionary entries with dictionary name, edition, publisher, and page numbers.
+2. `cite press release`: Formats press releases with title annotations and publisher information.
+3. `Cite APOD`: Parses dates into standard YYMMDD format to construct NASA's Astronomy Picture of the Day links.
+4. `Cite OED`: Formats Oxford English Dictionary online entries with DOI or view URLs and term queries.
+5. `Cite AV media`: Formats media publications with custom format tags, publishers, and platforms.
+6. `Cite American Heritage Dictionary`: Formats dictionary query entries with links to `ahdictionary.com`.
+7. `Cite wikisource`: Formats book citations linking to Wikisource pages via interlanguage target structures.
+8. `Cite CIA World Factbook`: Formats country profiles with lower-cased kebab URL links.
+9. `Cite letter`: Formats historical letters with sender, recipient, and subject metadata.
+10. `Cite arXiv`: Formats scientific preprint citations with eprint numbers and arXiv tags.
+11. `Cite Q`: Formats Wikidata entries linking to the Wikidata item profiles.
+
+### Decisions Made
+- Implemented rendering logic for all 11 templates in [src/templates/citation.rs](file:///opt/src/templates/citation.rs).
+- Registered all 11 new renderers in [src/templates/mod.rs](file:///opt/src/templates/mod.rs)'s dispatch table and handled name filter.
+- Added comprehensive separate unit tests for each new template in [src/tests.rs](file:///opt/src/tests.rs).
+- Updated the expected fixtures for affected books (`goguryeo`, `japan`, `kyoto`, `north-korea`, `osaka`, `planets`, `south-korea`) using a custom Perl unzip helper.
+- Documented all new conversion rules in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+  - Implemented the 11 new render functions.
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+  - Registered renderers in the dispatch table.
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+  - Added individual test functions for each template.
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+  - Documented rules and examples for all 11 templates.
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+  - Appended this session note.
+- `src/navigations.csv`, `src/silent.csv` [MODIFY]
+  - Sorted CSV files.
+- `expected/*/OEBPS/*` [MODIFY]
+  - Updated expected book integration fixtures.
+
+### Tests Run
+- `cargo test` (All 274 unit tests and 34 integration tests passed successfully)
+- `cargo fmt` and `cargo clippy --all-targets -- -D warnings` (Clean)
+
 ## 2026-06-09 Support Translation, Station, and ja-rail-linem templates
 
 ### Summary

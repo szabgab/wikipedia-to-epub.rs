@@ -5658,6 +5658,230 @@ fn render_wikitext_formats_infobox_generic_template() {
     assert!(rendered.contains("Solar"), "{rendered}");
 }
 
+#[test]
+fn render_wikitext_formats_cite_dictionary_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite dictionary |last=Smith |first=John |title=Apple |dictionary=English Dictionary |edition=2nd |publisher=Oxford |date=2020 |page=15}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("John Smith"), "{rendered}");
+    assert!(rendered.contains("\"Apple\""), "{rendered}");
+    assert!(
+        rendered.contains("<em>English Dictionary</em>"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("2nd ed"), "{rendered}");
+    assert!(rendered.contains("Oxford"), "{rendered}");
+    assert!(rendered.contains("2020"), "{rendered}");
+    assert!(rendered.contains("p. 15"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_cite_press_release_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite press release |last=Doe |first=Jane |title=New Release |publisher=Company |date=2021 |url=https://press.com}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Jane Doe"), "{rendered}");
+    assert!(
+        rendered.contains("\"New Release\" (Press release)"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("Company"), "{rendered}");
+    assert!(rendered.contains("2021"), "{rendered}");
+    assert!(!rendered.contains("href=\"http"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_cite_apod_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite apod |title=Nebula |date=2020-04-15 |access-date=2020-05-01}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("R. Nemiroff"), "{rendered}");
+    assert!(rendered.contains("J. Bonnell"), "{rendered}");
+    assert!(rendered.contains("\"Nebula\""), "{rendered}");
+    assert!(
+        rendered.contains("<em>Astronomy Picture of the Day</em>"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("NASA"), "{rendered}");
+    assert!(rendered.contains("Retrieved 2020-05-01"), "{rendered}");
+    assert!(!rendered.contains("href=\"http"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_cite_oed_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite OED |entry=Word |id=12345 |date=2015 |access-date=2016}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("\"Word\""), "{rendered}");
+    assert!(
+        rendered.contains("<em>Oxford English Dictionary</em> (Online ed.)"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("Oxford University Press"), "{rendered}");
+    assert!(rendered.contains("2015"), "{rendered}");
+    assert!(rendered.contains("Retrieved 2016"), "{rendered}");
+    assert!(!rendered.contains("href=\"http"), "{rendered}");
+
+    let rendered2 = render_wikitext(
+        "Sample",
+        "{{cite OED |entry=Big Word}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered2.contains("\"Big Word\""), "{rendered2}");
+    assert!(!rendered2.contains("href=\"http"), "{rendered2}");
+}
+
+#[test]
+fn render_wikitext_formats_cite_av_media_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite AV media |last=Director |first=A. |title=Movie |format=Film |publisher=Studio |via=YouTube |date=2010 |access-date=2012}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("A. Director"), "{rendered}");
+    assert!(rendered.contains("\"Movie\""), "{rendered}");
+    assert!(rendered.contains("(Film)"), "{rendered}");
+    assert!(rendered.contains("Studio"), "{rendered}");
+    assert!(rendered.contains("YouTube"), "{rendered}");
+    assert!(rendered.contains("2010"), "{rendered}");
+    assert!(rendered.contains("Retrieved 2012"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_cite_american_heritage_dictionary_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite American Heritage Dictionary |1=Lexicon |date=2018 |access-date=2019}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("\"Lexicon\""), "{rendered}");
+    assert!(
+        rendered.contains("<em>The American Heritage Dictionary of the English Language</em>"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("2018"), "{rendered}");
+    assert!(rendered.contains("Retrieved 2019"), "{rendered}");
+    assert!(!rendered.contains("href=\"http"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_cite_wikisource_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite wikisource |last=Author |first=B. |title=Book Title |wslink=Book Title |wslanguage=fr |publisher=Paris |year=1800}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("B. Author"), "{rendered}");
+    assert!(
+        rendered.contains("href=\"https://en.wikisource.org/wiki/fr:Book_Title\""),
+        "{rendered}"
+    );
+    assert!(rendered.contains("Book Title"), "{rendered}");
+    assert!(rendered.contains("Paris, 1800"), "{rendered}");
+    assert!(rendered.contains("Wikisource"), "{rendered}");
+
+    let rendered2 = render_wikitext(
+        "Sample",
+        "{{cite wikisource |title=English Book |wslink=English Book |publisher=London |year=1750}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered2.contains("href=\"https://en.wikisource.org/wiki/English_Book\""),
+        "{rendered2}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_cite_cia_world_factbook_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite CIA World Factbook |country=North Korea |section=Geography |year=2021 |access-date=2022-03-01}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("\"North Korea § Geography\""),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains("<em>The World Factbook</em> (2021 ed.)"),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains("Central Intelligence Agency"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("Retrieved 2022-03-01"), "{rendered}");
+    assert!(!rendered.contains("href=\"http"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_cite_letter_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite letter |last=Sender |first=A. |recipient=Recipient |subject=Important Matters |publisher=Archive |date=1900 |access-date=1950}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("A. Sender"), "{rendered}");
+    assert!(
+        rendered.contains("\"Important Matters\" (Letter to Recipient)"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("Archive"), "{rendered}");
+    assert!(rendered.contains("1900"), "{rendered}");
+    assert!(rendered.contains("Retrieved 1950"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_cite_arxiv_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite arXiv |last=Physicist |first=A. |title=Quantum Theory |date=2019 |eprint=1901.00001 |class=hep-th}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("A. Physicist"), "{rendered}");
+    assert!(rendered.contains("\"Quantum Theory\""), "{rendered}");
+    assert!(rendered.contains("2019"), "{rendered}");
+    assert!(rendered.contains("1901.00001"), "{rendered}");
+    assert!(rendered.contains("[hep-th]"), "{rendered}");
+    assert!(!rendered.contains("href=\"http"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_cite_q_template() {
+    let rendered = render_wikitext("Sample", "{{cite q |Q123456}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("Wikidata item Q123456"), "{rendered}");
+    assert!(!rendered.contains("href=\"http"), "{rendered}");
+
+    let rendered2 = render_wikitext(
+        "Sample",
+        "{{cite q |https://www.wikidata.org/wiki/Q654321}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered2.contains("Wikidata item Q654321"), "{rendered2}");
+    assert!(!rendered2.contains("href=\"http"), "{rendered2}");
+}
+
 fn read_or_fetch_text(
     cache_path: &Path,
     refresh: bool,

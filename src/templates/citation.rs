@@ -548,3 +548,533 @@ pub(crate) fn render_cite_eb1911_template(params: &str) -> String {
         title
     )
 }
+
+/// [cite dictionary](https://en.wikipedia.org/wiki/Template:Cite_dictionary)
+pub(crate) fn render_cite_dictionary_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(title) = template_param(&named, &["title", "trans-title", "script-title"]) {
+        let title = match template_param(&named, &["url"]) {
+            Some(url) => format!(
+                "[{} \"{}\"]",
+                render_templates(url),
+                render_templates(title)
+            ),
+            None => format!("\"{}\"", render_templates(title)),
+        };
+        parts.push(title);
+    }
+
+    if let Some(dictionary) = template_param(&named, &["dictionary", "work"]) {
+        parts.push(format!("''{}''", render_templates(dictionary)));
+    }
+
+    if let Some(edition) = template_param(&named, &["edition"]) {
+        parts.push(format!("{} ed", render_templates(edition)));
+    }
+
+    if let Some(publisher) = template_param(&named, &["publisher"]) {
+        parts.push(render_templates(publisher));
+    }
+
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        parts.push(render_templates(date));
+    }
+
+    if let Some(pages) = template_param(&named, &["pages", "page"]) {
+        parts.push(format!("p. {}", render_templates(pages)));
+    }
+
+    parts.join(". ")
+}
+
+/// [cite press release](https://en.wikipedia.org/wiki/Template:Cite_press_release)
+pub(crate) fn render_cite_press_release_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(title) = template_param(&named, &["title"]) {
+        let title_text = format!("\"{}\" (Press release)", render_templates(title));
+        let title_link = match template_param(&named, &["url"]) {
+            Some(url) => format!("[{} {}]", render_templates(url), title_text),
+            None => title_text,
+        };
+        parts.push(title_link);
+    }
+
+    if let Some(publisher) = template_param(&named, &["publisher"]) {
+        parts.push(render_templates(publisher));
+    }
+
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        parts.push(render_templates(date));
+    }
+
+    parts.join(". ")
+}
+
+fn parse_date_to_yymmdd(date_str: &str) -> Option<String> {
+    let s = date_str.trim().to_lowercase();
+    if s.is_empty() {
+        return None;
+    }
+
+    let cleaned = s.replace([',', '-', '/'], " ");
+    let parts: Vec<&str> = cleaned.split_whitespace().collect();
+
+    if parts.len() != 3 {
+        return None;
+    }
+
+    let months = [
+        ("jan", "01"),
+        ("feb", "02"),
+        ("mar", "03"),
+        ("apr", "04"),
+        ("may", "05"),
+        ("jun", "06"),
+        ("jul", "07"),
+        ("aug", "08"),
+        ("sep", "09"),
+        ("oct", "10"),
+        ("nov", "11"),
+        ("dec", "12"),
+    ];
+
+    let mut year = None;
+    let mut month = None;
+    let mut day = None;
+
+    for part in &parts {
+        if let Some(m_idx) = months.iter().position(|&(name, _)| part.starts_with(name)) {
+            month = Some(months[m_idx].1.to_string());
+        } else if let Ok(num) = part.parse::<u32>() {
+            if num > 1000 {
+                year = Some(num);
+            } else if day.is_none() {
+                day = Some(num);
+            } else {
+                if month.is_none() && (1..=12).contains(&num) {
+                    month = Some(format!("{:02}", num));
+                } else if year.is_none() {
+                    year = Some(num);
+                }
+            }
+        }
+    }
+
+    if (year.is_none() || month.is_none() || day.is_none()) && parts[0].len() == 4 {
+        let parsed = (
+            parts[0].parse::<u32>(),
+            parts[1].parse::<u32>(),
+            parts[2].parse::<u32>(),
+        );
+        if let (Ok(y), Ok(m), Ok(d)) = parsed {
+            year = Some(y);
+            month = Some(format!("{:02}", m));
+            day = Some(d);
+        }
+    }
+
+    if let (Some(y), Some(m), Some(d)) = (year, month, day) {
+        let yy = format!("{:02}", y % 100);
+        let dd = format!("{:02}", d);
+        Some(format!("{}{}{}", yy, m, dd))
+    } else {
+        None
+    }
+}
+
+/// [Cite APOD](https://en.wikipedia.org/wiki/Template:Cite_APOD)
+pub(crate) fn render_cite_apod_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let mut header = "R. Nemiroff & J. Bonnell, eds.".to_string();
+    if let Some(date) = template_param(&named, &["date"]) {
+        header.push_str(&format!(" ({})", render_templates(date)));
+    }
+    parts.push(header);
+
+    if let Some(title) = template_param(&named, &["title"]) {
+        let date_param = template_param(&named, &["date"]).unwrap_or("");
+        let url = if let Some(yymmdd) = parse_date_to_yymmdd(date_param) {
+            format!("https://apod.nasa.gov/apod/ap{}.html", yymmdd)
+        } else {
+            "https://apod.nasa.gov/apod/astropix.html".to_string()
+        };
+        parts.push(format!("[{} \"{}\"]", url, render_templates(title)));
+    }
+
+    parts.push("''Astronomy Picture of the Day''".to_string());
+    parts.push("NASA".to_string());
+
+    if let Some(access_date) = template_param(&named, &["access-date", "accessdate"]) {
+        parts.push(format!("Retrieved {}", render_templates(access_date)));
+    }
+
+    parts.join(". ")
+}
+
+/// [Cite OED](https://en.wikipedia.org/wiki/Template:Cite_OED)
+pub(crate) fn render_cite_oed_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let entry = template_param(&named, &["term", "entry", "1"])
+        .map(|s| s.to_string())
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+    let entry = entry.trim();
+
+    let id = template_param(&named, &["id", "2"])
+        .map(|s| s.to_string())
+        .or_else(|| positional.get(1).cloned())
+        .unwrap_or_default();
+    let id = id.trim();
+
+    let mut parts = Vec::new();
+
+    if !entry.is_empty() {
+        let url = if !id.is_empty() {
+            if let Ok(id_num) = id.parse::<u64>() {
+                if id_num > 999999999 {
+                    format!("https://doi.org/10.1093/OED/{}", id)
+                } else {
+                    format!("https://www.oed.com/view/Entry/{}", id)
+                }
+            } else {
+                format!("https://www.oed.com/view/Entry/{}", id)
+            }
+        } else {
+            format!(
+                "https://www.oed.com/search/dictionary/?q={}",
+                entry.replace(' ', "%20")
+            )
+        };
+
+        parts.push(format!("[{} \"{}\"]", url, render_templates(entry)));
+    }
+
+    parts.push("''Oxford English Dictionary'' (Online ed.)".to_string());
+    parts.push("Oxford University Press".to_string());
+
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        parts.push(render_templates(date));
+    }
+
+    if let Some(access_date) = template_param(&named, &["access-date", "accessdate"]) {
+        parts.push(format!("Retrieved {}", render_templates(access_date)));
+    }
+
+    parts.join(". ")
+}
+
+/// [Cite AV media](https://en.wikipedia.org/wiki/Template:Cite_AV_media)
+pub(crate) fn render_cite_av_media_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(title) = template_param(&named, &["title", "script-title"]) {
+        let title_link = match template_param(&named, &["url"]) {
+            Some(url) => format!(
+                "[{} \"{}\"]",
+                render_templates(url),
+                render_templates(title)
+            ),
+            None => format!("\"{}\"", render_templates(title)),
+        };
+        parts.push(title_link);
+    }
+
+    if let Some(format_val) = template_param(&named, &["format"]) {
+        parts.push(format!("({})", render_templates(format_val)));
+    }
+
+    let publisher = template_param(&named, &["publisher"]);
+    let via = template_param(&named, &["via"]);
+    if let Some(pub_val) = publisher {
+        parts.push(render_templates(pub_val));
+    }
+    if let Some(via_val) = via
+        && publisher.is_none_or(|p| !p.eq_ignore_ascii_case(via_val))
+    {
+        parts.push(render_templates(via_val));
+    }
+
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        parts.push(render_templates(date));
+    }
+
+    if let Some(access_date) = template_param(&named, &["access-date", "accessdate"]) {
+        parts.push(format!("Retrieved {}", render_templates(access_date)));
+    }
+
+    parts.join(". ")
+}
+
+/// [Cite American Heritage Dictionary](https://en.wikipedia.org/wiki/Template:Cite_American_Heritage_Dictionary)
+pub(crate) fn render_cite_american_heritage_dictionary_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let entry = template_param(&named, &["1"])
+        .map(|s| s.to_string())
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+    let entry = entry.trim();
+
+    if entry.is_empty() {
+        return String::new();
+    }
+
+    let mut parts = Vec::new();
+    let url = format!(
+        "https://www.ahdictionary.com/word/search.html?q={}",
+        entry.replace(' ', "%20")
+    );
+
+    parts.push(format!("[{} \"{}\"]", url, render_templates(entry)));
+    parts.push("''The American Heritage Dictionary of the English Language''".to_string());
+
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        parts.push(render_templates(date));
+    }
+
+    if let Some(access_date) = template_param(&named, &["access-date", "accessdate"]) {
+        parts.push(format!("Retrieved {}", render_templates(access_date)));
+    }
+
+    parts.join(". ")
+}
+
+/// [Cite wikisource](https://en.wikipedia.org/wiki/Template:Cite_wikisource)
+pub(crate) fn render_cite_wikisource_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    let title = template_param(&named, &["title", "1"])
+        .map(|s| s.to_string())
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+    let title = title.trim();
+
+    let wslink = template_param(&named, &["wslink"])
+        .map(|s| s.to_string())
+        .unwrap_or_else(|| title.to_string());
+    let wslink = wslink.trim();
+
+    let wslanguage = template_param(&named, &["wslanguage", "3"])
+        .map(|s| s.to_string())
+        .or_else(|| positional.get(2).cloned())
+        .unwrap_or_default();
+    let wslanguage = wslanguage.trim();
+
+    if !title.is_empty() {
+        let link_target = if !wslanguage.is_empty() && wslanguage != "en" {
+            format!("{}:{}", wslanguage, wslink)
+        } else {
+            wslink.to_string()
+        };
+        parts.push(format!("''[[src:{}|{}]]''", link_target, title));
+    }
+
+    let mut publication = String::new();
+    if let Some(publisher) = template_param(&named, &["publisher"]) {
+        publication.push_str(&render_templates(publisher));
+    }
+    if let Some(year) = template_param(&named, &["year", "date"]) {
+        if !publication.is_empty() {
+            publication.push_str(", ");
+        }
+        publication.push_str(&render_templates(year));
+    }
+    if !publication.is_empty() {
+        parts.push(publication);
+    }
+
+    parts.push("[[Wikisource]]".to_string());
+
+    parts.join(". ")
+}
+
+/// [Cite CIA World Factbook](https://en.wikipedia.org/wiki/Template:Cite_CIA_World_Factbook)
+pub(crate) fn render_cite_cia_world_factbook_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let country = template_param(&named, &["country", "1"])
+        .map(|s| s.to_string())
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+    let country = country.trim();
+
+    let section = template_param(&named, &["section"]).unwrap_or("").trim();
+    let year = template_param(&named, &["year"]).unwrap_or("").trim();
+
+    let mut parts = Vec::new();
+
+    if !country.is_empty() {
+        let title = if !section.is_empty() {
+            format!("{} § {}", country, section)
+        } else {
+            country.to_string()
+        };
+
+        let kebab = country.to_lowercase().replace(' ', "-");
+        let url = format!(
+            "https://www.cia.gov/the-world-factbook/countries/{}/",
+            kebab
+        );
+
+        parts.push(format!("[{} \"{}\"]", url, render_templates(&title)));
+    }
+
+    let work = if !year.is_empty() {
+        format!("''The World Factbook'' ({} ed.)", render_templates(year))
+    } else {
+        "''The World Factbook''".to_string()
+    };
+    parts.push(work);
+
+    parts.push("Central Intelligence Agency".to_string());
+
+    if let Some(access_date) = template_param(&named, &["access-date", "accessdate"]) {
+        parts.push(format!("Retrieved {}", render_templates(access_date)));
+    }
+
+    parts.join(". ")
+}
+
+/// [Cite letter](https://en.wikipedia.org/wiki/Template:Cite_letter)
+pub(crate) fn render_cite_letter_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(subject) = template_param(&named, &["subject", "title"]) {
+        let recipient = template_param(&named, &["recipient"]);
+        let type_text = match recipient {
+            Some(rec) => format!("Letter to {}", render_templates(rec)),
+            None => "Letter".to_string(),
+        };
+
+        let title_text = format!("\"{}\" ({})", render_templates(subject), type_text);
+        let title_link = match template_param(&named, &["url"]) {
+            Some(url) => format!("[{} {}]", render_templates(url), title_text),
+            None => title_text,
+        };
+        parts.push(title_link);
+    }
+
+    if let Some(publisher) = template_param(&named, &["publisher"]) {
+        parts.push(render_templates(publisher));
+    }
+
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        parts.push(render_templates(date));
+    }
+
+    if let Some(access_date) = template_param(&named, &["access-date", "accessdate"]) {
+        parts.push(format!("Retrieved {}", render_templates(access_date)));
+    }
+
+    parts.join(". ")
+}
+
+/// [Cite arXiv](https://en.wikipedia.org/wiki/Template:Cite_arXiv)
+pub(crate) fn render_cite_arxiv_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(title) = template_param(&named, &["title"]) {
+        let title_link = match template_param(&named, &["url"]) {
+            Some(url) => format!(
+                "[{} \"{}\"]",
+                render_templates(url),
+                render_templates(title)
+            ),
+            None => format!("\"{}\"", render_templates(title)),
+        };
+        parts.push(title_link);
+    }
+
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        parts.push(render_templates(date));
+    }
+
+    if let Some(eprint) = template_param(&named, &["eprint", "arxiv"]) {
+        let eprint = eprint.trim();
+        let class_str = if let Some(class_val) = template_param(&named, &["class"]) {
+            format!(" [{}]", render_templates(class_val.trim()))
+        } else {
+            String::new()
+        };
+
+        parts.push(format!(
+            "arXiv:[https://arxiv.org/abs/{} {}]{}",
+            eprint, eprint, class_str
+        ));
+    }
+
+    parts.join(". ")
+}
+
+/// [Cite Q](https://en.wikipedia.org/wiki/Template:Cite_Q)
+pub(crate) fn render_cite_q_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let qid_raw = template_param(&named, &["1"])
+        .map(|s| s.to_string())
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+    let qid_raw = qid_raw.trim();
+
+    if qid_raw.is_empty() {
+        return String::new();
+    }
+
+    let qid = if let Some(last_slash_idx) = qid_raw.rfind('/') {
+        &qid_raw[last_slash_idx + 1..]
+    } else {
+        qid_raw
+    };
+
+    format!(
+        "Wikidata item [https://www.wikidata.org/wiki/{} {}]",
+        qid, qid
+    )
+}

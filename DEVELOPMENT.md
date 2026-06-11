@@ -159,6 +159,17 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Coord|37|33|36|N|126|59|24|E|display=inline}}` becomes `37°33′36″N 126°59′24″E`; decimal forms such as `{{Coord|43.65107|-79.347015|display=inline}}` become `43.65107, -79.347015`
 * `{{rp|12}}` (or its alias `{{Reference page|page=12}}`) becomes an inline reference page marker: `p. 12`; multiple values such as `{{rp|12|15}}` become `pp. 12, 15`
 * `{{Cite book|last=Oberdorfer|first=Don|title=The Two Koreas|year=2001|publisher=Basic Books}}` becomes `Don Oberdorfer. <em>The Two Koreas</em>. Basic Books, 2001`
+* `{{cite dictionary |last=Smith |first=John |title=Apple |dictionary=English Dictionary |edition=2nd |publisher=Oxford |date=2020 |page=15}}` becomes `John Smith. "Apple". <em>English Dictionary</em>. 2nd ed. Oxford. 2020. p. 15`
+* `{{cite press release |last=Doe |first=Jane |title=New Release |publisher=Company |date=2021}}` becomes `Jane Doe. "New Release" (Press release). Company. 2021`
+* `{{cite apod |title=Nebula |date=2020-04-15 |access-date=2020-05-01}}` becomes `R. Nemiroff & J. Bonnell, eds. (2020-04-15). "Nebula". <em>Astronomy Picture of the Day</em>. NASA. Retrieved 2020-05-01`
+* `{{cite OED |entry=Word |id=12345 |date=2015 |access-date=2016}}` becomes `"Word". <em>Oxford English Dictionary</em> (Online ed.). Oxford University Press. 2015. Retrieved 2016`
+* `{{cite AV media |last=Director |first=A. |title=Movie |format=Film |publisher=Studio |via=YouTube |date=2010}}` becomes `A. Director. "Movie" (Film). Studio. YouTube. 2010`
+* `{{cite American Heritage Dictionary |1=Lexicon |date=2018 |access-date=2019}}` becomes `"Lexicon". <em>The American Heritage Dictionary of the English Language</em>. 2018. Retrieved 2019`
+* `{{cite wikisource |last=Author |first=B. |title=Book Title |wslink=Book Title |publisher=Paris |year=1800}}` becomes `B. Author. <em>[[src:Book Title|Book Title]]</em>. Paris, 1800. [[Wikisource]]`
+* `{{cite CIA World Factbook |country=North Korea |section=Geography |year=2021 |access-date=2022-03-01}}` becomes `"North Korea § Geography". <em>The World Factbook</em> (2021 ed.). Central Intelligence Agency. Retrieved 2022-03-01`
+* `{{cite letter |last=Sender |first=A. |recipient=Recipient |subject=Important Matters |publisher=Archive |date=1900}}` becomes `A. Sender. "Important Matters" (Letter to Recipient). Archive. 1900`
+* `{{cite arXiv |last=Physicist |first=A. |title=Quantum Theory |date=2019 |eprint=1901.00001 |class=hep-th}}` becomes `A. Physicist. "Quantum Theory". 2019. arXiv:1901.00001 [hep-th]`
+* `{{cite q |Q123456}}` becomes `Wikidata item [https://www.wikidata.org/wiki/Q123456 Q123456]`
 * `{{cite web|last=Demick|first=Barbara|title=North Korea's giant leap backwards|url=http://example.com|website=The Guardian|date=16 July 2010}}` becomes `Barbara Demick. "North Korea's giant leap backwards". <em>The Guardian</em>. 16 July 2010`, with the title linked when `url=` is present
 * `{{Cite journal|last=Kim|first=Chin W.|title=The Legacy of King Sejong the Great|journal=Studies in the Linguistic Sciences|year=2000}}` becomes `Chin W. Kim. "The Legacy of King Sejong the Great". <em>Studies in the Linguistic Sciences</em>. 2000`
 * `{{cite magazine|title=The Japan Alps|magazine=National Geographic|date=1910}}` becomes `"The Japan Alps". <em>National Geographic</em>. 1910`
