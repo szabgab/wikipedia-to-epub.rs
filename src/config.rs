@@ -9,7 +9,7 @@ use tracing::Level;
 
 #[derive(Debug, Deserialize, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
 #[serde(rename_all = "lowercase")]
-pub enum CachingMode {
+pub(crate) enum CachingMode {
     None,
     Local,
     Central,
@@ -17,20 +17,20 @@ pub enum CachingMode {
 
 #[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
-pub enum ArticleType {
+pub(crate) enum ArticleType {
     Section,
 }
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(untagged)]
-pub enum ArticleConfig {
+pub(crate) enum ArticleConfig {
     Simple(String),
     Detailed(Box<DetailedArticle>),
 }
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct DetailedArticle {
+pub(crate) struct DetailedArticle {
     pub title: String,
     #[serde(rename = "type")]
     pub r#type: Option<ArticleType>,
@@ -48,7 +48,7 @@ pub enum ChapterStyle {
 
 #[derive(Debug, Deserialize, Clone, Copy, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
-pub enum LinksToExcludedPages {
+pub(crate) enum LinksToExcludedPages {
     Display,
     Emphasize,
     Disregard,
@@ -56,7 +56,7 @@ pub enum LinksToExcludedPages {
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct BookConfig {
+pub(crate) struct BookConfig {
     pub id: Option<String>,
     pub chapters: ChapterStyle,
     pub metadata: Metadata,
@@ -78,7 +78,7 @@ pub struct BookConfig {
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct Metadata {
+pub(crate) struct Metadata {
     pub title: String,
     pub author: String,
     pub license: Option<String>,
@@ -88,7 +88,7 @@ pub struct Metadata {
 
 #[derive(Debug, Parser)]
 #[command(name = "wikipedia-to-epub", version = concat!(env!("CARGO_PKG_VERSION"), " (SHA: ", env!("GIT_SHA"), ")"))]
-pub struct CliArgs {
+pub(crate) struct CliArgs {
     #[arg(value_name = "config.yaml")]
     pub config_path: PathBuf,
     #[arg(long = "local", value_name = "pages-dir")]
@@ -109,11 +109,11 @@ pub struct CliArgs {
     pub output: Option<PathBuf>,
 }
 
-pub fn parse_args() -> AppResult<CliArgs> {
+pub(crate) fn parse_args() -> AppResult<CliArgs> {
     parse_args_from(std::env::args_os())
 }
 
-pub fn parse_args_from<I, T>(args: I) -> AppResult<CliArgs>
+pub(crate) fn parse_args_from<I, T>(args: I) -> AppResult<CliArgs>
 where
     I: IntoIterator<Item = T>,
     T: Into<std::ffi::OsString> + Clone,
@@ -121,7 +121,7 @@ where
     CliArgs::try_parse_from(args).map_err(|err| AppError::Message(err.to_string()))
 }
 
-pub fn read_config(path: &Path) -> AppResult<BookConfig> {
+pub(crate) fn read_config(path: &Path) -> AppResult<BookConfig> {
     let content = fs::read_to_string(path)?;
     parse_config_str(path, &content)
 }
@@ -186,7 +186,7 @@ fn record_article_title(
     Ok(())
 }
 
-pub fn current_utc_date() -> (i32, i32, i32) {
+pub(crate) fn current_utc_date() -> (i32, i32, i32) {
     if let Ok(mock_date) = std::env::var("WIKIPEDIA_TO_EPUB_MOCK_DATE") {
         let mock_date = mock_date.trim();
         let parts: Vec<&str> = mock_date.split('-').collect();
@@ -246,12 +246,12 @@ pub fn current_utc_date() -> (i32, i32, i32) {
     (year, month, day)
 }
 
-pub fn current_utc_date_string() -> String {
+pub(crate) fn current_utc_date_string() -> String {
     let (year, month, day) = current_utc_date();
     format!("{year:04}-{month:02}-{day:02}")
 }
 
-pub fn parse_date_string(s: &str) -> Option<(i32, i32, i32)> {
+pub(crate) fn parse_date_string(s: &str) -> Option<(i32, i32, i32)> {
     let s = s.trim().replace(',', "");
     let parts: Vec<&str> = s.split_whitespace().collect();
     if parts.len() != 3 {
