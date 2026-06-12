@@ -1214,15 +1214,6 @@ fn flush_list(html: &mut Vec<String>, active_list: &mut Option<char>) {
     }
 }
 
-fn parse_template_number(value: &str) -> Option<f64> {
-    let number = value
-        .trim()
-        .replace([',', ' '], "")
-        .replace("&minus;", "-")
-        .replace('−', "-");
-
-    number.parse::<f64>().ok()
-}
 
 fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks, language: &str) -> String {
     cleanup_inline_markup_with_excluded_links(

@@ -133,3 +133,30 @@ pub fn person_link_keys(base: &str, index: usize) -> Vec<String> {
         }
     }
 }
+
+pub(crate) fn parse_template_number(value: &str) -> Option<f64> {
+    let number = value
+        .trim()
+        .replace([',', ' '], "")
+        .replace("&minus;", "-")
+        .replace('−', "-");
+
+    number.parse::<f64>().ok()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_template_number() {
+        assert_eq!(parse_template_number("123"), Some(123.0));
+        assert_eq!(parse_template_number("1,234.56"), Some(1234.56));
+        assert_eq!(parse_template_number(" 1 000 "), Some(1000.0));
+        assert_eq!(parse_template_number("-50"), Some(-50.0));
+        assert_eq!(parse_template_number("&minus;10.5"), Some(-10.5));
+        assert_eq!(parse_template_number("−20"), Some(-20.0));
+        assert_eq!(parse_template_number("abc"), None);
+        assert_eq!(parse_template_number(""), None);
+    }
+}

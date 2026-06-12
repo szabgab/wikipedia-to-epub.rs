@@ -1,9 +1,8 @@
-use crate::parse_template_number;
 use crate::templates::formatting::{
     format_number_with_commas, template_named_params, template_positional_params,
 };
 use crate::templates::render_templates;
-use crate::tools::split_template_params;
+use crate::tools::{split_template_params, parse_template_number};
 
 use crate::types::{DispatchTable, TemplateHandler};
 use std::collections::HashMap;
