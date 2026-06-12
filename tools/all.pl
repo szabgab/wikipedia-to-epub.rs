@@ -37,10 +37,12 @@ sub create_yaml_config_file {
         $row =~ s/^  language: .*/  language: $lang/;
         $row =~ s/^images: .*/images: true/;
         $row =~ s/^output-file: .*/output-file: all-$lang.epub/;
+        $row =~ s/^resources: .*/resources: true/;
+        $row =~ s/^links_to_pages: .*/links_to_pages: true/;
         push @content, $row;
         if ($row =~ /^articles:/) {
             for my $page (@$pages) {
-                push @content, "  - $page\n\n";
+                push @content, "  - $page\n";
             }
             last;
         }
