@@ -7,16 +7,12 @@ use std::collections::HashMap;
 
 use cached::macros::cached;
 
+use crate::templates::formatting::get_empty_dispatch_table;
 use crate::tools::split_template_name;
-use crate::types::{DispatchTable, EmptyDispatchTable, EmptyHandler};
+use crate::types::DispatchTable;
 pub(crate) use formatting::citation_people;
 
-use formatting::{
-    render_awol_template, render_died_of_wounds_template, render_five_nonbreaking_spaces_template,
-    render_formatnum_template, render_lagrange_template, render_mia_template,
-    render_open_access_template, render_pkia_template, render_pow_template, render_ship_template,
-    render_wia_template,
-};
+use formatting::{render_formatnum_template, render_lagrange_template, render_ship_template};
 
 use crate::increment_recognized_skipped_template_count;
 use crate::increment_unknown_skipped_template_count;
@@ -146,24 +142,7 @@ pub(crate) fn render_template(content: &str) -> String {
         return lookup.get(lower.as_str()).unwrap()(params);
     }
 
-    let empty_lookup: EmptyDispatchTable = HashMap::from([
-        ("awol", render_awol_template as EmptyHandler),
-        (
-            "died of wounds",
-            render_died_of_wounds_template as EmptyHandler,
-        ),
-        ("dow", render_died_of_wounds_template as EmptyHandler),
-        ("pkia", render_pkia_template as EmptyHandler),
-        ("pow", render_pow_template as EmptyHandler),
-        ("mia", render_mia_template as EmptyHandler),
-        ("wia", render_wia_template as EmptyHandler),
-        ("open access", render_open_access_template as EmptyHandler),
-        ("free access", render_open_access_template as EmptyHandler),
-        (
-            "nb5",
-            render_five_nonbreaking_spaces_template as EmptyHandler,
-        ),
-    ]);
+    let empty_lookup = get_empty_dispatch_table();
 
     if empty_lookup.contains_key(&lower.as_str()) {
         return empty_lookup.get(lower.as_str()).unwrap()();

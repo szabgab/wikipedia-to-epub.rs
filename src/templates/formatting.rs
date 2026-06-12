@@ -5,7 +5,7 @@ use crate::config::current_utc_date;
 use crate::config::parse_date_string;
 use crate::templates::render_templates;
 use crate::tools::{person_first_keys, person_last_keys, person_link_keys, split_template_params};
-use crate::types::{DispatchTable, PersonRole, TemplateHandler};
+use crate::types::{DispatchTable, EmptyDispatchTable, EmptyHandler, PersonRole, TemplateHandler};
 
 /// [jct](https://en.wikipedia.org/wiki/Template:Jct)
 fn render_jct_template(params: &str) -> String {
@@ -4510,4 +4510,26 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("hlist", render_hlist_template as TemplateHandler),
         ("flatlist", render_hlist_template as TemplateHandler),
     ])
+}
+
+pub(crate) fn get_empty_dispatch_table() -> HashMap<&'static str, fn() -> String> {
+    let empty_lookup: EmptyDispatchTable = HashMap::from([
+        ("awol", render_awol_template as EmptyHandler),
+        (
+            "died of wounds",
+            render_died_of_wounds_template as EmptyHandler,
+        ),
+        ("dow", render_died_of_wounds_template as EmptyHandler),
+        ("pkia", render_pkia_template as EmptyHandler),
+        ("pow", render_pow_template as EmptyHandler),
+        ("mia", render_mia_template as EmptyHandler),
+        ("wia", render_wia_template as EmptyHandler),
+        ("open access", render_open_access_template as EmptyHandler),
+        ("free access", render_open_access_template as EmptyHandler),
+        (
+            "nb5",
+            render_five_nonbreaking_spaces_template as EmptyHandler,
+        ),
+    ]);
+    empty_lookup
 }
