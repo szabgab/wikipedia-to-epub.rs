@@ -4779,6 +4779,139 @@ fn render_wikitext_formats_citation_attribution_template() {
 }
 
 #[test]
+fn render_wikitext_formats_ordered_list_template() {
+    assert_eq!(
+        render_templates("{{olist|Item A|Item B}}"),
+        "\n# Item A\n# Item B"
+    );
+    assert_eq!(
+        render_templates("{{ordered list|Item A|Item B}}"),
+        "\n# Item A\n# Item B"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_webtrans_template() {
+    assert_eq!(
+        render_templates("{{webtrans|http://example.com/test.pdf|Merger proposal|ja}}"),
+        "[[official-url:http://example.com/test.pdf|Merger proposal]] (in Japanese)"
+    );
+    assert_eq!(
+        render_templates("{{webtrans|url=http://example.com|title=Example|lang=de}}"),
+        "[[official-url:http://example.com|Example]] (in German)"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_osm_template() {
+    assert_eq!(
+        render_templates("{{OSM|n|7530096619|Glen Blair}}"),
+        "[[official-url:https://www.openstreetmap.org/node/7530096619|7530096619 Glen Blair on OpenStreetMap]]"
+    );
+    assert_eq!(
+        render_templates("{{OSM|w|10273762|Sherwood Rd.}}"),
+        "[[osmway:10273762|10273762 Sherwood Rd. on OpenStreetMap]]"
+    );
+    assert_eq!(
+        render_templates("{{OSM|r|9942914}}"),
+        "[[osmrelation:9942914|9942914 on OpenStreetMap]]"
+    );
+    assert_eq!(
+        render_templates("{{OSM|relation=9942914}}"),
+        "[[osmrelation:9942914|9942914]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_wiktionary_inline_template() {
+    assert_eq!(
+        render_templates("{{Wiktionary-inline|word}}"),
+        "The dictionary definition of [[wikt:word|word]] at Wiktionary"
+    );
+    assert_eq!(
+        render_templates("{{wti|word|Word|extratext=sense #2}}"),
+        "The dictionary definition of [[wikt:word|Word]] at Wiktionary, sense #2"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_cite_opentopomap_template() {
+    assert_eq!(
+        render_templates(
+            "{{cite opentopomap|name=Mount Everest|lat=27.988056|long=86.925278|access-date=2020-06-08}}"
+        ),
+        "\"[[official-url:https://opentopomap.org/#marker=14/27.988056/86.925278|Topographic map of Mount Everest]]\". ''opentopomap.org''. Retrieved 2020-06-08"
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_engvarb_template() {
+    assert_eq!(render_templates("{{EngvarB}}"), "");
+}
+
+#[test]
+fn render_wikitext_formats_colorbull_template() {
+    assert_eq!(
+        render_templates("{{colorbull|red|circle|Mount Everest}}"),
+        "[[Mount Everest|__WIKIPEDIA_TO_EPUB_COLOR_START__red__WIKIPEDIA_TO_EPUB_COLOR_MID__○__WIKIPEDIA_TO_EPUB_COLOR_END__]]"
+    );
+    assert_eq!(
+        render_templates("{{colorbull|blue}}"),
+        "__WIKIPEDIA_TO_EPUB_COLOR_START__blue__WIKIPEDIA_TO_EPUB_COLOR_MID__■__WIKIPEDIA_TO_EPUB_COLOR_END__"
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_how_to_template() {
+    assert_eq!(render_templates("{{how-to}}"), "");
+}
+
+#[test]
+fn render_wikitext_formats_portal_inline_template() {
+    assert_eq!(
+        render_templates("{{Portal-inline|Canada}}"),
+        "[[Portal:Canada|Canada portal]]"
+    );
+    assert_eq!(
+        render_templates("{{portal inline|Canada|short=yes}}"),
+        "[[Portal:Canada|Canada]]"
+    );
+    assert_eq!(
+        render_templates("{{Portal-inline|Canada|text=Canadian portal}}"),
+        "[[Portal:Canada|Canadian portal]]"
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_end_box_template() {
+    assert_eq!(render_templates("{{end box}}"), "");
+}
+
+#[test]
+fn render_wikitext_formats_mp_template() {
+    assert_eq!(
+        render_templates("{{Mp|2004 MN|4}}"),
+        "2004 MN__WIKIPEDIA_TO_EPUB_SUB_START__4__WIKIPEDIA_TO_EPUB_SUB_END__"
+    );
+    assert_eq!(
+        render_templates("{{minor planet|15788|1993 SB}}"),
+        "(15788) 1993 SB"
+    );
+    assert_eq!(
+        render_templates("{{Mp|15760|1992 QB|1}}"),
+        "(15760) 1992 QB__WIKIPEDIA_TO_EPUB_SUB_START__1__WIKIPEDIA_TO_EPUB_SUB_END__"
+    );
+    assert_eq!(
+        render_templates("{{minor planet|S|2000|1998 WW|31|1}}"),
+        "S/2000 (1998 WW__WIKIPEDIA_TO_EPUB_SUB_START__31__WIKIPEDIA_TO_EPUB_SUB_END__) 1"
+    );
+    assert_eq!(
+        render_templates("{{Mp|S|2005|1994 XD|1}}"),
+        "S/2005 (1994 XD) 1"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_poem_quote_template() {
     let rendered = render_wikitext(
         "Sample",

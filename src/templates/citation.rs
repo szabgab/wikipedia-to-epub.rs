@@ -1366,6 +1366,53 @@ fn render_citation_attribution_template(params: &str) -> String {
     )
 }
 
+fn render_cite_opentopomap_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let name = template_param(&named, &["name"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+    let lat = template_param(&named, &["lat"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+    let long = template_param(&named, &["long"])
+        .or_else(|| positional.get(2).map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+    let access_date = template_param(&named, &["access-date", "accessdate"])
+        .or_else(|| positional.get(3).map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+    let zoom = template_param(&named, &["zoom"])
+        .or_else(|| positional.get(4).map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("14");
+
+    if lat.is_empty() || long.is_empty() {
+        return String::new();
+    }
+
+    let url = format!("https://opentopomap.org/#marker={}/{}/{}", zoom, lat, long);
+    let title = if name.is_empty() {
+        "Topographic map".to_string()
+    } else {
+        format!("Topographic map of {}", render_templates(name))
+    };
+
+    let mut parts = Vec::new();
+    parts.push(format!("\"[[official-url:{}|{}]]\"", url, title));
+    parts.push("''opentopomap.org''".to_string());
+
+    if !access_date.is_empty() {
+        parts.push(format!("Retrieved {}", render_templates(access_date)));
+    }
+
+    parts.join(". ")
+}
+
 pub(crate) fn get_dispatch_table() -> DispatchTable {
     HashMap::from([
         (
@@ -1461,5 +1508,9 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ),
         ("multiref", render_multiref_template as TemplateHandler),
         ("multiref2", render_multiref_template as TemplateHandler),
+        (
+            "cite opentopomap",
+            render_cite_opentopomap_template as TemplateHandler,
+        ),
     ])
 }

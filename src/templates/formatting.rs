@@ -4397,6 +4397,33 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             "britannica url",
             render_britannica_url_template as TemplateHandler,
         ),
+        ("olist", render_ordered_list_template as TemplateHandler),
+        (
+            "ordered list",
+            render_ordered_list_template as TemplateHandler,
+        ),
+        ("webtrans", render_webtrans_template as TemplateHandler),
+        ("osm", render_osm_template as TemplateHandler),
+        (
+            "wiktionary-inline",
+            render_wiktionary_inline_template as TemplateHandler,
+        ),
+        (
+            "wiktionary inline",
+            render_wiktionary_inline_template as TemplateHandler,
+        ),
+        ("wti", render_wiktionary_inline_template as TemplateHandler),
+        ("colorbull", render_colorbull_template as TemplateHandler),
+        (
+            "portal-inline",
+            render_portal_inline_template as TemplateHandler,
+        ),
+        (
+            "portal inline",
+            render_portal_inline_template as TemplateHandler,
+        ),
+        ("mp", render_mp_template as TemplateHandler),
+        ("minor planet", render_mp_template as TemplateHandler),
     ])
 }
 
@@ -4567,6 +4594,277 @@ fn render_britannica_url_template(params: &str) -> String {
         )
     } else {
         format!("{} at ''Encyclopædia Britannica''", link)
+    }
+}
+
+fn render_ordered_list_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let mut items = Vec::new();
+    for param in positional {
+        let trimmed = param.trim();
+        if !trimmed.is_empty() {
+            items.push(format!("# {}", render_templates(trimmed)));
+        }
+    }
+    if items.is_empty() {
+        String::new()
+    } else {
+        format!("\n{}", items.join("\n"))
+    }
+}
+
+fn render_webtrans_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let url = template_param(&named, &["url"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+    let title = template_param(&named, &["title"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .unwrap_or(url);
+    let lang = template_param(&named, &["lang"])
+        .or_else(|| positional.get(2).map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+
+    if url.is_empty() {
+        return String::new();
+    }
+
+    let rendered_title = render_templates(title);
+    let mut link = format!("[[official-url:{}|{}]]", url, rendered_title);
+    if !lang.is_empty() {
+        let lang_lower = lang.to_ascii_lowercase();
+        let lang_name = match lang_lower.as_str() {
+            "ar" => "Arabic",
+            "de" => "German",
+            "en" => "English",
+            "es" => "Spanish",
+            "fa" => "Persian",
+            "fr" => "French",
+            "he" => "Hebrew",
+            "ja" => "Japanese",
+            "ko" => "Korean",
+            "ru" => "Russian",
+            "zh" | "zh-cn" | "zh-hans" | "zh-hant" | "zh-tw" => "Chinese",
+            other => other,
+        };
+        link = format!("{} (in {})", link, lang_name);
+    }
+    link
+}
+
+fn render_osm_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    if let Some(relation_id) = template_param(&named, &["relation"]) {
+        let id = relation_id.trim();
+        if !id.is_empty() {
+            return format!("[[osmrelation:{}|{}]]", id, id);
+        }
+    }
+
+    let type_val = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("")
+        .to_lowercase();
+    let id = template_param(&named, &["2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+    let name = template_param(&named, &["3"])
+        .or_else(|| positional.get(2).map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+
+    if id.is_empty() {
+        return String::new();
+    }
+
+    let label = if name.is_empty() {
+        format!("{} on OpenStreetMap", id)
+    } else {
+        format!("{} {} on OpenStreetMap", id, render_templates(name))
+    };
+
+    let type_char = type_val.chars().next().unwrap_or(' ');
+    match type_char {
+        'r' => format!("[[osmrelation:{}|{}]]", id, label),
+        'w' => format!("[[osmway:{}|{}]]", id, label),
+        _ => format!(
+            "[[official-url:https://www.openstreetmap.org/node/{}|{}]]",
+            id, label
+        ),
+    }
+}
+
+fn render_wiktionary_inline_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let term = template_param(&named, &["1", "term"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+    let label = template_param(&named, &["2", "displayed text"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .unwrap_or(term);
+    let extratext = template_param(&named, &["extratext"])
+        .map(str::trim)
+        .unwrap_or("");
+
+    if term.is_empty() {
+        return String::new();
+    }
+
+    let rendered_label = render_templates(label);
+    if extratext.is_empty() {
+        format!(
+            "The dictionary definition of [[wikt:{}|{}]] at Wiktionary",
+            term, rendered_label
+        )
+    } else {
+        format!(
+            "The dictionary definition of [[wikt:{}|{}]] at Wiktionary, {}",
+            term,
+            rendered_label,
+            render_templates(extratext)
+        )
+    }
+}
+
+fn render_colorbull_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let color = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("black");
+    let shape = template_param(&named, &["2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("square")
+        .to_lowercase();
+    let wikilink = template_param(&named, &["3"])
+        .or_else(|| positional.get(2).map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+
+    let shape_char = match shape.as_str() {
+        "c" | "circle" | "r" | "round" => "○",
+        "d" | "diamond" => "◇",
+        "tu" | "up" | "uptriangle" => "△",
+        "td" | "dn" | "downtriangle" => "▽",
+        "tl" | "lt" | "lefttriangle" => "◁",
+        "tr" | "rt" | "righttriangle" => "▷",
+        _ => "■",
+    };
+
+    let colored_shape = format!(
+        "__WIKIPEDIA_TO_EPUB_COLOR_START__{}__WIKIPEDIA_TO_EPUB_COLOR_MID__{}__WIKIPEDIA_TO_EPUB_COLOR_END__",
+        color, shape_char
+    );
+
+    if wikilink.is_empty() {
+        colored_shape
+    } else {
+        format!("[[{}|{}]]", wikilink, colored_shape)
+    }
+}
+
+fn render_portal_inline_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let portal_name = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+    let text = template_param(&named, &["text"])
+        .map(str::trim)
+        .unwrap_or("");
+    let short = template_param(&named, &["short"])
+        .map(str::trim)
+        .unwrap_or("");
+
+    if portal_name.is_empty() {
+        return String::new();
+    }
+
+    let label = if !text.is_empty() {
+        render_templates(text)
+    } else if !short.is_empty() {
+        render_templates(portal_name)
+    } else {
+        format!("{} portal", render_templates(portal_name))
+    };
+
+    format!("[[Portal:{}|{}]]", portal_name, label)
+}
+
+fn render_mp_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.is_empty() {
+        return String::new();
+    }
+
+    // Check if satellite
+    if positional[0].trim().eq_ignore_ascii_case("S") {
+        match positional.len() {
+            1 => return "S/".to_string(),
+            2 => return format!("S/{}", positional[1].trim()),
+            3 => return format!("S/{} ({})", positional[1].trim(), positional[2].trim()),
+            4 => {
+                return format!(
+                    "S/{} ({}) {}",
+                    positional[1].trim(),
+                    positional[2].trim(),
+                    positional[3].trim()
+                );
+            }
+            _ => {
+                let year = positional[1].trim();
+                let primary = positional[2].trim();
+                let sub_val = positional[3].trim();
+                let trailing = positional[4].trim();
+                return format!(
+                    "S/{} ({}__WIKIPEDIA_TO_EPUB_SUB_START__{}__WIKIPEDIA_TO_EPUB_SUB_END__) {}",
+                    year, primary, sub_val, trailing
+                );
+            }
+        }
+    }
+
+    match positional.len() {
+        1 => positional[0].trim().to_string(),
+        2 => {
+            let p0 = positional[0].trim();
+            let p1 = positional[1].trim();
+            if p0.chars().all(|c| c.is_ascii_digit()) {
+                format!("({}) {}", p0, p1)
+            } else {
+                format!(
+                    "{}__WIKIPEDIA_TO_EPUB_SUB_START__{}__WIKIPEDIA_TO_EPUB_SUB_END__",
+                    p0, p1
+                )
+            }
+        }
+        _ => {
+            let p0 = positional[0].trim();
+            let p1 = positional[1].trim();
+            let p2 = positional[2].trim();
+            format!(
+                "({}) {}__WIKIPEDIA_TO_EPUB_SUB_START__{}__WIKIPEDIA_TO_EPUB_SUB_END__",
+                p0, p1, p2
+            )
+        }
     }
 }
 

@@ -1,5 +1,52 @@
 # Codex Session Notes
 
+## 2026-06-12 Handle olist, webtrans, OSM, wiktionary-inline, cite opentopomap, EngvarB, Colorbull, how-to, portal-inline, end box, and mp Templates
+
+### Summary
+Added support for 11 additional Wikipedia templates:
+1. `olist` / `ordered list`: Renders a numbered wikitext list.
+2. `webtrans`: Renders a machine-translation external URL link `{title} (in {lang})`.
+3. `OSM`: Renders an OpenStreetMap link pointing to nodes, ways, or relations.
+4. `wiktionary-inline` / `wiktionary inline` / `wti`: Renders inline links referencing Wiktionary definitions.
+5. `cite opentopomap`: Renders topographic map citation wrapper linking to `opentopomap.org`.
+6. `EngvarB`: Silently skipped (added to `src/silent.csv`).
+7. `Colorbull`: Renders a custom-colored bullet character, optionally wrapped in a wikilink.
+8. `how-to`: Silently skipped (added to `src/silent.csv`).
+9. `portal-inline` / `portal inline`: Renders an inline link referencing a Wikipedia portal.
+10. `end box`: Silently skipped (added to `src/silent.csv`).
+11. `mp` / `minor planet`: Formats minor planet designations, subscripting parts of the designation or joining parameters.
+
+### Decisions Made
+- Implemented rendering logic for all non-silent templates in [src/templates/citation.rs](file:///opt/src/templates/citation.rs) and [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+- Added separate unit tests for all 11 templates in [src/tests.rs](file:///opt/src/tests.rs).
+- Added `EngvarB`, `how-to`, and `end box` to [src/silent.csv](file:///opt/src/silent.csv) and sorted it alphabetically using `./sort.sh`.
+- Regenerated the expected integration book fixtures for `planets` because the `Solar System` article uses the `mp` template, which is now correctly parsed and rendered.
+- Documented all new templates in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+  - Implemented and registered `cite opentopomap`.
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+  - Implemented and registered `olist`/`ordered list`, `webtrans`, `osm`, `wiktionary-inline`/`wiktionary inline`/`wti`, `colorbull`, `portal-inline`/`portal inline`, and `mp`/`minor planet`.
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+  - Registered all new handled template names in `is_handled_template_name`.
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+  - Added `EngvarB`, `how-to`, and `end box` to silent list, sorted.
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+  - Added focused unit tests for each new template.
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+  - Documented rules and examples for all 11 new templates.
+- `expected/planets/OEBPS/Solar_System.xhtml` [MODIFY]
+  - Updated planets book fixture with parsed minor planet designation.
+
+### Tests Run
+- Checked compilation and warnings: `cargo check` and `cargo clippy --all-targets -- -D warnings` (Clean).
+- Formatted codebase: `cargo fmt` (Clean).
+- Executed full test suite: `cargo test` (All 309 unit tests, 34 integration tests, and 4 doc-tests passed).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-12 Handle ublist, end plainlist, multiref, hosking-jfood, parabr, Multiref2, Age in years..., est., e28, Britannica URL, Surname, and citation-attribution Templates
 
 ### Summary

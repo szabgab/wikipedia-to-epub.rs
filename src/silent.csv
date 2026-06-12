@@ -1,5 +1,5 @@
--
 '
+-
 0
 About,                       Linking the reader to other meaning of the same word.     https://en.wikipedia.org/wiki/Template:About
 additional citations needed, Asks for help                                             https://en.wikipedia.org/wiki/Template:Additional_citation_needed
@@ -54,7 +54,9 @@ Div end
 dubious
 efn
 efn-ua
+end box
 end plainlist
+EngvarB
 Excessive citations inline
 Expand German
 Expand Japanese
@@ -73,6 +75,7 @@ Gallery
 GeoGroup
 Hatnote
 Hatnote group
+how-to
 huh
 IMDb name
 incomplete list,             A list which is missing obvious entries.                  https://en.wikipedia.org/wiki/Template:Incomplete_list

@@ -189,6 +189,17 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{multiref|Ref 1|Ref 2}}` (and its alias `{{Multiref2}}`) joins positional ref values with a semicolon: `Ref 1; Ref 2`
 * `{{hosking-jfood|page=123}}` renders Richard Hosking book citation format: `Hosking, Richard (1996). ''A Dictionary of Japanese Food: Ingredients & Culture''. Tuttle Publishing. p. 123. ISBN 978-0-8048-2042-4`
 * `{{citation-attribution|text}}` renders public domain text attribution: `One or more of the preceding sentences incorporates text from a work now in the public domain: text`
+* `{{olist|Item 1|Item 2}}` (and its alias `{{ordered list}}`) renders a numbered list: `# Item 1\n# Item 2`
+* `{{webtrans|url|title|lang}}` renders an external link with translation language indicator: `[[official-url:url|title]] (in lang)`
+* `{{OSM|type|id|name}}` renders an OpenStreetMap link pointing to a node, way, or relation
+* `{{Wiktionary-inline|word}}` (and its alias `{{wti}}`) renders a definition reference link: `The dictionary definition of [[wikt:word|word]] at Wiktionary`
+* `{{cite opentopomap|name|lat|long}}` renders a topographic map citation from opentopomap.org
+* `{{EngvarB}}` is silently skipped
+* `{{colorbull|color|shape|link}}` renders a colored bullet point character: `__WIKIPEDIA_TO_EPUB_COLOR_START__color__WIKIPEDIA_TO_EPUB_COLOR_MID__shape_char__WIKIPEDIA_TO_EPUB_COLOR_END__`
+* `{{how-to}}` is silently skipped
+* `{{Portal-inline|name}}` renders an inline portal link: `[[Portal:name|name portal]]`
+* `{{end box}}` is silently skipped
+* `{{mp|leading|subscript}}` (and its alias `{{minor planet}}`) formats minor planet designations with subscripts
 * `{{harvc|last=Peterson|first=Mark|year=1992|in=Kim-Renaud|c=The Sejong Sillok}}` becomes `Mark Peterson. "The Sejong Sillok". In Kim-Renaud 1992`
 * `{{As of|2023}}` becomes `As of 2023`; `{{As of|2009|lc=y}}` becomes `as of 2009`
 * `{{died-in|202 BC}}` becomes `d. 202 BC`
