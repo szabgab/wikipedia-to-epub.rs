@@ -2,14 +2,14 @@ use std::collections::HashMap;
 
 use regex::Regex;
 
-use crate::types::{DispatchTable, EmptyDispatchTable, EmptyHandler, PersonRole, TemplateHandler};
+use crate::types::{DispatchTable, EmptyDispatchTable, EmptyHandler, TemplateHandler};
 
 use crate::config::current_utc_date;
 use crate::config::parse_date_string;
 
 use crate::tools::{
-    person_first_keys, person_last_keys, person_link_keys, split_template_params,
-    template_named_params, template_param, template_param_owned, template_positional_params,
+    split_template_params, template_named_params, template_param, template_param_owned,
+    template_positional_params,
 };
 
 use crate::templates::render_templates;
@@ -2127,95 +2127,6 @@ fn render_verse_transliteration_translation_template(params: &str) -> String {
 
     rendered.push_str("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_END__\n");
     rendered
-}
-
-pub(crate) fn citation_people(named: &HashMap<String, String>, role: PersonRole) -> String {
-    let mut people = Vec::new();
-    let (person_key, first_key, last_key, link_key) = match role {
-        PersonRole::Author => ("author", "first", "last", "author-link"),
-        PersonRole::Editor => ("editor", "editor-first", "editor-last", "editor-link"),
-    };
-
-    if let Some(person) = template_param(named, &[person_key]) {
-        people.push(render_templates(person));
-    }
-
-    let unnumbered_first_keys = person_first_keys(first_key, 0);
-    let unnumbered_last_keys = person_last_keys(last_key, 0);
-    let unnumbered_link_keys = person_link_keys(link_key, 0);
-    let unnumbered_first = template_param_owned(named, &unnumbered_first_keys);
-    let unnumbered_last = template_param_owned(named, &unnumbered_last_keys);
-    let unnumbered_link = template_param_owned(named, &unnumbered_link_keys);
-    let unnumbered_name = match (unnumbered_first.as_deref(), unnumbered_last.as_deref()) {
-        (Some(first), Some(last)) => {
-            format!("{} {}", render_templates(first), render_templates(last))
-        }
-        (Some(first), None) => render_templates(first),
-        (None, Some(last)) => render_templates(last),
-        (None, None) => String::new(),
-    };
-    let has_unnumbered_name = !unnumbered_name.is_empty();
-
-    if has_unnumbered_name {
-        if let Some(link) = unnumbered_link.filter(|value| !value.trim().is_empty()) {
-            people.push(format!(
-                "[[{}|{}]]",
-                render_templates(&link),
-                unnumbered_name
-            ));
-        } else {
-            people.push(unnumbered_name);
-        }
-    }
-
-    for index in 1..=8 {
-        if has_unnumbered_name && matches!(role, PersonRole::Editor) && index == 1 {
-            continue;
-        }
-
-        let first_keys = person_first_keys(first_key, index);
-        let last_keys = person_last_keys(last_key, index);
-        let link_keys = person_link_keys(link_key, index);
-
-        let first = template_param_owned(named, &first_keys);
-        let last = template_param_owned(named, &last_keys);
-        let link = template_param_owned(named, &link_keys);
-
-        if first.is_none() && last.is_none() {
-            continue;
-        }
-
-        let name = match (first.as_deref(), last.as_deref()) {
-            (Some(first), Some(last)) => {
-                format!("{} {}", render_templates(first), render_templates(last))
-            }
-            (Some(first), None) => render_templates(first),
-            (None, Some(last)) => render_templates(last),
-            (None, None) => String::new(),
-        };
-
-        if let Some(link) = link.filter(|value| !value.trim().is_empty()) {
-            people.push(format!("[[{}|{}]]", render_templates(&link), name));
-        } else {
-            people.push(name);
-        }
-    }
-
-    if matches!(role, PersonRole::Author)
-        && let Some(others) = template_param(named, &["others"])
-    {
-        people.push(render_templates(others));
-    }
-
-    match people.as_slice() {
-        [] => String::new(),
-        [person] => person.clone(),
-        [first, second] => format!("{first} and {second}"),
-        _ => {
-            let last = people.last().cloned().unwrap_or_default();
-            format!("{}, and {last}", people[..people.len() - 1].join(", "))
-        }
-    }
 }
 
 /// [for timeline](https://en.wikipedia.org/wiki/Template:For_timeline)

@@ -6,6 +6,7 @@ pub mod lang;
 use std::collections::HashMap;
 
 use cached::macros::cached;
+use tracing::debug;
 
 use crate::types::DispatchTable;
 
@@ -18,7 +19,6 @@ use crate::templates::formatting::{
 
 use crate::increment_recognized_skipped_template_count;
 use crate::increment_unknown_skipped_template_count;
-use tracing::debug;
 
 pub(crate) fn render_templates(text: &str) -> String {
     let mut rendered = String::new();
