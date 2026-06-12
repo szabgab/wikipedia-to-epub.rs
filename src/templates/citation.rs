@@ -1,12 +1,11 @@
 use std::collections::HashMap;
 
-use crate::types::{DispatchTable, PersonRole, TemplateHandler};
-
-use crate::templates::formatting::{
-    citation_people, template_named_params, template_param, template_param_owned,
-    template_positional_params,
-};
+use crate::templates::formatting::citation_people;
 use crate::templates::render_templates;
+use crate::tools::{
+    template_named_params, template_param, template_param_owned, template_positional_params,
+};
+use crate::types::{DispatchTable, PersonRole, TemplateHandler};
 
 /// [citation needed span](https://en.wikipedia.org/wiki/Template:Citation_needed_span)
 fn render_citation_needed_span_template(params: &str) -> String {

@@ -4,7 +4,10 @@ use std::collections::HashMap;
 use crate::config::current_utc_date;
 use crate::config::parse_date_string;
 use crate::templates::render_templates;
-use crate::tools::{person_first_keys, person_last_keys, person_link_keys, split_template_params};
+use crate::tools::{
+    person_first_keys, person_last_keys, person_link_keys, split_template_params,
+    template_named_params, template_param, template_param_owned, template_positional_params,
+};
 use crate::types::{DispatchTable, EmptyDispatchTable, EmptyHandler, PersonRole, TemplateHandler};
 
 /// [jct](https://en.wikipedia.org/wiki/Template:Jct)
@@ -2209,47 +2212,6 @@ pub(crate) fn citation_people(named: &HashMap<String, String>, role: PersonRole)
             format!("{}, and {last}", people[..people.len() - 1].join(", "))
         }
     }
-}
-
-pub(crate) fn template_named_params(params: &str) -> HashMap<String, String> {
-    split_template_params(params)
-        .into_iter()
-        .filter_map(|param| {
-            let (key, value) = param.split_once('=')?;
-            Some((key.trim().to_lowercase(), value.trim().to_string()))
-        })
-        .collect()
-}
-
-pub(crate) fn template_positional_params(params: &str) -> Vec<String> {
-    split_template_params(params)
-        .into_iter()
-        .map(|param| param.trim().to_string())
-        .filter(|param| !param.is_empty() && !param.contains('='))
-        .collect()
-}
-
-pub(crate) fn template_param<'a>(
-    named: &'a HashMap<String, String>,
-    keys: &[&str],
-) -> Option<&'a str> {
-    keys.iter()
-        .find_map(|key| named.get(*key))
-        .map(String::as_str)
-        .map(str::trim)
-        .filter(|value| !value.is_empty())
-}
-
-pub(crate) fn template_param_owned(
-    named: &HashMap<String, String>,
-    keys: &[String],
-) -> Option<String> {
-    keys.iter()
-        .find_map(|key| named.get(key))
-        .map(String::as_str)
-        .map(str::trim)
-        .filter(|value| !value.is_empty())
-        .map(String::from)
 }
 
 /// [for timeline](https://en.wikipedia.org/wiki/Template:For_timeline)

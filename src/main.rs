@@ -21,7 +21,9 @@ pub(crate) mod templates;
 mod tools;
 mod types;
 
-use crate::tools::{split_template_name, split_template_params};
+use crate::tools::{
+    split_template_name, split_template_params, template_named_params, template_param,
+};
 
 pub(crate) use cache::{
     DownloadCache, DownloadStats, FixturePageSource, PageResponse, PageSource,
@@ -40,7 +42,6 @@ pub(crate) use error::{AppError, AppResult};
 pub(crate) use image::{
     ImageRegistry, ParsedFileLink, image_marker_id, render_image_html, resolve_images,
 };
-use templates::formatting::{template_named_params, template_param};
 pub(crate) use templates::{matching_template_end, render_templates};
 
 type InternalLinks = HashMap<String, String>;

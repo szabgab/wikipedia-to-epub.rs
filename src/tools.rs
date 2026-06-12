@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 ///
 /// ```
 /// # use wikipedia_to_epub::tools::split_template_params;
@@ -203,4 +205,45 @@ mod tests {
         );
         assert_eq!(split_template_name(" name | p=1 "), (" name ", " p=1 "));
     }
+}
+
+pub(crate) fn template_named_params(params: &str) -> HashMap<String, String> {
+    split_template_params(params)
+        .into_iter()
+        .filter_map(|param| {
+            let (key, value) = param.split_once('=')?;
+            Some((key.trim().to_lowercase(), value.trim().to_string()))
+        })
+        .collect()
+}
+
+pub(crate) fn template_positional_params(params: &str) -> Vec<String> {
+    split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty() && !param.contains('='))
+        .collect()
+}
+
+pub(crate) fn template_param<'a>(
+    named: &'a HashMap<String, String>,
+    keys: &[&str],
+) -> Option<&'a str> {
+    keys.iter()
+        .find_map(|key| named.get(*key))
+        .map(String::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+}
+
+pub(crate) fn template_param_owned(
+    named: &HashMap<String, String>,
+    keys: &[String],
+) -> Option<String> {
+    keys.iter()
+        .find_map(|key| named.get(key))
+        .map(String::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(String::from)
 }
