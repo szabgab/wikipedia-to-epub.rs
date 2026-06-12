@@ -144,6 +144,32 @@ pub(crate) fn parse_template_number(value: &str) -> Option<f64> {
     number.parse::<f64>().ok()
 }
 
+pub(crate) fn split_template_name(content: &str) -> (&str, &str) {
+    let mut template_depth = 0usize;
+    let mut link_depth = 0usize;
+    let mut chars = content.char_indices().peekable();
+
+    while let Some((index, ch)) = chars.next() {
+        if ch == '[' && chars.peek().is_some_and(|(_, next)| *next == '[') {
+            chars.next();
+            link_depth += 1;
+        } else if ch == ']' && chars.peek().is_some_and(|(_, next)| *next == ']') {
+            chars.next();
+            link_depth = link_depth.saturating_sub(1);
+        } else if ch == '{' && chars.peek().is_some_and(|(_, next)| *next == '{') {
+            chars.next();
+            template_depth += 1;
+        } else if ch == '}' && chars.peek().is_some_and(|(_, next)| *next == '}') {
+            chars.next();
+            template_depth = template_depth.saturating_sub(1);
+        } else if ch == '|' && template_depth == 0 && link_depth == 0 {
+            return (&content[..index], &content[index + 1..]);
+        }
+    }
+
+    (content, "")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -158,5 +184,23 @@ mod tests {
         assert_eq!(parse_template_number("−20"), Some(-20.0));
         assert_eq!(parse_template_number("abc"), None);
         assert_eq!(parse_template_number(""), None);
+    }
+    #[test]
+    fn test_split_template_name() {
+        assert_eq!(
+            split_template_name("name|param1|param2"),
+            ("name", "param1|param2")
+        );
+        assert_eq!(split_template_name("name"), ("name", ""));
+        assert_eq!(split_template_name("name|"), ("name", ""));
+        assert_eq!(
+            split_template_name("name|a={{b|c}}|d"),
+            ("name", "a={{b|c}}|d")
+        );
+        assert_eq!(
+            split_template_name("name|a=[[b|c]]|d"),
+            ("name", "a=[[b|c]]|d")
+        );
+        assert_eq!(split_template_name(" name | p=1 "), (" name ", " p=1 "));
     }
 }

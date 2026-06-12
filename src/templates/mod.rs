@@ -7,6 +7,7 @@ use std::collections::HashMap;
 
 use cached::macros::cached;
 
+use crate::tools::split_template_name;
 use crate::types::{DispatchTable, EmptyDispatchTable, EmptyHandler};
 pub(crate) use formatting::citation_people;
 
@@ -590,30 +591,4 @@ fn is_succession_template_name(template: &str) -> bool {
         .get(.."s-".len())
         .is_some_and(|prefix| prefix.eq_ignore_ascii_case("s-"))
         || template.eq_ignore_ascii_case("Succession box")
-}
-
-pub(crate) fn split_template_name(content: &str) -> (&str, &str) {
-    let mut template_depth = 0usize;
-    let mut link_depth = 0usize;
-    let mut chars = content.char_indices().peekable();
-
-    while let Some((index, ch)) = chars.next() {
-        if ch == '[' && chars.peek().is_some_and(|(_, next)| *next == '[') {
-            chars.next();
-            link_depth += 1;
-        } else if ch == ']' && chars.peek().is_some_and(|(_, next)| *next == ']') {
-            chars.next();
-            link_depth = link_depth.saturating_sub(1);
-        } else if ch == '{' && chars.peek().is_some_and(|(_, next)| *next == '{') {
-            chars.next();
-            template_depth += 1;
-        } else if ch == '}' && chars.peek().is_some_and(|(_, next)| *next == '}') {
-            chars.next();
-            template_depth = template_depth.saturating_sub(1);
-        } else if ch == '|' && template_depth == 0 && link_depth == 0 {
-            return (&content[..index], &content[index + 1..]);
-        }
-    }
-
-    (content, "")
 }
