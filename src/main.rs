@@ -40,9 +40,9 @@ pub(crate) use error::{AppError, AppResult};
 pub(crate) use image::{
     ImageRegistry, ParsedFileLink, image_marker_id, render_image_html, resolve_images,
 };
+use templates::formatting::template_named_params;
 pub(crate) use templates::{
-    matching_template_end, render_templates, split_template_name, template_named_params,
-    template_param,
+    matching_template_end, render_templates, split_template_name, template_param,
 };
 
 type InternalLinks = HashMap<String, String>;

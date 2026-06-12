@@ -8,10 +8,7 @@ use std::collections::HashMap;
 use cached::macros::cached;
 
 use crate::types::{DispatchTable, EmptyDispatchTable, EmptyHandler};
-pub(crate) use formatting::{
-    citation_people, format_number_with_commas, template_named_params, template_param,
-    template_param_owned, template_positional_params,
-};
+pub(crate) use formatting::{citation_people, template_param};
 
 use formatting::{
     render_awol_template, render_died_of_wounds_template, render_five_nonbreaking_spaces_template,

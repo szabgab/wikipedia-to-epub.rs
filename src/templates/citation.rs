@@ -1,7 +1,7 @@
-use crate::templates::{
-    citation_people, render_templates, template_named_params, template_param, template_param_owned,
-    template_positional_params,
+use crate::templates::formatting::{
+    template_named_params, template_param_owned, template_positional_params,
 };
+use crate::templates::{citation_people, render_templates, template_param};
 use crate::types::PersonRole;
 use std::collections::HashMap;
 
