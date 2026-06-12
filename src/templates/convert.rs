@@ -1,9 +1,10 @@
 use std::collections::HashMap;
 
+use crate::types::{DispatchTable, TemplateHandler};
+
 use crate::tools::{
     parse_template_number, split_template_params, template_named_params, template_positional_params,
 };
-use crate::types::{DispatchTable, TemplateHandler};
 
 use crate::templates::formatting::format_number_with_commas;
 use crate::templates::render_templates;

@@ -7,12 +7,14 @@ use std::collections::HashMap;
 
 use cached::macros::cached;
 
+use crate::types::DispatchTable;
+
+use crate::tools::split_template_name;
+
 use crate::templates::formatting::{
     get_empty_dispatch_table, render_formatnum_template, render_lagrange_template,
     render_ship_template,
 };
-use crate::tools::split_template_name;
-use crate::types::DispatchTable;
 
 use crate::increment_recognized_skipped_template_count;
 use crate::increment_unknown_skipped_template_count;

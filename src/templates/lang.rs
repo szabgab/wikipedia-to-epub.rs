@@ -1,11 +1,13 @@
 use std::collections::HashMap;
 
-use crate::templates::formatting::join_plain_items;
-use crate::templates::render_templates;
+use crate::types::{DispatchTable, TemplateHandler};
+
 use crate::tools::{
     split_template_params, template_named_params, template_param, template_positional_params,
 };
-use crate::types::{DispatchTable, TemplateHandler};
+
+use crate::templates::formatting::join_plain_items;
+use crate::templates::render_templates;
 
 /// [Korean](https://en.wikipedia.org/wiki/Template:Korean)
 /// [Korean/auto](https://en.wikipedia.org/wiki/Template:Korean/auto)
