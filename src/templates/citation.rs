@@ -1,7 +1,8 @@
 use crate::templates::{
-    PersonRole, citation_people, render_templates, template_named_params, template_param,
-    template_param_owned, template_positional_params,
+    citation_people, render_templates, template_named_params, template_param, template_param_owned,
+    template_positional_params,
 };
+use crate::types::PersonRole;
 use std::collections::HashMap;
 
 use crate::types::{DispatchTable, TemplateHandler};

@@ -5,7 +5,7 @@ use crate::config::current_utc_date;
 use crate::config::parse_date_string;
 use crate::templates::render_templates;
 use crate::tools::split_template_params;
-use crate::types::{DispatchTable, TemplateHandler};
+use crate::types::{DispatchTable, PersonRole, TemplateHandler};
 
 /// [jct](https://en.wikipedia.org/wiki/Template:Jct)
 fn render_jct_template(params: &str) -> String {
@@ -2120,12 +2120,6 @@ fn render_verse_transliteration_translation_template(params: &str) -> String {
 
     rendered.push_str("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_END__\n");
     rendered
-}
-
-#[derive(Clone, Copy)]
-pub(crate) enum PersonRole {
-    Author,
-    Editor,
 }
 
 pub(crate) fn citation_people(named: &HashMap<String, String>, role: PersonRole) -> String {

@@ -9,7 +9,7 @@ use cached::macros::cached;
 
 use crate::types::{DispatchTable, EmptyDispatchTable, EmptyHandler};
 pub(crate) use formatting::{
-    PersonRole, citation_people, format_number_with_commas, template_named_params, template_param,
+    citation_people, format_number_with_commas, template_named_params, template_param,
     template_param_owned, template_positional_params,
 };
 
