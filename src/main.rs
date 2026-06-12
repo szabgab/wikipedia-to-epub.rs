@@ -1487,7 +1487,7 @@ fn render_reference_list(
             if cleaned.trim().is_empty() {
                 None
             } else {
-                Some(format!("<li>{cleaned}</li>"))
+                Some(format!("<li>{cleaned}</li>\n"))
             }
         })
         .collect::<Vec<_>>();
@@ -1885,7 +1885,7 @@ fn render_report_hierarchy(
         .map(|node| render_node(node, included_page_urls))
         .collect::<Vec<_>>()
         .join("\n");
-    format!("<ul>\n{items}\n</ul>")
+    format!("<ul>\n{items}\n</ul>\n")
 }
 
 fn write_html_report(
