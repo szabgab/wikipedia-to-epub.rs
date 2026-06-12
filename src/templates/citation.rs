@@ -7,6 +7,7 @@ use crate::tools::{
     template_param_owned, template_positional_params,
 };
 
+use crate::split_template_params;
 use crate::templates::render_templates;
 
 pub(crate) fn citation_people(named: &HashMap<String, String>, role: PersonRole) -> String {
@@ -1229,6 +1230,142 @@ fn render_cite_merriam_webster_template(params: &str) -> String {
     parts.join(". ")
 }
 
+fn render_multiref_template(params: &str) -> String {
+    let parts = split_template_params(params);
+    let mut rendered = Vec::new();
+    for part in parts {
+        let part_trimmed = part.trim();
+        if part_trimmed.is_empty() {
+            continue;
+        }
+
+        // Find top-level '=' (not nested inside braces or brackets)
+        let mut eq_index = None;
+        let mut brace_depth = 0;
+        let mut bracket_depth = 0;
+        let bytes = part_trimmed.as_bytes();
+        for (i, &b) in bytes.iter().enumerate() {
+            if b == b'{' {
+                brace_depth += 1;
+            } else if b == b'}' {
+                if brace_depth > 0 {
+                    brace_depth -= 1;
+                }
+            } else if b == b'[' {
+                bracket_depth += 1;
+            } else if b == b']' {
+                if bracket_depth > 0 {
+                    bracket_depth -= 1;
+                }
+            } else if b == b'=' && brace_depth == 0 && bracket_depth == 0 {
+                eq_index = Some(i);
+                break;
+            }
+        }
+
+        let (val_to_render, is_valid) = if let Some(idx) = eq_index {
+            let key = part_trimmed[..idx].trim();
+            let val = part_trimmed[idx + 1..].trim();
+            if !key.is_empty()
+                && key.chars().all(|c| c.is_ascii_digit())
+                && key.parse::<u32>().is_ok()
+            {
+                (val, true)
+            } else {
+                ("", false)
+            }
+        } else {
+            (part_trimmed, true)
+        };
+
+        if is_valid {
+            let val = render_templates(val_to_render);
+            if !val.trim().is_empty() {
+                rendered.push(val);
+            }
+        }
+    }
+    rendered.join("; ")
+}
+
+fn render_hosking_jfood_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let page = named
+        .get("page")
+        .or_else(|| named.get("1"))
+        .or_else(|| positional.first())
+        .map(|s| s.as_str());
+
+    let pages = named.get("pages").map(|s| s.as_str());
+
+    let mut parts = Vec::new();
+    parts.push("Hosking, Richard (1996). ''A Dictionary of Japanese Food: Ingredients & Culture''. Tuttle Publishing".to_string());
+
+    if let Some(pgs) = pages {
+        parts.push(format!("pp. {}", render_templates(pgs)));
+    } else if let Some(pg) = page {
+        parts.push(format!("p. {}", render_templates(pg)));
+    }
+
+    parts.push("ISBN 978-0-8048-2042-4".to_string());
+
+    parts.join(". ")
+}
+
+fn render_e28_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let code = named
+        .get("1")
+        .or_else(|| positional.first())
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let name = named
+        .get("2")
+        .or_else(|| positional.get(1))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    let url = if !code.is_empty() {
+        format!("https://www.ethnologue.com/language/{}", code)
+    } else {
+        "https://www.ethnologue.com/".to_string()
+    };
+
+    let title = if !name.is_empty() {
+        name.to_string()
+    } else if code == "kor" {
+        "Korean".to_string()
+    } else {
+        code.to_string()
+    };
+
+    let link = format!("\"[[official-url:{}|{}]]\"", url, title);
+    format!(
+        "Eberhard, David M.; Simons, Gary F.; Fennig, Charles D., eds. (2025). {}. ''Ethnologue: Languages of the World'' (28th ed.). Dallas, Texas: SIL International",
+        link
+    )
+}
+
+fn render_citation_attribution_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let text = named
+        .get("1")
+        .or_else(|| positional.first())
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    format!(
+        "One or more of the preceding sentences incorporates text from a work now in the public domain: {}",
+        render_templates(text)
+    )
+}
+
 pub(crate) fn get_dispatch_table() -> DispatchTable {
     HashMap::from([
         (
@@ -1313,5 +1450,16 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("harvtxt", render_harvtxt_template as TemplateHandler),
         ("cite nsrw", render_cite_nsrw_template as TemplateHandler),
         ("cite thesis", render_citation_template as TemplateHandler),
+        (
+            "hosking-jfood",
+            render_hosking_jfood_template as TemplateHandler,
+        ),
+        ("e28", render_e28_template as TemplateHandler),
+        (
+            "citation-attribution",
+            render_citation_attribution_template as TemplateHandler,
+        ),
+        ("multiref", render_multiref_template as TemplateHandler),
+        ("multiref2", render_multiref_template as TemplateHandler),
     ])
 }

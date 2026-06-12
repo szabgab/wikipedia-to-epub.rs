@@ -1,5 +1,53 @@
 # Codex Session Notes
 
+## 2026-06-12 Handle ublist, end plainlist, multiref, hosking-jfood, parabr, Multiref2, Age in years..., est., e28, Britannica URL, Surname, and citation-attribution Templates
+
+### Summary
+Added support for 12 additional templates requested by the user:
+1. `ublist`: Handled as an alias of the existing `unbulleted list` template.
+2. `end plainlist`: Added to `src/silent.csv` to be silently ignored.
+3. `multiref` & `Multiref2`: Joins positional reference values with a semicolon. Added a top-level split utility to handle digits/positional parameters while ignoring non-digit parameters (like `group=n`).
+4. `hosking-jfood`: Renders Richard Hosking book citation format.
+5. `parabr`: Outputs paragraph break placeholders.
+6. `Age in years, months, weeks and days`: Calculates date duration difference in years, months, weeks, and days.
+7. `est.`: Established/estimate abbreviation wrapper.
+8. `e28`: Renders Ethnologue 28th edition citation format.
+9. `Britannica URL`: Renders Encyclopædia Britannica citation format.
+10. `Surname`: Added to `src/silent.csv` to be silently ignored.
+11. `citation-attribution`: Renders public domain text attribution format.
+
+### Decisions Made
+- Implemented rendering logic for all 10 non-silent templates in [src/templates/citation.rs](file:///opt/src/templates/citation.rs) and [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+- Changed template keys to all-lowercase in `get_dispatch_table()` definitions to support case-insensitive lookups from `render_template`.
+- Wrote separate unit tests for all 12 templates in [src/tests.rs](file:///opt/src/tests.rs).
+- Added a core Perl unzip utility in the scratch directory to allow unpacking EPUB files for integration test regeneration since `unzip` was not installed on the system.
+- Regenerated the expected integration book fixtures for `han-dynasty`, `japan`, `korean-language`, `korean-war`, and `north-korea`.
+- Updated [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) and sorted the CSV files using `./sort.sh`.
+
+### Files Changed
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+  - Implemented multiref/Multiref2, hosking-jfood, e28, and citation-attribution rendering.
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+  - Implemented parabr, age in years..., est., and Britannica URL rendering.
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+  - Registered the 10 handled templates in `is_handled_template_name`.
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+  - Added `end plainlist` and `surname`. Sorted using `./sort.sh`.
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+  - Added 12 separate unit tests for each template.
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+  - Updated conversion rules for all 12 templates.
+- `expected/han-dynasty/OEBPS/*`, `expected/japan/OEBPS/*`, `expected/korean-language/OEBPS/*`, `expected/korean-war/OEBPS/*`, `expected/north-korea/OEBPS/*` [MODIFY]
+  - Updated expected integration book output.
+
+### Tests Run
+- Checked compilation and warnings: `cargo check` and `cargo clippy --all-targets -- -D warnings` (Clean).
+- Formatted codebase: `cargo fmt` (Clean).
+- Executed unit, integration, and doc-tests: `cargo test` (All 298 unit tests, 34 integration tests, and 4 doc-tests passed).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-11 Remove pub(crate) from Unused Template Functions
 
 ### Summary

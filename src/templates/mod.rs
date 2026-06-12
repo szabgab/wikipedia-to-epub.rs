@@ -514,6 +514,16 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("native name list")
         || template.eq_ignore_ascii_case("hlist")
         || template.eq_ignore_ascii_case("flatlist")
+        || template.eq_ignore_ascii_case("ublist")
+        || template.eq_ignore_ascii_case("multiref")
+        || template.eq_ignore_ascii_case("hosking-jfood")
+        || template.eq_ignore_ascii_case("parabr")
+        || template.eq_ignore_ascii_case("Multiref2")
+        || template.eq_ignore_ascii_case("Age in years, months, weeks and days")
+        || template.eq_ignore_ascii_case("est.")
+        || template.eq_ignore_ascii_case("e28")
+        || template.eq_ignore_ascii_case("Britannica URL")
+        || template.eq_ignore_ascii_case("citation-attribution")
         || is_silent_template_name(template)
 }
 

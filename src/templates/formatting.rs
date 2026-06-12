@@ -4386,7 +4386,188 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ),
         ("hlist", render_hlist_template as TemplateHandler),
         ("flatlist", render_hlist_template as TemplateHandler),
+        ("ublist", render_unbulleted_list_template as TemplateHandler),
+        ("parabr", render_parabr_template as TemplateHandler),
+        (
+            "age in years, months, weeks and days",
+            render_age_in_years_months_weeks_days_template as TemplateHandler,
+        ),
+        ("est.", render_est_template as TemplateHandler),
+        (
+            "britannica url",
+            render_britannica_url_template as TemplateHandler,
+        ),
     ])
+}
+
+fn render_parabr_template(_params: &str) -> String {
+    "__WIKIPEDIA_TO_EPUB_BR____WIKIPEDIA_TO_EPUB_BR__".to_string()
+}
+
+fn render_age_in_years_months_weeks_days_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let mut y1 = named.get("year1").and_then(|s| s.parse::<i32>().ok());
+    let mut m1 = named.get("month1").and_then(|s| s.parse::<i32>().ok());
+    let mut d1 = named.get("day1").and_then(|s| s.parse::<i32>().ok());
+
+    let mut y2 = named.get("year2").and_then(|s| s.parse::<i32>().ok());
+    let mut m2 = named.get("month2").and_then(|s| s.parse::<i32>().ok());
+    let mut d2 = named.get("day2").and_then(|s| s.parse::<i32>().ok());
+
+    if y1.is_none() || m1.is_none() || d1.is_none() {
+        if positional.len() >= 6 {
+            y1 = positional[0].parse::<i32>().ok();
+            m1 = positional[1].parse::<i32>().ok();
+            d1 = positional[2].parse::<i32>().ok();
+            y2 = positional[3].parse::<i32>().ok();
+            m2 = positional[4].parse::<i32>().ok();
+            d2 = positional[5].parse::<i32>().ok();
+        } else if positional.len() >= 3 {
+            y1 = positional[0].parse::<i32>().ok();
+            m1 = positional[1].parse::<i32>().ok();
+            d1 = positional[2].parse::<i32>().ok();
+        }
+    }
+
+    let Some(y1) = y1 else {
+        return String::new();
+    };
+    let Some(m1) = m1 else {
+        return String::new();
+    };
+    let Some(d1) = d1 else {
+        return String::new();
+    };
+
+    let (y2, m2, d2) = if let (Some(y), Some(m), Some(d)) = (y2, m2, d2) {
+        (y, m, d)
+    } else {
+        current_utc_date()
+    };
+
+    let days1 = days_from_year_zero(y1, m1, d1);
+    let days2 = days_from_year_zero(y2, m2, d2);
+    if days1 > days2 {
+        return String::new();
+    }
+
+    let mut years = y2 - y1;
+    let mut months = m2 - m1;
+    let mut days = d2 - d1;
+
+    if days < 0 {
+        months -= 1;
+        let prev_m = if m2 == 1 { 12 } else { m2 - 1 };
+        let prev_y = if m2 == 1 { y2 - 1 } else { y2 };
+        let is_leap = (prev_y % 4 == 0 && prev_y % 100 != 0) || (prev_y % 400 == 0);
+        let month_lengths = if is_leap {
+            [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        } else {
+            [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        };
+        days += month_lengths[prev_m as usize - 1];
+    }
+
+    if months < 0 {
+        years -= 1;
+        months += 12;
+    }
+
+    let mut parts = Vec::new();
+    if years > 0 {
+        parts.push(if years == 1 {
+            "1 year".to_string()
+        } else {
+            format!("{} years", years)
+        });
+    }
+    if months > 0 {
+        parts.push(if months == 1 {
+            "1 month".to_string()
+        } else {
+            format!("{} months", months)
+        });
+    }
+    let weeks = days / 7;
+    let rem_days = days % 7;
+    if weeks > 0 {
+        parts.push(if weeks == 1 {
+            "1 week".to_string()
+        } else {
+            format!("{} weeks", weeks)
+        });
+    }
+    if rem_days > 0 {
+        parts.push(if rem_days == 1 {
+            "1 day".to_string()
+        } else {
+            format!("{} days", rem_days)
+        });
+    }
+
+    if parts.is_empty() {
+        return "0 days".to_string();
+    }
+
+    if parts.len() == 1 {
+        parts[0].clone()
+    } else {
+        let last = parts.pop().unwrap();
+        format!("{} and {}", parts.join(", "), last)
+    }
+}
+
+fn render_est_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let val = positional.first().map(|s| s.trim()).unwrap_or("");
+
+    let abbr = "__WIKIPEDIA_TO_EPUB_ABBR_START__estimate__WIKIPEDIA_TO_EPUB_ABBR_VALUE__est.__WIKIPEDIA_TO_EPUB_ABBR_END__";
+    if val.is_empty() {
+        abbr.to_string()
+    } else {
+        format!("{} {}", abbr, render_templates(val))
+    }
+}
+
+fn render_britannica_url_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let url = named
+        .get("url")
+        .or_else(|| named.get("1"))
+        .or_else(|| positional.first())
+        .map(|s| s.trim())
+        .unwrap_or("");
+    let title = named
+        .get("title")
+        .or_else(|| named.get("2"))
+        .or_else(|| positional.get(1))
+        .map(|s| s.trim())
+        .unwrap_or("Encyclopædia Britannica");
+    let author = named
+        .get("author")
+        .or_else(|| named.get("3"))
+        .or_else(|| positional.get(2))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    if url.is_empty() {
+        return String::new();
+    }
+
+    let link = format!("\"[[official-url:{}|{}]]\"", url, render_templates(title));
+    if !author.is_empty() {
+        format!(
+            "{} by {} at ''Encyclopædia Britannica''",
+            link,
+            render_templates(author)
+        )
+    } else {
+        format!("{} at ''Encyclopædia Britannica''", link)
+    }
 }
 
 pub(crate) fn get_empty_dispatch_table() -> HashMap<&'static str, fn() -> String> {

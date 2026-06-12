@@ -4672,6 +4672,113 @@ fn render_wikitext_formats_unbulleted_list_template() {
 }
 
 #[test]
+fn render_wikitext_formats_ublist_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{ublist|Prince Nobuhiko Higashikuni|Princess Fumiko Higashikuni}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<li>Prince Nobuhiko Higashikuni</li>"),
+        "{rendered}"
+    );
+    assert!(
+        rendered.contains("<li>Princess Fumiko Higashikuni</li>"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_end_plainlist_template() {
+    assert_eq!(render_templates("{{end plainlist}}"), "");
+}
+
+#[test]
+fn render_wikitext_formats_multiref_template() {
+    assert_eq!(render_templates("{{multiref|Ref 1|Ref 2}}"), "Ref 1; Ref 2");
+    assert_eq!(
+        render_templates("{{multiref|1=Ref 1|2=Ref 2|group=n}}"),
+        "Ref 1; Ref 2"
+    );
+    assert_eq!(
+        render_templates("{{multiref| {{est.|1990}} | {{est.|2000}} }}"),
+        "__WIKIPEDIA_TO_EPUB_ABBR_START__estimate__WIKIPEDIA_TO_EPUB_ABBR_VALUE__est.__WIKIPEDIA_TO_EPUB_ABBR_END__ 1990; __WIKIPEDIA_TO_EPUB_ABBR_START__estimate__WIKIPEDIA_TO_EPUB_ABBR_VALUE__est.__WIKIPEDIA_TO_EPUB_ABBR_END__ 2000"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_hosking_jfood_template() {
+    assert_eq!(
+        render_templates("{{hosking-jfood|page=123}}"),
+        "Hosking, Richard (1996). ''A Dictionary of Japanese Food: Ingredients & Culture''. Tuttle Publishing. p. 123. ISBN 978-0-8048-2042-4"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_parabr_template() {
+    assert_eq!(
+        render_templates("{{parabr}}"),
+        "__WIKIPEDIA_TO_EPUB_BR____WIKIPEDIA_TO_EPUB_BR__"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_multiref2_template() {
+    assert_eq!(
+        render_templates("{{Multiref2|Ref A|Ref B}}"),
+        "Ref A; Ref B"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_age_in_years_months_weeks_days_template() {
+    assert_eq!(
+        render_templates("{{Age in years, months, weeks and days|2020|1|15|2021|3|20}}"),
+        "1 year, 2 months and 5 days"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_est_template() {
+    assert_eq!(
+        render_templates("{{est.|1990}}"),
+        "__WIKIPEDIA_TO_EPUB_ABBR_START__estimate__WIKIPEDIA_TO_EPUB_ABBR_VALUE__est.__WIKIPEDIA_TO_EPUB_ABBR_END__ 1990"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_e28_template() {
+    assert_eq!(
+        render_templates("{{e28|kor|Korean}}"),
+        "Eberhard, David M.; Simons, Gary F.; Fennig, Charles D., eds. (2025). \"[[official-url:https://www.ethnologue.com/language/kor|Korean]]\". ''Ethnologue: Languages of the World'' (28th ed.). Dallas, Texas: SIL International"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_britannica_url_template() {
+    assert_eq!(
+        render_templates(
+            "{{Britannica URL|url=https://www.britannica.com/topic/test|title=Test Topic|author=Author Name}}"
+        ),
+        "\"[[official-url:https://www.britannica.com/topic/test|Test Topic]]\" by Author Name at ''Encyclopædia Britannica''"
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_surname_template() {
+    assert_eq!(render_templates("{{Surname}}"), "");
+}
+
+#[test]
+fn render_wikitext_formats_citation_attribution_template() {
+    assert_eq!(
+        render_templates("{{citation-attribution|text from public domain}}"),
+        "One or more of the preceding sentences incorporates text from a work now in the public domain: text from public domain"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_poem_quote_template() {
     let rendered = render_wikitext(
         "Sample",

@@ -90,7 +90,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{formatnum:5324}}` formats the number using thousands separators: `5,324`
 * `{{Birth date and age|1931|3|7}}` and `{{birth date and age|1931|3|7|df=yes}}` render the birth date and current age: `March 7, 1931 (age X)` and `7 March 1931 (age X)`
 * `{{dts|1947-5-20}}` (or `{{dts|1947|May|20}}`) formats the date for table sorting, displaying it in a human-readable form: `May 20, 1947`; also supports the `format=dmy` parameter (e.g. `20 May 1947`) and the `bc` flag
-* `{{unbulleted list|item1|item2}}` (or its aliases `{{ubl}}`, `{{ubli}}`, and `{{unbulleted indent list}}`) renders standard XHTML list items wrapped in unordered list tags: `<ul><li>item1</li><li>item2</li></ul>`
+* `{{unbulleted list|item1|item2}}` (or its aliases `{{ubl}}`, `{{ubli}}`, `{{ublist}}`, and `{{unbulleted indent list}}`) renders standard XHTML list items wrapped in unordered list tags: `<ul><li>item1</li><li>item2</li></ul>`
 * `{{hlist|item1|item2}}` (and `{{flatlist}}`) renders standard XHTML list items joined by commas: `item1, item2`
 * `{{native name list|tag1=ja|name1=Name}}` renders native name list as a comma-separated list of names and their language tags: `Name (Japanese)`
 * `{{Infobox mountain|name=...}}` renders mountain infoboxes as a two-column wikitable containing properties (e.g. Name, Native name, Country, Highest point, Coordinates, etc.)
@@ -113,6 +113,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Shy|Pre|fec|tures}}` becomes `Pre\u00adfec\u00adtures` using a soft hyphen
 * `{{color box|#EF7979}}` becomes `<span style="color: #EF7979;">■</span>`
 * `{{pb}}` becomes a paragraph/line break: `<br /><br />`
+* `{{parabr}}` outputs paragraph break tokens: `__WIKIPEDIA_TO_EPUB_BR____WIKIPEDIA_TO_EPUB_BR__`
 * `{{Break}}` (or `{{br}}`, `{{brk}}`, `{{crlf}}`) becomes a line break: `<br />`; supports an optional positional parameter `n` to repeat the break `n` times
 * `{{okina}}` becomes `ʻ`
 * `{{'s}}` becomes `'s`
@@ -133,8 +134,10 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Multiple images|image1=...|caption1=...}}` (and its alias `{{Multiple image}}`) converts multiple grouped images into individual standard File links
 * `{{ISSN|0268-4160}}` becomes `ISSN 0268-4160`
 * `{{Cite NSRW|wstitle=Osaka}}` renders as an article citation linking to Wikisource
-* `{{circa}} 10 million` becomes `c. 10 million`
+* `{{circa}}` 10 million` becomes `c. 10 million`
+* `{{est.|1990}}` wraps established abbreviation: `est. 1990`
 * `{{c.|115 BC}}` and `{{cx|150 AD}}` become `c. 115 BC` and `c. 150 AD`
+* `{{e28|kor|Korean}}` renders Ethnologue 28th edition citation format: `Eberhard, David M.; Simons, Gary F.; Fennig, Charles D., eds. (2025). "[[official-url:https://www.ethnologue.com/language/kor|Korean]]". ''Ethnologue: Languages of the World'' (28th ed.). Dallas, Texas: SIL International`
 * `{{floruit|6th century BC}}` becomes `fl. 6th century BC`
 * `{{legend|#EF767E|North Korean forces}}` and `{{legend0|#EF767E|North Korean forces}}` become `North Korean forces`
 * `{{numero|3}}` becomes `No. 3`
@@ -178,14 +181,19 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Cite report|last=Ledyard|first=Gari Keith|title=The Cultural Work of Sejong the Great|publication-date=November 2002|pages=7–18}}` becomes `Gari Keith Ledyard. <em>The Cultural Work of Sejong the Great</em>. November 2002. p. 7–18`
 * `{{cite ECCP|last=Kennedy|first=George A.|title=Amin|pages=8–9|date=1943}}` becomes `George A. Kennedy. "Amin". Eminent Chinese of the Ch'ing Period. 1943. pp. 8–9`
 * `{{cite gvp|name=Norikuradake|vn=283060|access-date=2021-06-24}}` becomes `"Norikuradake". <em>Global Volcanism Program</em>. Smithsonian Institution. Retrieved 2021-06-24`
+* `{{e28|kor|Korean}}` renders Ethnologue 28th edition citation format: `Eberhard, David M.; Simons, Gary F.; Fennig, Charles D., eds. (2025). "[[official-url:https://www.ethnologue.com/language/kor|Korean]]". ''Ethnologue: Languages of the World'' (28th ed.). Dallas, Texas: SIL International`
 * `{{cite conference|author=Smith|title=Ancient Borders|book-title=Proceedings of Archaeology|year=2010}}` becomes `Smith. <em>Ancient Borders</em>. 2010`
 * `{{cite thesis|last=Kim|first=Jane|title=Origins|year=2010|publisher=Seoul University}}` becomes `Jane Kim. <em>Origins</em>. Seoul University, 2010`
 * `{{worldhistory|section=378|quote=the state of Parhae}}` becomes `"the state of Parhae". <em>The Encyclopedia of World History</em> (6th ed.)`
 * `{{Citation|last=Cumings|first=Bruce|title=Korea's Place in the Sun|publisher=Norton|year=1997}}` becomes `Bruce Cumings. <em>Korea's Place in the Sun</em>. Norton, 1997`
+* `{{multiref|Ref 1|Ref 2}}` (and its alias `{{Multiref2}}`) joins positional ref values with a semicolon: `Ref 1; Ref 2`
+* `{{hosking-jfood|page=123}}` renders Richard Hosking book citation format: `Hosking, Richard (1996). ''A Dictionary of Japanese Food: Ingredients & Culture''. Tuttle Publishing. p. 123. ISBN 978-0-8048-2042-4`
+* `{{citation-attribution|text}}` renders public domain text attribution: `One or more of the preceding sentences incorporates text from a work now in the public domain: text`
 * `{{harvc|last=Peterson|first=Mark|year=1992|in=Kim-Renaud|c=The Sejong Sillok}}` becomes `Mark Peterson. "The Sejong Sillok". In Kim-Renaud 1992`
 * `{{As of|2023}}` becomes `As of 2023`; `{{As of|2009|lc=y}}` becomes `as of 2009`
 * `{{died-in|202 BC}}` becomes `d. 202 BC`
 * `{{age|1989|11|9|2019|11|9}}` calculates and displays age between two dates: `30`; if only birth date is provided, calculates age relative to the current date
+* `{{Age in years, months, weeks and days|2020|1|15|2021|3|20}}` renders date duration difference in years, months, weeks, and days: `1 year, 2 months and 5 days`
 * `{{ayd|April 26, 2001|September 26, 2006}}` calculates and displays duration in years and days: `5 years, 153 days`; also supports numeric parameters and single-date relative calculations
 * `{{Blockquote|text=Quoted text|source=Source}}` (or `{{Quote|text=Quoted text|author=Source}}`) becomes `<blockquote><p>Quoted text</p><p class="blockquote-source">Source</p></blockquote>`
 * `{{Poem quote|text=old pond\nfrog leaps in|source=Basho}}` (or its alias `{{poemquote}}`) renders as a blockquote, preserving line breaks and an optional source: `<blockquote><p>old pond</p><p>frog leaps in</p><p class="blockquote-source">Basho</p></blockquote>`
@@ -212,6 +220,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Wikisource|Korea}}` becomes `Wikisource:` followed by a link to the Wikisource entry
 * `{{Wikibooks|1=Book title|2=Chapter title|3=label}}` becomes `Wikibooks:` followed by a link to the Wikibooks chapter
 * `{{Britannica|322222}}` becomes `Britannica:` followed by a link to the Britannica article id
+* `{{Britannica URL|url=https://www.britannica.com/topic/test|title=Test Topic}}` renders Britannica citation format: `"[[official-url:https://www.britannica.com/topic/test|Test Topic]]" at ''Encyclopædia Britannica''`
 * `{{Jaanus|w/washi|Washi}}` renders as an external link to the JAANUS database: `<a href="http://www.aisf.or.jp/~jaanus/deta/w/washi.htm">Washi</a> at JAANUS`
 * `{{Official website|https://example.com|name=Example}}` (and its alias `{{official|...}}`) becomes an external link to `https://example.com` with `Example` as the visible text
 * `{{URL|1=https://english.seoul.go.kr/|2=Official website}}` becomes an external link to `https://english.seoul.go.kr/` with `Official website` as the visible text
@@ -283,7 +292,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{'"}}` and `{{"'}}` display `'"` and `"'` respectively as ordinary text
 * Wikipedia navigation templates listed in `src/navigations.csv`  are omitted; both `src/navigations.csv` and `src/silent.csv` support comma-separated comments, ignoring any text after the comma in the code; template names are normalized by converting underscores to spaces before checking for matches.
 * Wikipedia succession-box templates such as `{{Succession box}}` or those whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are omitted
-* Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{More citations needed}}`, `{{additional citations needed}}`, `{{Refimprove}}`, `{{FACT}}`, `{{citation needed}}`, `{{cn}}`, `{{huh}}`, `{{when}}`, `{{who}}`, `{{more cn section}}`, `{{prose}}`, `{{Unreliable source?}}`, `{{Better source needed}}`, `{{Dead link}}`, `{{Page needed}}`, `{{New archival link needed}}`, `{{clear}}`, `{{div}}`, `{{columns-list}}`, `{{location map+}}`, `{{Wide image}}`, `{{Pie chart}}`, `{{ahnentafel}}`, `{{Spoken Wikipedia}}`, `{{very long}}`, `{{long}}`, `{{Explain}}`, `{{Ref}}`, `{{R}}`, `{{Pd-notice}}`, `{{Contains special characters}}`, `{{tree chart}}`, `{{tree chart/start}}`, `{{tree chart/end}}`, `{{tree list}}`, `{{tree list/end}}`, `{{tree list/final branch}}`, `{{tree list/branching}}`, `{{tree list/final branching}}`, `{{chart top}}`, `{{chart bottom}}`, `{{Japanese clan name}}`, `{{-}}`, `{{redirect-several}}`, `{{bots}}`, `{{Div end}}`, `{{Sister bar}}`, `{{Expand section}}`, `{{Unreferencedsect}}`, `{{Clear left}}`, `{{Cleanup}}`, `{{tone}}`, `{{Wikiatlas}}`, `{{update section}}`, `{{party color}}`, `{{category see also}}`, `{{clarify}}`, `{{clarification needed}}`, `{{failed verification}}`, `{{colbegin}}`, `{{colend}}`, `{{POV}}`, `{{dubious}}`, `{{commonscat}}`, `{{Commons-inline}}`, `{{disambiguation}}`, `{{in title}}`, `{{look from}}`, `{{tocright}}`, `{{CS1 config}}`, `{{unsolved}}`, `{{discuss}}`, `{{j-railservice start}}`, `{{j-route}}`, `{{j-rserv}}`, `{{ja-rail-line}}`, `{{pp-dispute}}`, `{{Attribution needed}}`, `{{incomplete short citation}}`, `{{Wikidata fallback link}}`, `{{flagicon image}}`, `{{external media}}`, `{{Wikiquote-inline}}`, `{{wikispecies-inline}}`, `{{IMDb name}}`, `{{PM20}}`, `{{NoteTag}}`, `{{wikisource category}}`, `{{0}}`, and `{{DEFAULTSORT:...}}` are omitted
+* Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{More citations needed}}`, `{{additional citations needed}}`, `{{Refimprove}}`, `{{FACT}}`, `{{citation needed}}`, `{{cn}}`, `{{huh}}`, `{{when}}`, `{{who}}`, `{{more cn section}}`, `{{prose}}`, `{{Unreliable source?}}`, `{{Better source needed}}`, `{{Dead link}}`, `{{Page needed}}`, `{{New archival link needed}}`, `{{clear}}`, `{{div}}`, `{{columns-list}}`, `{{location map+}}`, `{{Wide image}}`, `{{Pie chart}}`, `{{ahnentafel}}`, `{{Spoken Wikipedia}}`, `{{very long}}`, `{{long}}`, `{{Explain}}`, `{{Ref}}`, `{{R}}`, `{{Pd-notice}}`, `{{Contains special characters}}`, `{{tree chart}}`, `{{tree chart/start}}`, `{{tree chart/end}}`, `{{tree list}}`, `{{tree list/end}}`, `{{tree list/final branch}}`, `{{tree list/branching}}`, `{{tree list/final branching}}`, `{{chart top}}`, `{{chart bottom}}`, `{{Japanese clan name}}`, `{{-}}`, `{{redirect-several}}`, `{{bots}}`, `{{Div end}}`, `{{Sister bar}}`, `{{Expand section}}`, `{{Unreferencedsect}}`, `{{Clear left}}`, `{{Cleanup}}`, `{{tone}}`, `{{Wikiatlas}}`, `{{update section}}`, `{{party color}}`, `{{category see also}}`, `{{clarify}}`, `{{clarification needed}}`, `{{failed verification}}`, `{{colbegin}}`, `{{colend}}`, `{{POV}}`, `{{dubious}}`, `{{commonscat}}`, `{{Commons-inline}}`, `{{disambiguation}}`, `{{in title}}`, `{{look from}}`, `{{tocright}}`, `{{CS1 config}}`, `{{unsolved}}`, `{{discuss}}`, `{{j-railservice start}}`, `{{j-route}}`, `{{j-rserv}}`, `{{ja-rail-line}}`, `{{pp-dispute}}`, `{{Attribution needed}}`, `{{incomplete short citation}}`, `{{Wikidata fallback link}}`, `{{flagicon image}}`, `{{external media}}`, `{{Wikiquote-inline}}`, `{{wikispecies-inline}}`, `{{IMDb name}}`, `{{PM20}}`, `{{NoteTag}}`, `{{wikisource category}}`, `{{0}}`, `{{end plainlist}}`, `{{surname}}`, and `{{DEFAULTSORT:...}}` are omitted
 * `{{Reflist}}` renders collected `<ref>...</ref>` content as an ordered reference list; grouped reflists such as `{{Reflist|group=n}}` render the matching group when those references are used
 * Reference-list wrappers and source metadata such as `{{notelist}}`, `{{notelist-ua}}`, `{{NoteFoot}}`, `{{Refbegin}}`, `{{Refend}}`, `{{SfnRef}}`, and `{{source-attribution}}` are omitted while surrounding list contents are preserved
 * Footnote wrappers such as `{{efn|...}}`, `{{efn-ua|...}}`, and `{{refn|...}}` are omitted
