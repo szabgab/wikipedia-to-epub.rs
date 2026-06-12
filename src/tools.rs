@@ -172,41 +172,6 @@ pub(crate) fn split_template_name(content: &str) -> (&str, &str) {
     (content, "")
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_parse_template_number() {
-        assert_eq!(parse_template_number("123"), Some(123.0));
-        assert_eq!(parse_template_number("1,234.56"), Some(1234.56));
-        assert_eq!(parse_template_number(" 1 000 "), Some(1000.0));
-        assert_eq!(parse_template_number("-50"), Some(-50.0));
-        assert_eq!(parse_template_number("&minus;10.5"), Some(-10.5));
-        assert_eq!(parse_template_number("−20"), Some(-20.0));
-        assert_eq!(parse_template_number("abc"), None);
-        assert_eq!(parse_template_number(""), None);
-    }
-    #[test]
-    fn test_split_template_name() {
-        assert_eq!(
-            split_template_name("name|param1|param2"),
-            ("name", "param1|param2")
-        );
-        assert_eq!(split_template_name("name"), ("name", ""));
-        assert_eq!(split_template_name("name|"), ("name", ""));
-        assert_eq!(
-            split_template_name("name|a={{b|c}}|d"),
-            ("name", "a={{b|c}}|d")
-        );
-        assert_eq!(
-            split_template_name("name|a=[[b|c]]|d"),
-            ("name", "a=[[b|c]]|d")
-        );
-        assert_eq!(split_template_name(" name | p=1 "), (" name ", " p=1 "));
-    }
-}
-
 pub(crate) fn template_named_params(params: &str) -> HashMap<String, String> {
     split_template_params(params)
         .into_iter()
@@ -246,4 +211,39 @@ pub(crate) fn template_param_owned(
         .map(str::trim)
         .filter(|value| !value.is_empty())
         .map(String::from)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_template_number() {
+        assert_eq!(parse_template_number("123"), Some(123.0));
+        assert_eq!(parse_template_number("1,234.56"), Some(1234.56));
+        assert_eq!(parse_template_number(" 1 000 "), Some(1000.0));
+        assert_eq!(parse_template_number("-50"), Some(-50.0));
+        assert_eq!(parse_template_number("&minus;10.5"), Some(-10.5));
+        assert_eq!(parse_template_number("−20"), Some(-20.0));
+        assert_eq!(parse_template_number("abc"), None);
+        assert_eq!(parse_template_number(""), None);
+    }
+    #[test]
+    fn test_split_template_name() {
+        assert_eq!(
+            split_template_name("name|param1|param2"),
+            ("name", "param1|param2")
+        );
+        assert_eq!(split_template_name("name"), ("name", ""));
+        assert_eq!(split_template_name("name|"), ("name", ""));
+        assert_eq!(
+            split_template_name("name|a={{b|c}}|d"),
+            ("name", "a={{b|c}}|d")
+        );
+        assert_eq!(
+            split_template_name("name|a=[[b|c]]|d"),
+            ("name", "a=[[b|c]]|d")
+        );
+        assert_eq!(split_template_name(" name | p=1 "), (" name ", " p=1 "));
+    }
 }
