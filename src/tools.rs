@@ -40,3 +40,96 @@ pub fn split_template_params(params: &str) -> Vec<String> {
     parts.push(current);
     parts
 }
+
+/// Returns the possible keys for a person's first name based on a base name and index.
+///
+/// ```
+/// # use wikipedia_to_epub::tools::person_first_keys;
+/// assert_eq!(person_first_keys("first", 0), vec!["first", "given"]);
+/// assert_eq!(person_first_keys("first", 2), vec!["first2", "given2"]);
+/// assert_eq!(person_first_keys("editor-first", 0), vec!["editor-first", "editor-given", "editor-first1", "editor-given1"]);
+/// ```
+pub fn person_first_keys(base: &str, index: usize) -> Vec<String> {
+    if index == 0 {
+        match base {
+            "first" => vec!["first".to_string(), "given".to_string()],
+            "editor-first" => vec![
+                "editor-first".to_string(),
+                "editor-given".to_string(),
+                "editor-first1".to_string(),
+                "editor-given1".to_string(),
+            ],
+            _ => vec![base.to_string()],
+        }
+    } else {
+        match base {
+            "first" => vec![format!("first{index}"), format!("given{index}")],
+            "editor-first" => vec![
+                format!("editor-first{index}"),
+                format!("editor-given{index}"),
+            ],
+            _ => vec![format!("{base}{index}")],
+        }
+    }
+}
+
+/// Returns the possible keys for a person's last name based on a base name and index.
+///
+/// ```
+/// # use wikipedia_to_epub::tools::person_last_keys;
+/// assert_eq!(person_last_keys("last", 0), vec!["last", "surname"]);
+/// assert_eq!(person_last_keys("last", 3), vec!["last3", "surname3"]);
+/// assert_eq!(person_last_keys("editor-last", 0), vec!["editor-last", "editor-surname", "editor-last1", "editor-surname1"]);
+/// ```
+pub fn person_last_keys(base: &str, index: usize) -> Vec<String> {
+    if index == 0 {
+        match base {
+            "last" => vec!["last".to_string(), "surname".to_string()],
+            "editor-last" => vec![
+                "editor-last".to_string(),
+                "editor-surname".to_string(),
+                "editor-last1".to_string(),
+                "editor-surname1".to_string(),
+            ],
+            _ => vec![base.to_string()],
+        }
+    } else {
+        match base {
+            "last" => vec![format!("last{index}"), format!("surname{index}")],
+            "editor-last" => vec![
+                format!("editor-last{index}"),
+                format!("editor-surname{index}"),
+            ],
+            _ => vec![format!("{base}{index}")],
+        }
+    }
+}
+
+/// Returns the possible keys for a person's link based on a base name and index.
+///
+/// ```
+/// # use wikipedia_to_epub::tools::person_link_keys;
+/// assert_eq!(person_link_keys("author-link", 0), vec!["author-link", "authorlink"]);
+/// assert_eq!(person_link_keys("author-link", 2), vec!["author-link2", "authorlink2"]);
+/// assert_eq!(person_link_keys("editor-link", 0), vec!["editor-link", "editorlink", "editor-link1", "editorlink1"]);
+/// ```
+pub fn person_link_keys(base: &str, index: usize) -> Vec<String> {
+    if index == 0 {
+        match base {
+            "author-link" => vec!["author-link".to_string(), "authorlink".to_string()],
+            "editor-link" => vec![
+                "editor-link".to_string(),
+                "editorlink".to_string(),
+                "editor-link1".to_string(),
+                "editorlink1".to_string(),
+            ],
+            _ => vec![base.to_string()],
+        }
+    } else {
+        match base {
+            "author-link" => vec![format!("author-link{index}"), format!("authorlink{index}")],
+            "editor-link" => vec![format!("editor-link{index}"), format!("editorlink{index}")],
+            _ => vec![format!("{base}{index}")],
+        }
+    }
+}

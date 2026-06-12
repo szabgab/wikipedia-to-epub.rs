@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use crate::config::current_utc_date;
 use crate::config::parse_date_string;
 use crate::templates::render_templates;
-use crate::tools::split_template_params;
+use crate::tools::{person_first_keys, person_last_keys, person_link_keys, split_template_params};
 use crate::types::{DispatchTable, PersonRole, TemplateHandler};
 
 /// [jct](https://en.wikipedia.org/wiki/Template:Jct)
@@ -2207,75 +2207,6 @@ pub(crate) fn citation_people(named: &HashMap<String, String>, role: PersonRole)
         _ => {
             let last = people.last().cloned().unwrap_or_default();
             format!("{}, and {last}", people[..people.len() - 1].join(", "))
-        }
-    }
-}
-
-fn person_first_keys(base: &str, index: usize) -> Vec<String> {
-    if index == 0 {
-        match base {
-            "first" => vec!["first".to_string(), "given".to_string()],
-            "editor-first" => vec![
-                "editor-first".to_string(),
-                "editor-given".to_string(),
-                "editor-first1".to_string(),
-                "editor-given1".to_string(),
-            ],
-            _ => vec![base.to_string()],
-        }
-    } else {
-        match base {
-            "first" => vec![format!("first{index}"), format!("given{index}")],
-            "editor-first" => vec![
-                format!("editor-first{index}"),
-                format!("editor-given{index}"),
-            ],
-            _ => vec![format!("{base}{index}")],
-        }
-    }
-}
-
-fn person_last_keys(base: &str, index: usize) -> Vec<String> {
-    if index == 0 {
-        match base {
-            "last" => vec!["last".to_string(), "surname".to_string()],
-            "editor-last" => vec![
-                "editor-last".to_string(),
-                "editor-surname".to_string(),
-                "editor-last1".to_string(),
-                "editor-surname1".to_string(),
-            ],
-            _ => vec![base.to_string()],
-        }
-    } else {
-        match base {
-            "last" => vec![format!("last{index}"), format!("surname{index}")],
-            "editor-last" => vec![
-                format!("editor-last{index}"),
-                format!("editor-surname{index}"),
-            ],
-            _ => vec![format!("{base}{index}")],
-        }
-    }
-}
-
-fn person_link_keys(base: &str, index: usize) -> Vec<String> {
-    if index == 0 {
-        match base {
-            "author-link" => vec!["author-link".to_string(), "authorlink".to_string()],
-            "editor-link" => vec![
-                "editor-link".to_string(),
-                "editorlink".to_string(),
-                "editor-link1".to_string(),
-                "editorlink1".to_string(),
-            ],
-            _ => vec![base.to_string()],
-        }
-    } else {
-        match base {
-            "author-link" => vec![format!("author-link{index}"), format!("authorlink{index}")],
-            "editor-link" => vec![format!("editor-link{index}"), format!("editorlink{index}")],
-            _ => vec![format!("{base}{index}")],
         }
     }
 }

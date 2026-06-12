@@ -8,7 +8,7 @@ use std::collections::HashMap;
 use cached::macros::cached;
 
 use crate::types::{DispatchTable, EmptyDispatchTable, EmptyHandler};
-pub(crate) use formatting::{citation_people, template_param};
+pub(crate) use formatting::citation_people;
 
 use formatting::{
     render_awol_template, render_died_of_wounds_template, render_five_nonbreaking_spaces_template,
