@@ -9,7 +9,7 @@ use regex::Regex;
 
 use html_escape::{decode_html_entities, encode_double_quoted_attribute, encode_text};
 use reqwest::Url;
-use tracing::{Level, debug, info, warn};
+use tracing::{Level, info, warn};
 use tracing_subscriber::fmt as tracing_fmt;
 
 pub(crate) mod cache;
@@ -2143,7 +2143,7 @@ fn render_wikitext_tables_with_excluded_links(
             // Extract the opening attribute string (first line after {|)
             let attrs_line = after_open.lines().next().unwrap_or("").trim();
 
-            if is_wikitable_attrs(attrs_line) {
+            if is_wikitable_attrs(attrs_line) || extract_class_attr(attrs_line).is_none() {
                 // Render the wikitable block (everything between {| and |})
                 let inner = &text[block_start + 2..block_end - 2];
                 let rendered = render_wikitable(
@@ -2158,14 +2158,8 @@ fn render_wikitext_tables_with_excluded_links(
                 output.push_str(&format!("__WIKIPEDIA_TO_EPUB_TABLE_{}__", table_id));
                 output.push('\n');
             } else {
-                if let Some(class_str) = extract_class_attr(attrs_line) {
-                    warn!(class = %class_str, "Skipping table with unrecognized class: {}", class_str);
-                } else {
-                    debug!(
-                        attrs = attrs_line,
-                        "skipping non-wikitable table with no class"
-                    );
-                }
+                let class_str = extract_class_attr(attrs_line).unwrap_or_default();
+                warn!(class = %class_str, "Skipping table with unrecognized class: {}", class_str);
             }
             continue;
         }

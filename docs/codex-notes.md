@@ -1,5 +1,35 @@
 # Codex Session Notes
 
+## 2026-06-13 Support Rendering Classless Tables
+
+### Summary
+Updated the table parser to render wikitables that do not declare any class attribute (previously skipped). This ensures layouts structured as classless tables (such as the Hangul syllable structure tables in `pages/Hangul.json` or regional lists/infobox containers in other pages) are correctly formatted and included in the output books.
+
+### Decisions Made
+- Modified the wikitext table scanner in [src/main.rs](file:///opt/src/main.rs) to trigger rendering when `is_wikitable_attrs` matches OR when `extract_class_attr` returns `None`.
+- Cleaned up the unused `tracing::debug` import and simplified the table warning message logic in [src/main.rs](file:///opt/src/main.rs).
+- Added a unit test in [src/tests.rs](file:///opt/src/tests.rs) checking that a table with no class attribute is rendered with the default `class="wikitable"` styles.
+- Updated `regenerate.sh` to extract EPUB outputs dynamically using a temporary Perl script, resolving issues on systems lacking the native `unzip` package.
+- Regenerated the expected integration book fixtures for `hangul`, `japan`, and `korea-in-hebrew` where classless tables are now correctly processed and included.
+
+### Files Changed
+- [src/main.rs](file:///opt/src/main.rs) [MODIFY]
+  - Allowed parsing classless tables and simplified unused imports/warnings.
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+  - Added unit test covering classless table rendering.
+- [regenerate.sh](file:///opt/regenerate.sh) [MODIFY]
+  - Dynamic Perl-based zip extraction.
+- `expected/hangul/OEBPS/*`, `expected/japan/OEBPS/*`, `expected/korea-in-hebrew/OEBPS/*` [MODIFY]
+  - Updated expected integration book output.
+
+### Tests Run
+- Checked compilation and warnings: `cargo check` and `cargo clippy --all-targets -- -D warnings` (Clean).
+- Formatted codebase: `cargo fmt` (Clean).
+- Executed unit and integration tests: `cargo test` (All 309 unit tests and 34 integration tests passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-12 Handle olist, webtrans, OSM, wiktionary-inline, cite opentopomap, EngvarB, Colorbull, how-to, portal-inline, end box, and mp Templates
 
 ### Summary

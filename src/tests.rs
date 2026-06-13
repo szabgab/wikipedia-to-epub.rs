@@ -2952,6 +2952,12 @@ fn render_wikitable_preserves_various_classes_and_skips_unrecognized() {
     assert!(!rendered_unrecognized.contains("Cell"));
     assert!(rendered_unrecognized.contains("before"));
     assert!(rendered_unrecognized.contains("after"));
+
+    // 4. A table with no class is rendered with the default "wikitable" class
+    let wikitext_no_class = "before\n{|\n|-\n| Cell\n|}\nafter";
+    let rendered_no_class = render_wikitext("Sample", wikitext_no_class, &internal_links, "en");
+    assert!(rendered_no_class.contains("<table class=\"wikitable\">"));
+    assert!(rendered_no_class.contains("<td>Cell</td>"));
 }
 
 #[test]
