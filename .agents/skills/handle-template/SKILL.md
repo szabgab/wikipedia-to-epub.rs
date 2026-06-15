@@ -19,6 +19,6 @@ When adding or changing Wikipedia template handling:
   * `cargo fmt` before finalizing
   * `cargo check` before finalizing
   * `cargo clippy --all-targets -- -D warnings` before finalizing
-  * Run `./sort.sh` before finalizing.
+  * Run `./tools/sort.sh` before finalizing.
 * Update docs/codex-notes.md before ending the session.
 

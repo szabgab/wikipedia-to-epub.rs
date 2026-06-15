@@ -19,7 +19,7 @@ Skills can be found in the `.agents/skills/` folder.
 
 ## TOOLS
 
-To sort the content of the `csv` files in `src` run `./sort.sh`
+To sort the content of the `csv` files in `src` run `./tools/sort.sh`
 
-To regenerate and update the expected file of a book run `./regenerate.sh examples/book.yaml` replacing `book` with the name of the book.
+To regenerate and update the expected file of a book run `./tools/regenerate.sh examples/book.yaml` replacing `book` with the name of the book.
 
