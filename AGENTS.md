@@ -1,4 +1,4 @@
-* Unless stated otherwise always make sure the git workspace is clean and that all the tests pass before you start working on a task.
+* Unless stated otherwise always make sure the git workspace is clean before you start working on a task.
 
 * Always run `cargo test`, `cargo fmt`, `cargo check`, and `cargo clippy --all-targets -- -D warnings` to make sure they cleanly pass before finishing a task.
 * When adding a new wikipedia template always write a unit-test for each template separately and also update the DEVELOPMENT.md file.
