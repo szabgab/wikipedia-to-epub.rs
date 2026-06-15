@@ -207,6 +207,10 @@
       "media-type" : "image/jpeg",
       "path" : "Sekigahara_Kassen_By_bu-zu_(Gifu_History_Museum).jpg"
    },
+   "Sekigaharascreen.jpg" : {
+      "media-type" : "image/jpeg",
+      "path" : "Sekigaharascreen.jpg"
+   },
    "Ships in Busan.jpg" : {
       "media-type" : "image/svg+xml",
       "path" : "ships-in-busan.svg"

@@ -5976,6 +5976,31 @@ fn render_wikitext_formats_infobox_military_conflict_template() {
 }
 
 #[test]
+fn render_wikitext_formats_infobox_military_conflict_template_with_plain_image() {
+    let internal_links = InternalLinks::new();
+    let mut image_registry =
+        ImageRegistry::new(Some(std::path::Path::new("pages"))).expect("image registry loads");
+    let rendered = render_wikitext_with_template_counts(
+        "Sample",
+        r#"{{Infobox military conflict
+| conflict = Battle of Sekigahara
+| image = Sekigaharascreen.jpg
+| caption = Screen of the Battle of Sekigahara
+}}"#,
+        &internal_links,
+        "en",
+        Some(&mut image_registry),
+    )
+    .0;
+
+    assert!(rendered.contains("Battle of Sekigahara"), "{rendered}");
+    assert!(
+        rendered.contains("Sekigaharascreen.jpg") || rendered.contains("images/"),
+        "{rendered}"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_infobox_settlement_template() {
     let rendered = render_wikitext(
         "Sample",

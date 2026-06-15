@@ -1065,14 +1065,22 @@ fn render_infobox_military_conflict_template(params: &str) -> String {
     if let Some(image) = template_param(&named, &["image"]) {
         rows.push("|-".to_string());
         rows.push("! Image".to_string());
+        let trimmed_image = image.trim();
+        let formatted_image = if trimmed_image.starts_with("[[") || trimmed_image.starts_with("{{")
+        {
+            trimmed_image.to_string()
+        } else {
+            format!("[[File:{}|thumb]]", trimmed_image)
+        };
+
         if let Some(caption) = template_param(&named, &["caption", "footer"]) {
             rows.push(format!(
                 "| {}__WIKIPEDIA_TO_EPUB_BR__{}",
-                render_templates(image),
+                render_templates(&formatted_image),
                 render_templates(caption)
             ));
         } else {
-            rows.push(format!("| {}", render_templates(image)));
+            rows.push(format!("| {}", render_templates(&formatted_image)));
         }
     }
 

@@ -1,5 +1,36 @@
 # Codex Session Notes
 
+## 2026-06-15 Render Plain Image Filenames in Infobox Military Conflict
+
+### Summary
+Updated the `Infobox military conflict` renderer to recognize and parse plain image filenames (e.g. `Sekigaharascreen.jpg`) by wrapping them into `[[File:filename|thumb]]` links. This ensures that the images are correctly registered, downloaded, and displayed in the generated pages.
+
+### Decisions Made
+- Updated `render_infobox_military_conflict_template` in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) to check if the image parameter starts with `[[` or `{{`. If it does not, the plain filename is formatted into `[[File:filename|thumb]]`.
+- Downloaded `Sekigaharascreen.jpg` using `./tools/add_images.pl examples/Battle_of_Sekigahara.yaml` and registered it in `pages/images/manifest.json`.
+- Regenerated the expected integration book fixtures for `Battle_of_Sekigahara` using `./tools/regenerate.sh`.
+- Ensured template calls inside image parameters (e.g. `{{multiple image ...}}` in the Korean War article) are not wrapped by only applying the formatting to values not starting with `[[` or `{{`.
+- Added a unit test `render_wikitext_formats_infobox_military_conflict_template_with_plain_image` to [src/tests.rs](file:///opt/src/tests.rs) to verify that plain image filenames in the military conflict infobox are wrapped and correctly resolved by the image registry.
+
+### Files Changed
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+  - Formatted plain image filenames as file links.
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+  - Added unit test case verifying plain image filename handling.
+- [pages/images/manifest.json](file:///opt/pages/images/manifest.json) [MODIFY]
+  - Added the mapping entry for `Sekigaharascreen.jpg`.
+- `pages/images/Sekigaharascreen.jpg` [ADD]
+  - Saved the downloaded screen image.
+- `expected/Battle_of_Sekigahara/OEBPS/*` [MODIFY]
+  - Updated expected integration book output.
+
+### Tests Run
+- Verified all unit and integration tests: `cargo test && cargo fmt --check && cargo check && cargo clippy --all-targets -- -D warnings` (Passed cleanly, no warnings/errors).
+- Verified the new unit test `render_wikitext_formats_infobox_military_conflict_template_with_plain_image` runs and passes successfully.
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-15 Add Perl Script to Download Book Images and Update Manifest
 
 ### Summary
