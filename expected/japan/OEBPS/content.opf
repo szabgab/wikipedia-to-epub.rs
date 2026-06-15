@@ -14,6 +14,7 @@
     <item id="style" href="style.css" media-type="text/css"/>
     <item id="frontmatter" href="frontmatter.xhtml" media-type="application/xhtml+xml"/>
     <item id="chapter-1" href="Japan.xhtml" media-type="application/xhtml+xml"/>
+    <item id="image-1" href="images/image-1.svg" media-type="image/svg+xml"/>
   </manifest>
   <spine toc="ncx">
     <itemref idref="nav" linear="no"/>

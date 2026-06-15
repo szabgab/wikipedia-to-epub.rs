@@ -1,5 +1,42 @@
 # Codex Session Notes
 
+## 2026-06-13 Handle Wikipedia File and Image Links in Tables and Inline Text
+
+### Summary
+Implemented robust rendering of Wikipedia `File:` and `Image:` links (e.g. `[[File:Regions and Prefectures of Japan 2.svg|...]]` in `pages/Japan.json`) located inside table cells and other formatted inline blocks rather than silently omitting them.
+
+### Decisions Made
+- Added `process_file_links_into_placeholders` in [src/main.rs](file:///opt/src/main.rs) to parse and register inline images into temporary placeholders (e.g. `__WIKIPEDIA_TO_EPUB_IMAGE_HTML_N__`) before processing normal wikitext/markup formatting, then replacing them back with the rendered `<img>` block to avoid escaping or stripping.
+- Modified `cleanup_inline_markup_with_excluded_links` to accept `Option<&mut ImageRegistry>` and `source_page: &str` to process and resolve these image placeholders in place.
+- Refactored `render_wikitable`, `render_wikitext_tables_with_excluded_links`, and their callers to propagate the optional `ImageRegistry` and `source_page` into table cell parsing and formatting.
+- Added a custom `unzip_helper` binary in [src/bin/unzip_helper.rs](file:///opt/src/bin/unzip_helper.rs) to allow extracting EPUB contents for integration tests during `regenerate.sh` runs when the system does not have the native `unzip` package.
+- Added `default-run = "wikipedia-to-epub"` in [Cargo.toml](file:///opt/Cargo.toml) to ensure standard `cargo run` continues to run the main binary since the new helper binary was added.
+- Wrote two unit tests `render_wikitext_embeds_japan_file_link` and `test_render_table_with_image` to verify wikitext and table cell image handling.
+- Regenerated the expected integration book fixtures for `japan` since it now correctly processes and renders its regions/prefectures SVG image.
+
+### Files Changed
+- [src/main.rs](file:///opt/src/main.rs) [MODIFY]
+  - Implemented `process_file_links_into_placeholders` and integrated it with table and cell text formatting.
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+  - Added unit test cases for inline wikitext images and table cell image rendering.
+- [src/bin/unzip_helper.rs](file:///opt/src/bin/unzip_helper.rs) [ADD]
+  - Created a zip-extraction helper utility.
+- [Cargo.toml](file:///opt/Cargo.toml) [MODIFY]
+  - Added `default-run` key pointing to the main binary.
+- [regenerate.sh](file:///opt/regenerate.sh) [MODIFY]
+  - Replaced the dependency on `unzip` with a cargo run command using `unzip_helper`.
+- `expected/japan/OEBPS/*` [MODIFY]
+  - Regenerated Japan fixtures to match the newly added region map SVG image.
+
+### Tests Run
+- Checked formatting: `cargo fmt` (Clean)
+- Checked compiler checks: `cargo check` (Clean)
+- Checked clippy lints: `cargo clippy --all-targets -- -D warnings` (Clean)
+- Checked all tests: `cargo test` (All 311 unit tests, 34 integration tests, and 4 doc-tests passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-13 Support Rendering Classless Tables
 
 ### Summary

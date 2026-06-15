@@ -1013,6 +1013,8 @@ fn render_wikitext_impl(
         internal_links,
         language,
         links_to_excluded_pages,
+        image_registry.as_deref_mut(),
+        title,
     );
     text = process_file_links_with_excluded_links(
         &text,
@@ -1093,9 +1095,11 @@ fn render_wikitext_impl(
             flush_list(&mut html, &mut active_list);
             let text = cleanup_inline_markup_with_excluded_links(
                 text,
+                image_registry.as_deref_mut(),
                 internal_links,
                 language,
                 links_to_excluded_pages,
+                title,
             );
             if !text.is_empty() {
                 html.push(format!("<p>{text}</p>"));
@@ -1108,9 +1112,11 @@ fn render_wikitext_impl(
             flush_list(&mut html, &mut active_list);
             let source = cleanup_inline_markup_with_excluded_links(
                 source,
+                image_registry.as_deref_mut(),
                 internal_links,
                 language,
                 links_to_excluded_pages,
+                title,
             );
             if !source.is_empty() {
                 html.push(format!(r#"<p class="blockquote-source">{source}</p>"#));
@@ -1124,9 +1130,11 @@ fn render_wikitext_impl(
 
             let heading = cleanup_inline_markup_with_excluded_links(
                 &heading,
+                image_registry.as_deref_mut(),
                 internal_links,
                 language,
                 links_to_excluded_pages,
+                title,
             );
             if !heading.is_empty() {
                 html.push(format!("<h{level}>{heading}</h{level}>"));
@@ -1150,9 +1158,11 @@ fn render_wikitext_impl(
 
             let item = cleanup_inline_markup_with_excluded_links(
                 &captures[2],
+                image_registry.as_deref_mut(),
                 internal_links,
                 language,
                 links_to_excluded_pages,
+                title,
             );
             if !item.is_empty() {
                 html.push(format!("<li>{item}</li>"));
@@ -1164,9 +1174,11 @@ fn render_wikitext_impl(
 
         let cleaned = cleanup_inline_markup_with_excluded_links(
             line,
+            image_registry.as_deref_mut(),
             internal_links,
             language,
             links_to_excluded_pages,
+            title,
         );
         if !cleaned.is_empty() {
             paragraph_lines.push(cleaned);
@@ -1218,22 +1230,35 @@ fn flush_list(html: &mut Vec<String>, active_list: &mut Option<char>) {
 fn cleanup_inline_markup(line: &str, internal_links: &InternalLinks, language: &str) -> String {
     cleanup_inline_markup_with_excluded_links(
         line,
+        None,
         internal_links,
         language,
         LinksToExcludedPages::Emphasize,
+        "",
     )
 }
 
 fn cleanup_inline_markup_with_excluded_links(
     line: &str,
+    image_registry: Option<&mut ImageRegistry>,
     internal_links: &InternalLinks,
     language: &str,
     links_to_excluded_pages: LinksToExcludedPages,
+    source_page: &str,
 ) -> String {
     let mut text = line.trim().to_string();
     let mut link_placeholders = Vec::new();
+    let mut image_placeholders = Vec::new();
 
-    text = strip_file_links(&text);
+    text = process_file_links_into_placeholders(
+        &text,
+        image_registry,
+        internal_links,
+        language,
+        links_to_excluded_pages,
+        source_page,
+        &mut image_placeholders,
+    );
 
     let piped_link_re = Regex::new(r"\[\[([^\]|]+)\|([^\]]+)\]\]").unwrap();
     text = piped_link_re
@@ -1273,6 +1298,13 @@ fn cleanup_inline_markup_with_excluded_links(
 
     for (index, link) in link_placeholders.iter().enumerate() {
         html = html.replace(&format!("__WIKIPEDIA_TO_EPUB_LINK_{index}__"), link);
+    }
+
+    for (index, image_html) in image_placeholders.iter().enumerate() {
+        html = html.replace(
+            &format!("__WIKIPEDIA_TO_EPUB_IMAGE_HTML_{index}__"),
+            image_html,
+        );
     }
 
     html
@@ -1480,9 +1512,11 @@ fn render_reference_list(
             let rendered_templates = render_templates(&without_refs);
             let cleaned = cleanup_inline_markup_with_excluded_links(
                 &rendered_templates,
+                None,
                 internal_links,
                 language,
                 links_to_excluded_pages,
+                "",
             );
             if cleaned.trim().is_empty() {
                 None
@@ -2102,6 +2136,8 @@ fn render_wikitext_tables(
         internal_links,
         language,
         LinksToExcludedPages::Emphasize,
+        None,
+        "",
     )
 }
 
@@ -2111,6 +2147,8 @@ fn render_wikitext_tables_with_excluded_links(
     internal_links: &InternalLinks,
     language: &str,
     links_to_excluded_pages: LinksToExcludedPages,
+    mut image_registry: Option<&mut ImageRegistry>,
+    source_page: &str,
 ) -> String {
     let mut output = String::with_capacity(text.len());
     let mut index = 0usize;
@@ -2152,6 +2190,8 @@ fn render_wikitext_tables_with_excluded_links(
                     internal_links,
                     language,
                     links_to_excluded_pages,
+                    image_registry.as_deref_mut(),
+                    source_page,
                 );
                 let table_id = tables.len();
                 tables.push(rendered);
@@ -2192,6 +2232,8 @@ fn render_wikitable(
     internal_links: &InternalLinks,
     language: &str,
     links_to_excluded_pages: LinksToExcludedPages,
+    mut image_registry: Option<&mut ImageRegistry>,
+    source_page: &str,
 ) -> String {
     // Split into lines, skipping the opening attrs line (first line of inner)
     let lines: Vec<&str> = inner.lines().collect();
@@ -2323,9 +2365,11 @@ fn render_wikitable(
             for cell in row {
                 let cleaned = cleanup_inline_markup_with_excluded_links(
                     &cell.content,
+                    image_registry.as_deref_mut(),
                     internal_links,
                     language,
                     links_to_excluded_pages,
+                    source_page,
                 );
                 let tag = if cell.is_header { "th" } else { "td" };
                 html.push_str(&format!("      <{tag}>{cleaned}</{tag}>\n"));
@@ -2342,9 +2386,11 @@ fn render_wikitable(
             for cell in row {
                 let cleaned = cleanup_inline_markup_with_excluded_links(
                     &cell.content,
+                    image_registry.as_deref_mut(),
                     internal_links,
                     language,
                     links_to_excluded_pages,
+                    source_page,
                 );
                 let tag = if cell.is_header { "th" } else { "td" };
                 html.push_str(&format!("      <{tag}>{cleaned}</{tag}>\n"));
@@ -2378,10 +2424,12 @@ fn extract_cell_content(cell: &str) -> &str {
     trimmed
 }
 
+#[cfg(test)]
 fn strip_file_links(text: &str) -> String {
     process_file_links(text, None, &InternalLinks::new(), "en", "")
 }
 
+#[cfg(test)]
 fn process_file_links(
     text: &str,
     image_registry: Option<&mut ImageRegistry>,
@@ -2397,6 +2445,50 @@ fn process_file_links(
         LinksToExcludedPages::Emphasize,
         source_page,
     )
+}
+
+fn process_file_links_into_placeholders(
+    text: &str,
+    mut image_registry: Option<&mut ImageRegistry>,
+    internal_links: &InternalLinks,
+    language: &str,
+    links_to_excluded_pages: LinksToExcludedPages,
+    source_page: &str,
+    image_placeholders: &mut Vec<String>,
+) -> String {
+    let mut output = String::with_capacity(text.len());
+    let mut index = 0usize;
+
+    while index < text.len() {
+        let remaining = &text[index..];
+
+        if remaining.starts_with("[[")
+            && is_file_link_start(&text[index + 2..])
+            && let Some(end) = balanced_wiki_link_end(text, index)
+        {
+            let content = &text[index + 2..end - 2];
+            if let Some(registry) = image_registry.as_deref_mut()
+                && let Some(file_link) =
+                    parse_file_link(content, internal_links, language, links_to_excluded_pages)
+                && let Some(image_id) = registry.register(file_link, source_page)
+                && let Some(occurrence) = registry.occurrence(image_id)
+            {
+                let placeholder_id = image_placeholders.len();
+                image_placeholders.push(render_image_html(occurrence));
+                output.push_str(&format!(
+                    "__WIKIPEDIA_TO_EPUB_IMAGE_HTML_{placeholder_id}__"
+                ));
+            }
+            index = end;
+            continue;
+        }
+
+        let ch = remaining.chars().next().unwrap();
+        output.push(ch);
+        index += ch.len_utf8();
+    }
+
+    output
 }
 
 fn process_file_links_with_excluded_links(
@@ -2463,9 +2555,11 @@ fn parse_file_link(
         {
             alt = Some(cleanup_inline_markup_with_excluded_links(
                 &render_templates(value.trim()),
+                None,
                 internal_links,
                 language,
                 links_to_excluded_pages,
+                "",
             ));
             continue;
         }
@@ -2476,9 +2570,11 @@ fn parse_file_link(
 
         caption = Some(cleanup_inline_markup_with_excluded_links(
             &render_templates(param),
+            None,
             internal_links,
             language,
             links_to_excluded_pages,
+            "",
         ));
     }
 

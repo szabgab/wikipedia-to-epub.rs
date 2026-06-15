@@ -3011,6 +3011,50 @@ fn render_wikitext_embeds_resolved_file_links_when_images_are_enabled() {
 }
 
 #[test]
+fn render_wikitext_embeds_japan_file_link() {
+    let internal_links = InternalLinks::new();
+    let mut image_registry =
+        ImageRegistry::new(Some(std::path::Path::new("pages"))).expect("image registry loads");
+    let (rendered, _) = render_wikitext_with_template_counts(
+        "Sample",
+        "[[File:Regions and Prefectures of Japan 2.svg|thumb|center|upright=1.3|{{Shy|Pre|fec|tures}} of Japan with colored regions]]",
+        &internal_links,
+        "en",
+        Some(&mut image_registry),
+    );
+
+    println!("RENDERED:\n{}", rendered);
+    assert_eq!(image_registry.images.len(), 1);
+    assert_eq!(image_registry.occurrences.len(), 1);
+}
+
+#[test]
+fn test_render_table_with_image() {
+    let internal_links = InternalLinks::new();
+    let mut image_registry =
+        ImageRegistry::new(Some(std::path::Path::new("pages"))).expect("image registry loads");
+    let wikitext = r#"
+{|
+|rowspan="2"|[[File:Regions and Prefectures of Japan 2.svg|thumb|center|upright=1.3|{{Shy|Pre|fec|tures}} of Japan with colored regions]]
+|}
+"#;
+    let mut tables = Vec::new();
+    let text = crate::render_wikitext_tables_with_excluded_links(
+        wikitext,
+        &mut tables,
+        &internal_links,
+        "en",
+        LinksToExcludedPages::Emphasize,
+        Some(&mut image_registry),
+        "Japan",
+    );
+    println!("TEXT: {}", text);
+    println!("TABLES: {:?}", tables);
+    println!("REGISTRY: {:?}", image_registry);
+    assert_eq!(image_registry.images.len(), 1);
+}
+
+#[test]
 fn book_config_defaults_images_to_false() {
     let config = serde_yaml::from_str::<BookConfig>(
         r#"chapters: title
