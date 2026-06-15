@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use File::Path qw(make_path);
 use JSON::PP qw(decode_json);
+use utf8;
 
 main();
 exit(0);
@@ -57,7 +58,7 @@ sub main {
     my $manifest_path = "pages/images/manifest.json";
     my $manifest = {};
     if (-f $manifest_path) {
-        open my $mfh, '<:utf8', $manifest_path or die "Can't read $manifest_path: $!\n";
+        open my $mfh, '<', $manifest_path or die "Can't read $manifest_path: $!\n";
         my $mcontent = do { local $/; <$mfh> };
         close $mfh;
         if ($mcontent =~ /\S/) {
@@ -136,7 +137,7 @@ sub main {
         # Determine clean filename using the correct extension of the downloaded file
         my $base = $image_name;
         $base =~ s/\.[a-zA-Z0-9]+$//; # strip original extension
-        $base =~ s/[^\w\-\.\(\)]/_/g; # replace unsafe chars with underscore
+        $base =~ s/[^\p{L}\p{N}\-\.\(\)_]/_/g; # replace unsafe chars with underscore
         $base =~ s/__+/_/g;           # clean up multiple underscores
 
         my $filename = "${base}.${ext}";
@@ -162,7 +163,7 @@ sub main {
 
     if ($updated_count > 0) {
         # Save updated manifest
-        my $json_encoder = JSON::PP->new->pretty->canonical;
+        my $json_encoder = JSON::PP->new->utf8->pretty->canonical;
         my $new_manifest_content = $json_encoder->encode($manifest);
         open my $mfh, '>', $manifest_path or die "Can't write to $manifest_path: $!\n";
         print $mfh $new_manifest_content;

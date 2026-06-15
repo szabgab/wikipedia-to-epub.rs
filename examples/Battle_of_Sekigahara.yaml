@@ -36,7 +36,7 @@ output-file: Battle_of_Sekigahara.epub
 # Valid values:
 #   - true  : Download and embed matching images as high-quality EPUB assets.
 #   - false : Do not embed images (produces a text-only EPUB).
-images: false
+images: true
 
 # Cache strategy to use for article metadata, wikitext, and images.
 # Valid values:

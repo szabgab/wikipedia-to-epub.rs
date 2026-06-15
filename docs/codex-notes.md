@@ -3,20 +3,24 @@
 ## 2026-06-15 Add Perl Script to Download Book Images and Update Manifest
 
 ### Summary
-Implemented a Perl script `tools/add_images.pl` to automatically download missing image files for a given book configuration, mapping them correctly to their actual downloaded file extension and media type.
+Implemented a Perl script `tools/add_images.pl` to automatically download missing image files for a given book configuration, mapping them correctly to their actual downloaded file extension and media type. Fixed issues with non-ASCII image filenames (such as `大一大万大吉.svg`) resolving to `_.png` and restored missing manifest entries to resolve failing tests.
 
 ### Decisions Made
 - Created the Perl utility [tools/add_images.pl](file:///opt/tools/add_images.pl) to parse missing images via `cargo run -- <config_file> --local pages`, fetch their thumbnail or original URL/mime-type from the Wikipedia API, download the files to `pages/images/` using `curl`, and update `pages/images/manifest.json`.
 - Handled MIME-type discrepancies: For original SVG files, the Wikipedia API returns a PNG thumbnail URL when queried with a custom width (`iiurlwidth=800`). The script now extracts the actual file extension from the downloaded URL and dynamically maps it to the correct `media-type` in `manifest.json`.
+- Fixed filename sanitization: Replaced the ASCII-only sanitization regex `[^\w\-\.\(\)]` in `tools/add_images.pl` with a Unicode property regex `[^\p{L}\p{N}\-\.\(\)_]` to ensure non-ASCII/Unicode characters (e.g. CJK character strings like `大一大万大吉`) are correctly preserved in downloaded filenames instead of being reduced to `_.png`.
+- Renamed the existing `pages/images/_.png` file to its correct name `pages/images/大一大万大吉.png` and updated its mapping in `manifest.json`.
+- Merged the manifests: Re-added the missing Japan and Busan book image entries to `manifest.json` by merging entries from HEAD with the working copy using a Perl script.
+- Configured JSON::PP raw UTF-8 modes: Enabled raw byte reading and encoded UTF-8 JSON writing (`JSON::PP->new->utf8`) to prevent wide character write/read warnings.
 - Regenerated the expected integration book fixtures for `administrative-divisions-of-south-korea` using `./tools/regenerate.sh`.
 
 ### Files Changed
-- [tools/add_images.pl](file:///opt/tools/add_images.pl) [ADD]
-  - Created the Perl image downloading script.
+- [tools/add_images.pl](file:///opt/tools/add_images.pl) [MODIFY]
+  - Integrated Unicode sanitization regex, raw JSON encoding/decoding, and warning fixes.
 - [pages/images/manifest.json](file:///opt/pages/images/manifest.json) [MODIFY]
-  - Registered the downloaded South Korea book images with correct paths and media-types.
+  - Merged and registered all book images (South Korea, Sekigahara, Japan, Busan) with correct paths and media-types.
 - `pages/images/*.png` [ADD]
-  - Downloaded 19 PNG images for the South Korea book.
+  - Renamed `_.png` to `大一大万大吉.png` and added South Korea/Sekigahara images.
 - `expected/administrative-divisions-of-south-korea/OEBPS/*` [MODIFY]
   - Updated integration expectations to include the newly downloaded images.
 

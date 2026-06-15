@@ -1,7 +1,39 @@
 {
+   "Alex K Hiroshima Asano kamon.svg" : {
+      "media-type" : "image/png",
+      "path" : "Alex_K_Hiroshima_Asano_kamon.png"
+   },
+   "Alex K Hiroshima Fukushima kamon.svg" : {
+      "media-type" : "image/png",
+      "path" : "Alex_K_Hiroshima_Fukushima_kamon.png"
+   },
+   "Alex K Hiroshima Mori kamon.svg" : {
+      "media-type" : "image/png",
+      "path" : "Alex_K_Hiroshima_Mori_kamon.png"
+   },
+   "Battaglia di Sekigahara posizioni iniziali.svg" : {
+      "media-type" : "image/png",
+      "path" : "Battaglia_di_Sekigahara_posizioni_iniziali.png"
+   },
+   "Battle of Sekigahara Monument.jpg" : {
+      "media-type" : "image/jpeg",
+      "path" : "Battle_of_Sekigahara_Monument.jpg"
+   },
+   "Bizenn Chou (No background and black color drawing).svg" : {
+      "media-type" : "image/png",
+      "path" : "Bizenn_Chou_(No_background_and_black_color_drawing).png"
+   },
    "Busan Port (1).jpg" : {
       "media-type" : "image/svg+xml",
       "path" : "busan-port.svg"
+   },
+   "Chosokabe mon.svg" : {
+      "media-type" : "image/png",
+      "path" : "Chosokabe_mon.png"
+   },
+   "Daki Kasiwa (No background and Black color drawing).svg" : {
+      "media-type" : "image/png",
+      "path" : "Daki_Kasiwa_(No_background_and_Black_color_drawing).png"
    },
    "Emblem of Daejeon.svg" : {
       "media-type" : "image/png",
@@ -27,6 +59,70 @@
       "media-type" : "image/png",
       "path" : "Emblem_of_Jeonbuk_State.png"
    },
+   "Futatsuhikiryo.svg" : {
+      "media-type" : "image/png",
+      "path" : "Futatsuhikiryo.png"
+   },
+   "Hidari mitsudomoe.svg" : {
+      "media-type" : "image/png",
+      "path" : "Hidari_mitsudomoe.png"
+   },
+   "Hikone Tahibana（No background and Black color drawing）.svg" : {
+      "media-type" : "image/png",
+      "path" : "Hikone_Tahibana_No_background_and_Black_color_drawing_.png"
+   },
+   "Ishida Mitsunari's letter to Toyotomi Hideyoshi.jpg" : {
+      "media-type" : "image/jpeg",
+      "path" : "Ishida_Mitsunari_s_letter_to_Toyotomi_Hideyoshi.jpg"
+   },
+   "Japanese Crest Hana Hisi.svg" : {
+      "media-type" : "image/png",
+      "path" : "Japanese_Crest_Hana_Hisi.png"
+   },
+   "Japanese Crest Uesugi Sasa.svg" : {
+      "media-type" : "image/png",
+      "path" : "Japanese_Crest_Uesugi_Sasa.png"
+   },
+   "Japanese Crest rokumonsen.svg" : {
+      "media-type" : "image/png",
+      "path" : "Japanese_Crest_rokumonsen.png"
+   },
+   "Japanese crest Hana Kurusu.svg" : {
+      "media-type" : "image/png",
+      "path" : "Japanese_crest_Hana_Kurusu.png"
+   },
+   "Japanese crest Kaga Umebachi.svg" : {
+      "media-type" : "image/png",
+      "path" : "Japanese_crest_Kaga_Umebachi.png"
+   },
+   "Japanese crest Yotumeyui.svg" : {
+      "media-type" : "image/png",
+      "path" : "Japanese_crest_Yotumeyui.png"
+   },
+   "Jimonji.svg" : {
+      "media-type" : "image/png",
+      "path" : "Jimonji.png"
+   },
+   "Jyanome (No background and Black color drawing).svg" : {
+      "media-type" : "image/png",
+      "path" : "Jyanome_(No_background_and_Black_color_drawing).png"
+   },
+   "Kanimon.jpg" : {
+      "media-type" : "image/jpeg",
+      "path" : "Kanimon.jpg"
+   },
+   "Kuroda Fuji（No background and Black color drawing）.svg" : {
+      "media-type" : "image/png",
+      "path" : "Kuroda_Fuji_No_background_and_Black_color_drawing_.png"
+   },
+   "Kuyo (inverted).svg" : {
+      "media-type" : "image/png",
+      "path" : "Kuyo_(inverted).png"
+   },
+   "Kuyo.svg" : {
+      "media-type" : "image/png",
+      "path" : "Kuyo.png"
+   },
    "Logo of Jeju Province, South Korea.svg" : {
       "media-type" : "image/png",
       "path" : "Logo_of_Jeju_Province_South_Korea.png"
@@ -35,6 +131,38 @@
       "media-type" : "image/png",
       "path" : "Logo_of_Seoul_South_Korea.png"
    },
+   "Maru juji.svg" : {
+      "media-type" : "image/png",
+      "path" : "Maru_juji.png"
+   },
+   "Maru ni Hon moji（No background and Black color drawing）.svg" : {
+      "media-type" : "image/png",
+      "path" : "Maru_ni_Hon_moji_No_background_and_Black_color_drawing_.png"
+   },
+   "Marunimitsume.gif" : {
+      "media-type" : "image/gif",
+      "path" : "Marunimitsume.gif"
+   },
+   "Marunouchinimitsuhikiryo.svg" : {
+      "media-type" : "image/png",
+      "path" : "Marunouchinimitsuhikiryo.png"
+   },
+   "Masegiku.jpg" : {
+      "media-type" : "image/jpeg",
+      "path" : "Masegiku.jpg"
+   },
+   "Mitsubaaoi.svg" : {
+      "media-type" : "image/png",
+      "path" : "Mitsubaaoi.png"
+   },
+   "Mukaichou.jpg" : {
+      "media-type" : "image/jpeg",
+      "path" : "Mukaichou.jpg"
+   },
+   "Oda ka（No background and Black color drawing）.svg" : {
+      "media-type" : "image/png",
+      "path" : "Oda_ka_No_background_and_Black_color_drawing_.png"
+   },
    "Provinces of Korea (ROK point of view)+Inter-Korean border.svg" : {
       "media-type" : "image/png",
       "path" : "Provinces_of_Korea_(ROK_point_of_view)_Inter-Korean_border.png"
@@ -42,6 +170,14 @@
    "Regions and Prefectures of Japan 2.svg" : {
       "media-type" : "image/svg+xml",
       "path" : "regions-and-prefectures-of-japan-2.svg"
+   },
+   "Sagari Fuji of Katou Yosiaki (No background and Black color drawing).svg" : {
+      "media-type" : "image/png",
+      "path" : "Sagari_Fuji_of_Katou_Yosiaki_(No_background_and_Black_color_drawing).png"
+   },
+   "Satake.jpg" : {
+      "media-type" : "image/jpeg",
+      "path" : "Satake.jpg"
    },
    "Seal of North Chungcheong.svg" : {
       "media-type" : "image/png",
@@ -67,9 +203,21 @@
       "media-type" : "image/png",
       "path" : "Sejong_City_symbol.png"
    },
+   "Sekigahara Kassen Byōbu-zu (Gifu History Museum).jpg" : {
+      "media-type" : "image/jpeg",
+      "path" : "Sekigahara_Kassen_By_bu-zu_(Gifu_History_Museum).jpg"
+   },
    "Ships in Busan.jpg" : {
       "media-type" : "image/svg+xml",
       "path" : "ships-in-busan.svg"
+   },
+   "Skull and Crossbones.svg" : {
+      "media-type" : "image/png",
+      "path" : "Skull_and_Crossbones.png"
+   },
+   "So clan mon2.svg" : {
+      "media-type" : "image/png",
+      "path" : "So_clan_mon2.png"
    },
    "South Korea second level divisions.svg" : {
       "media-type" : "image/png",
@@ -86,5 +234,45 @@
    "Symbol of Ulsan.svg" : {
       "media-type" : "image/png",
       "path" : "Symbol_of_Ulsan.png"
+   },
+   "Tachi omodaka.svg" : {
+      "media-type" : "image/png",
+      "path" : "Tachi_omodaka.png"
+   },
+   "Take ni Suzume.svg" : {
+      "media-type" : "image/png",
+      "path" : "Take_ni_Suzume.png"
+   },
+   "Takeda mon.svg" : {
+      "media-type" : "image/png",
+      "path" : "Takeda_mon.png"
+   },
+   "Tokugawa Aoi（No background and Black color drawing）.svg" : {
+      "media-type" : "image/png",
+      "path" : "Tokugawa_Aoi_No_background_and_Black_color_drawing_.png"
+   },
+   "Tosa Kasiwa（No background and Black color drawing）.svg" : {
+      "media-type" : "image/png",
+      "path" : "Tosa_Kasiwa_No_background_and_Black_color_drawing_.png"
+   },
+   "Tuta (No background and Black color drawing).svg" : {
+      "media-type" : "image/png",
+      "path" : "Tuta_(No_background_and_Black_color_drawing).png"
+   },
+   "Umebachi（No background and Black color drawing）.svg" : {
+      "media-type" : "image/png",
+      "path" : "Umebachi_No_background_and_Black_color_drawing_.png"
+   },
+   "Wachigai.svg" : {
+      "media-type" : "image/png",
+      "path" : "Wachigai.png"
+   },
+   "ikoma mon.svg" : {
+      "media-type" : "image/png",
+      "path" : "ikoma_mon.png"
+   },
+   "大一大万大吉.svg" : {
+      "media-type" : "image/png",
+      "path" : "大一大万大吉.png"
    }
 }

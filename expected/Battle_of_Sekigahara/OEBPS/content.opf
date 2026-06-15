@@ -5,7 +5,7 @@
     <dc:title>Battle of Sekigahara</dc:title>
     <dc:creator>Wikipedia Contributors &amp; Compiler</dc:creator>
     <dc:language>en</dc:language>
-    <dc:date>2026-06-12</dc:date>
+    <dc:date>2026-06-15</dc:date>
     <dc:rights>Creative Commons Attribution-ShareAlike 4.0 License</dc:rights>
   </metadata>
   <manifest>
@@ -14,6 +14,53 @@
     <item id="style" href="style.css" media-type="text/css"/>
     <item id="frontmatter" href="frontmatter.xhtml" media-type="application/xhtml+xml"/>
     <item id="chapter-1" href="Battle_of_Sekigahara.xhtml" media-type="application/xhtml+xml"/>
+    <item id="image-1" href="images/image-1.png" media-type="image/png"/>
+    <item id="image-2" href="images/image-2.png" media-type="image/png"/>
+    <item id="image-3" href="images/image-3.png" media-type="image/png"/>
+    <item id="image-4" href="images/image-4.png" media-type="image/png"/>
+    <item id="image-5" href="images/image-5.png" media-type="image/png"/>
+    <item id="image-6" href="images/image-6.jpg" media-type="image/jpeg"/>
+    <item id="image-7" href="images/image-7.png" media-type="image/png"/>
+    <item id="image-8" href="images/image-8.png" media-type="image/png"/>
+    <item id="image-9" href="images/image-9.png" media-type="image/png"/>
+    <item id="image-10" href="images/image-10.png" media-type="image/png"/>
+    <item id="image-11" href="images/image-11.png" media-type="image/png"/>
+    <item id="image-12" href="images/image-12.png" media-type="image/png"/>
+    <item id="image-13" href="images/image-13.png" media-type="image/png"/>
+    <item id="image-14" href="images/image-14.png" media-type="image/png"/>
+    <item id="image-15" href="images/image-15.png" media-type="image/png"/>
+    <item id="image-16" href="images/image-16.jpg" media-type="image/jpeg"/>
+    <item id="image-17" href="images/image-17.png" media-type="image/png"/>
+    <item id="image-18" href="images/image-18.png" media-type="image/png"/>
+    <item id="image-19" href="images/image-19.png" media-type="image/png"/>
+    <item id="image-20" href="images/image-20.jpg" media-type="image/jpeg"/>
+    <item id="image-21" href="images/image-21.png" media-type="image/png"/>
+    <item id="image-22" href="images/image-22.png" media-type="image/png"/>
+    <item id="image-23" href="images/image-23.png" media-type="image/png"/>
+    <item id="image-24" href="images/image-24.png" media-type="image/png"/>
+    <item id="image-25" href="images/image-25.png" media-type="image/png"/>
+    <item id="image-26" href="images/image-26.png" media-type="image/png"/>
+    <item id="image-27" href="images/image-27.png" media-type="image/png"/>
+    <item id="image-28" href="images/image-28.png" media-type="image/png"/>
+    <item id="image-29" href="images/image-29.png" media-type="image/png"/>
+    <item id="image-30" href="images/image-30.png" media-type="image/png"/>
+    <item id="image-31" href="images/image-31.png" media-type="image/png"/>
+    <item id="image-32" href="images/image-32.png" media-type="image/png"/>
+    <item id="image-33" href="images/image-33.gif" media-type="image/gif"/>
+    <item id="image-34" href="images/image-34.jpg" media-type="image/jpeg"/>
+    <item id="image-35" href="images/image-35.png" media-type="image/png"/>
+    <item id="image-36" href="images/image-36.png" media-type="image/png"/>
+    <item id="image-37" href="images/image-37.png" media-type="image/png"/>
+    <item id="image-38" href="images/image-38.png" media-type="image/png"/>
+    <item id="image-39" href="images/image-39.png" media-type="image/png"/>
+    <item id="image-40" href="images/image-40.png" media-type="image/png"/>
+    <item id="image-41" href="images/image-41.png" media-type="image/png"/>
+    <item id="image-42" href="images/image-42.png" media-type="image/png"/>
+    <item id="image-43" href="images/image-43.png" media-type="image/png"/>
+    <item id="image-44" href="images/image-44.png" media-type="image/png"/>
+    <item id="image-45" href="images/image-45.jpg" media-type="image/jpeg"/>
+    <item id="image-46" href="images/image-46.jpg" media-type="image/jpeg"/>
+    <item id="image-47" href="images/image-47.jpg" media-type="image/jpeg"/>
   </manifest>
   <spine toc="ncx">
     <itemref idref="nav" linear="no"/>
