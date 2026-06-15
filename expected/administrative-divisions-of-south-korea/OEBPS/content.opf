@@ -5,7 +5,7 @@
     <dc:title>Administrative divisions of South Korea</dc:title>
     <dc:creator>Wikipedia contributors</dc:creator>
     <dc:language>en</dc:language>
-    <dc:date>2026-06-12</dc:date>
+    <dc:date>2026-06-15</dc:date>
     <dc:rights>Creative Commons Attribution-ShareAlike 4.0 License</dc:rights>
   </metadata>
   <manifest>
@@ -14,6 +14,25 @@
     <item id="style" href="style.css" media-type="text/css"/>
     <item id="frontmatter" href="frontmatter.xhtml" media-type="application/xhtml+xml"/>
     <item id="chapter-1" href="Administrative_divisions_of_South_Korea.xhtml" media-type="application/xhtml+xml"/>
+    <item id="image-1" href="images/image-1.png" media-type="image/png"/>
+    <item id="image-2" href="images/image-2.png" media-type="image/png"/>
+    <item id="image-3" href="images/image-3.png" media-type="image/png"/>
+    <item id="image-4" href="images/image-4.png" media-type="image/png"/>
+    <item id="image-5" href="images/image-5.png" media-type="image/png"/>
+    <item id="image-6" href="images/image-6.png" media-type="image/png"/>
+    <item id="image-7" href="images/image-7.png" media-type="image/png"/>
+    <item id="image-8" href="images/image-8.png" media-type="image/png"/>
+    <item id="image-9" href="images/image-9.png" media-type="image/png"/>
+    <item id="image-10" href="images/image-10.png" media-type="image/png"/>
+    <item id="image-11" href="images/image-11.png" media-type="image/png"/>
+    <item id="image-12" href="images/image-12.png" media-type="image/png"/>
+    <item id="image-13" href="images/image-13.png" media-type="image/png"/>
+    <item id="image-14" href="images/image-14.png" media-type="image/png"/>
+    <item id="image-15" href="images/image-15.png" media-type="image/png"/>
+    <item id="image-16" href="images/image-16.png" media-type="image/png"/>
+    <item id="image-17" href="images/image-17.png" media-type="image/png"/>
+    <item id="image-18" href="images/image-18.png" media-type="image/png"/>
+    <item id="image-19" href="images/image-19.png" media-type="image/png"/>
   </manifest>
   <spine toc="ncx">
     <itemref idref="nav" linear="no"/>

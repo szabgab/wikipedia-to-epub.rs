@@ -1,14 +1,90 @@
 {
-  "Ships in Busan.jpg": {
-    "path": "ships-in-busan.svg",
-    "media-type": "image/svg+xml"
-  },
-  "Busan Port (1).jpg": {
-    "path": "busan-port.svg",
-    "media-type": "image/svg+xml"
-  },
-  "Regions and Prefectures of Japan 2.svg": {
-    "path": "regions-and-prefectures-of-japan-2.svg",
-    "media-type": "image/svg+xml"
-  }
+   "Busan Port (1).jpg" : {
+      "media-type" : "image/svg+xml",
+      "path" : "busan-port.svg"
+   },
+   "Emblem of Daejeon.svg" : {
+      "media-type" : "image/png",
+      "path" : "Emblem_of_Daejeon.png"
+   },
+   "Emblem of Gangwon State.svg" : {
+      "media-type" : "image/png",
+      "path" : "Emblem_of_Gangwon_State.png"
+   },
+   "Emblem of Gwangju.svg" : {
+      "media-type" : "image/png",
+      "path" : "Emblem_of_Gwangju.png"
+   },
+   "Emblem of Gyeonggi Province (2021).svg" : {
+      "media-type" : "image/png",
+      "path" : "Emblem_of_Gyeonggi_Province_(2021).png"
+   },
+   "Emblem of Incheon.svg" : {
+      "media-type" : "image/png",
+      "path" : "Emblem_of_Incheon.png"
+   },
+   "Emblem of Jeonbuk State.svg" : {
+      "media-type" : "image/png",
+      "path" : "Emblem_of_Jeonbuk_State.png"
+   },
+   "Logo of Jeju Province, South Korea.svg" : {
+      "media-type" : "image/png",
+      "path" : "Logo_of_Jeju_Province_South_Korea.png"
+   },
+   "Logo of Seoul, South Korea.svg" : {
+      "media-type" : "image/png",
+      "path" : "Logo_of_Seoul_South_Korea.png"
+   },
+   "Provinces of Korea (ROK point of view)+Inter-Korean border.svg" : {
+      "media-type" : "image/png",
+      "path" : "Provinces_of_Korea_(ROK_point_of_view)_Inter-Korean_border.png"
+   },
+   "Regions and Prefectures of Japan 2.svg" : {
+      "media-type" : "image/svg+xml",
+      "path" : "regions-and-prefectures-of-japan-2.svg"
+   },
+   "Seal of North Chungcheong.svg" : {
+      "media-type" : "image/png",
+      "path" : "Seal_of_North_Chungcheong.png"
+   },
+   "Seal of North Gyeongsang.svg" : {
+      "media-type" : "image/png",
+      "path" : "Seal_of_North_Gyeongsang.png"
+   },
+   "Seal of South Chungcheong.svg" : {
+      "media-type" : "image/png",
+      "path" : "Seal_of_South_Chungcheong.png"
+   },
+   "Seal of South Gyeongsang.svg" : {
+      "media-type" : "image/png",
+      "path" : "Seal_of_South_Gyeongsang.png"
+   },
+   "Seal of South Jeolla.svg" : {
+      "media-type" : "image/png",
+      "path" : "Seal_of_South_Jeolla.png"
+   },
+   "Sejong City symbol.svg" : {
+      "media-type" : "image/png",
+      "path" : "Sejong_City_symbol.png"
+   },
+   "Ships in Busan.jpg" : {
+      "media-type" : "image/svg+xml",
+      "path" : "ships-in-busan.svg"
+   },
+   "South Korea second level divisions.svg" : {
+      "media-type" : "image/png",
+      "path" : "South_Korea_second_level_divisions.png"
+   },
+   "Symbol of Busan (2023–).svg" : {
+      "media-type" : "image/png",
+      "path" : "Symbol_of_Busan_(2023_).png"
+   },
+   "Symbol of Daegu.svg" : {
+      "media-type" : "image/png",
+      "path" : "Symbol_of_Daegu.png"
+   },
+   "Symbol of Ulsan.svg" : {
+      "media-type" : "image/png",
+      "path" : "Symbol_of_Ulsan.png"
+   }
 }
