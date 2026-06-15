@@ -7,7 +7,7 @@ metadata:
   language: en
   edition: First edition
 output-file: administrative-divisions-of-south-korea.epub
-images: false
+images: true
 caching: central
 depth: 0
 resources: false
