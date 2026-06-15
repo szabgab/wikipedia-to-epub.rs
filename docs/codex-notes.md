@@ -1,5 +1,40 @@
 # Codex Session Notes
 
+## 2026-06-15 Embed Wikipedia Labelled Map Templates Generically
+
+### Summary
+Implemented generic support for Wikipedia map templates (such as `Template:South Korea Provincial level Labelled Map`) by mapping template names to their base map images in a new configuration file `src/maps.csv`. When encountered, these map templates are rendered as standard `[[File:ImageName|thumb|TemplateName]]` links.
+
+### Decisions Made
+- Added a new CSV file `src/maps.csv` containing template name to base image name mappings.
+- Wrote a temporary ignored test `scrape_map_templates` in `src/tests.rs` to fetch all templates from `Category:Labelled_map_templates` category via the Wikipedia API and extract their main image filenames.
+- Implemented `find_map_image` in `src/templates/mod.rs` to search `src/maps.csv` for matching template names.
+- Updated `render_template` and `is_handled_template_name` in `src/templates/mod.rs` to render map templates as standard `[[File:...]]` links.
+- Added a unit test in `src/tests.rs` to verify that `{{South Korea Provincial level Labelled Map}}` is formatted correctly.
+- Documented the new template conversion rules in `DEVELOPMENT.md`.
+
+### Files Changed
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+  - Integrated `find_map_image` in `render_template` and `is_handled_template_name`.
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+  - Added unit test and the ignored `scrape_map_templates` scraper test.
+- [src/maps.csv](file:///opt/src/maps.csv) [ADD]
+  - Added mappings for all templates in Category:Labelled_map_templates.
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+  - Documented labelled map conversion rules.
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+  - Sorted file using `./sort.sh`.
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+  - Sorted file using `./sort.sh`.
+
+### Tests Run
+- Checked compilation and warnings: `cargo check` and `cargo clippy --all-targets -- -D warnings` (Clean).
+- Formatted codebase: `cargo fmt` (Clean).
+- Executed unit and integration tests: `cargo test` (All passed).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-13 Handle Wikipedia File and Image Links in Tables and Inline Text
 
 ### Summary

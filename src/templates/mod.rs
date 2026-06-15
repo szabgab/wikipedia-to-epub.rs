@@ -170,6 +170,8 @@ pub(crate) fn render_template(content: &str) -> String {
         || template.eq_ignore_ascii_case("formatnum")
     {
         render_formatnum_template(template, params)
+    } else if let Some(image_name) = find_map_image(template) {
+        format!("[[File:{}|thumb|{}]]", image_name, template)
     } else if is_silent_template_name(template) {
         increment_recognized_skipped_template_count();
         String::new()
@@ -537,6 +539,7 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("portal inline")
         || template.eq_ignore_ascii_case("mp")
         || template.eq_ignore_ascii_case("minor planet")
+        || find_map_image(template).is_some()
         || is_silent_template_name(template)
 }
 
@@ -595,4 +598,23 @@ fn is_succession_template_name(template: &str) -> bool {
         .get(.."s-".len())
         .is_some_and(|prefix| prefix.eq_ignore_ascii_case("s-"))
         || template.eq_ignore_ascii_case("Succession box")
+}
+
+fn find_map_image(template: &str) -> Option<&'static str> {
+    let csv = include_str!("../maps.csv");
+    for line in csv.lines() {
+        let line = line.trim();
+        if line.is_empty() {
+            continue;
+        }
+        let parts: Vec<&str> = line.split("\",\"").collect();
+        if parts.len() == 2 {
+            let clean_t = parts[0].trim_start_matches('"');
+            let clean_i = parts[1].trim_end_matches('"');
+            if clean_t.eq_ignore_ascii_case(template) {
+                return Some(clean_i);
+            }
+        }
+    }
+    None
 }

@@ -944,6 +944,15 @@ fn render_wikitext_formats_easy_css_image_crop_template() {
 }
 
 #[test]
+fn render_wikitext_formats_south_korea_provincial_level_labelled_map_template() {
+    let rendered = render_templates("{{South Korea Provincial level Labelled Map}}");
+    assert_eq!(
+        rendered,
+        "[[File:Provinces of Korea (ROK point of view)+Inter-Korean border.svg|thumb|South Korea Provincial level Labelled Map]]"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_multiple_images_template() {
     let wikitext = "{{Multiple images\n\
         | align = right\n\
@@ -6389,4 +6398,151 @@ fn strip_balanced_sections(text: &str, open: &str, close: &str) -> String {
     }
 
     output
+}
+
+fn extract_main_image(wikitext: &str) -> Option<String> {
+    let re = Regex::new(r"(?i)\b(?:image|map|basemap)\s*=\s*([^|}\n]+\.(?:svg|png|jpg|jpeg|gif))")
+        .unwrap();
+    for cap in re.captures_iter(wikitext) {
+        let img = cap[1].trim().to_string();
+        let lower = img.to_lowercase();
+        if !lower.contains("pog")
+            && !lower.contains("dot")
+            && !lower.contains("pointer")
+            && !lower.contains("marker")
+        {
+            return Some(img);
+        }
+    }
+
+    let re_any = Regex::new(r"(?i)\b([^|}\n\s]+\.(?:svg|png|jpg|jpeg|gif))").unwrap();
+    for cap in re_any.captures_iter(wikitext) {
+        let img = cap[1].trim().to_string();
+        let lower = img.to_lowercase();
+        if !lower.contains("pog")
+            && !lower.contains("dot")
+            && !lower.contains("pointer")
+            && !lower.contains("marker")
+        {
+            return Some(img);
+        }
+    }
+    None
+}
+
+#[test]
+#[ignore]
+fn scrape_map_templates() {
+    let client = reqwest::blocking::Client::builder()
+        .user_agent("wikipedia-to-epub scraper (contact: github.com/szabgab/wikipedia-to-epub.rs)")
+        .build()
+        .unwrap();
+
+    let mut members = Vec::new();
+    let mut cmcontinue: Option<String> = None;
+
+    loop {
+        let mut request = client.get("https://en.wikipedia.org/w/api.php").query(&[
+            ("action", "query"),
+            ("list", "categorymembers"),
+            ("cmtitle", "Category:Labelled_map_templates"),
+            ("cmlimit", "500"),
+            ("format", "json"),
+        ]);
+        if let Some(ref cont) = cmcontinue {
+            request = request.query(&[("cmcontinue", cont)]);
+        }
+
+        let resp: serde_json::Value = request.send().unwrap().json().unwrap();
+        if let Some(arr) = resp
+            .get("query")
+            .and_then(|q| q.get("categorymembers"))
+            .and_then(|cm| cm.as_array())
+        {
+            for item in arr {
+                let title = item
+                    .get("title")
+                    .and_then(|t| t.as_str())
+                    .unwrap()
+                    .to_string();
+                let ns = item.get("ns").and_then(|n| n.as_i64()).unwrap();
+                if ns == 10 {
+                    // Namespace 10 is Template
+                    members.push(title);
+                }
+            }
+        }
+
+        if let Some(cont) = resp
+            .get("continue")
+            .and_then(|c| c.get("cmcontinue"))
+            .and_then(|c| c.as_str())
+        {
+            cmcontinue = Some(cont.to_string());
+        } else {
+            break;
+        }
+    }
+
+    println!("Found {} templates in category", members.len());
+
+    let mut map_entries = Vec::new();
+
+    // Fetch wikitext in chunks of 50
+    for chunk in members.chunks(50) {
+        let titles = chunk.join("|");
+        let resp: serde_json::Value = client
+            .get("https://en.wikipedia.org/w/api.php")
+            .query(&[
+                ("action", "query"),
+                ("prop", "revisions"),
+                ("rvprop", "content"),
+                ("rvslots", "main"),
+                ("titles", &titles),
+                ("format", "json"),
+            ])
+            .send()
+            .unwrap()
+            .json()
+            .unwrap();
+        if let Some(pages) = resp
+            .get("query")
+            .and_then(|q| q.get("pages"))
+            .and_then(|p| p.as_object())
+        {
+            for (_, page) in pages {
+                let title = page
+                    .get("title")
+                    .and_then(|t| t.as_str())
+                    .unwrap()
+                    .to_string();
+                if let Some(rev) = page
+                    .get("revisions")
+                    .and_then(|r| r.as_array())
+                    .and_then(|revs| revs.first())
+                {
+                    let text = if let Some(slots) = rev.get("slots").and_then(|s| s.get("main")) {
+                        slots.get("*").and_then(|t| t.as_str()).unwrap_or("")
+                    } else {
+                        rev.get("*").and_then(|t| t.as_str()).unwrap_or("")
+                    };
+                    if let Some(img) = extract_main_image(text) {
+                        let clean_title = title.strip_prefix("Template:").unwrap_or(&title);
+                        let clean_title = clean_title.replace('_', " ").trim().to_string();
+                        map_entries.push((clean_title, img));
+                    }
+                }
+            }
+        }
+    }
+
+    map_entries.sort_by_key(|a| a.0.to_lowercase());
+
+    let mut csv_content = String::new();
+    for (template, img) in map_entries {
+        csv_content.push_str(&format!("\"{}\",\"{}\"\n", template, img));
+    }
+
+    fs::write("src/maps.csv", csv_content).unwrap();
+    println!("Successfully wrote src/maps.csv");
 }

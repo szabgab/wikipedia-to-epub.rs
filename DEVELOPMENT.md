@@ -132,6 +132,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Nihongo foot|Tokyo|東京|Tōkyō}}` formats Japanese language information inline next to the English text: `Tokyo (<span lang="ja">東京</span>, <em>Tōkyō</em>)`
 * `{{Easy CSS image crop|Image=Osaka Urban Railway network.svg|...}}` converts seamlessly to standard image links inside the EPUB book
 * `{{Multiple images|image1=...|caption1=...}}` (and its alias `{{Multiple image}}`) converts multiple grouped images into individual standard File links
+* `{{South Korea Provincial level Labelled Map}}` and other labelled map templates listed in `src/maps.csv` convert to standard image links inside the EPUB book
 * `{{ISSN|0268-4160}}` becomes `ISSN 0268-4160`
 * `{{Cite NSRW|wstitle=Osaka}}` renders as an article citation linking to Wikisource
 * `{{circa}}` 10 million` becomes `c. 10 million`
