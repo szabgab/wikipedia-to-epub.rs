@@ -1,5 +1,57 @@
 # Codex Session Notes
 
+## 2026-06-16 Handle tmath, closed-open, sqrt, Section link, mset, hidden begin, and hidden end
+
+### Summary
+Implemented and registered handlers for `tmath`, `closed-open`, `sqrt`, `Section link` / `section link` / `slink`, `mset`, and `hidden begin` / `hidden end` templates. Added case-insensitive registry check support, added unit tests, regenerated book outputs, and sorted CSV files.
+
+### Decisions Made
+- **Implemented template renderers**:
+  - `tmath`: mathematical expression maps to raw math content in text.
+  - `closed-open`: mathematical interval notation `[a, b)`.
+  - `sqrt`: wraps content with square root symbol `√{content}`.
+  - `Section link` / `section link`: mapped to standard wikitext links `[[Target#Section|Target § Section]]` (using the correct `§ ` section sign prefix).
+  - `mset`: formats set values wrapped in curly braces `{val1, val2}`.
+  - `hidden begin` / `hidden end`: collapses block by rendering bold header title and inline content, omitting the `hidden end` wrapper.
+- **Registered templates**:
+  - Registered all template renderers in `get_dispatch_table` within [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+  - Added all new templates case-insensitively to `is_handled_template_name` in [src/templates/mod.rs](file:///opt/src/templates/mod.rs).
+  - Registered `"hidden end"` mapped to `""` in `get_fixed` in [src/templates/mod.rs](file:///opt/src/templates/mod.rs).
+- **Added unit tests**:
+  - Wrote individual unit tests for all new templates in [src/tests.rs](file:///opt/src/tests.rs).
+  - Updated existing `slink` test cases to align with correct section sign (`§ `) rendering.
+- **Regenerated expected fixtures**:
+  - Updated integration books: `Variance` (incorporating all newly supported templates), `hangul`, and `planets` (reflecting improved `slink` section link formatting).
+- **Documented conversion rules**:
+  - Added new rules in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+  - Registered template handlers in the dispatch table, removed duplicate `render_section_link_template` function, and addressed clippy warnings.
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+  - Registered `hidden end` to `""` in `get_fixed` and added all new templates to `is_handled_template_name`.
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+  - Added unit tests for each template individually, and updated hangul/slink expectations.
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+  - Documented conversion rules for the new templates.
+- `expected/Variance/OEBPS/Variance.xhtml` [MODIFY]
+  - Regenerated Variance book output.
+- `expected/hangul/OEBPS/*`, `expected/planets/OEBPS/*` [MODIFY]
+  - Regenerated book outputs to match correct `slink` rendering.
+- [src/navigations.csv](file:///opt/src/navigations.csv), [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+  - Sorted alphabetically.
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+  - Updated with current session notes.
+
+### Tests Run
+- Checked compilation: `cargo check` (passed).
+- Checked formatting: `cargo fmt -- --check` (passed).
+- Checked lints: `cargo clippy --all-targets -- -D warnings` (passed cleanly, no warnings).
+- Ran all tests: `cargo test` (all 324 unit tests, 36 integration tests, and 4 doctests passed).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-16 Handle sfrac, mvar, math, and nested wikitext '='
 
 ### Summary

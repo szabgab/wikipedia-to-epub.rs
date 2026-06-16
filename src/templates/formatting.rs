@@ -91,6 +91,121 @@ fn render_sfrac_template(params: &str) -> String {
     }
 }
 
+/// [tmath](https://en.wikipedia.org/wiki/Template:Tmath)
+fn render_tmath_template(params: &str) -> String {
+    let named = template_named_params(params);
+    if let Some(val) = template_param(&named, &["1"]) {
+        val.to_string()
+    } else {
+        let positional = template_positional_params(params);
+        if let Some(val) = positional.first() {
+            val.to_string()
+        } else {
+            String::new()
+        }
+    }
+}
+
+/// [closed-open](https://en.wikipedia.org/wiki/Template:Closed-open)
+fn render_closed_open_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    match positional.as_slice() {
+        [] => String::new(),
+        [single] => {
+            if let Some((a, b)) = single.split_once(',') {
+                format!("[{}, {})", a.trim(), b.trim())
+            } else {
+                format!("[{}, )", single.trim())
+            }
+        }
+        [a, b, ..] => {
+            format!("[{}, {})", a.trim(), b.trim())
+        }
+    }
+}
+
+/// [sqrt](https://en.wikipedia.org/wiki/Template:Sqrt)
+fn render_sqrt_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if let Some(val) = positional.first() {
+        format!("√{}", render_templates(val))
+    } else {
+        "√".to_string()
+    }
+}
+
+/// [Section link](https://en.wikipedia.org/wiki/Template:Section_link)
+fn render_section_link_template(params: &str) -> String {
+    let positional = template_positional_params(params)
+        .into_iter()
+        .map(|param| render_templates(&param))
+        .collect::<Vec<_>>();
+
+    if positional.is_empty() {
+        return String::new();
+    }
+
+    let first = &positional[0];
+    let (page, first_section) = if let Some((p, s)) = first.split_once('#') {
+        (p.trim(), Some(s.trim()))
+    } else {
+        (first.trim(), None)
+    };
+
+    let mut sections = Vec::new();
+    if let Some(s) = first_section.filter(|s| !s.is_empty()) {
+        sections.push(s.to_string());
+    }
+    for sec in positional.iter().skip(1) {
+        let sec_trimmed = sec.trim();
+        if !sec_trimmed.is_empty() {
+            sections.push(sec_trimmed.to_string());
+        }
+    }
+
+    if sections.is_empty() {
+        format!("[[{page}]]")
+    } else {
+        let target_section = &sections[0];
+        let target = if page.is_empty() {
+            format!("#{target_section}")
+        } else {
+            format!("{page}#{target_section}")
+        };
+
+        let label = if page.is_empty() {
+            format!("§ {}", sections.join(" § "))
+        } else {
+            format!("{page} § {}", sections.join(" § "))
+        };
+
+        format!("[[{target}|{label}]]")
+    }
+}
+
+/// [mset](https://en.wikipedia.org/wiki/Template:Mset)
+fn render_mset_template(params: &str) -> String {
+    let positional = template_positional_params(params)
+        .into_iter()
+        .map(|param| render_templates(&param))
+        .collect::<Vec<_>>();
+    format!("{{{}}}", positional.join(", "))
+}
+
+/// [hidden begin](https://en.wikipedia.org/wiki/Template:Hidden_begin)
+fn render_hidden_begin_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let title = template_param(&named, &["title", "header", "1"])
+        .map(str::to_string)
+        .or_else(|| {
+            let positional = template_positional_params(params);
+            positional.first().cloned()
+        })
+        .unwrap_or_else(|| "Show".to_string());
+
+    format!("\n'''{}'''\n", title.trim())
+}
+
 /// [mvar](https://en.wikipedia.org/wiki/Template:Mvar)
 fn render_mvar_template(params: &str) -> String {
     let positional = template_positional_params(params);
@@ -2434,34 +2549,6 @@ fn render_see_also_template(params: &str) -> String {
     }
 }
 
-/// [slink](https://en.wikipedia.org/wiki/Template:Slink)
-fn render_section_link_template(params: &str) -> String {
-    let params = template_positional_params(params);
-    let Some(first) = params.first().map(String::as_str) else {
-        return String::new();
-    };
-
-    if let Some(section) = first.strip_prefix('#') {
-        let label = params
-            .get(1)
-            .map(String::as_str)
-            .filter(|value| !value.trim().is_empty())
-            .unwrap_or(section);
-        return format!("[[#{section}|{label}]]");
-    }
-
-    let Some(section) = params.get(1).map(String::as_str) else {
-        return format!("[[{first}]]");
-    };
-    let label = params
-        .get(2)
-        .map(String::as_str)
-        .filter(|value| !value.trim().is_empty())
-        .unwrap_or(section);
-
-    format!("[[{first}#{section}|{label}]]")
-}
-
 /// [further](https://en.wikipedia.org/wiki/Template:Further)
 fn render_further_template(params: &str) -> String {
     let named = template_named_params(params);
@@ -4200,6 +4287,21 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("sfrac", render_sfrac_template as TemplateHandler),
         ("mvar", render_mvar_template as TemplateHandler),
         ("math", render_math_template as TemplateHandler),
+        ("tmath", render_tmath_template as TemplateHandler),
+        (
+            "closed-open",
+            render_closed_open_template as TemplateHandler,
+        ),
+        ("sqrt", render_sqrt_template as TemplateHandler),
+        (
+            "section link",
+            render_section_link_template as TemplateHandler,
+        ),
+        ("mset", render_mset_template as TemplateHandler),
+        (
+            "hidden begin",
+            render_hidden_begin_template as TemplateHandler,
+        ),
         ("floruit", render_floruit_template as TemplateHandler),
         ("coord", render_coord_template as TemplateHandler),
         ("rp", render_reference_page_template as TemplateHandler),

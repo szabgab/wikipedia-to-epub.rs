@@ -1739,11 +1739,11 @@ fn render_wikitext_formats_hangul_inline_templates() {
         ),
         (
             "{{crossreference|See {{slink|#Letter counts}}.}}",
-            r#"<p>See <a href="https://en.wikipedia.org/wiki/#Letter_counts">Letter counts</a><span class="external-link">↗</span>.</p>"#,
+            r#"<p>See <a href="https://en.wikipedia.org/wiki/#Letter_counts">§ Letter counts</a><span class="external-link">↗</span>.</p>"#,
         ),
         (
             "{{crossreference|(see {{slink|Hangul orthography|Buncheol vs. yeoncheol debate}})}}",
-            r#"<p>(see <a href="https://en.wikipedia.org/wiki/Hangul_orthography#Buncheol_vs._yeoncheol_debate">Buncheol vs. yeoncheol debate</a><span class="external-link">↗</span>)</p>"#,
+            r#"<p>(see <a href="https://en.wikipedia.org/wiki/Hangul_orthography#Buncheol_vs._yeoncheol_debate">Hangul orthography § Buncheol vs. yeoncheol debate</a><span class="external-link">↗</span>)</p>"#,
         ),
         ("{{nobold|{{cn|date=November 2025}}}}", "<h1>Sample</h1>"),
         ("{{Arrow|r}}", "<p>→</p>"),
@@ -6493,6 +6493,90 @@ fn extract_main_image(wikitext: &str) -> Option<String> {
         }
     }
     None
+}
+
+#[test]
+fn render_wikitext_formats_tmath_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{tmath|1=E = mc^2}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("E = mc^2"), "{rendered}");
+
+    let rendered2 = render_wikitext("Sample", "{{tmath|\\sigma^2}}", &InternalLinks::new(), "en");
+    assert!(rendered2.contains("\\sigma^2"), "{rendered2}");
+}
+
+#[test]
+fn render_wikitext_formats_closed_open_template() {
+    let rendered1 = render_wikitext("Sample", "{{closed-open|a|b}}", &InternalLinks::new(), "en");
+    assert!(rendered1.contains("[a, b)"), "{rendered1}");
+
+    let rendered2 = render_wikitext(
+        "Sample",
+        "{{closed-open|a, b}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered2.contains("[a, b)"), "{rendered2}");
+}
+
+#[test]
+fn render_wikitext_formats_sqrt_template() {
+    let rendered = render_wikitext("Sample", "{{sqrt|x}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("√x"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_section_link_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Section link|Page|Sec1|Sec2}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Page § Sec1 § Sec2"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_section_link_lowercase_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{section link|Page#Sec1}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Page § Sec1"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_mset_template() {
+    let rendered = render_wikitext("Sample", "{{mset|1|2|3}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("{1, 2, 3}"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_hidden_begin_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{hidden begin|title=Proof}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<strong>Proof</strong>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_hidden_end_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "some content{{hidden end}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("some content"), "{rendered}");
 }
 
 #[test]

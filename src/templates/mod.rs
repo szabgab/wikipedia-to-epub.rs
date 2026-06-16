@@ -104,6 +104,7 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
         ("okina", "ʻ"),
         ("'s", "'s"),
         ("=", "="),
+        ("hidden end", ""),
     ])
 }
 
@@ -544,6 +545,14 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("mvar")
         || template.eq_ignore_ascii_case("math")
         || template.eq_ignore_ascii_case("=")
+        || template.eq_ignore_ascii_case("tmath")
+        || template.eq_ignore_ascii_case("closed-open")
+        || template.eq_ignore_ascii_case("sqrt")
+        || template.eq_ignore_ascii_case("Section link")
+        || template.eq_ignore_ascii_case("section link")
+        || template.eq_ignore_ascii_case("mset")
+        || template.eq_ignore_ascii_case("hidden begin")
+        || template.eq_ignore_ascii_case("hidden end")
         || find_map_image(template).is_some()
         || is_silent_template_name(template)
 }

@@ -90,6 +90,13 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{sfrac|1|6}}` renders vulgar fraction using superscript/subscript spans (e.g. `<sup>1</sup>⁄<sub>6</sub>`)
 * `{{mvar|k}}` formats variables in italic text (`<em>k</em>`)
 * `{{math|''y'' {{=}} 2}}` formats mathematical expressions inline (`<em>y</em> = 2`), supporting the nested `{{=}}` template which resolves to `=`
+* `{{tmath|E = mc^2}}` renders the mathematical formula as plain text
+* `{{closed-open|a|b}}` (or `{{closed-open|a, b}}`) renders the mathematical interval notation: `[a, b)`
+* `{{sqrt|x}}` renders the square root symbol with the content: `√x`
+* `{{Section link|Page|Section}}` (or `{{section link}}` / `{{slink}}`) renders the section link in internal format with a section sign: `[[Page#Section|Page § Section]]`
+* `{{mset|1|2|3}}` renders mathematical set curly braces notation: `{1, 2, 3}`
+* `{{hidden begin|title=Proof}}` renders the bold header title of the collapsible section: `'''Proof'''`
+* `{{hidden end}}` is omitted from the output
 * `{{formatnum:5324}}` formats the number using thousands separators: `5,324`
 * `{{Birth date and age|1931|3|7}}` and `{{birth date and age|1931|3|7|df=yes}}` render the birth date and current age: `March 7, 1931 (age X)` and `7 March 1931 (age X)`
 * `{{dts|1947-5-20}}` (or `{{dts|1947|May|20}}`) formats the date for table sorting, displaying it in a human-readable form: `May 20, 1947`; also supports the `format=dmy` parameter (e.g. `20 May 1947`) and the `bc` flag
