@@ -915,3 +915,8 @@ fn generate_battle_of_sekigahara_book_from_local_page_dump() {
 fn generate_statistical_model_book_from_local_page_dump() {
     assert_generated_book_matches_expected("Statistical_model");
 }
+
+#[test]
+fn generate_variance_book_from_local_page_dump() {
+    assert_generated_book_matches_expected("Variance");
+}
