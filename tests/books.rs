@@ -910,3 +910,8 @@ fn generate_kiso_mountains_book_from_local_page_dump() {
 fn generate_battle_of_sekigahara_book_from_local_page_dump() {
     assert_generated_book_matches_expected("Battle_of_Sekigahara");
 }
+
+#[test]
+fn generate_statistical_model_book_from_local_page_dump() {
+    assert_generated_book_matches_expected("Statistical_model");
+}
