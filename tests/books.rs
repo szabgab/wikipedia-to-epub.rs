@@ -925,3 +925,9 @@ fn generate_variance_book_from_local_page_dump() {
 fn generate_statistics_book_from_local_page_dump() {
     assert_generated_book_matches_expected("Statistics");
 }
+
+#[test]
+fn generate_normal_distribution_book_from_local_page_dump() {
+    assert_generated_book_matches_expected("Normal_distribution");
+}
+
