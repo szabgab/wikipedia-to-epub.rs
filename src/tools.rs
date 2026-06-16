@@ -172,11 +172,37 @@ pub(crate) fn split_template_name(content: &str) -> (&str, &str) {
     (content, "")
 }
 
+pub(crate) fn split_parameter_by_equals(param: &str) -> Option<(&str, &str)> {
+    let mut template_depth = 0usize;
+    let mut link_depth = 0usize;
+    let mut chars = param.char_indices().peekable();
+
+    while let Some((index, ch)) = chars.next() {
+        if ch == '[' && chars.peek().is_some_and(|(_, c)| *c == '[') {
+            chars.next();
+            link_depth += 1;
+        } else if ch == ']' && chars.peek().is_some_and(|(_, c)| *c == ']') {
+            chars.next();
+            link_depth = link_depth.saturating_sub(1);
+        } else if ch == '{' && chars.peek().is_some_and(|(_, c)| *c == '{') {
+            chars.next();
+            template_depth += 1;
+        } else if ch == '}' && chars.peek().is_some_and(|(_, c)| *c == '}') {
+            chars.next();
+            template_depth = template_depth.saturating_sub(1);
+        } else if ch == '=' && template_depth == 0 && link_depth == 0 {
+            return Some((&param[..index], &param[index + 1..]));
+        }
+    }
+
+    None
+}
+
 pub(crate) fn template_named_params(params: &str) -> HashMap<String, String> {
     split_template_params(params)
         .into_iter()
         .filter_map(|param| {
-            let (key, value) = param.split_once('=')?;
+            let (key, value) = split_parameter_by_equals(&param)?;
             Some((key.trim().to_lowercase(), value.trim().to_string()))
         })
         .collect()
@@ -186,7 +212,7 @@ pub(crate) fn template_positional_params(params: &str) -> Vec<String> {
     split_template_params(params)
         .into_iter()
         .map(|param| param.trim().to_string())
-        .filter(|param| !param.is_empty() && !param.contains('='))
+        .filter(|param| !param.is_empty() && split_parameter_by_equals(param).is_none())
         .collect()
 }
 

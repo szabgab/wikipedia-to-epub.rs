@@ -87,6 +87,9 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Respell|CHOH|sun}}` becomes `CHOH-sun`
 * `{{Abbr|c.|circa}}` becomes `<abbr title="circa">c.</abbr>`
 * `{{frac|2|3}}` and `{{fraction|365|385|1539}}` become `2/3` and `365 385/1539`; mixed-number forms such as `{{frac|1|1|2}}` become `1 1/2`
+* `{{sfrac|1|6}}` renders vulgar fraction using superscript/subscript spans (e.g. `<sup>1</sup>⁄<sub>6</sub>`)
+* `{{mvar|k}}` formats variables in italic text (`<em>k</em>`)
+* `{{math|''y'' {{=}} 2}}` formats mathematical expressions inline (`<em>y</em> = 2`), supporting the nested `{{=}}` template which resolves to `=`
 * `{{formatnum:5324}}` formats the number using thousands separators: `5,324`
 * `{{Birth date and age|1931|3|7}}` and `{{birth date and age|1931|3|7|df=yes}}` render the birth date and current age: `March 7, 1931 (age X)` and `7 March 1931 (age X)`
 * `{{dts|1947-5-20}}` (or `{{dts|1947|May|20}}`) formats the date for table sorting, displaying it in a human-readable form: `May 20, 1947`; also supports the `format=dmy` parameter (e.g. `20 May 1947`) and the `bc` flag

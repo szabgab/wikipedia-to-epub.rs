@@ -1,5 +1,50 @@
 # Codex Session Notes
 
+## 2026-06-16 Handle sfrac, mvar, math, and nested wikitext '='
+
+### Summary
+Implemented handlers for `sfrac`, `mvar`, and `math` templates and fixed a critical parser issue to properly support nested `=` signs (such as the `{{=}}` template) inside other templates' parameters (e.g. `math`, `nowrap`, `blockquote`, `infobox`).
+
+### Decisions Made
+- **Implemented template renderers**:
+  - `sfrac`: formats vulgar fractions using superscript/subscript spans (e.g. `<sup>1</sup>⁄<sub>6</sub>`).
+  - `mvar`: wraps variables in italic text (`<em>variable</em>`) via wikitext `''` formatting.
+  - `math`: evaluates and passes through mathematical expressions inline, processing nested templates inside it.
+- **Fixed parameter parsing**:
+  - Replaced the naive `param.split_once('=')` and `param.contains('=')` in [src/tools.rs](file:///opt/src/tools.rs) with a new helper `split_parameter_by_equals` that only splits on `=` signs at the top level of a parameter (ignoring `=` characters inside nested `{{...}}` templates or `[[...]]` links).
+  - This solves the issue where templates like `{{=}}` or parameters containing `=` inside nested templates (like `name = ...` inside `{{efn|...}}`) were incorrectly treated as parameter keys, mangling the outer template parsing and dropping field values.
+- **Added `=` template**:
+  - Mapped `"="` to `"="` in `get_fixed` within [src/templates/mod.rs](file:///opt/src/templates/mod.rs) so that the template `{{=}}` resolves to a literal `=`.
+- **Regenerated expected fixtures**:
+  - Recompiled expected books where nested template parameters are now correctly parsed and rendered: `Statistical_model`, `goguryeo`, `korean-war`, `parhae`, `planets`, and `south-korea`.
+- **Documented conversion rules**:
+  - Added conversion rules for `sfrac`, `mvar`, and `math` in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/tools.rs](file:///opt/src/tools.rs) [MODIFY]
+  - Implemented `split_parameter_by_equals` and updated `template_named_params` and `template_positional_params`.
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+  - Implemented and registered `sfrac`, `mvar`, and `math` templates in the dispatch table.
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+  - Registered `sfrac`, `mvar`, `math`, and `=` in `is_handled_template_name` and `get_fixed`.
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+  - Added unit tests for the three new templates.
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+  - Added template conversion documentation.
+- `expected/Statistical_model/OEBPS/Statistical_model.xhtml` [MODIFY]
+  - Updated expected book output to include the rendered math/sfrac/equals elements.
+- `expected/goguryeo/OEBPS/*`, `expected/korean-war/OEBPS/*`, `expected/parhae/OEBPS/*`, `expected/planets/OEBPS/*`, `expected/south-korea/OEBPS/*` [MODIFY]
+  - Updated book outputs due to corrected nested parameter parsing.
+- [src/navigations.csv](file:///opt/src/navigations.csv), [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+  - Alphabetically sorted CSV files.
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt -- --check`, and `cargo clippy --all-targets -- -D warnings` (All passed cleanly).
+- Verified unit and integration tests: `cargo test` (All 316 unit tests, 35 integration tests, and 4 doc-tests passed).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-15 Render Plain Image Filenames in Infobox Military Conflict
 
 ### Summary

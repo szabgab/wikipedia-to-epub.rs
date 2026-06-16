@@ -59,6 +59,69 @@ fn render_jct_template(params: &str) -> String {
     String::new()
 }
 
+/// [sfrac](https://en.wikipedia.org/wiki/Template:Sfrac)
+fn render_sfrac_template(params: &str) -> String {
+    let params = template_positional_params(params)
+        .into_iter()
+        .map(|param| render_templates(&param))
+        .collect::<Vec<_>>();
+
+    match params.as_slice() {
+        [] => String::new(),
+        [denominator] => format!(
+            "__WIKIPEDIA_TO_EPUB_SUP_START__1__WIKIPEDIA_TO_EPUB_SUP_END__⁄__WIKIPEDIA_TO_EPUB_SUB_START__{}__WIKIPEDIA_TO_EPUB_SUB_END__",
+            denominator
+        ),
+        [numerator, denominator] => format!(
+            "__WIKIPEDIA_TO_EPUB_SUP_START__{}__WIKIPEDIA_TO_EPUB_SUP_END__⁄__WIKIPEDIA_TO_EPUB_SUB_START__{}__WIKIPEDIA_TO_EPUB_SUB_END__",
+            numerator, denominator
+        ),
+        [whole, numerator, denominator] => format!(
+            "{} __WIKIPEDIA_TO_EPUB_SUP_START__{}__WIKIPEDIA_TO_EPUB_SUP_END__⁄__WIKIPEDIA_TO_EPUB_SUB_START__{}__WIKIPEDIA_TO_EPUB_SUB_END__",
+            whole, numerator, denominator
+        ),
+        [first, rest @ ..] => {
+            let num = rest.first().map(String::as_str).unwrap_or("");
+            let den = rest.get(1).map(String::as_str).unwrap_or("");
+            format!(
+                "{} __WIKIPEDIA_TO_EPUB_SUP_START__{}__WIKIPEDIA_TO_EPUB_SUP_END__⁄__WIKIPEDIA_TO_EPUB_SUB_START__{}__WIKIPEDIA_TO_EPUB_SUB_END__",
+                first, num, den
+            )
+        }
+    }
+}
+
+/// [mvar](https://en.wikipedia.org/wiki/Template:Mvar)
+fn render_mvar_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if let Some(variable) = positional.first() {
+        format!("''{}''", variable.trim())
+    } else {
+        String::new()
+    }
+}
+
+/// [math](https://en.wikipedia.org/wiki/Template:Math)
+fn render_math_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let content = if let Some(val) = template_param(&named, &["1"]) {
+        val.to_string()
+    } else {
+        let positional = template_positional_params(params);
+        if let Some(val) = positional.first() {
+            val.to_string()
+        } else {
+            String::new()
+        }
+    };
+
+    if content.is_empty() {
+        String::new()
+    } else {
+        render_templates(&content)
+    }
+}
+
 /// [nowrap](https://en.wikipedia.org/wiki/Template:Nowrap)
 /// [center](https://en.wikipedia.org/wiki/Template:Center)
 /// [crossreference](https://en.wikipedia.org/wiki/Template:Crossreference)
@@ -4134,6 +4197,9 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("turncoat", render_turncoat_template as TemplateHandler),
         ("frac", render_frac_template as TemplateHandler),
         ("fraction", render_frac_template as TemplateHandler),
+        ("sfrac", render_sfrac_template as TemplateHandler),
+        ("mvar", render_mvar_template as TemplateHandler),
+        ("math", render_math_template as TemplateHandler),
         ("floruit", render_floruit_template as TemplateHandler),
         ("coord", render_coord_template as TemplateHandler),
         ("rp", render_reference_page_template as TemplateHandler),

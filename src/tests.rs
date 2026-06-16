@@ -295,6 +295,46 @@ fn render_wikitext_formats_frac_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_sfrac_templates() {
+    let rendered = render_wikitext("Sample", "{{sfrac|6}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<sup>1</sup>⁄<sub>6</sub>"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{sfrac|1|6}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<sup>1</sup>⁄<sub>6</sub>"), "{rendered}");
+
+    let rendered = render_wikitext("Sample", "{{sfrac|2|1|3}}", &InternalLinks::new(), "en");
+    assert!(
+        rendered.contains("2 <sup>1</sup>⁄<sub>3</sub>"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_mvar_template() {
+    let rendered = render_wikitext("Sample", "{{mvar|k}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<em>k</em>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_math_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{math|''y'' {{=}} 2}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<em>y</em> = 2"), "{rendered}");
+
+    let rendered = render_wikitext(
+        "Sample",
+        "{{math|1=2 + 2 = 4}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("2 + 2 = 4"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_han_dynasty_templates() {
     let rendered = render_wikitext(
         "Sample",

@@ -103,6 +103,7 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
         ("pb", "__WIKIPEDIA_TO_EPUB_PB__"),
         ("okina", "ʻ"),
         ("'s", "'s"),
+        ("=", "="),
     ])
 }
 
@@ -539,6 +540,10 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("portal inline")
         || template.eq_ignore_ascii_case("mp")
         || template.eq_ignore_ascii_case("minor planet")
+        || template.eq_ignore_ascii_case("sfrac")
+        || template.eq_ignore_ascii_case("mvar")
+        || template.eq_ignore_ascii_case("math")
+        || template.eq_ignore_ascii_case("=")
         || find_map_image(template).is_some()
         || is_silent_template_name(template)
 }
