@@ -1413,6 +1413,217 @@ fn render_cite_opentopomap_template(params: &str) -> String {
     parts.join(". ")
 }
 
+fn render_cite_court_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let litigants = template_param(&named, &["litigants"]);
+    let vol = template_param(&named, &["vol"]);
+    let reporter = template_param(&named, &["reporter"]);
+    let opinion = template_param(&named, &["opinion"]);
+    let pinpoint = template_param(&named, &["pinpoint"]);
+    let court = template_param(&named, &["court"]);
+    let date = template_param(&named, &["date", "year"]);
+    let url = template_param(&named, &["url"]);
+
+    let mut parts = Vec::new();
+    if let Some(litigants) = litigants {
+        let text = render_templates(litigants);
+        if let Some(url) = url {
+            parts.push(format!(
+                "''[[official-url:{}|{}]]''",
+                render_templates(url),
+                text
+            ));
+        } else {
+            parts.push(format!("''{}''", text));
+        }
+    }
+
+    let mut citation = Vec::new();
+    if let Some(vol) = vol {
+        citation.push(render_templates(vol));
+    }
+    if let Some(reporter) = reporter {
+        citation.push(render_templates(reporter));
+    }
+    if let Some(opinion) = opinion {
+        citation.push(render_templates(opinion));
+    }
+    if !citation.is_empty() {
+        parts.push(citation.join(" "));
+    }
+
+    if let Some(pinpoint) = pinpoint {
+        parts.push(render_templates(pinpoint));
+    }
+
+    let mut court_date_parts = Vec::new();
+    if let Some(court) = court {
+        court_date_parts.push(render_templates(court));
+    }
+    if let Some(date) = date {
+        court_date_parts.push(render_templates(date));
+    }
+
+    let mut result = parts.join(", ");
+    if !court_date_parts.is_empty() {
+        result.push_str(&format!(" ({})", court_date_parts.join(" ")));
+    }
+    result
+}
+
+fn render_cite_dictionary_com_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let entry = template_param(&named, &["1"])
+        .map(|s| s.to_string())
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+    let entry = entry.trim();
+
+    if entry.is_empty() {
+        return String::new();
+    }
+
+    let mut parts = Vec::new();
+    let url = format!(
+        "https://www.dictionary.com/browse/{}",
+        entry.replace(' ', "%20")
+    );
+
+    parts.push(format!("[{} \"{}\"]", url, render_templates(entry)));
+    parts.push("''Dictionary.com Unabridged'' (Online)".to_string());
+
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        parts.push(render_templates(date));
+    } else {
+        parts.push("n.d.".to_string());
+    }
+
+    if let Some(access_date) = template_param(&named, &["access-date", "accessdate"]) {
+        parts.push(format!("Retrieved {}", render_templates(access_date)));
+    }
+
+    parts.join(". ")
+}
+
+fn render_cite_speech_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    let date = template_param(&named, &["date", "year"]);
+
+    if !authors.is_empty() {
+        if let Some(d) = date {
+            parts.push(format!("{} ({})", authors, render_templates(d)));
+        } else {
+            parts.push(authors);
+        }
+    } else if let Some(d) = date {
+        parts.push(format!("({})", render_templates(d)));
+    }
+
+    if let Some(title) = template_param(&named, &["title"]) {
+        let title_rendered = render_templates(title);
+        let title_link = match template_param(&named, &["url"]) {
+            Some(url) => format!("[{} \"{}\"]", render_templates(url), title_rendered),
+            None => format!("\"{}\"", title_rendered),
+        };
+        parts.push(format!("{} (Speech)", title_link));
+    }
+
+    if let Some(event) = template_param(&named, &["event"]) {
+        parts.push(render_templates(event));
+    }
+
+    if let Some(location) = template_param(&named, &["location", "place"]) {
+        parts.push(render_templates(location));
+    }
+
+    if let Some(access_date) = template_param(&named, &["access-date", "accessdate"]) {
+        parts.push(format!("Retrieved {}", render_templates(access_date)));
+    }
+
+    parts.join(". ")
+}
+
+fn render_cite_ssrn_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let ssrn_id = template_param(&named, &["ssrn", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .unwrap_or("");
+
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(title) = template_param(&named, &["title"]) {
+        let title_rendered = render_templates(title);
+        let title_link = match template_param(&named, &["url"]) {
+            Some(url) => format!("[{} \"{}\"]", render_templates(url), title_rendered),
+            None => format!("\"{}\"", title_rendered),
+        };
+        parts.push(title_link);
+    }
+
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        parts.push(render_templates(date));
+    }
+
+    if !ssrn_id.is_empty() {
+        let ssrn_id_clean = ssrn_id.trim();
+        parts.push(format!(
+            "SSRN [[official-url:https://ssrn.com/abstract={}|{}]]",
+            ssrn_id_clean, ssrn_id_clean
+        ));
+    }
+
+    parts.join(". ")
+}
+
+fn render_cite_citeseerx_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let citeseerx_id = template_param(&named, &["citeseerx", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .unwrap_or("");
+
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(title) = template_param(&named, &["title"]) {
+        let title_rendered = render_templates(title);
+        let title_link = match template_param(&named, &["url"]) {
+            Some(url) => format!("[{} \"{}\"]", render_templates(url), title_rendered),
+            None => format!("\"{}\"", title_rendered),
+        };
+        parts.push(title_link);
+    }
+
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        parts.push(render_templates(date));
+    }
+
+    if !citeseerx_id.is_empty() {
+        let citeseerx_id_clean = citeseerx_id.trim();
+        parts.push(format!(
+            "CiteSeerX [[official-url:https://citeseerx.ist.psu.edu/viewdoc/summary?doi={}|{}]]",
+            citeseerx_id_clean, citeseerx_id_clean
+        ));
+    }
+
+    parts.join(". ")
+}
+
 pub(crate) fn get_dispatch_table() -> DispatchTable {
     HashMap::from([
         (
@@ -1511,6 +1722,28 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         (
             "cite opentopomap",
             render_cite_opentopomap_template as TemplateHandler,
+        ),
+        (
+            "cite paper",
+            render_cite_journal_template as TemplateHandler,
+        ),
+        ("cite court", render_cite_court_template as TemplateHandler),
+        (
+            "cite dictionary.com",
+            render_cite_dictionary_com_template as TemplateHandler,
+        ),
+        (
+            "cite speech",
+            render_cite_speech_template as TemplateHandler,
+        ),
+        ("cite ssrn", render_cite_ssrn_template as TemplateHandler),
+        (
+            "cite tech report",
+            render_cite_report_template as TemplateHandler,
+        ),
+        (
+            "cite citeseerx",
+            render_cite_citeseerx_template as TemplateHandler,
         ),
     ])
 }

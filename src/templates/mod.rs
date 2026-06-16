@@ -566,6 +566,13 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("mset")
         || template.eq_ignore_ascii_case("hidden begin")
         || template.eq_ignore_ascii_case("hidden end")
+        || template.eq_ignore_ascii_case("cite paper")
+        || template.eq_ignore_ascii_case("cite court")
+        || template.eq_ignore_ascii_case("Cite Dictionary.com")
+        || template.eq_ignore_ascii_case("Cite speech")
+        || template.eq_ignore_ascii_case("cite SSRN")
+        || template.eq_ignore_ascii_case("cite tech report")
+        || template.eq_ignore_ascii_case("Cite CiteSeerX")
         || find_map_image(template).is_some()
         || is_silent_template_name(template)
 }

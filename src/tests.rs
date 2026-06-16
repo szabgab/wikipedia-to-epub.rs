@@ -6883,3 +6883,122 @@ fn scrape_map_templates() {
     fs::write("src/maps.csv", csv_content).unwrap();
     println!("Successfully wrote src/maps.csv");
 }
+
+#[test]
+fn render_wikitext_formats_cite_paper_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite paper |title=Paper Title |last=Doe |first=John |journal=Journal Name |date=2023}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("John Doe")
+            && rendered.contains("\"Paper Title\"")
+            && rendered.contains("Journal Name")
+            && rendered.contains("2023"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_cite_court_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite court |litigants=Parker v. D.C. |vol=478 |reporter=F.3d |opinion=370 |pinpoint=401 |court=D.C. Cir. |date=2007}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Parker v. D.C.")
+            && rendered.contains("478 F.3d 370")
+            && rendered.contains("401")
+            && rendered.contains("D.C. Cir. 2007"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_cite_dictionary_com_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Cite Dictionary.com |spoon |access-date=2026-06-13}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("spoon")
+            && rendered.contains("Dictionary.com Unabridged")
+            && rendered.contains("Retrieved 2026-06-13"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_cite_speech_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite speech |title=Economic Isolationism |first=Mike |last=Eskew |event=Executive Speeches |location=Washington, D.C. |date=2004}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Mike Eskew")
+            && rendered.contains("Economic Isolationism")
+            && rendered.contains("Speech")
+            && rendered.contains("Executive Speeches")
+            && rendered.contains("Washington, D.C.")
+            && rendered.contains("2004"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_cite_ssrn_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite SSRN |ssrn=1900856 |title=Example Paper |last=Doe |first=John |date=2023}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("John Doe")
+            && rendered.contains("Example Paper")
+            && rendered.contains("SSRN")
+            && rendered.contains("1900856"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_cite_tech_report_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{cite tech report |title=Technical Report |last=Smith |first=Jane |publisher=Company |date=2022}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Jane Smith")
+            && rendered.contains("Technical Report")
+            && rendered.contains("2022"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_cite_citeseerx_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Cite CiteSeerX |citeseerx=10.1.1.239.1803 |title=Paper Title |last=Doe |first=John |date=2024}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("John Doe")
+            && rendered.contains("Paper Title")
+            && rendered.contains("CiteSeerX")
+            && rendered.contains("10.1.1.239.1803"),
+        "{rendered}"
+    );
+}

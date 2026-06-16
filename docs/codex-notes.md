@@ -1,5 +1,46 @@
 # Codex Session Notes
 
+## 2026-06-16 Handle Cite Templates: cite paper, cite court, Cite Dictionary.com, Cite speech, cite SSRN, cite tech report, and Cite CiteSeerX
+
+### Summary
+Implemented and registered handlers for `cite court`, `Cite Dictionary.com`, `Cite speech`, `cite SSRN`, and `Cite CiteSeerX` templates. Mapped `cite paper` to reuse the existing `cite journal` renderer, and mapped `cite tech report` to reuse the existing `cite report` renderer. Wrote separate unit tests for all seven templates and verified everything passes.
+
+### Decisions Made
+- **Implemented template renderers**:
+  - `cite paper`: mapped to reuse `render_cite_journal_template` since it shares identical fields.
+  - `cite court`: formats legal case citations in Bluebook style, using `official-url` wrapper for litigants when `url` is present.
+  - `Cite Dictionary.com`: formats Dictionary.com definition lookups.
+  - `Cite speech`: formats CS1-style speech and lecture citations.
+  - `cite SSRN`: formats SSRN preprint citations with correct abstract query links.
+  - `cite tech report`: mapped to reuse `render_cite_report_template` since it functions identically.
+  - `Cite CiteSeerX`: formats CS1-style CiteSeerX digital library search citations.
+- **Registered templates**:
+  - Registered all new templates inside `is_handled_template_name` in [src/templates/mod.rs](file:///opt/src/templates/mod.rs).
+  - Added mappings inside `get_dispatch_table` in [src/templates/citation.rs](file:///opt/src/templates/citation.rs).
+- **Added unit tests**:
+  - Wrote individual unit tests in [src/tests.rs](file:///opt/src/tests.rs) for all seven templates.
+- **Documented conversion rules**:
+  - Added conversion rules in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+  - Appended the 5 new renderers and updated the dispatch table.
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+  - Registered the 7 templates in `is_handled_template_name`.
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+  - Added 7 separate unit tests.
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+  - Documented new template conversion rules.
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+  - Updated with current session notes.
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt --check`, and `cargo clippy --all-targets -- -D warnings` (Passed cleanly, no warnings/errors).
+- Verified unit and integration tests: `cargo test` (All 351 unit tests, 38 integration tests, and 4 doc-tests passed).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-16 Handle MathWorld, AS ref, Probability fundamentals, OEIS2C, thinsp, dfn, subsup, abs, mono, pi, divcol, Springer, divcol end, and ProbDistributions
 
 ### Summary

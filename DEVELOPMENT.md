@@ -113,6 +113,13 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Springer|title=...}}` renders a Springer Encyclopedia of Mathematics article citation
 * `{{Probability fundamentals}}` and `{{ProbDistributions}}` are silent templates and are omitted from the output
 * `{{divcol}}` and `{{divcol end}}` are silent templates and are omitted from the output
+* `{{cite paper|title=...}}` is handled as an alias of `{{cite journal}}`
+* `{{cite court|litigants=...}}` formats legal case citations in Bluebook style
+* `{{Cite Dictionary.com|word}}` formats Dictionary.com Unabridged definition citations
+* `{{Cite speech|title=...}}` formats speech/presentation citations
+* `{{cite SSRN|ssrn=...}}` formats Social Science Research Network paper citations
+* `{{cite tech report|title=...}}` is handled as an alias of `{{cite report}}`
+* `{{Cite CiteSeerX|citeseerx=...}}` formats CiteSeerX paper citations
 * `{{formatnum:5324}}` formats the number using thousands separators: `5,324`
 * `{{Birth date and age|1931|3|7}}` and `{{birth date and age|1931|3|7|df=yes}}` render the birth date and current age: `March 7, 1931 (age X)` and `7 March 1931 (age X)`
 * `{{dts|1947-5-20}}` (or `{{dts|1947|May|20}}`) formats the date for table sorting, displaying it in a human-readable form: `May 20, 1947`; also supports the `format=dmy` parameter (e.g. `20 May 1947`) and the `bc` flag
