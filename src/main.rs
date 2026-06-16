@@ -1339,6 +1339,7 @@ fn format_inline_text(text: &str) -> String {
         .collect::<Vec<_>>()
         .join(" ");
     let html = encode_text(collapsed.trim())
+        .replace("__WIKIPEDIA_TO_EPUB_THINSP_TEMPLATE__", "\u{2009}")
         .replace("__WIKIPEDIA_TO_EPUB_BOLD_START__", "<strong>")
         .replace("__WIKIPEDIA_TO_EPUB_BOLD_END__", "</strong>")
         .replace("__WIKIPEDIA_TO_EPUB_ITALIC_START__", "<em>")
@@ -1377,7 +1378,9 @@ fn format_inline_text(text: &str) -> String {
     let html = restore_pb_spans(&html);
     let html = restore_br_spans(&html);
     let html = restore_sub_spans(&html);
-    restore_sup_spans(&html)
+    let html = restore_sup_spans(&html);
+    let html = restore_dfn_spans(&html);
+    restore_code_spans(&html)
 }
 
 #[derive(Clone, Debug)]
@@ -1647,6 +1650,16 @@ fn restore_sup_spans(html: &str) -> String {
 fn restore_sub_spans(html: &str) -> String {
     html.replace("__WIKIPEDIA_TO_EPUB_SUB_START__", "<sub>")
         .replace("__WIKIPEDIA_TO_EPUB_SUB_END__", "</sub>")
+}
+
+fn restore_dfn_spans(html: &str) -> String {
+    html.replace("__WIKIPEDIA_TO_EPUB_DFN_START__", "<dfn>")
+        .replace("__WIKIPEDIA_TO_EPUB_DFN_END__", "</dfn>")
+}
+
+fn restore_code_spans(html: &str) -> String {
+    html.replace("__WIKIPEDIA_TO_EPUB_CODE_START__", "<code>")
+        .replace("__WIKIPEDIA_TO_EPUB_CODE_END__", "</code>")
 }
 
 fn restore_open_access_spans(html: &str) -> String {

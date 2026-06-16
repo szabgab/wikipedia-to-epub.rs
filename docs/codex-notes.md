@@ -1,5 +1,61 @@
 # Codex Session Notes
 
+## 2026-06-16 Handle MathWorld, AS ref, Probability fundamentals, OEIS2C, thinsp, dfn, subsup, abs, mono, pi, divcol, Springer, divcol end, and ProbDistributions
+
+### Summary
+Implemented and registered handlers for `MathWorld`, `AS ref`, `OEIS2C`, `thinsp`, `dfn`, `subsup`, `abs`, `mono`, `pi`, and `Springer` templates. Mapped the navigation templates `Probability fundamentals`, `ProbDistributions` to `navigations.csv`, and formatting templates `divcol`, `divcol end` to `silent.csv`. Handled post-processing tag stripping issues for `<dfn>` and `<code>` by using custom placeholders, and handled absolute value wikitext table detection edge cases. Updated tests and documentation, and regenerated the `Normal_distribution` expected book output.
+
+### Decisions Made
+- **Implemented template renderers**:
+  - `MathWorld`: formats MathWorld citations.
+  - `AS ref`: formats reference citations to Abramowitz and Stegun.
+  - `OEIS2C`: formats OEIS sequence link identifiers.
+  - `thinsp`: joins parameters with a thin space (`\u{2009}`), using a template-specific placeholder `__WIKIPEDIA_TO_EPUB_THINSP_TEMPLATE__` to avoid side-effects on other files.
+  - `dfn`: wraps definitions in custom placeholders (`__WIKIPEDIA_TO_EPUB_DFN_START__` / `__WIKIPEDIA_TO_EPUB_DFN_END__`) that map back to `<dfn>` tags at the end of formatting.
+  - `subsup`: formats subscript and superscript alignments.
+  - `abs`: wraps parameter inside vertical bars (`&#124;content&#124;`), avoiding line-start wikitext table marker check.
+  - `mono`: wraps monospace code in custom placeholders (`__WIKIPEDIA_TO_EPUB_CODE_START__` / `__WIKIPEDIA_TO_EPUB_CODE_END__`) mapping to `<code>` tags.
+  - `pi`: formats Greek letter pi (`π`).
+  - `Springer`: formats Springer Encyclopedia of Mathematics citations.
+- **Added silent and navigation templates**:
+  - Added `Probability fundamentals` and `ProbDistributions` to `navigations.csv`.
+  - Added `divcol` and `divcol end` to `silent.csv`.
+  - Sorted the CSV files using `./tools/sort.sh`.
+- **Added and updated tests**:
+  - Wrote separate unit tests for all fourteen templates.
+  - Fixed test assertions for `MathWorld`, `AS ref`, and `Springer` to handle link rendering correctly in test environments.
+- **Regenerated expected fixtures**:
+  - Updated the `Normal_distribution` book expected output using `./tools/regenerate.sh`.
+- **Documented conversion rules**:
+  - Added conversion rules in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+  - Implemented the ten new render functions and registered them in the dispatch table.
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+  - Registered all new handled template names in `is_handled_template_name`.
+- [src/main.rs](file:///opt/src/main.rs) [MODIFY]
+  - Handled the replacement and mapping of custom placeholders for `<dfn>`, `<code>`, and `\u{2009}`.
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+  - Added unit tests for each new template and adjusted assertions.
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+  - Added `Probability fundamentals` and `ProbDistributions`.
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+  - Added `divcol` and `divcol end`.
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+  - Documented rules and examples for the new templates.
+- `expected/Normal_distribution/OEBPS/*` [MODIFY]
+  - Regenerated Normal_distribution book output.
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+  - Appended this session note.
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt --check`, and `cargo clippy --all-targets -- -D warnings` (Passed cleanly, no warnings/errors).
+- Verified unit and integration tests: `cargo test` (All 344 unit tests, 38 integration tests, and 4 doc-tests passed).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-16 Handle JSTOR, wsPSM, StatsTopicTOC, Math topics TOC, em, Areas of mathematics, and Glossaries of science and engineering
 
 ### Summary

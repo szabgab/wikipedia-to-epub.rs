@@ -6496,6 +6496,127 @@ fn extract_main_image(wikitext: &str) -> Option<String> {
 }
 
 #[test]
+fn render_wikitext_formats_mathworld_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{MathWorld|urlname=NormalDistributionFunction|title=Normal Distribution Function}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Weisstein, Eric W. \"Normal Distribution Function\".")
+            && rendered.contains("MathWorld"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_as_ref_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{AS ref|26, eqn 26.2.12|932}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("Abramowitz and Stegun")
+            && rendered.contains("p. 932, § 26, eqn 26.2.12"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_oeis2c_template() {
+    let rendered = render_wikitext("Sample", "{{OEIS2C|A178647}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("A178647"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_thinsp_template() {
+    let rendered = render_wikitext("Sample", "{{thinsp|a|b}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("a b"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_dfn_template() {
+    let rendered = render_wikitext("Sample", "{{dfn|variance}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<dfn>variance</dfn>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_subsup_template() {
+    let rendered = render_wikitext("Sample", "{{subsup|x|1|2}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("x<sub>1</sub><sup>2</sup>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_abs_template() {
+    let rendered = render_wikitext("Sample", "{{abs|x}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("|x|"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_mono_template() {
+    let rendered = render_wikitext("Sample", "{{mono|erfc()}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<code>erfc()</code>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_pi_template() {
+    let rendered = render_wikitext("Sample", "{{pi}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("π"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_springer_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Springer|title=Normal Distribution|id=p/n067460}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("\"Normal Distribution\"")
+            && rendered.contains("Encyclopedia of Mathematics")
+            && rendered.contains("Springer"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_skips_probability_fundamentals_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Probability fundamentals}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(!rendered.contains("Probability fundamentals"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_skips_prob_distributions_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{ProbDistributions|continuous-infinite}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(!rendered.contains("ProbDistributions"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_skips_divcol_templates() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{divcol}}content{{divcol end}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(!rendered.contains("divcol"), "{rendered}");
+}
+
+#[test]
 fn render_wikitext_formats_jstor_template() {
     let rendered = render_wikitext("Sample", "{{JSTOR|1400906}}", &InternalLinks::new(), "en");
     assert!(rendered.contains("JSTOR 1400906"), "{rendered}");

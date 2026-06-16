@@ -237,6 +237,182 @@ fn render_math_template(params: &str) -> String {
     }
 }
 
+/// [MathWorld](https://en.wikipedia.org/wiki/Template:MathWorld)
+fn render_mathworld_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let title = template_param(&named, &["title"])
+        .or_else(|| positional.first().map(String::as_str))
+        .unwrap_or("");
+    if title.is_empty() {
+        "Weisstein, Eric W. ''[[MathWorld]]''".to_string()
+    } else {
+        format!(
+            "Weisstein, Eric W. \"{}\". ''[[MathWorld]]''",
+            render_templates(title)
+        )
+    }
+}
+
+/// [AS ref](https://en.wikipedia.org/wiki/Template:AS_ref)
+fn render_as_ref_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let section = positional.first().map(String::as_str).unwrap_or("");
+    let page = positional.get(1).map(String::as_str).unwrap_or("");
+
+    let mut parts = vec!["[[Abramowitz and Stegun]]".to_string()];
+    if !page.is_empty() {
+        parts.push(format!("p. {page}"));
+    }
+    if !section.is_empty() {
+        parts.push(format!("§ {section}"));
+    }
+    parts.join(", ")
+}
+
+/// [OEIS2C](https://en.wikipedia.org/wiki/Template:OEIS2C)
+fn render_oeis2c_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let id = positional.first().map(String::as_str).unwrap_or("");
+    if id.is_empty() {
+        String::new()
+    } else {
+        format!("[[oeis:{id}|{id}]]")
+    }
+}
+
+/// [thinsp](https://en.wikipedia.org/wiki/Template:Thinsp)
+fn render_thinsp_template(params: &str) -> String {
+    let positional = template_positional_params(params)
+        .into_iter()
+        .map(|param| render_templates(&param))
+        .collect::<Vec<_>>();
+
+    if positional.is_empty() {
+        "__WIKIPEDIA_TO_EPUB_THINSP_TEMPLATE__".to_string()
+    } else {
+        positional.join("__WIKIPEDIA_TO_EPUB_THINSP_TEMPLATE__")
+    }
+}
+
+/// [dfn](https://en.wikipedia.org/wiki/Template:Dfn)
+fn render_dfn_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let content = if let Some(val) = template_param(&named, &["1"]) {
+        val.to_string()
+    } else {
+        let positional = template_positional_params(params);
+        if let Some(val) = positional.first() {
+            val.to_string()
+        } else {
+            String::new()
+        }
+    };
+
+    if content.is_empty() {
+        String::new()
+    } else {
+        format!(
+            "__WIKIPEDIA_TO_EPUB_DFN_START__{}__WIKIPEDIA_TO_EPUB_DFN_END__",
+            render_templates(&content)
+        )
+    }
+}
+
+/// [subsup](https://en.wikipedia.org/wiki/Template:Subsup)
+fn render_subsup_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.is_empty() {
+        return String::new();
+    }
+    let base = render_templates(&positional[0]);
+    let sub = positional
+        .get(1)
+        .map(|s| render_templates(s))
+        .unwrap_or_default();
+    let sup = positional
+        .get(2)
+        .map(|s| render_templates(s))
+        .unwrap_or_default();
+
+    let mut result = base;
+    if !sub.is_empty() {
+        result.push_str(&format!(
+            "__WIKIPEDIA_TO_EPUB_SUB_START__{sub}__WIKIPEDIA_TO_EPUB_SUB_END__"
+        ));
+    }
+    if !sup.is_empty() {
+        result.push_str(&format!(
+            "__WIKIPEDIA_TO_EPUB_SUP_START__{sup}__WIKIPEDIA_TO_EPUB_SUP_END__"
+        ));
+    }
+    result
+}
+
+/// [abs](https://en.wikipedia.org/wiki/Template:Abs)
+fn render_abs_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let content = if let Some(val) = template_param(&named, &["1"]) {
+        val.to_string()
+    } else {
+        let positional = template_positional_params(params);
+        if let Some(val) = positional.first() {
+            val.to_string()
+        } else {
+            String::new()
+        }
+    };
+
+    if content.is_empty() {
+        String::new()
+    } else {
+        format!("&#124;{}&#124;", render_templates(&content))
+    }
+}
+
+/// [mono](https://en.wikipedia.org/wiki/Template:Mono)
+fn render_mono_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let content = if let Some(val) = template_param(&named, &["1"]) {
+        val.to_string()
+    } else {
+        let positional = template_positional_params(params);
+        if let Some(val) = positional.first() {
+            val.to_string()
+        } else {
+            String::new()
+        }
+    };
+
+    if content.is_empty() {
+        String::new()
+    } else {
+        format!(
+            "__WIKIPEDIA_TO_EPUB_CODE_START__{}__WIKIPEDIA_TO_EPUB_CODE_END__",
+            render_templates(&content)
+        )
+    }
+}
+
+/// [pi](https://en.wikipedia.org/wiki/Template:Pi)
+fn render_pi_template(_params: &str) -> String {
+    "π".to_string()
+}
+
+/// [Springer](https://en.wikipedia.org/wiki/Template:Springer)
+fn render_springer_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let title = template_param(&named, &["title", "1"]).unwrap_or("");
+    if title.is_empty() {
+        "''[[Encyclopedia of Mathematics]]'', Springer".to_string()
+    } else {
+        format!(
+            "\"{}\", ''[[Encyclopedia of Mathematics]]'', Springer",
+            render_templates(title)
+        )
+    }
+}
+
 /// [JSTOR](https://en.wikipedia.org/wiki/Template:JSTOR)
 fn render_jstor_template(params: &str) -> String {
     let named = template_named_params(params);
@@ -4377,6 +4553,16 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("jstor", render_jstor_template as TemplateHandler),
         ("wspsm", render_wspsm_template as TemplateHandler),
         ("em", render_em_template as TemplateHandler),
+        ("mathworld", render_mathworld_template as TemplateHandler),
+        ("as ref", render_as_ref_template as TemplateHandler),
+        ("oeis2c", render_oeis2c_template as TemplateHandler),
+        ("thinsp", render_thinsp_template as TemplateHandler),
+        ("dfn", render_dfn_template as TemplateHandler),
+        ("subsup", render_subsup_template as TemplateHandler),
+        ("abs", render_abs_template as TemplateHandler),
+        ("mono", render_mono_template as TemplateHandler),
+        ("pi", render_pi_template as TemplateHandler),
+        ("springer", render_springer_template as TemplateHandler),
         (
             "closed-open",
             render_closed_open_template as TemplateHandler,
