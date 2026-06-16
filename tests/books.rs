@@ -930,3 +930,9 @@ fn generate_statistics_book_from_local_page_dump() {
 fn generate_normal_distribution_book_from_local_page_dump() {
     assert_generated_book_matches_expected("Normal_distribution");
 }
+
+#[test]
+fn generate_standard_deviation_book_from_local_page_dump() {
+    assert_generated_book_matches_expected("Standard_deviation");
+}
+
