@@ -237,6 +237,92 @@ fn render_math_template(params: &str) -> String {
     }
 }
 
+/// [JSTOR](https://en.wikipedia.org/wiki/Template:JSTOR)
+fn render_jstor_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let jstor_id = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .unwrap_or("");
+    if jstor_id.is_empty() {
+        String::new()
+    } else {
+        format!("JSTOR {}", render_templates(jstor_id))
+    }
+}
+
+/// [wsPSM](https://en.wikipedia.org/wiki/Template:WsPSM)
+fn render_wspsm_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let title = positional.first().map(String::as_str).unwrap_or("");
+    let volume = positional.get(1).map(String::as_str).unwrap_or("");
+    let date = positional.get(2).map(String::as_str).unwrap_or("");
+
+    let first = template_param(&named, &["first"]).unwrap_or("");
+    let last = template_param(&named, &["last"]).unwrap_or("");
+
+    let author = if !last.is_empty() && !first.is_empty() {
+        format!("{last}, {first}")
+    } else if !first.is_empty() {
+        first.to_string()
+    } else if !last.is_empty() {
+        last.to_string()
+    } else {
+        String::new()
+    };
+
+    let mut parts = Vec::new();
+    if !author.is_empty() {
+        if !date.is_empty() {
+            parts.push(format!("{author} ({date})"));
+        } else {
+            parts.push(author);
+        }
+    } else if !date.is_empty() {
+        parts.push(format!("({date})"));
+    }
+
+    if !title.is_empty() {
+        let ws_path = if !volume.is_empty() && !date.is_empty() {
+            format!("Popular Science Monthly/Volume {volume}/{date}/{title}")
+        } else {
+            format!("Popular Science Monthly/{title}")
+        };
+        parts.push(format!("\"[[src:{ws_path}|{title}]]\""));
+    }
+
+    parts.push("''[[Popular Science Monthly]]''".to_string());
+
+    if !volume.is_empty() {
+        parts.push(format!("Vol. {volume}"));
+    }
+
+    parts.join(". ")
+}
+
+/// [em](https://en.wikipedia.org/wiki/Template:Em)
+fn render_em_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let content = if let Some(val) = template_param(&named, &["1"]) {
+        val.to_string()
+    } else {
+        let positional = template_positional_params(params);
+        if let Some(val) = positional.first() {
+            val.to_string()
+        } else {
+            String::new()
+        }
+    };
+
+    if content.is_empty() {
+        String::new()
+    } else {
+        format!("''{}''", render_templates(&content))
+    }
+}
+
 /// [nowrap](https://en.wikipedia.org/wiki/Template:Nowrap)
 /// [center](https://en.wikipedia.org/wiki/Template:Center)
 /// [crossreference](https://en.wikipedia.org/wiki/Template:Crossreference)
@@ -4288,6 +4374,9 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("mvar", render_mvar_template as TemplateHandler),
         ("math", render_math_template as TemplateHandler),
         ("tmath", render_tmath_template as TemplateHandler),
+        ("jstor", render_jstor_template as TemplateHandler),
+        ("wspsm", render_wspsm_template as TemplateHandler),
+        ("em", render_em_template as TemplateHandler),
         (
             "closed-open",
             render_closed_open_template as TemplateHandler,

@@ -6496,6 +6496,73 @@ fn extract_main_image(wikitext: &str) -> Option<String> {
 }
 
 #[test]
+fn render_wikitext_formats_jstor_template() {
+    let rendered = render_wikitext("Sample", "{{JSTOR|1400906}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("JSTOR 1400906"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_wspsm_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{wsPSM|Quetelet on the Science of Man|1|May 1872|first=Edward Burnett|last=Tylor|authorlink=Edward Burnett Tylor}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Tylor, Edward Burnett"), "{rendered}");
+    assert!(rendered.contains("May 1872"), "{rendered}");
+    assert!(
+        rendered.contains("Quetelet on the Science of Man"),
+        "{rendered}"
+    );
+    assert!(rendered.contains("Popular Science Monthly"), "{rendered}");
+    assert!(rendered.contains("Vol. 1"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_em_template() {
+    let rendered = render_wikitext("Sample", "{{em|some text}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<em>some text</em>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_skips_stats_topic_toc_template() {
+    let rendered = render_wikitext("Sample", "{{StatsTopicTOC}}", &InternalLinks::new(), "en");
+    assert!(!rendered.contains("StatsTopicTOC"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_skips_math_topics_toc_template() {
+    let rendered = render_wikitext("Sample", "{{Math topics TOC}}", &InternalLinks::new(), "en");
+    assert!(!rendered.contains("Math topics TOC"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_skips_areas_of_mathematics_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Areas of mathematics |collapsed}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(!rendered.contains("Areas of mathematics"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_skips_glossaries_of_science_and_engineering_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Glossaries of science and engineering}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        !rendered.contains("Glossaries of science and engineering"),
+        "{rendered}"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_tmath_template() {
     let rendered = render_wikitext(
         "Sample",

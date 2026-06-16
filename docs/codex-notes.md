@@ -1,5 +1,53 @@
 # Codex Session Notes
 
+## 2026-06-16 Handle JSTOR, wsPSM, StatsTopicTOC, Math topics TOC, em, Areas of mathematics, and Glossaries of science and engineering
+
+### Summary
+Implemented and registered handlers for `JSTOR`, `wsPSM`, and `em` templates. Mapped the navigation templates `StatsTopicTOC`, `Math topics TOC`, `Areas of mathematics`, and `Glossaries of science and engineering` to be silently skipped. Wrote unit tests, updated rules, regenerated book output, and sorted CSV files.
+
+### Decisions Made
+- **Implemented template renderers**:
+  - `JSTOR`: formats JSTOR citation identifiers (e.g. `JSTOR 1400906`).
+  - `wsPSM`: formats Wikisource Popular Science Monthly article citation links.
+  - `em`: wraps text in emphasis (italic) tags `''text''` while safeguarding potential `=` inside the argument.
+- **Added silent templates**:
+  - Added `StatsTopicTOC`, `Math topics TOC`, `Areas of mathematics`, and `Glossaries of science and engineering` to [src/navigations.csv](file:///opt/src/navigations.csv) to silently omit these navigation sidebars and footer boxes from the EPUB output.
+  - Sorted the CSV files using `./tools/sort.sh`.
+- **Registered templates**:
+  - Registered `jstor`, `wspsm`, and `em` in `get_dispatch_table` of [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+  - Added `JSTOR`, `wsPSM`, and `em` case-insensitively to `is_handled_template_name` in [src/templates/mod.rs](file:///opt/src/templates/mod.rs).
+- **Added unit tests**:
+  - Wrote separate unit tests for `JSTOR`, `wsPSM`, `em`, `StatsTopicTOC`, `Math topics TOC`, `Areas of mathematics`, and `Glossaries of science and engineering` in [src/tests.rs](file:///opt/src/tests.rs).
+- **Regenerated expected fixtures**:
+  - Updated the `Statistics` book expected output using `./tools/regenerate.sh`.
+- **Documented conversion rules**:
+  - Added conversion rules in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+  - Implemented `render_jstor_template`, `render_wspsm_template`, and `render_em_template` and registered them in the dispatch table.
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+  - Registered `JSTOR`, `wsPSM`, and `em` in `is_handled_template_name`.
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+  - Added separate unit tests for the seven templates.
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+  - Appended and sorted navigation templates.
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+  - Documented new template conversion rules.
+- `expected/Statistics/OEBPS/*` [MODIFY]
+  - Regenerated Statistics book expected output.
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+  - Updated with current session notes.
+
+### Tests Run
+- Checked compilation: `cargo check` (passed).
+- Checked formatting: `cargo fmt -- --check` (passed).
+- Checked lints: `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Ran all tests: `cargo test` (all 331 unit tests, 37 integration tests, and 4 doctests passed).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-16 Handle tmath, closed-open, sqrt, Section link, mset, hidden begin, and hidden end
 
 ### Summary
