@@ -1,5 +1,54 @@
 # Codex Session Notes
 
+## 2026-06-16 Handle nobr, which?, Redirect-distinguish, Collapse top, Collapse bottom, var, gaps, and example needed Templates
+
+### Summary
+Implemented and registered template handlers for `nobr`, `which?`, `Redirect-distinguish`, `Collapse top`, `Collapse bottom`, `var`, `gaps`, and `example needed` templates for the `Standard deviation` page/book config. Updated conversion logic for inches normalization and composite `ftin` target unit inside the linear unit converter. Wrote unit tests, updated expected book fixtures, documented rules, and resolved clippy warnings.
+
+### Decisions Made
+- **Implemented template renderers**:
+  - `Collapse bottom`: Mapped to `""` in `get_fixed` in [src/templates/mod.rs](file:///opt/src/templates/mod.rs).
+  - `Collapse top`: Renders bold collapsible header blocks.
+  - `var`: Formats variables inside `<var>` tags (utilizing temporary formatting placeholders that are restored back in [src/main.rs](file:///opt/src/main.rs)).
+  - `gaps`: Formats numbers with digit groupings, optional scientific base/exponent notation, and optional unit/LHS values.
+  - `nobr`: Handled as an alias of the existing `render_passthrough_template`.
+  - `which?`, `Redirect-distinguish`, and `example needed`: Added to [src/silent.csv](file:///opt/src/silent.csv) as silent templates.
+- **Improved convert unit support**:
+  - Supported converting to composite `"ftin"` unit and normalizing source unit keys for `"inches"`/ `"inch"` to `"in"`.
+- **Added unit tests**:
+  - Wrote individual unit tests in [src/tests.rs](file:///opt/src/tests.rs) for all 8 templates.
+- **Regenerated expected fixtures**:
+  - Updated `Standard_deviation` integration book expected output using `./tools/regenerate.sh`.
+- **Documented conversion rules**:
+  - Added rules to [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/main.rs](file:///opt/src/main.rs) [MODIFY]
+  - Restored `<var>` spans.
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+  - Registered templates case-insensitively in name filter.
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+  - Implemented `Collapse top`, `var`, and `gaps` renderers.
+- [src/templates/convert.rs](file:///opt/src/templates/convert.rs) [MODIFY]
+  - Added support for `"inches"` and composite `"ftin"`.
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+  - Added 8 separate unit tests.
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+  - Added silent templates and sorted.
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+  - Documented rules and examples.
+- `expected/Standard_deviation/OEBPS/Standard_deviation.xhtml` [MODIFY]
+  - Regenerated integration book expected output.
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+  - Appended current session note.
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt --check`, and `cargo clippy --all-targets -- -D warnings` (Passed cleanly, no warnings/errors).
+- Verified unit and integration tests: `cargo test` (All 359 unit tests, 39 integration tests, and 4 doc-tests passed).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-16 Handle Cite Templates: cite paper, cite court, Cite Dictionary.com, Cite speech, cite SSRN, cite tech report, and Cite CiteSeerX
 
 ### Summary

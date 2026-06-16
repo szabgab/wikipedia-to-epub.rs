@@ -239,6 +239,20 @@ fn render_convert_single_secondary(
                 if same_convert_unit(source_unit, target_unit) {
                     return None;
                 }
+                if target_unit == "ftin" {
+                    let first_inches =
+                        convert_value(parse_template_number(first)?, source_unit, "in")?;
+                    let second_inches =
+                        convert_value(parse_template_number(second)?, source_unit, "in")?;
+                    let first_ft = (first_inches / 12.0).floor();
+                    let first_in = (first_inches - first_ft * 12.0).round();
+                    let second_ft = (second_inches / 12.0).floor();
+                    let second_in = (second_inches - second_ft * 12.0).round();
+                    return Some(format!(
+                        "{} ft {} in {} {} ft {} in",
+                        first_ft, first_in, separator, second_ft, second_in
+                    ));
+                }
 
                 let first_converted =
                     convert_value(parse_template_number(first)?, source_unit, target_unit)?;
@@ -264,6 +278,12 @@ fn render_convert_single_secondary(
         .filter_map(|target_unit| {
             if same_convert_unit(source_unit, target_unit) {
                 return None;
+            }
+            if target_unit == "ftin" {
+                let val_in_inches = convert_value(numeric_value, source_unit, "in")?;
+                let feet = (val_in_inches / 12.0).floor();
+                let inches = (val_in_inches - feet * 12.0).round();
+                return Some(format!("{} ft {} in", feet, inches));
             }
 
             let converted = convert_value(numeric_value, source_unit, target_unit)?;
@@ -373,7 +393,7 @@ fn looks_like_convert_unit_spec(value: &str) -> bool {
     !tokens.is_empty()
         && tokens
             .iter()
-            .all(|token| normalize_convert_unit_key(token).is_some())
+            .all(|token| *token == "ftin" || normalize_convert_unit_key(token).is_some())
 }
 
 fn split_convert_unit_spec(value: &str) -> Vec<&str> {
@@ -445,7 +465,7 @@ fn normalize_convert_unit_key(unit: &str) -> Option<&'static str> {
         "ft" => Some("ft"),
         "ft2" => Some("ft2"),
         "yd" => Some("yd"),
-        "in" => Some("in"),
+        "in" | "inch" | "inches" => Some("in"),
         "cm" => Some("cm"),
         "mm" => Some("mm"),
         "au" => Some("au"),

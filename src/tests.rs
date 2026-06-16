@@ -7002,3 +7002,71 @@ fn render_wikitext_formats_cite_citeseerx_template() {
         "{rendered}"
     );
 }
+
+#[test]
+fn render_wikitext_formats_nobr_template() {
+    let rendered = render_wikitext("Sample", "{{nobr|content}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("content"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_skips_which_template() {
+    let rendered = render_wikitext("Sample", "{{which?}}", &InternalLinks::new(), "en");
+    assert!(!rendered.contains("which?"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_skips_redirect_distinguish_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Redirect-distinguish|A|B}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(!rendered.contains("Redirect-distinguish"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_collapse_top_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{Collapse top|title=My Title}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<strong>My Title</strong>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_collapse_bottom_template() {
+    let rendered = render_wikitext("Sample", "{{Collapse bottom}}", &InternalLinks::new(), "en");
+    assert!(!rendered.contains("Collapse bottom"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_var_template() {
+    let rendered = render_wikitext("Sample", "{{var|x}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<var>x</var>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_gaps_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{gaps|1|2|3|e=-4|u=kg|lhs=y}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("y = 1 2 3")
+            && rendered.contains("×10<sup>-4</sup>")
+            && rendered.contains("kg"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_skips_example_needed_template() {
+    let rendered = render_wikitext("Sample", "{{example needed}}", &InternalLinks::new(), "en");
+    assert!(!rendered.contains("example needed"), "{rendered}");
+}

@@ -105,6 +105,7 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
         ("'s", "'s"),
         ("=", "="),
         ("hidden end", ""),
+        ("collapse bottom", ""),
     ])
 }
 
@@ -573,6 +574,11 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("cite SSRN")
         || template.eq_ignore_ascii_case("cite tech report")
         || template.eq_ignore_ascii_case("Cite CiteSeerX")
+        || template.eq_ignore_ascii_case("nobr")
+        || template.eq_ignore_ascii_case("Collapse top")
+        || template.eq_ignore_ascii_case("Collapse bottom")
+        || template.eq_ignore_ascii_case("var")
+        || template.eq_ignore_ascii_case("gaps")
         || find_map_image(template).is_some()
         || is_silent_template_name(template)
 }

@@ -1380,7 +1380,8 @@ fn format_inline_text(text: &str) -> String {
     let html = restore_sub_spans(&html);
     let html = restore_sup_spans(&html);
     let html = restore_dfn_spans(&html);
-    restore_code_spans(&html)
+    let html = restore_code_spans(&html);
+    restore_var_spans(&html)
 }
 
 #[derive(Clone, Debug)]
@@ -1660,6 +1661,11 @@ fn restore_dfn_spans(html: &str) -> String {
 fn restore_code_spans(html: &str) -> String {
     html.replace("__WIKIPEDIA_TO_EPUB_CODE_START__", "<code>")
         .replace("__WIKIPEDIA_TO_EPUB_CODE_END__", "</code>")
+}
+
+fn restore_var_spans(html: &str) -> String {
+    html.replace("__WIKIPEDIA_TO_EPUB_VAR_START__", "<var>")
+        .replace("__WIKIPEDIA_TO_EPUB_VAR_END__", "</var>")
 }
 
 fn restore_open_access_spans(html: &str) -> String {

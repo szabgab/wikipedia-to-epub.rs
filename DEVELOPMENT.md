@@ -120,6 +120,12 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{cite SSRN|ssrn=...}}` formats Social Science Research Network paper citations
 * `{{cite tech report|title=...}}` is handled as an alias of `{{cite report}}`
 * `{{Cite CiteSeerX|citeseerx=...}}` formats CiteSeerX paper citations
+* `{{nobr|text}}` renders the text as a passthrough (without breaking line breaks)
+* `{{Collapse top|title}}` formats a collapsible title block header: `'''title'''`
+* `{{Collapse bottom}}` is omitted from the output
+* `{{var|x}}` formats variables in `<var>` tags: `<var>x</var>`
+* `{{gaps|1|2|3|e=-4|u=kg|lhs=y}}` formats numbers with digit grouping, optional scientific notation, and units: `y = 1 2 3×10<sup>-4</sup> kg`
+* `{{which?}}`, `{{Redirect-distinguish}}`, and `{{example needed}}` are silent templates and are omitted from the output
 * `{{formatnum:5324}}` formats the number using thousands separators: `5,324`
 * `{{Birth date and age|1931|3|7}}` and `{{birth date and age|1931|3|7|df=yes}}` render the birth date and current age: `March 7, 1931 (age X)` and `7 March 1931 (age X)`
 * `{{dts|1947-5-20}}` (or `{{dts|1947|May|20}}`) formats the date for table sorting, displaying it in a human-readable form: `May 20, 1947`; also supports the `format=dmy` parameter (e.g. `20 May 1947`) and the `bc` flag

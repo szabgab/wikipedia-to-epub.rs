@@ -206,6 +206,82 @@ fn render_hidden_begin_template(params: &str) -> String {
     format!("\n'''{}'''\n", title.trim())
 }
 
+/// [Collapse top](https://en.wikipedia.org/wiki/Template:Collapse_top)
+fn render_collapse_top_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let title = template_param(&named, &["title", "header", "1"])
+        .map(str::to_string)
+        .or_else(|| {
+            let positional = template_positional_params(params);
+            positional.first().cloned()
+        })
+        .unwrap_or_else(|| "Extended content".to_string());
+
+    format!("\n'''{}'''\n", title.trim())
+}
+
+/// [var](https://en.wikipedia.org/wiki/Template:Var)
+fn render_var_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let content = if let Some(val) = template_param(&named, &["1"]) {
+        val.to_string()
+    } else {
+        let positional = template_positional_params(params);
+        if let Some(val) = positional.first() {
+            val.to_string()
+        } else {
+            String::new()
+        }
+    };
+
+    if content.is_empty() {
+        String::new()
+    } else {
+        format!(
+            "__WIKIPEDIA_TO_EPUB_VAR_START__{}__WIKIPEDIA_TO_EPUB_VAR_END__",
+            render_templates(&content)
+        )
+    }
+}
+
+/// [gaps](https://en.wikipedia.org/wiki/Template:Gaps)
+fn render_gaps_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let mut parts = Vec::new();
+
+    for p in positional {
+        let trimmed = p.trim();
+        if !trimmed.is_empty() {
+            parts.push(render_templates(trimmed));
+        }
+    }
+
+    let mut num_str = parts.join("__WIKIPEDIA_TO_EPUB_THINSP_TEMPLATE__");
+
+    if let Some(e_val) = template_param(&named, &["e"]) {
+        let base_val = template_param(&named, &["base"]).unwrap_or("10");
+        let scientific = format!(
+            "×{}__WIKIPEDIA_TO_EPUB_SUP_START__{}__WIKIPEDIA_TO_EPUB_SUP_END__",
+            base_val,
+            render_templates(e_val)
+        );
+        num_str.push_str(&scientific);
+    }
+
+    if let Some(unit) = template_param(&named, &["u"]) {
+        num_str.push(' ');
+        num_str.push_str(&render_templates(unit));
+    }
+
+    if let Some(lhs) = template_param(&named, &["lhs"]) {
+        num_str = format!("{} = {}", render_templates(lhs), num_str);
+    }
+
+    num_str
+}
+
 /// [mvar](https://en.wikipedia.org/wiki/Template:Mvar)
 fn render_mvar_template(params: &str) -> String {
     let positional = template_positional_params(params);
@@ -4496,6 +4572,13 @@ fn format_interlanguage_link(
 pub(crate) fn get_dispatch_table() -> DispatchTable {
     HashMap::from([
         ("nowrap", render_passthrough_template as TemplateHandler),
+        ("nobr", render_passthrough_template as TemplateHandler),
+        (
+            "collapse top",
+            render_collapse_top_template as TemplateHandler,
+        ),
+        ("var", render_var_template as TemplateHandler),
+        ("gaps", render_gaps_template as TemplateHandler),
         ("center", render_passthrough_template as TemplateHandler),
         (
             "crossreference",
