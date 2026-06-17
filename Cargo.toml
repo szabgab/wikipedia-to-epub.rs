@@ -9,6 +9,8 @@ categories = ["command-line-utilities"]
 readme = "README.md"
 repository = "https://github.com/szabgab/wikipedia-to-epub.rs/"
 homepage = "https://wikipedia-to-epub.code-maven.com/"
+exclude = ["examples/", "/expected", "/pages", "site/", "templates/", "tests/", "tools/"]
+
 
 [dependencies]
 any_ascii = "0.3.3"
