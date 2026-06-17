@@ -21,7 +21,7 @@ cargo run -- examples/korea.yaml --local pages
 Generate the GitHub Pages index locally:
 
 ```bash
-uv run scripts/generate_site.py
+uv run tools/generate_site.py
 ```
 
 ## High-level architecture

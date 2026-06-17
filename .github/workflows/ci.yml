@@ -97,7 +97,7 @@ jobs:
 
       - name: Generate GitHub Pages site
         run: |
-          uv run scripts/generate_site.py \
+          uv run tools/generate_site.py \
             --template templates/site/index.html.j2 \
             --output-dir site
 
