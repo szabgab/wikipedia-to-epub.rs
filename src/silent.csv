@@ -1,23 +1,23 @@
 '
 -
 0
-About,                       Linking the reader to other meaning of the same word.     https://en.wikipedia.org/wiki/Template:About
-additional citations needed, Asks for help                                             https://en.wikipedia.org/wiki/Template:Additional_citation_needed
-Advert,                      This article contains promotional content.                https://en.wikipedia.org/wiki/Template:Advert
+About,                       Linking the reader to other meaning of the same word.,      https://en.wikipedia.org/wiki/Template:About
+additional citations needed, Asks for help.,                                             https://en.wikipedia.org/wiki/Template:Additional_citation_needed
+Advert,                      This article contains promotional content.,                 https://en.wikipedia.org/wiki/Template:Advert
 ahnentafel
 Americana Poster
-anchor,                      Used for inbound links. Not relevant in epub.             https://en.wikipedia.org/wiki/Template:Anchor
+anchor,                      Used for inbound links. Not relevant in epub.,              https://en.wikipedia.org/wiki/Template:Anchor
 Attribution needed
-Audio,                       Link to an audio file. Not really relevant in epub files. https://en.wikipedia.org/wiki/Template:Audio
-Authority control,           Validate formats and values                               https://en.wikipedia.org/wiki/Template:Authority_control
-Better source needed,        Ask for help                                              https://en.wikipedia.org/wiki/Template:Better_source_needed
-bots,                        Control if bots can edit the page                         https://en.wikipedia.org/wiki/Template:Bots
+Audio,                       Link to an audio file. Not really relevant in epub files.,  https://en.wikipedia.org/wiki/Template:Audio
+Authority control,           Validate formats and values.,                               https://en.wikipedia.org/wiki/Template:Authority_control
+Better source needed,        Ask for help.,                                              https://en.wikipedia.org/wiki/Template:Better_source_needed
+bots,                        Control if bots can edit the page.,                         https://en.wikipedia.org/wiki/Template:Bots
 Campaignbox Korean War
 category see also
 cbignore
 chart bottom
 chart top
-CIA World Factbook,     This article incorporates public domain material  https://en.wikipedia.org/wiki/Template:CIA_World_Factbook
+CIA World Factbook,          This article incorporates public domain material.,          https://en.wikipedia.org/wiki/Template:CIA_World_Factbook
 citation needed
 clarification needed
 clarify
@@ -37,7 +37,7 @@ Commons and category
 Commons category
 Commons category inline
 Commons category-inline
-commonscat,                  Link to category in Wikimedia Commons. Alias of Commons category.
+commonscat,                  Link to category in Wikimedia Commons.,                     https://en.wikipedia.org/wiki/Template:Commons_category
 Commons-inline
 Contains special characters
 coord missing
@@ -73,7 +73,7 @@ flagcountry
 flagicon
 flagicon image
 full citation needed
-full,       Full citation needed   https://en.wikipedia.org/wiki/Template:Full_citation_needed
+full,                        Full citation needed.,                                      https://en.wikipedia.org/wiki/Template:Full_citation_needed
 Gallery
 GeoGroup
 Hatnote
@@ -81,7 +81,7 @@ Hatnote group
 how-to
 huh
 IMDb name
-incomplete list,             A list which is missing obvious entries.                  https://en.wikipedia.org/wiki/Template:Incomplete_list
+incomplete list,             A list which is missing obvious entries.,                   https://en.wikipedia.org/wiki/Template:Incomplete_list
 incomplete short citation
 in title
 ISBN?
@@ -99,13 +99,13 @@ Listen
 location map+
 long
 look from
-lower,                       Visual change                                             https://en.wikipedia.org/wiki/Template:Lower
-Meitetsu Group,              A hidden list  https://en.wikipedia.org/wiki/Template:Meitetsu_Group
+lower,                       Visual change.,                                             https://en.wikipedia.org/wiki/Template:Lower
+Meitetsu Group,              A hidden list.,                                             https://en.wikipedia.org/wiki/Template:Meitetsu_Group
 More citations needed
 more citations needed section
 more cn section
 multiple image
-Multiple issues,             Using too many individual article message boxes can distract from the article https://en.wikipedia.org/wiki/Template:Multiple_issues
+Multiple issues,             Using too many individual article message boxes can distract from the article., https://en.wikipedia.org/wiki/Template:Multiple_issues
 Navboxes bottom
 Navboxes top
 Needs update
@@ -114,17 +114,17 @@ NoteFoot
 notelist
 notelist-ua
 NoteTag
-One source,                  Content that relies on a single source. https://en.wikipedia.org/wiki/Template:One_source
-Original research,           One needs to reference sources. https://en.wikipedia.org/wiki/Template:Original_research
+One source,                  Content that relies on a single source.m,                   https://en.wikipedia.org/wiki/Template:One_source
+Original research,           One needs to reference sources.,                            https://en.wikipedia.org/wiki/Template:Original_research
 Overly detailed
 Page needed
 party color
 Pd-notice
-Pie chart,                   TODO: should be converted on an image https://en.wikipedia.org/wiki/Template:Pie_chart
-PM20,                        TODO: https://en.wikipedia.org/wiki/Template:PM20
-Portal,                      A visible list of portals https://en.wikipedia.org/wiki/Template:Portal
-Portal bar,                  A visible list of portals https://en.wikipedia.org/wiki/Template:Portal_bar
-POV,                         Point of view issue with the content https://en.wikipedia.org/wiki/Template:POV
+Pie chart,                   TODO: should be converted on an image.,                     https://en.wikipedia.org/wiki/Template:Pie_chart
+PM20,                        TODO:,                                                      https://en.wikipedia.org/wiki/Template:PM20
+Portal,                      A visible list of portals.,                                 https://en.wikipedia.org/wiki/Template:Portal
+Portal bar,                  A visible list of portals.,                                 https://en.wikipedia.org/wiki/Template:Portal_bar
+POV,                         Point of view issue with the content.,                      https://en.wikipedia.org/wiki/Template:POV
 pp-dispute
 Pp-move
 pp-move-indef
@@ -136,7 +136,7 @@ Primary source inline
 prose
 Protection padlock
 R
-raise,                       Visual change                                             https://en.wikipedia.org/wiki/Template:Raise
+raise,                       Visual change.,                                             https://en.wikipedia.org/wiki/Template:Raise
 Redirect
 Redirect2
 Redirect-distinguish
@@ -153,7 +153,7 @@ Sfn
 sfnm
 sfnp
 SfnRef
-Short description,              TODO we might want to display this on some kind of an index page or TOC.   https://en.wikipedia.org/wiki/Template:Short_description
+Short description,           TODO we might want to display this on some kind of an index page or TOC., https://en.wikipedia.org/wiki/Template:Short_description
 Sister bar
 Sister project links
 solar system delta v map.svg
@@ -184,7 +184,7 @@ unreferenced section
 Unreliable source?
 Unreliable sources
 unsolved
-unsourced,                   Citation needed                                           https://en.wikipedia.org/wiki/Template:Unreferenced
+unsourced,                   Citation needed.,                                           https://en.wikipedia.org/wiki/Template:Unreferenced
 Update inline
 update section
 very long
