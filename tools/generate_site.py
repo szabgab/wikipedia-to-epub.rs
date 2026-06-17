@@ -84,6 +84,30 @@ def get_skipped_templates() -> list[dict[str, str]]:
     return templates
 
 
+def get_navigation_templates() -> list[dict[str, str]]:
+    import csv
+    import urllib.parse
+    csv_path = Path("src/navigations.csv")
+    if not csv_path.exists():
+        return []
+    templates = []
+    with open(csv_path, encoding="utf-8") as f:
+        reader = csv.reader(f)
+        for row in reader:
+            if not row:
+                continue
+            name = row[0].strip()
+            if not name:
+                continue
+            url_name = name.replace(" ", "_")
+            url = f"https://en.wikipedia.org/wiki/Template:{urllib.parse.quote(url_name, safe='/')}"
+            templates.append({
+                "name": name,
+                "url": url,
+            })
+    return templates
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate the GitHub Pages site")
     parser.add_argument("--template", default="templates/site/index.html.j2", type=Path)
@@ -105,6 +129,7 @@ def main() -> None:
     skeleton_yaml = get_skeleton_yaml()
     readme_html = get_readme_html()
     skipped_templates = get_skipped_templates()
+    navigation_templates = get_navigation_templates()
 
     rendered = template.render(
         binary_downloads=BINARY_DOWNLOADS,
@@ -122,6 +147,7 @@ def main() -> None:
         version=version,
         release_date=release_date,
         skipped_templates=skipped_templates,
+        navigation_templates=navigation_templates,
     )
     (args.output_dir / "skipped-templates.html").write_text(rendered_skipped, encoding="utf-8")
 

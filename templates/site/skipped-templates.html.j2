@@ -463,9 +463,10 @@
           </svg>
           <input type="text" id="search-input" placeholder="Search templates or comments..." onkeyup="filterTemplates()" />
         </div>
-        <span class="count-badge" id="count-badge">{{ skipped_templates|length }} templates</span>
+        <span class="count-badge" id="count-badge">{{ skipped_templates|length + navigation_templates|length }} templates</span>
       </div>
 
+      <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; color: var(--text-heading); margin: 2rem 0 1.25rem;">Silent Templates</h2>
       <div class="templates-table-wrapper">
         <table class="templates-table">
           <thead>
@@ -494,6 +495,38 @@
               </td>
               <td class="template-comment-cell">
                 {{ template.comment }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; color: var(--text-heading); margin: 3rem 0 1.25rem;">Navigation Templates</h2>
+      <div class="templates-table-wrapper">
+        <table class="templates-table">
+          <thead>
+            <tr>
+              <th>Template Name</th>
+              <th>Reason / Comment</th>
+            </tr>
+          </thead>
+          <tbody id="navigation-body">
+            {% for template in navigation_templates %}
+            <tr class="template-row">
+              <td class="template-name-cell">
+                <a href="{{ template.url }}" target="_blank" rel="noopener" class="template-link">
+                  <code>{{ template.name }}</code>
+                  <!-- External link icon -->
+                  <svg class="external-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+              </td>
+              <td class="template-comment-cell text-muted">
+                Wikipedia navigation footer/box template, omitted from eBook formatting.
               </td>
             </tr>
             {% endfor %}

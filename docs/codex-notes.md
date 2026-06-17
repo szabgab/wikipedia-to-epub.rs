@@ -1,5 +1,28 @@
 # Codex Session Notes
 
+## 2026-06-17 Include Skipped Navigation Templates on Website
+
+### Summary
+Updated the website generator script and the "Skipped Templates" page to also include all skipped navigation templates listed in `src/navigations.csv` in a separate table, linking each navigation template directly to its corresponding Wikipedia page.
+
+### Decisions Made
+- **Updated `generate_site.py`**:
+  - Implemented `get_navigation_templates()` in [tools/generate_site.py](file:///opt/tools/generate_site.py) to read [src/navigations.csv](file:///opt/src/navigations.csv), construct valid URL links to their corresponding Wikipedia template pages by substituting spaces with underscores and quoting special characters, and pass the list to the template context.
+- **Updated Jinja2 template**:
+  - Modified [templates/site/skipped-templates.html.j2](file:///opt/templates/site/skipped-templates.html.j2) to add a new "Navigation Templates" section containing a table of these templates. Updated the total count badge logic to aggregate both silent templates and navigation templates.
+
+### Files Changed
+- [tools/generate_site.py](file:///opt/tools/generate_site.py) [MODIFY]
+- [templates/site/skipped-templates.html.j2](file:///opt/templates/site/skipped-templates.html.j2) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt --check`, and `cargo clippy --all-targets -- -D warnings` (Passed cleanly).
+- Verified unit and integration tests: `cargo test` (All passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-17 Implement Skipped Templates Website Page
 
 ### Summary
