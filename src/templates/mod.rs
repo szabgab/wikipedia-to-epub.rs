@@ -586,6 +586,7 @@ fn is_handled_template_name(template: &str) -> bool {
 fn is_silent_template_name(template: &str) -> bool {
     let template = template.trim();
     template.starts_with('#')
+        || template.to_ascii_lowercase().ends_with("stub")
         || template_name_is_in_csv(template, include_str!("../silent.csv"))
         || template.ends_with(" weatherbox")
         || template

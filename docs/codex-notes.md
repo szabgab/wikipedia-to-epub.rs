@@ -1,5 +1,34 @@
 # Codex Session Notes
 
+## 2026-06-17 Skip Stub Templates Automatically
+
+### Summary
+Implemented automatic skipping of all wikitext templates ending with the word "stub" case-insensitively. Removed explicit stub entries from `src/navigations.csv`, and updated the skipped templates page with a note indicating this automatic behavior.
+
+### Decisions Made
+- **Implemented Auto-Skipping in Compiler**:
+  - Added a case-insensitive check in `is_silent_template_name` inside [src/templates/mod.rs](file:///opt/src/templates/mod.rs) to skip any template ending with `"stub"`.
+- **Wrote Unit Test**:
+  - Added `render_wikitext_silently_skips_stub_templates` in [src/tests.rs](file:///opt/src/tests.rs) to verify correct skipping of stub templates under various casing and names.
+- **Removed Stub Entries from CSV**:
+  - Removed all explicit stub template entries from [src/navigations.csv](file:///opt/src/navigations.csv) and sorted the file using `./tools/sort.sh`.
+- **Updated Website Template**:
+  - Modified [templates/site/skipped-templates.html.j2](file:///opt/templates/site/skipped-templates.html.j2) to add a line explaining that stub templates are skipped automatically.
+
+### Files Changed
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+- [templates/site/skipped-templates.html.j2](file:///opt/templates/site/skipped-templates.html.j2) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt --check`, and `cargo clippy --all-targets -- -D warnings` (Passed cleanly).
+- Verified unit and integration tests: `cargo test` (All 360 unit tests, 39 integration tests, and 4 doc-tests passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-17 Include Skipped Navigation Templates on Website
 
 ### Summary

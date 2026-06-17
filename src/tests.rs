@@ -4966,6 +4966,13 @@ fn render_wikitext_silently_skips_how_to_template() {
 }
 
 #[test]
+fn render_wikitext_silently_skips_stub_templates() {
+    assert_eq!(render_templates("{{Busan-geo-stub}}"), "");
+    assert_eq!(render_templates("{{some-other-stub}}"), "");
+    assert_eq!(render_templates("{{STUB}}"), "");
+}
+
+#[test]
 fn render_wikitext_formats_portal_inline_template() {
     assert_eq!(
         render_templates("{{Portal-inline|Canada}}"),
