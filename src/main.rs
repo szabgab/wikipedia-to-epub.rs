@@ -274,6 +274,21 @@ fn generate_chapters_hierarchical(
 fn run(args: CliArgs) -> AppResult<()> {
     let mut config = read_config(&args.config_path)?;
 
+    let config_parent = args.config_path.parent().unwrap_or_else(|| Path::new("."));
+    for md_file in &config.front_mater {
+        let resolved_path = if md_file.is_absolute() {
+            md_file.clone()
+        } else {
+            config_parent.join(md_file)
+        };
+        if !resolved_path.is_file() {
+            return Err(AppError::Message(format!(
+                "front matter file not found: {}",
+                resolved_path.display()
+            )));
+        }
+    }
+
     let cover_image = get_cover_image(&args, &config)?;
 
     if let Some(output) = args.output {

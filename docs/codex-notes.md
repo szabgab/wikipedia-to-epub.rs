@@ -1,5 +1,28 @@
 # Codex Session Notes
 
+## 2026-06-17 Fast Fail on Missing Front Matter Files
+
+### Summary
+Implemented a check right at the beginning of the compilation process (`run` function) to verify that all front matter files defined in the book configuration exist. Stopped processing immediately by returning an error if any file is missing, avoiding unnecessary Wikipedia API calls or processing.
+
+### Decisions Made
+- **Implemented Fast Fail Check**:
+  - Inserted a file check for each file in `config.front_mater` right at the start of `run()` inside [src/main.rs](file:///opt/src/main.rs).
+- **Added Integration Test**:
+  - Added `generate_book_fails_if_front_matter_file_is_missing` in [tests/books.rs](file:///opt/tests/books.rs) to verify that compilation fails immediately and returns the expected error message when a front matter file is missing.
+
+### Files Changed
+- [src/main.rs](file:///opt/src/main.rs) [MODIFY]
+- [tests/books.rs](file:///opt/tests/books.rs) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt --check`, and `cargo clippy --all-targets -- -D warnings` (Passed cleanly).
+- Verified unit and integration tests: `cargo test` (All 360 unit tests and 40 integration tests passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-17 Skip Stub Templates Automatically
 
 ### Summary
