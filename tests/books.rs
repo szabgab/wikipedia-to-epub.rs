@@ -992,4 +992,3 @@ articles:
 fn generate_matsumoto_airport_book_from_local_page_dump() {
     assert_generated_book_matches_expected("Matsumoto_Airport");
 }
-

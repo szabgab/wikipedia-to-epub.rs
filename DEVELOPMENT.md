@@ -333,6 +333,9 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{spaces|3}}` and `{{spaces}}` render non-breaking spaces (which are collapsed to a standard space)
 * `{{mpl-|322756|2001 CK|32}}` renders parenthesized numbered designation for minor planets linked to their Wikipedia article: `[[(322756) 2001 CK32]]`
 * `{{chem|H|2|O}}` and `{{chem|CO|3|2-}}` render chemical formulas using subscripts for numbers and superscripts for charges: `H<sub>2</sub>O` and `CO<sub>3</sub><sup>2-</sup>`
+* `{{airport codes|MMJ|RJAF}}` formats airport codes: `(IATA: MMJ, ICAO: RJAF)`; supports hiding the outer parentheses using parameter `p=n`
+* `{{Airport-dest-list|Airline|Dest}}` renders a wikitext table of airlines and destinations
+* `{{NWS-current|RJAF}}` renders a current weather link to the NOAA/NWS page for the given ICAO code
 * `{{also|Standard solar model}}` renders like other see-also cross-reference templates
 * `{{solar radius|1.2}}` and `{{solar radius}}` render values with the solar radius symbol: `1.2 R<sub>☉</sub>` and `R<sub>☉</sub>`
 * `{{±|10|2}}` and `{{±}}` render mathematical plus-minus values or characters: `± 10 2` and `±`

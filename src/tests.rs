@@ -4973,6 +4973,41 @@ fn render_wikitext_silently_skips_stub_templates() {
 }
 
 #[test]
+fn render_wikitext_formats_airport_codes_template() {
+    assert_eq!(
+        render_templates("{{airport codes|MMJ|RJAF}}"),
+        "(IATA: MMJ, ICAO: RJAF)"
+    );
+    assert_eq!(
+        render_templates("{{airport codes|MMJ|RJAF|p=n}}"),
+        "IATA: MMJ, ICAO: RJAF"
+    );
+    assert_eq!(render_templates("{{airport codes|||1G4}}"), "(FAA: 1G4)");
+}
+
+#[test]
+fn render_wikitext_formats_airport_dest_list_template() {
+    assert_eq!(
+        render_templates(
+            "{{Airport-dest-list| [[Fuji Dream Airlines]] | [[Fukuoka Airport|Fukuoka]], [[Kobe Airport|Kobe]] | [[Japan Airlines]] | '''Seasonal:''' [[Osaka Itami Airport|Osaka–Itami]]}}"
+        ),
+        "{| class=\"wikitable\"\n|-\n! Airlines\n! Destinations\n|-\n| [[Fuji Dream Airlines]]\n| [[Fukuoka Airport|Fukuoka]], [[Kobe Airport|Kobe]]\n|-\n| [[Japan Airlines]]\n| '''Seasonal:''' [[Osaka Itami Airport|Osaka–Itami]]\n|}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_nws_current_template() {
+    assert_eq!(
+        render_templates("{{NWS-current|RJAF}}"),
+        "[http://tgftp.nws.noaa.gov/weather/current/RJAF.html Current weather for RJAF] at NOAA/NWS"
+    );
+    assert_eq!(
+        render_templates("{{NWS-current|LSZH|Zurich Airport}}"),
+        "[http://tgftp.nws.noaa.gov/weather/current/LSZH.html Current weather for Zurich Airport] at NOAA/NWS"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_portal_inline_template() {
     assert_eq!(
         render_templates("{{Portal-inline|Canada}}"),

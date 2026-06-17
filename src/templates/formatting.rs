@@ -8,8 +8,8 @@ use crate::config::current_utc_date;
 use crate::config::parse_date_string;
 
 use crate::tools::{
-    split_template_params, template_named_params, template_param, template_param_owned,
-    template_positional_params,
+    split_parameter_by_equals, split_template_params, template_named_params, template_param,
+    template_param_owned, template_positional_params,
 };
 
 use crate::templates::render_templates;
@@ -4571,6 +4571,18 @@ fn format_interlanguage_link(
 
 pub(crate) fn get_dispatch_table() -> DispatchTable {
     HashMap::from([
+        (
+            "airport codes",
+            render_airport_codes_template as TemplateHandler,
+        ),
+        (
+            "airport-dest-list",
+            render_airport_dest_list_template as TemplateHandler,
+        ),
+        (
+            "nws-current",
+            render_nws_current_template as TemplateHandler,
+        ),
         ("nowrap", render_passthrough_template as TemplateHandler),
         ("nobr", render_passthrough_template as TemplateHandler),
         (
@@ -5400,6 +5412,111 @@ fn render_mp_template(params: &str) -> String {
             )
         }
     }
+}
+
+fn render_airport_codes_template(params: &str) -> String {
+    let parts = split_template_params(params);
+    let named = template_named_params(params);
+
+    let mut positional = Vec::new();
+    for part in parts {
+        let trimmed = part.trim();
+        if split_parameter_by_equals(trimmed).is_none() {
+            positional.push(trimmed.to_string());
+        }
+    }
+
+    let labels = ["IATA", "ICAO", "FAA", "TC", "GPS", "CAAC"];
+    let mut codes = Vec::new();
+    for (i, val) in positional.iter().enumerate() {
+        if i < labels.len() {
+            let val = val.trim();
+            if !val.is_empty() {
+                codes.push(format!("{}: {}", labels[i], val));
+            }
+        }
+    }
+
+    if codes.is_empty() {
+        return String::new();
+    }
+
+    let joined = codes.join(", ");
+    let p = template_param(&named, &["p"]);
+    if p == Some("n") {
+        joined
+    } else {
+        format!("({joined})")
+    }
+}
+
+fn render_airport_dest_list_template(params: &str) -> String {
+    let parts = split_template_params(params);
+    let named = template_named_params(params);
+
+    let mut positional = Vec::new();
+    for part in parts {
+        let trimmed = part.trim();
+        if split_parameter_by_equals(trimmed).is_none() {
+            positional.push(trimmed.to_string());
+        }
+    }
+
+    let mut rows = vec![
+        "{| class=\"wikitable\"".to_string(),
+        "|-".to_string(),
+        "! Airlines".to_string(),
+        "! Destinations".to_string(),
+    ];
+
+    let col3_title = template_param(&named, &["3rdcoltitle", "3rdcol"]);
+    if let Some(title) = col3_title {
+        rows.push(format!("! {}", render_templates(title)));
+    }
+
+    let chunk_size = if col3_title.is_some() { 3 } else { 2 };
+    for chunk in positional.chunks(chunk_size) {
+        if chunk.len() >= 2 {
+            rows.push("|-".to_string());
+            rows.push(format!("| {}", render_templates(&chunk[0])));
+            rows.push(format!("| {}", render_templates(&chunk[1])));
+            if chunk_size == 3 && chunk.len() >= 3 {
+                rows.push(format!("| {}", render_templates(&chunk[2])));
+            } else if chunk_size == 3 {
+                rows.push("|".to_string());
+            }
+        }
+    }
+
+    rows.push("|}".to_string());
+    rows.join("\n")
+}
+
+fn render_nws_current_template(params: &str) -> String {
+    let parts = split_template_params(params);
+    let mut positional = Vec::new();
+    for part in parts {
+        let trimmed = part.trim();
+        if split_parameter_by_equals(trimmed).is_none() {
+            positional.push(trimmed.to_string());
+        }
+    }
+
+    if positional.is_empty() {
+        return String::new();
+    }
+
+    let icao = &positional[0];
+    let name = if positional.len() > 1 && !positional[1].is_empty() {
+        &positional[1]
+    } else {
+        icao
+    };
+
+    format!(
+        "[http://tgftp.nws.noaa.gov/weather/current/{}.html Current weather for {}] at NOAA/NWS",
+        icao, name
+    )
 }
 
 pub(crate) fn get_empty_dispatch_table() -> HashMap<&'static str, fn() -> String> {

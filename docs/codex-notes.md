@@ -1,5 +1,36 @@
 # Codex Session Notes
 
+## 2026-06-17 Handle Matsumoto Airport Templates
+
+### Summary
+Implemented and refined the Wikipedia template rendering handlers for `"airport codes"`, `"Airport-dest-list"`, and `"NWS-current"` to compile the Matsumoto Airport book.
+
+### Decisions Made
+- **Implemented Template Renderers**:
+  - `render_airport_codes_template`: Maps up to 6 airport code standards (IATA, ICAO, FAA, TC, GPS, CAAC), joining them with commas and wrapping in parentheses (unless parameter `p=n` is specified).
+  - `render_airport_dest_list_template`: Formats positional airline-destination pairs as a wikitext table (`{| class="wikitable"`) so it is parsed and generated correctly as an XHTML table by the compiler instead of being stripped.
+  - `render_nws_current_template`: Formats a weather link to NOAA/NWS current weather for a given ICAO code.
+- **Added/Modified Tests**:
+  - Added unit tests for each of the three templates in [src/tests.rs](file:///opt/src/tests.rs).
+  - Regenerated integration test expected book fixtures under `expected/Matsumoto_Airport` using the `./tools/regenerate.sh` script.
+- **Updated Documentation**:
+  - Added documentation rules for the templates in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [expected/Matsumoto_Airport/OEBPS/Matsumoto_Airport.xhtml](file:///opt/expected/Matsumoto_Airport/OEBPS/Matsumoto_Airport.xhtml) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo fmt`, `cargo check --all-targets`, and `cargo clippy --all-targets -- -D warnings` (Passed cleanly).
+- Verified unit and integration tests: `cargo test` (All 367 unit/doc tests and 41 integration tests passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-17 Fast Fail on Missing Front Matter Files
 
 ### Summary

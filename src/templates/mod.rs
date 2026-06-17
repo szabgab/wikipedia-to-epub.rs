@@ -579,6 +579,9 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("Collapse bottom")
         || template.eq_ignore_ascii_case("var")
         || template.eq_ignore_ascii_case("gaps")
+        || template.eq_ignore_ascii_case("airport codes")
+        || template.eq_ignore_ascii_case("Airport-dest-list")
+        || template.eq_ignore_ascii_case("NWS-current")
         || find_map_image(template).is_some()
         || is_silent_template_name(template)
 }
