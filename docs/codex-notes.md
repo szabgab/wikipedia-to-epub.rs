@@ -1,5 +1,31 @@
 # Codex Session Notes
 
+## 2026-06-17 Implement Skipped Templates Website Page
+
+### Summary
+Modified the website generator script to parse `src/silent.csv` and generate a new page "Skipped Templates" listing all skipped templates with links (where available) and comments. Added a link to the new "Skipped Templates" page in the footer of the homepage.
+
+### Decisions Made
+- **Created a new Jinja2 Template**:
+  - Added [templates/site/skipped-templates.html.j2](file:///opt/templates/site/skipped-templates.html.j2) with support for listing, linking, and dynamically filtering/searching skipped templates.
+- **Updated `generate_site.py`**:
+  - Modified [tools/generate_site.py](file:///opt/tools/generate_site.py) to read [src/silent.csv](file:///opt/src/silent.csv) using the Python `csv` module, parse it into structured dictionary list, and render both `index.html` and `skipped-templates.html`.
+- **Linked homepage**:
+  - Updated [templates/site/index.html.j2](file:///opt/templates/site/index.html.j2) to add a link to the "Skipped Templates" page in the site footer as requested by the user.
+
+### Files Changed
+- [tools/generate_site.py](file:///opt/tools/generate_site.py) [MODIFY]
+- [templates/site/skipped-templates.html.j2](file:///opt/templates/site/skipped-templates.html.j2) [CREATE]
+- [templates/site/index.html.j2](file:///opt/templates/site/index.html.j2) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Verified formatting, compilation, and lints: `cargo fmt --check`, `cargo check --all-targets`, and `cargo clippy --all-targets -- -D warnings` (All passed cleanly).
+- Ran cargo tests: `cargo test` (All 359 unit tests, 39 integration tests, and 4 doc-tests passed).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-16 Handle nobr, which?, Redirect-distinguish, Collapse top, Collapse bottom, var, gaps, and example needed Templates
 
 ### Summary

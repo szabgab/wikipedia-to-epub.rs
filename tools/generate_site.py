@@ -56,6 +56,34 @@ def get_readme_html() -> str:
     return markdown.markdown(readme_text)
 
 
+def get_skipped_templates() -> list[dict[str, str]]:
+    import csv
+    csv_path = Path("src/silent.csv")
+    if not csv_path.exists():
+        return []
+    templates = []
+    with open(csv_path, encoding="utf-8") as f:
+        reader = csv.reader(f)
+        for row in reader:
+            if not row:
+                continue
+            name = row[0].strip()
+            if not name:
+                continue
+            comment = ""
+            if len(row) > 1:
+                comment = row[1].strip()
+            url = ""
+            if len(row) > 2:
+                url = row[2].strip()
+            templates.append({
+                "name": name,
+                "comment": comment,
+                "url": url,
+            })
+    return templates
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate the GitHub Pages site")
     parser.add_argument("--template", default="templates/site/index.html.j2", type=Path)
@@ -76,6 +104,7 @@ def main() -> None:
     release_date = datetime.date.today().strftime("%Y-%m-%d")
     skeleton_yaml = get_skeleton_yaml()
     readme_html = get_readme_html()
+    skipped_templates = get_skipped_templates()
 
     rendered = template.render(
         binary_downloads=BINARY_DOWNLOADS,
@@ -87,6 +116,14 @@ def main() -> None:
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
     (args.output_dir / "index.html").write_text(rendered, encoding="utf-8")
+
+    skipped_template = env.get_template("skipped-templates.html.j2")
+    rendered_skipped = skipped_template.render(
+        version=version,
+        release_date=release_date,
+        skipped_templates=skipped_templates,
+    )
+    (args.output_dir / "skipped-templates.html").write_text(rendered_skipped, encoding="utf-8")
 
 
 if __name__ == "__main__":

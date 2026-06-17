@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wikipedia to EPUB — Skipped Templates</title>
+    <meta name="description" content="A list of Wikipedia templates that are silently ignored during the eBook compilation process." />
+    
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+      :root {
+        --bg-color: #0b0f19;
+        --bg-gradient: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0b0f19 75%);
+        --text-heading: #f8fafc;
+        --text-body: #cbd5e1;
+        --text-muted: #94a3b8;
+        --card-bg: rgba(17, 24, 39, 0.7);
+        --card-border: rgba(255, 255, 255, 0.08);
+        --accent: #6366f1;
+        --accent-light: #818cf8;
+        --accent-glow: rgba(99, 102, 241, 0.15);
+        --accent-btn: #4f46e5;
+        --accent-btn-hover: #4338ca;
+        --code-bg: #030712;
+        --code-text: #e2e8f0;
+        --code-border: rgba(255, 255, 255, 0.05);
+        --code-block-bg: #030712;
+        --code-block-text: #f1f5f9;
+        --code-block-border: rgba(255, 255, 255, 0.05);
+        --inline-code-bg: rgba(99, 102, 241, 0.12);
+        --inline-code-text: #a5b4fc;
+        --inline-code-border: rgba(99, 102, 241, 0.25);
+        --link-color: #818cf8;
+        --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        --success: #10b981;
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg-color: #f8fafc;
+          --bg-gradient: radial-gradient(circle at 50% 0%, #e0e7ff 0%, #f8fafc 75%);
+          --text-heading: #0f172a;
+          --text-body: #334155;
+          --text-muted: #475569;
+          --card-bg: rgba(255, 255, 255, 0.85);
+          --card-border: rgba(0, 0, 0, 0.08);
+          --accent: #4f46e5;
+          --accent-light: #6366f1;
+          --accent-glow: rgba(79, 70, 229, 0.08);
+          --accent-btn: #4f46e5;
+          --accent-btn-hover: #4338ca;
+          --code-bg: #f1f5f9;
+          --code-text: #0f172a;
+          --code-border: rgba(0, 0, 0, 0.08);
+          --code-block-bg: #0f172a;
+          --code-block-text: #f8fafc;
+          --code-block-border: rgba(0, 0, 0, 0.15);
+          --inline-code-bg: rgba(79, 70, 229, 0.06);
+          --inline-code-text: #4f46e5;
+          --inline-code-border: rgba(79, 70, 229, 0.15);
+          --link-color: #4f46e5;
+          --glass-shadow: 0 8px 32px 0 rgba(148, 163, 184, 0.15);
+          --success: #059669;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Inter', -apple-system, sans-serif;
+        background: var(--bg-color);
+        background-image: var(--bg-gradient);
+        background-attachment: fixed;
+        color: var(--text-body);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Premium Header */
+      header {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--card-border);
+      }
+
+      .logo-group {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .logo-group svg {
+        color: var(--accent-light);
+        fill: currentColor;
+      }
+
+      .site-title {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--text-heading);
+        letter-spacing: -0.02em;
+        margin: 0;
+      }
+
+      .badge-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.2rem 0.6rem;
+        border-radius: 9999px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .badge-version {
+        background: var(--accent-glow);
+        color: var(--accent-light);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+      }
+
+      .badge-date {
+        background: var(--card-border);
+        color: var(--text-body);
+      }
+
+      .github-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-heading);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--card-border);
+        background: var(--card-bg);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .github-link:hover {
+        border-color: var(--accent-light);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px var(--accent-glow);
+      }
+
+      /* Main container */
+      main {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 3rem 1rem 5rem;
+      }
+
+      /* Title Section */
+      .page-header {
+        margin-bottom: 3rem;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--link-color);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+        transition: all 0.2s ease;
+      }
+
+      .back-link:hover {
+        color: var(--text-heading);
+        transform: translateX(-4px);
+      }
+
+      .page-header h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--text-heading);
+        margin: 0 0 1rem;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+      }
+
+      .page-header p.lead {
+        font-size: 1.15rem;
+        max-width: 800px;
+        margin: 0;
+        line-height: 1.6;
+        color: var(--text-body);
+      }
+
+      /* Interactive Search & Stats */
+      .control-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      @media (min-width: 768px) {
+        .control-panel {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+
+      .search-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        max-width: 450px;
+      }
+
+      .search-icon {
+        position: absolute;
+        left: 1rem;
+        color: var(--text-muted);
+        pointer-events: none;
+      }
+
+      #search-input {
+        width: 100%;
+        padding: 0.8rem 1rem 0.8rem 2.8rem;
+        border-radius: 10px;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        color: var(--text-heading);
+        font-family: inherit;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+
+      #search-input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+      }
+
+      .count-badge {
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--accent-light);
+        background: var(--accent-glow);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        align-self: flex-start;
+      }
+
+      /* Templates Table styling */
+      .templates-table-wrapper {
+        overflow-x: auto;
+        border-radius: 16px;
+        border: 1px solid var(--card-border);
+        background: var(--card-bg);
+        box-shadow: var(--glass-shadow);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+
+      .templates-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 0.95rem;
+      }
+
+      .templates-table th {
+        background: rgba(255, 255, 255, 0.02);
+        padding: 1.25rem 1.5rem;
+        font-weight: 700;
+        color: var(--text-heading);
+        border-bottom: 1px solid var(--card-border);
+        font-family: 'Outfit', sans-serif;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.05em;
+      }
+
+      @media (prefers-color-scheme: light) {
+        .templates-table th {
+          background: rgba(0, 0, 0, 0.02);
+        }
+      }
+
+      .templates-table td {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--card-border);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+
+      .templates-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .templates-table tr {
+        transition: background-color 0.15s ease;
+      }
+
+      .templates-table tr:hover td {
+        background: rgba(99, 102, 241, 0.03);
+      }
+
+      .template-name-cell {
+        font-weight: 600;
+        width: 30%;
+        min-width: 200px;
+      }
+
+      .template-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: var(--link-color);
+        text-decoration: none;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        padding: 0.15rem 0.4rem;
+        border-radius: 6px;
+        background: var(--inline-code-bg);
+        border: 1px solid var(--inline-code-border);
+      }
+
+      .template-link:hover {
+        color: var(--text-heading);
+        background: rgba(99, 102, 241, 0.2);
+        border-color: var(--accent-light);
+      }
+
+      .template-no-link {
+        display: inline-block;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.9rem;
+        background: rgba(148, 163, 184, 0.1);
+        color: var(--text-body);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        padding: 0.15rem 0.4rem;
+        border-radius: 6px;
+      }
+
+      @media (prefers-color-scheme: light) {
+        .template-no-link {
+          background: rgba(71, 85, 105, 0.05);
+          color: var(--text-body);
+          border: 1px solid rgba(71, 85, 105, 0.1);
+        }
+      }
+
+      .template-comment-cell {
+        color: var(--text-body);
+      }
+
+      .external-icon {
+        opacity: 0.6;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        flex-shrink: 0;
+      }
+
+      .template-link:hover .external-icon {
+        opacity: 1;
+        transform: translate(1px, -1px);
+      }
+
+      /* Premium Footer */
+      footer {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 3rem 1rem;
+        text-align: center;
+        border-top: 1px solid var(--card-border);
+        color: var(--text-muted);
+        font-size: 0.875rem;
+      }
+
+      footer a {
+        color: var(--text-body);
+        text-decoration: none;
+        border-bottom: 1px solid var(--card-border);
+        transition: all 0.2s ease;
+      }
+
+      footer a:hover {
+        color: var(--accent-light);
+        border-color: var(--accent-light);
+      }
+    </style>
+  </head>
+  <body>
+    
+    <header>
+      <a href="index.html" class="logo-group">
+        <!-- Premium SVG book icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+          <path d="M6 6h10M6 10h10"></path>
+        </svg>
+        <span class="site-title">wikipedia-to-epub</span>
+      </a>
+      
+      <div class="badge-group">
+        <span class="badge badge-version" id="version-badge">v{{ version }}</span>
+        <span class="badge badge-date" id="date-badge">Released: {{ release_date }}</span>
+      </div>
+
+      <a class="github-link" href="https://github.com/szabgab/wikipedia-to-epub.rs" target="_blank" rel="noopener">
+        <!-- SVG GitHub logo -->
+        <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor">
+          <path d="M8 0c4.42 0 8 3.58 8 8 0 3.54-2.29 6.53-5.47 7.59-.4.07-.55-.17-.55-.38 0-.19.01-.82.01-1.49 2.01.37 2.53-.49 2.69-.94.09-.23.48-.94.82-1.13.28-.15.68-.52.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+        GitHub
+      </a>
+    </header>
+
+    <main>
+      
+      <div class="page-header">
+        <a href="index.html" class="back-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to Homepage
+        </a>
+        <h1>Skipped Templates</h1>
+        <p class="lead">During the conversion of Wikipedia articles into clean eBooks, certain templates are omitted to ensure a distraction-free and professional reading layout on Kindle or other e-readers. Below is the list of templates currently configured to be skipped silently.</p>
+      </div>
+
+      <div class="control-panel">
+        <div class="search-container">
+          <!-- Search SVG icon -->
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="search-input" placeholder="Search templates or comments..." onkeyup="filterTemplates()" />
+        </div>
+        <span class="count-badge" id="count-badge">{{ skipped_templates|length }} templates</span>
+      </div>
+
+      <div class="templates-table-wrapper">
+        <table class="templates-table">
+          <thead>
+            <tr>
+              <th>Template Name</th>
+              <th>Reason / Comment</th>
+            </tr>
+          </thead>
+          <tbody id="templates-body">
+            {% for template in skipped_templates %}
+            <tr class="template-row">
+              <td class="template-name-cell">
+                {% if template.url %}
+                <a href="{{ template.url }}" target="_blank" rel="noopener" class="template-link">
+                  <code>{{ template.name }}</code>
+                  <!-- External link icon -->
+                  <svg class="external-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+                {% else %}
+                <span class="template-no-link"><code>{{ template.name }}</code></span>
+                {% endif %}
+              </td>
+              <td class="template-comment-cell">
+                {{ template.comment }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Wikipedia to EPUB Contributors. Released under the MIT License.</p>
+      <p>
+        <a href="https://github.com/szabgab/wikipedia-to-epub.rs" target="_blank" rel="noopener">GitHub Repository</a> &bull; 
+        <a href="https://github.com/szabgab/wikipedia-to-epub.rs/issues" target="_blank" rel="noopener">Issue Tracker</a>
+      </p>
+    </footer>
+
+    <!-- Filter/Search Logic -->
+    <script>
+      function filterTemplates() {
+        const query = document.getElementById('search-input').value.toLowerCase().trim();
+        const rows = document.querySelectorAll('.template-row');
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+          const name = row.querySelector('.template-name-cell').textContent.toLowerCase();
+          const comment = row.querySelector('.template-comment-cell').textContent.toLowerCase();
+          
+          if (name.includes(query) || comment.includes(query)) {
+            row.style.display = '';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
+          }
+        });
+        
+        document.getElementById('count-badge').textContent = `${visibleCount} template${visibleCount === 1 ? '' : 's'}`;
+      }
+    </script>
+  </body>
+</html>
