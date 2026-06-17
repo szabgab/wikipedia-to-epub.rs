@@ -987,3 +987,9 @@ articles:
 
     fs::remove_dir_all(&work_dir).unwrap();
 }
+
+#[test]
+fn generate_matsumoto_airport_book_from_local_page_dump() {
+    assert_generated_book_matches_expected("Matsumoto_Airport");
+}
+
