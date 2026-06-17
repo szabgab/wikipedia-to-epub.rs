@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use crate::types::{DispatchTable, PersonRole, TemplateHandler};
 
 use crate::tools::{
-    person_first_keys, person_last_keys, person_link_keys, template_named_params, template_param,
-    template_param_owned, template_positional_params,
+    person_first_keys, person_last_keys, person_link_keys, split_parameter_by_equals,
+    template_named_params, template_param, template_param_owned, template_positional_params,
 };
 
 use crate::split_template_params;
@@ -1745,5 +1745,67 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             "cite citeseerx",
             render_cite_citeseerx_template as TemplateHandler,
         ),
+        (
+            "cite peakbagger",
+            render_cite_peakbagger_template as TemplateHandler,
+        ),
     ])
+}
+
+fn render_cite_peakbagger_template(params: &str) -> String {
+    let parts = split_template_params(params);
+    let named = template_named_params(params);
+    let mut positional = Vec::new();
+    for part in parts {
+        let trimmed = part.trim();
+        if split_parameter_by_equals(trimmed).is_none() {
+            positional.push(trimmed.to_string());
+        }
+    }
+
+    let lid = template_param(&named, &["lid"]);
+    let rid = template_param(&named, &["rid"]);
+    let kid = template_param(&named, &["kid"]);
+    let pid = template_param(&named, &["pid"]).or_else(|| positional.first().map(|s| s.as_str()));
+
+    let url = if let Some(lid) = lid {
+        Some(format!("http://www.peakbagger.com/list.aspx?lid={}", lid))
+    } else if let Some(rid) = rid {
+        Some(format!("http://www.peakbagger.com/range.aspx?rid={}", rid))
+    } else if let Some(kid) = kid {
+        Some(format!("http://www.peakbagger.com/KeyCol.aspx?pid={}", kid))
+    } else {
+        pid.map(|pid| format!("http://www.peakbagger.com/peak.aspx?pid={}", pid))
+    };
+
+    let name = template_param(&named, &["name"]).or_else(|| positional.get(1).map(|s| s.as_str()));
+
+    let access_date = template_param(&named, &["access-date", "accessdate"])
+        .or_else(|| positional.get(2).map(|s| s.as_str()));
+
+    let mut result_parts = Vec::new();
+
+    if let Some(name) = name {
+        if let Some(url) = url {
+            result_parts.push(format!("[[official-url:{}|\"{}\"]]", url, name));
+        } else {
+            result_parts.push(format!("\"{}\"", name));
+        }
+    } else if let Some(url) = url {
+        result_parts.push(format!("[[official-url:{}|Peakbagger.com]]", url));
+    } else {
+        result_parts.push("Peakbagger.com".to_string());
+    }
+
+    if name.is_some() {
+        result_parts.push("''Peakbagger.com''".to_string());
+    }
+
+    let mut base = result_parts.join(". ");
+
+    if let Some(access_date) = access_date {
+        base.push_str(&format!(". Retrieved {}", access_date));
+    }
+
+    base
 }

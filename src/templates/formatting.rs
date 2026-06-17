@@ -4583,6 +4583,19 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             "nws-current",
             render_nws_current_template as TemplateHandler,
         ),
+        ("right", render_right_template as TemplateHandler),
+        (
+            "wikibooks inline",
+            render_wikibooks_inline_template as TemplateHandler,
+        ),
+        (
+            "wikibooks-inline",
+            render_wikibooks_inline_template as TemplateHandler,
+        ),
+        ("refh", render_refh_template as TemplateHandler),
+        ("M", render_m_template as TemplateHandler),
+        ("m", render_m_template as TemplateHandler),
+        ("earthquake magnitude", render_m_template as TemplateHandler),
         ("nowrap", render_passthrough_template as TemplateHandler),
         ("nobr", render_passthrough_template as TemplateHandler),
         (
@@ -5517,6 +5530,188 @@ fn render_nws_current_template(params: &str) -> String {
         "[http://tgftp.nws.noaa.gov/weather/current/{}.html Current weather for {}] at NOAA/NWS",
         icao, name
     )
+}
+
+fn render_right_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let content = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+
+    if content.is_empty() {
+        "style=\"text-align:right\"|".to_string()
+    } else {
+        format!(
+            "<div style=\"float:right;\">{}</div>",
+            render_templates(content)
+        )
+    }
+}
+
+fn render_wikibooks_inline_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    if let Some(links) = template_param(&named, &["links"]) {
+        return format!("{} at Wikibooks", render_templates(links));
+    }
+
+    let book = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+
+    let Some(book) = book else {
+        return String::new();
+    };
+
+    let label = template_param(&named, &["2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .unwrap_or(book);
+
+    format!("[[b:{}|{}]] at Wikibooks", book, render_templates(label))
+}
+
+fn render_refh_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let multi = template_param(&named, &["multi"])
+        .or_else(|| positional.first().map(String::as_str))
+        .unwrap_or("yes");
+
+    if multi == "no" {
+        "__WIKIPEDIA_TO_EPUB_ABBR_START__Reference__WIKIPEDIA_TO_EPUB_ABBR_VALUE__Ref.__WIKIPEDIA_TO_EPUB_ABBR_END__".to_string()
+    } else {
+        "__WIKIPEDIA_TO_EPUB_ABBR_START__References__WIKIPEDIA_TO_EPUB_ABBR_VALUE__Refs.__WIKIPEDIA_TO_EPUB_ABBR_END__".to_string()
+    }
+}
+
+fn render_m_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let code = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+
+    if code.is_empty() {
+        return String::new();
+    }
+
+    let val = template_param(&named, &["2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+
+    let link = template_param(&named, &["link"]).is_some();
+    let src = template_param(&named, &["src"])
+        .map(str::trim)
+        .unwrap_or("");
+
+    // Special cases
+    let (label, _anchor) = if code == "Magnitude" || code == "magnitude" {
+        ("[[Seismic magnitude scales|Magnitude]]".to_string(), None)
+    } else if code == "M" {
+        ("[[Seismic magnitude scales|M]]".to_string(), None)
+    } else if code == "Mag" || code == "Mag." || code == "mag" || code == "mag." {
+        ("[[Seismic magnitude scales|Mag.]]".to_string(), None)
+    } else {
+        let code_lc = code.to_lowercase();
+        let (label_str, anchor_str) = match code_lc.as_str() {
+            "?" => ("M", None),
+            "??" => ("M", None),
+            "r?" => ("M", Some("ML")),
+            "uk" | "unk" | "ukn" | "unknown" => ("M<sub>uk</sub>", Some("Muk")),
+            "l" => ("M<sub>L</sub>", Some("ML")),
+            "jma" | "j" => ("M<sub>JMA</sub>", Some("Mjma")),
+            "h" => ("M<sub>h</sub>", Some("Mh")),
+            "0" => ("M<sub>0</sub>", Some("M0")),
+            "0tex" => ("M<sub>0</sub>", Some("M0")),
+            "." => ("M", Some("Mw")),
+            "w" | "mw" => ("M<sub>w</sub>", Some("Mw")),
+            "wp" | "mwp" => ("M<sub>wp</sub>", Some("Mwp")),
+            "wpd" | "mwpd" => ("M<sub>wpd</sub>", Some("Mwpd")),
+            "wb" | "mwb" => ("M<sub>wb</sub>", Some("Mwb")),
+            "wc" | "mwc" => ("M<sub>wc</sub>", Some("Mwc")),
+            "wr" | "mwr" => ("M<sub>wr</sub>", Some("Mwr")),
+            "ww" | "mww" => ("M<sub>ww</sub>", Some("Mww")),
+            "s" => {
+                if code == "S" {
+                    ("M<sub>S</sub>", Some("Ms"))
+                } else {
+                    ("M<sub>s</sub>", Some("Ms"))
+                }
+            }
+            "gr" => ("M<sub>GR</sub>", Some("Mgr")),
+            "s20" => ("M<sub>s20</sub>", Some("Ms")),
+            "sbb" => ("M<sub>sBB</sub>", Some("Ms")),
+            "z" => ("M<sub>z</sub>", Some("Mz")),
+            "s7" => ("M<sub>s7</sub>", Some("Ms7")),
+            "sn" => ("M<sub>sn</sub>", Some("Msn")),
+            "lh" => ("M<sub>LH</sub>", Some("MLH")),
+            "v" => ("M<sub>V</sub>", Some("MV")),
+            "r" => ("M<sub>R</sub>", Some("MR")),
+            "b" => {
+                if code == "B" {
+                    ("mB", Some("mB"))
+                } else {
+                    ("mb", Some("mb"))
+                }
+            }
+            "bigb" => ("mB", Some("mB")),
+            "bbb" => ("mB<sub>BB</sub>", Some("mB")),
+            "bc" => ("mB<sub>c</sub>", Some("mBc")),
+            "blg" => ("mb<sub>Lg</sub>", Some("mbLg")),
+            "n" => ("m<sub>N</sub>", Some("mN")),
+            "c" => ("M<sub>c</sub>", Some("Mc")),
+            "d" => ("M<sub>d</sub>", Some("Md")),
+            "e" => ("M<sub>e</sub>", Some("Me")),
+            "k" => ("M<sub>(K)</sub>", Some("MK")),
+            "t" => ("M<sub>t</sub>", Some("Mt")),
+            "m" => ("M<sub>m</sub>", Some("Mm")),
+            "ms" => ("M<sub>ms</sub>", Some("Mms")),
+            "fa" => ("M<sub>fa</sub>", Some("Mfa")),
+            "la" => ("M<sub>la</sub>", Some("Mla")),
+            "i" => {
+                if code == "I" {
+                    ("M<sub>I</sub>", Some("MI"))
+                } else {
+                    ("M<sub>i</sub>", Some("Mi"))
+                }
+            }
+            "x" => ("M<sub>x</sub>", Some("Magnitude scales")),
+            _ => ("", None),
+        };
+
+        if label_str.is_empty() {
+            return String::new();
+        }
+
+        let label_owned = if let (true, Some(anchor)) = (link, anchor_str) {
+            format!("[[Seismic magnitude scales#{}|{}]]", anchor, label_str)
+        } else {
+            label_str.to_string()
+        };
+
+        (label_owned, anchor_str)
+    };
+
+    let mut result = label;
+
+    if !src.is_empty() {
+        result.push_str(&format!("<sup>({})</sup>", render_templates(src)));
+    }
+
+    if !val.is_empty() {
+        result.push_str(&format!("\u{2009}{}", render_templates(val)));
+    }
+
+    result
 }
 
 pub(crate) fn get_empty_dispatch_table() -> HashMap<&'static str, fn() -> String> {

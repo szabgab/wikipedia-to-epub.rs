@@ -1,5 +1,40 @@
 # Codex Session Notes
 
+## 2026-06-17 Handle templates right, Cite peakbagger, wikibooks inline, refh, By whom, M
+
+### Summary
+Implemented Wikipedia template renderers and aliases for `"right"`, `"Cite peakbagger"`, `"wikibooks inline"`, `"refh"`, `"M"` templates, and added `"By whom"` as a silently skipped template. Wrote comprehensive unit tests and documented conversion rules.
+
+### Decisions Made
+- **Implemented template renderers**:
+  - `render_right_template`: Renders `style="text-align:right"|` if no arguments, or wraps content in a right-aligned div.
+  - `render_cite_peakbagger_template`: Renders a citation link to `peakbagger.com` supporting various ID params (`pid`, `lid`, `rid`, `kid`).
+  - `render_wikibooks_inline_template`: Renders a sister project link inline to Wikibooks.
+  - `render_refh_template`: Renders reference column headings for tables (standardizing to "Refs." or "Ref.").
+  - `render_m_template`: Mapped to `"M"` (and aliases `"m"`, `"earthquake magnitude"`), formatting various earthquake magnitude scales with correct subscript abbreviation and anchor links.
+- **Registered silent templates**:
+  - Added `"By whom"` to [src/silent.csv](file:///opt/src/silent.csv).
+- **Wrote unit tests**:
+  - Added unit tests in [src/tests.rs](file:///opt/src/tests.rs) for each template individually.
+- **Documented rules**:
+  - Added conversion rules in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation, lints and formatting: `cargo check`, `cargo clippy --all-targets -- -D warnings`, `cargo fmt --check` (Passed cleanly, no warnings/errors).
+- Verified unit and integration tests: `cargo test` (All 369 unit/doc tests and 42 integration tests passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-17 Handle Matsumoto Airport Templates
 
 ### Summary

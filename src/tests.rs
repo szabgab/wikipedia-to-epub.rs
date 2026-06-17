@@ -7112,3 +7112,88 @@ fn render_wikitext_skips_example_needed_template() {
     let rendered = render_wikitext("Sample", "{{example needed}}", &InternalLinks::new(), "en");
     assert!(!rendered.contains("example needed"), "{rendered}");
 }
+
+#[test]
+fn render_wikitext_formats_right_template() {
+    let rendered_with_param = render_wikitext(
+        "Sample",
+        "{{right|My Content}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered_with_param.contains("My Content"),
+        "{}",
+        rendered_with_param
+    );
+
+    let rendered_without_param = render_templates("{{right}}");
+    assert_eq!(rendered_without_param, "style=\"text-align:right\"|");
+}
+
+#[test]
+fn render_wikitext_formats_cite_peakbagger_template() {
+    let rendered_named =
+        render_templates("{{cite peakbagger|pid=2829|name=Mount Whitney|access-date=2008-10-31}}");
+    assert_eq!(
+        rendered_named,
+        "[[official-url:http://www.peakbagger.com/peak.aspx?pid=2829|\"Mount Whitney\"]]. ''Peakbagger.com''. Retrieved 2008-10-31"
+    );
+
+    let rendered_positional = render_templates("{{cite peakbagger|2829|Mount Whitney|2008-10-31}}");
+    assert_eq!(
+        rendered_positional,
+        "[[official-url:http://www.peakbagger.com/peak.aspx?pid=2829|\"Mount Whitney\"]]. ''Peakbagger.com''. Retrieved 2008-10-31"
+    );
+
+    let rendered_list = render_templates("{{cite peakbagger|lid=12003|name=State High Points}}");
+    assert_eq!(
+        rendered_list,
+        "[[official-url:http://www.peakbagger.com/list.aspx?lid=12003|\"State High Points\"]]. ''Peakbagger.com''"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_wikibooks_inline_template() {
+    let rendered = render_templates("{{Wikibooks inline|Work|Custom Label}}");
+    assert_eq!(rendered, "[[b:Work|Custom Label]] at Wikibooks");
+
+    let rendered_links = render_templates("{{Wikibooks inline|links=[[b:Foo|]] and [[b:Bar|]]}}");
+    assert_eq!(rendered_links, "[[b:Foo|]] and [[b:Bar|]] at Wikibooks");
+}
+
+#[test]
+fn render_wikitext_formats_refh_template() {
+    let rendered = render_templates("{{refh}}");
+    assert_eq!(
+        rendered,
+        "__WIKIPEDIA_TO_EPUB_ABBR_START__References__WIKIPEDIA_TO_EPUB_ABBR_VALUE__Refs.__WIKIPEDIA_TO_EPUB_ABBR_END__"
+    );
+
+    let rendered_single = render_templates("{{refh|multi=no}}");
+    assert_eq!(
+        rendered_single,
+        "__WIKIPEDIA_TO_EPUB_ABBR_START__Reference__WIKIPEDIA_TO_EPUB_ABBR_VALUE__Ref.__WIKIPEDIA_TO_EPUB_ABBR_END__"
+    );
+}
+
+#[test]
+fn render_wikitext_skips_by_whom_template() {
+    let rendered = render_wikitext("Sample", "{{By whom}}", &InternalLinks::new(), "en");
+    assert!(!rendered.contains("By whom"), "{}", rendered);
+}
+
+#[test]
+fn render_wikitext_formats_earthquake_magnitude_template() {
+    let rendered_w = render_templates("{{M|w|7.2}}");
+    assert_eq!(rendered_w, "M<sub>w</sub>\u{2009}7.2");
+
+    let rendered_b = render_templates("{{M|B|6.5|src=USGS}}");
+    assert_eq!(rendered_b, "mB<sup>(USGS)</sup>\u{2009}6.5");
+
+    let rendered_link = render_templates("{{M|w|7.2|link=y}}");
+    assert_eq!(
+        rendered_link,
+        "[[Seismic magnitude scales#Mw|M<sub>w</sub>]]\u{2009}7.2"
+    );
+}
