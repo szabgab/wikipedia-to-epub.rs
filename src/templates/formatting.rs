@@ -3666,9 +3666,9 @@ fn render_visible_anchor_template(params: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
-    let text = template_param(&named, &["text", "2"])
-        .or_else(|| positional.get(1).map(String::as_str))
-        .or_else(|| positional.first().map(String::as_str));
+    let text = template_param(&named, &["text"])
+        .or_else(|| positional.first().map(String::as_str))
+        .or_else(|| template_param(&named, &["1"]));
 
     match text {
         Some(t) => render_templates(t),
@@ -4619,6 +4619,26 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("term", render_term_template as TemplateHandler),
         ("defn", render_defn_template as TemplateHandler),
         ("us$", render_us_dollar_template as TemplateHandler),
+        ("frac2", render_sfrac_template as TemplateHandler),
+        ("vanchor", render_visible_anchor_template as TemplateHandler),
+        (
+            "block indent",
+            render_block_indent_template as TemplateHandler,
+        ),
+        ("dfni", render_dfni_template as TemplateHandler),
+        ("radic", render_radic_template as TemplateHandler),
+        (
+            "diagonal split header",
+            render_diagonal_split_header_template as TemplateHandler,
+        ),
+        (
+            "legend-line",
+            render_legend_line_template as TemplateHandler,
+        ),
+        ("prime", render_prime_template as TemplateHandler),
+        ("isup", render_isup_template as TemplateHandler),
+        ("cjkv", render_cjkv_template as TemplateHandler),
+        ("udl", render_udl_template as TemplateHandler),
         ("poem quote", render_poem_quote_template as TemplateHandler),
         ("poemquote", render_poem_quote_template as TemplateHandler),
         (
@@ -5847,5 +5867,201 @@ fn render_us_dollar_template(params: &str) -> String {
         "US$".to_string()
     } else {
         format!("US${}", render_templates(&amount))
+    }
+}
+
+/// [block indent](https://en.wikipedia.org/wiki/Template:Block_indent)
+fn render_block_indent_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let content = if let Some(val) = template_param(&named, &["1", "text"]) {
+        val.to_string()
+    } else {
+        let positional = template_positional_params(params);
+        if let Some(val) = positional.first() {
+            val.to_string()
+        } else {
+            String::new()
+        }
+    };
+
+    if content.trim().is_empty() {
+        String::new()
+    } else {
+        let text = render_templates(&content).replace('\n', " ");
+        format!(
+            "\n__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_START__\n__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__{}\n__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_END__\n",
+            text.trim()
+        )
+    }
+}
+
+/// [dfni](https://en.wikipedia.org/wiki/Template:Dfni)
+fn render_dfni_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let content = if let Some(val) = template_param(&named, &["1"]) {
+        val.to_string()
+    } else {
+        let positional = template_positional_params(params);
+        if let Some(val) = positional.first() {
+            val.to_string()
+        } else {
+            String::new()
+        }
+    };
+
+    if content.is_empty() {
+        String::new()
+    } else {
+        format!(
+            "__WIKIPEDIA_TO_EPUB_DFN_START____WIKIPEDIA_TO_EPUB_ITALIC_START__{}__WIKIPEDIA_TO_EPUB_ITALIC_END____WIKIPEDIA_TO_EPUB_DFN_END__",
+            render_templates(&content)
+        )
+    }
+}
+
+/// [radic](https://en.wikipedia.org/wiki/Template:Radic)
+fn render_radic_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    match positional.as_slice() {
+        [] => "√".to_string(),
+        [expr] => format!("√{}", render_templates(expr)),
+        [expr, degree, ..] => format!(
+            "__WIKIPEDIA_TO_EPUB_SUP_START__{}__WIKIPEDIA_TO_EPUB_SUP_END__√{}",
+            render_templates(degree),
+            render_templates(expr)
+        ),
+    }
+}
+
+/// [diagonal split header](https://en.wikipedia.org/wiki/Template:Diagonal_split_header)
+fn render_diagonal_split_header_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    match positional.as_slice() {
+        [] => String::new(),
+        [bottom_left] => render_templates(bottom_left),
+        [bottom_left, top_right, ..] => {
+            format!(
+                "{} \\ {}",
+                render_templates(bottom_left),
+                render_templates(top_right)
+            )
+        }
+    }
+}
+
+/// [legend-line](https://en.wikipedia.org/wiki/Template:Legend-line)
+fn render_legend_line_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let label = template_param(&named, &["2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .unwrap_or("");
+
+    if label.is_empty() {
+        String::new()
+    } else {
+        render_templates(label)
+    }
+}
+
+/// [prime](https://en.wikipedia.org/wiki/Template:Prime)
+fn render_prime_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let first = positional.first().cloned().unwrap_or_default();
+    if first.trim().is_empty() {
+        "′".to_string()
+    } else {
+        format!("{}′", first.trim())
+    }
+}
+
+/// [isup](https://en.wikipedia.org/wiki/Template:Isup)
+fn render_isup_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let text = if let Some(val) = template_param(&named, &["2"]) {
+        render_templates(val)
+    } else if positional.len() >= 2 {
+        render_templates(&positional[1])
+    } else if let Some(val) = template_param(&named, &["1"]) {
+        render_templates(val)
+    } else if let Some(val) = positional.first() {
+        render_templates(val)
+    } else {
+        String::new()
+    };
+
+    if text.is_empty() {
+        String::new()
+    } else {
+        format!(
+            "__WIKIPEDIA_TO_EPUB_SUP_START__{}__WIKIPEDIA_TO_EPUB_SUP_END__",
+            text
+        )
+    }
+}
+
+/// [cjkv](https://en.wikipedia.org/wiki/Template:CJKV)
+fn render_cjkv_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let keys = [
+        ("t", "traditional Chinese", false),
+        ("s", "simplified Chinese", false),
+        ("c", "Chinese", false),
+        ("p", "pinyin", true),
+        ("tp", "Tongyong Pinyin", true),
+        ("cj", "Cantonese Jyutping", true),
+        ("cy", "Cantonese Yale", true),
+        ("w", "Wade–Giles", true),
+        ("j", "Japanese", false),
+        ("r", "rōmaji", true),
+        ("k", "Korean", false),
+        ("rr", "romaja", true),
+        ("v", "Vietnamese", false),
+    ];
+
+    for (key, label, italic) in keys {
+        if let Some(val) = named.get(key) {
+            let rendered = render_templates(val.trim());
+            if !rendered.is_empty() {
+                if italic {
+                    parts.push(format!("{label}: ''{rendered}''"));
+                } else {
+                    parts.push(format!("{label}: {rendered}"));
+                }
+            }
+        }
+    }
+
+    if let Some(val) = named.get("l") {
+        let rendered = render_templates(val.trim());
+        if !rendered.is_empty() {
+            parts.push(format!("lit. '{rendered}'"));
+        }
+    }
+
+    parts.join("; ")
+}
+
+/// [udl](https://en.wikipedia.org/wiki/Template:Udl)
+fn render_udl_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let content = if let Some(val) = template_param(&named, &["wrap", "1"]) {
+        val.to_string()
+    } else {
+        let positional = template_positional_params(params);
+        if let Some(val) = positional.first() {
+            val.to_string()
+        } else {
+            String::new()
+        }
+    };
+    if content.is_empty() {
+        String::new()
+    } else {
+        render_templates(&content)
     }
 }

@@ -11,6 +11,7 @@ anchor,                      Used for inbound links. Not relevant in epub.,     
 Attribution needed
 Audio,                       Link to an audio file. Not really relevant in epub files.,  https://en.wikipedia.org/wiki/Template:Audio
 Authority control,           Validate formats and values.,                               https://en.wikipedia.org/wiki/Template:Authority_control
+Bare URL inline
 Better source needed,        Ask for help.,                                              https://en.wikipedia.org/wiki/Template:Better_source_needed
 bots,                        Control if bots can edit the page.,                         https://en.wikipedia.org/wiki/Template:Bots
 Broken link,                Dead link,               https://en.wikipedia.org/wiki/Template:Dead_link
@@ -28,7 +29,9 @@ Cleanup
 Cleanup rewrite,            Needs cleanup,           https://en.wikipedia.org/wiki/Template:Cleanup_rewrite
 clear
 Clear left
+clear right
 Closed access
+clr
 cn
 col-begin
 colbegin
@@ -56,12 +59,13 @@ Distinguish
 div
 div col
 divcol
-divcol end
 div col end
+divcol end
 Div end
 dubious
 efn
 efn-ua
+empty section
 end box
 end,                        ?,                       https://en.wikipedia.org/wiki/Template:S-end
 end plainlist
@@ -75,12 +79,14 @@ Explain
 external media
 FACT
 failed verification
+family name hatnote
 flag
 flagcountry
 flagicon
 flagicon image
 full citation needed
 full,                        Full citation needed.,                                      https://en.wikipedia.org/wiki/Template:Full_citation_needed
+fv
 Gallery
 GeoGroup
 Hatnote
@@ -169,6 +175,8 @@ sfnp
 SfnRef
 Short description,           TODO we might want to display this on some kind of an index page or TOC., https://en.wikipedia.org/wiki/Template:Short_description
 Sister bar
+sister links
+sisterlinks
 Sister project links
 solar system delta v map.svg
 source-attribution
@@ -177,8 +185,8 @@ Spoken Wikipedia
 Subject bar
 Subscription required
 surname
-TOC limit
 TOClimit
+TOC limit
 tocright
 Tokyo Metropolis Labelled Map
 tone
@@ -211,6 +219,8 @@ who
 Wide image
 Wikiatlas
 Wikidata fallback link
+Wikinews
+wikiquote
 Wikiquote-inline
 wikisource category
 Wikisource-inline

@@ -1,5 +1,34 @@
 # Codex Session Notes
 
+## 2026-06-18 Handle sisterlinks, frac2, vanchor, block indent, dfni, radic, diagonal split header, pipe, legend-line, empty section, prime, isup, fv, family name hatnote, clear right, cjkv, udl, Bare URL inline, wikiquote, and Wikinews Templates
+
+### Summary
+Verified, refined, and updated handling for the requested 21 Wikipedia templates ("sisterlinks", "frac2", "vanchor", "block indent", "dfni", "radic", "diagonal split header", "pipe", "legend-line", "empty section", "prime", "isup", "fv", "family name hatnote", "clear right", "cjkv", "udl", "Bare URL inline", "wikiquote", "Wikinews") in the converter. Checked parameter fallback support for `vanchor`, `legend-line`, and `isup` to correctly parse named parameter variants. Extended unit tests to cover named parameter variants.
+
+### Decisions Made
+- **Refined Template Renderers**:
+  - `vanchor` (`render_visible_anchor_template`): Correctly supported fallback to named parameter `1` if positional parameter is missing, and used only `text` or first parameter for visible text.
+  - `legend-line` (`render_legend_line_template`): Supported named parameter `2` and fallback.
+  - `isup` (`render_isup_template`): Supported named parameters `1`, `2` and fallbacks.
+  - Silent/omitted templates: Verified they are all listed in `src/silent.csv`.
+- **Wrote Unit Tests**:
+  - Expanded test cases in [src/tests.rs](file:///opt/src/tests.rs) to test named parameters for `vanchor`, `legend-line`, and `isup`.
+- **Documented conversion rules**:
+  - Verified they are all documented in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo fmt`, `cargo check`, and `cargo clippy --all-targets -- -D warnings` (Passed cleanly, no warnings/errors).
+- Verified unit and integration tests: `cargo test` (All passed successfully).
+
+### Pending Follow-Ups
+- None.
+
+
 ## 2026-06-18 Handle cite video, Cite tweet, cite constitution, cite bioRxiv, Harvard citation text, Cite MW, term, defn, cquote, London Gazette, and US$ Templates
 
 ### Summary

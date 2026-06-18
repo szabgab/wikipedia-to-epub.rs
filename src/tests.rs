@@ -7361,3 +7361,188 @@ fn render_wikitext_formats_us_dollar_template() {
     let rendered = render_templates("{{US$|123.45}}");
     assert_eq!(rendered, "US$123.45");
 }
+
+#[test]
+fn render_wikitext_formats_frac2_template() {
+    let rendered = render_wikitext("Sample", "{{frac2|1|3}}", &InternalLinks::new(), "en");
+    assert!(rendered.contains("<sup>1</sup>⁄<sub>3</sub>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_vanchor_template() {
+    let rendered_text_param = render_wikitext(
+        "Sample",
+        "{{vanchor|Mercury|text=[[Mercury]]}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered_text_param.contains("Mercury"),
+        "{rendered_text_param}"
+    );
+
+    let rendered_pos =
+        render_wikitext("Sample", "{{vanchor|Mercury}}", &InternalLinks::new(), "en");
+    assert!(rendered_pos.contains("Mercury"), "{rendered_pos}");
+
+    let rendered_named_one = render_wikitext(
+        "Sample",
+        "{{vanchor|1=Mercury}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered_named_one.contains("Mercury"),
+        "{rendered_named_one}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_block_indent_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{block indent|1=Hello world}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("<blockquote>"), "{rendered}");
+    assert!(rendered.contains("Hello world"), "{rendered}");
+    assert!(rendered.contains("</blockquote>"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_dfni_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{dfni|1=technical term}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered.contains("<dfn><em>technical term</em></dfn>"),
+        "{rendered}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_radic_template() {
+    let rendered_simple = render_wikitext("Sample", "{{radic|9}}", &InternalLinks::new(), "en");
+    assert!(rendered_simple.contains("√9"), "{rendered_simple}");
+
+    let rendered_deg = render_wikitext("Sample", "{{radic|8|3}}", &InternalLinks::new(), "en");
+    assert!(rendered_deg.contains("<sup>3</sup>√8"), "{rendered_deg}");
+}
+
+#[test]
+fn render_wikitext_formats_diagonal_split_header_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{diagonal split header|Rows|Cols}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Rows \\ Cols"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_pipe_template() {
+    let rendered = render_templates("{{pipe}}");
+    assert_eq!(rendered, "|");
+}
+
+#[test]
+fn render_wikitext_formats_legend_line_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{legend-line|black solid 2px|Label text}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("Label text"), "{rendered}");
+
+    let rendered_named = render_wikitext(
+        "Sample",
+        "{{legend-line|black solid 2px|2=Label text}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered_named.contains("Label text"), "{rendered_named}");
+}
+
+#[test]
+fn render_wikitext_formats_prime_template() {
+    let rendered_empty = render_wikitext("Sample", "{{prime}}", &InternalLinks::new(), "en");
+    assert!(rendered_empty.contains("′"), "{rendered_empty}");
+
+    let rendered_text = render_wikitext("Sample", "{{prime|x}}", &InternalLinks::new(), "en");
+    assert!(rendered_text.contains("x′"), "{rendered_text}");
+}
+
+#[test]
+fn render_wikitext_formats_isup_template() {
+    let rendered_one = render_wikitext("Sample", "{{isup|st}}", &InternalLinks::new(), "en");
+    assert!(rendered_one.contains("<sup>st</sup>"), "{rendered_one}");
+
+    let rendered_two = render_wikitext("Sample", "{{isup|2px|nd}}", &InternalLinks::new(), "en");
+    assert!(rendered_two.contains("<sup>nd</sup>"), "{rendered_two}");
+
+    let rendered_named = render_wikitext("Sample", "{{isup|2=nd}}", &InternalLinks::new(), "en");
+    assert!(rendered_named.contains("<sup>nd</sup>"), "{rendered_named}");
+
+    let rendered_named_one =
+        render_wikitext("Sample", "{{isup|1=st}}", &InternalLinks::new(), "en");
+    assert!(
+        rendered_named_one.contains("<sup>st</sup>"),
+        "{rendered_named_one}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_cjkv_template() {
+    let rendered = render_wikitext(
+        "Sample",
+        "{{CJKV|t=繁|s=饰|p=pinyin|l=literal}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered.contains("traditional Chinese: 繁"), "{rendered}");
+    assert!(rendered.contains("simplified Chinese: 饰"), "{rendered}");
+    assert!(rendered.contains("pinyin: <em>pinyin</em>"), "{rendered}");
+    assert!(rendered.contains("literal"), "{rendered}");
+}
+
+#[test]
+fn render_wikitext_formats_udl_template() {
+    let rendered_wrap = render_wikitext(
+        "Sample",
+        "{{udl|wrap=some content}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(rendered_wrap.contains("some content"), "{rendered_wrap}");
+
+    let rendered_pos = render_wikitext(
+        "Sample",
+        "{{udl|some other content}}",
+        &InternalLinks::new(),
+        "en",
+    );
+    assert!(
+        rendered_pos.contains("some other content"),
+        "{rendered_pos}"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_silent_templates_new() {
+    assert_eq!(render_templates("{{sisterlinks}}"), "");
+    assert_eq!(render_templates("{{sister links}}"), "");
+    assert_eq!(render_templates("{{Wikinews}}"), "");
+    assert_eq!(render_templates("{{wikiquote}}"), "");
+    assert_eq!(render_templates("{{fv}}"), "");
+    assert_eq!(render_templates("{{clear right}}"), "");
+    assert_eq!(render_templates("{{clr}}"), "");
+    assert_eq!(render_templates("{{empty section}}"), "");
+    assert_eq!(render_templates("{{family name hatnote}}"), "");
+    assert_eq!(render_templates("{{Bare URL inline}}"), "");
+}

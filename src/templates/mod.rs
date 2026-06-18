@@ -86,6 +86,7 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
         ("'\"", "'\""),
         ("\"'", "\"'"),
         ("!", "|"),
+        ("pipe", "|"),
         ("nbsp", " "),
         ("snd", " – "),
         ("dash", " – "),
@@ -601,6 +602,18 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("M")
         || template.eq_ignore_ascii_case("m")
         || template.eq_ignore_ascii_case("earthquake magnitude")
+        || template.eq_ignore_ascii_case("frac2")
+        || template.eq_ignore_ascii_case("vanchor")
+        || template.eq_ignore_ascii_case("block indent")
+        || template.eq_ignore_ascii_case("dfni")
+        || template.eq_ignore_ascii_case("radic")
+        || template.eq_ignore_ascii_case("diagonal split header")
+        || template.eq_ignore_ascii_case("pipe")
+        || template.eq_ignore_ascii_case("legend-line")
+        || template.eq_ignore_ascii_case("prime")
+        || template.eq_ignore_ascii_case("isup")
+        || template.eq_ignore_ascii_case("cjkv")
+        || template.eq_ignore_ascii_case("udl")
         || find_map_image(template).is_some()
         || is_silent_template_name(template)
 }
