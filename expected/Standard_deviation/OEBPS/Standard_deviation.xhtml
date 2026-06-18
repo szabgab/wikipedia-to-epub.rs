@@ -1,430 +1,3406 @@
 <?xml version="1.0" encoding="utf-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
   <head>
-    <title>Standard deviation</title>
+    <title>
+      Standard deviation
+    </title>
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
-    <h1>Standard deviation</h1>
-    <p>In <a href="https://en.wikipedia.org/wiki/statistics">statistics</a><span class="external-link">↗</span>, the <strong>standard deviation</strong> is a measure of the amount of variation of the values of a variable about its <a href="https://en.wikipedia.org/wiki/arithmetic_mean">(arithmetic) average</a><span class="external-link">↗</span>. A low standard <a href="https://en.wikipedia.org/wiki/Deviation_(statistics)">deviation</a><span class="external-link">↗</span> indicates that the values of a set tend to be close to their average, while a high standard deviation indicates that the values are spread out over a wider range. Standard deviation may be abbreviated <strong>SD</strong> or <strong>std dev</strong>, and is most commonly represented in mathematical texts and equations by the lowercase <a href="https://en.wikipedia.org/wiki/Greek_alphabet">Greek letter</a><span class="external-link">↗</span> <strong><a href="https://en.wikipedia.org/wiki/Sigma"><em>σ</em></a><span class="external-link">↗</span></strong> (sigma).</p>
-    <p>The standard deviation of a <a href="https://en.wikipedia.org/wiki/random_variable">random variable</a><span class="external-link">↗</span>, <a href="https://en.wikipedia.org/wiki/Sample_(statistics)">sample</a><span class="external-link">↗</span>, <a href="https://en.wikipedia.org/wiki/statistical_population">statistical population</a><span class="external-link">↗</span>, <a href="https://en.wikipedia.org/wiki/data_set">data set</a><span class="external-link">↗</span> or <a href="https://en.wikipedia.org/wiki/probability_distribution">probability distribution</a><span class="external-link">↗</span> is the <a href="https://en.wikipedia.org/wiki/square_root">square root</a><span class="external-link">↗</span> of its <a href="https://en.wikipedia.org/wiki/variance">variance</a><span class="external-link">↗</span> (the variance being the average of the <a href="https://en.wikipedia.org/wiki/squared_deviations_from_the_mean">squared deviations from the mean</a><span class="external-link">↗</span>). A useful property of the standard deviation is that, unlike the variance, it is expressed in the same unit as the data. Standard deviation can also be used to calculate <a href="https://en.wikipedia.org/wiki/standard_error">standard error</a><span class="external-link">↗</span> for a finite sample, and to determine <a href="https://en.wikipedia.org/wiki/statistical_significance">statistical significance</a><span class="external-link">↗</span>.</p>
-    <p>When only a <a href="https://en.wikipedia.org/wiki/statistical_sample">sample</a><span class="external-link">↗</span> of data from a population is available, the term <em>standard deviation of the sample</em> or <em>sample standard deviation</em> can refer to either the above-mentioned quantity as applied to those data, or to a modified quantity that is an unbiased estimate of the <em>population standard deviation</em> (the standard deviation of the entire population).</p>
-    <h2>Relationship with standard error and statistical significance</h2>
-    <p>The standard deviation of a <a href="https://en.wikipedia.org/wiki/statistical_population">population</a><span class="external-link">↗</span> or sample and the <a href="https://en.wikipedia.org/wiki/standard_error">standard error</a><span class="external-link">↗</span> of a statistic (e.g., of the sample mean) are quite different, but related. The sample mean's standard error is the standard deviation of the set of means that would be found by drawing an <a href="https://en.wikipedia.org/wiki/Infinity">infinite</a><span class="external-link">↗</span> number of repeated samples from the population and computing a mean for each sample. The mean's standard error turns out to equal the population standard deviation divided by the square root of the sample size, and is estimated by using the sample standard deviation divided by the square root of the sample size. For example, a poll's standard error (what is reported as the <a href="https://en.wikipedia.org/wiki/margin_of_error">margin of error</a><span class="external-link">↗</span> of the poll) is the expected standard deviation of the estimated mean if the same poll were to be conducted multiple times. Thus, the standard error estimates the standard deviation of an estimate, which itself measures how much the estimate depends on the particular sample that was taken from the population.</p>
-    <p>In <a href="https://en.wikipedia.org/wiki/science">science</a><span class="external-link">↗</span>, it is common to report both the standard deviation of the data (as a summary statistic) and the standard error of the estimate (as a measure of potential error in the findings). By convention, only effects more than two standard errors away from a null expectation are considered "<a href="https://en.wikipedia.org/wiki/Statistical_significance">statistically significant</a><span class="external-link">↗</span>", a safeguard against spurious conclusion that is really due to random sampling error.</p>
-    <h2>Basic examples</h2>
-    <h3>Population standard deviation of grades of eight students</h3>
-    <p>Suppose that the entire population of interest is eight students in a particular class. Their marks are the following eight values:</p>
-    <p>For a finite set of numbers, the population standard deviation is found by taking the <a href="https://en.wikipedia.org/wiki/square_root">square root</a><span class="external-link">↗</span> of the <a href="https://en.wikipedia.org/wiki/average">average</a><span class="external-link">↗</span> of the squared deviations of the values subtracted from their average value, that is:</p>
-    <p>These eight data points have the <a href="https://en.wikipedia.org/wiki/mean">mean</a><span class="external-link">↗</span> (average) of 5:</p>
-    <p>Next, calculate the deviations of each data point from the mean. Then <a href="https://en.wikipedia.org/wiki/square_(algebra)">square</a><span class="external-link">↗</span> the result of each:</p>
-    <p>Next, the <a href="https://en.wikipedia.org/wiki/variance">variance</a><span class="external-link">↗</span> is the mean of these values:</p>
-    <p>Finally, the <em>population</em> standard deviation is the square root of the variance:</p>
-    <p>If the eight values with which we began are not the entire population of interest, then this is only one of many possible estimates of the standard deviation in the whole population. This specific one is <a href="https://en.wikipedia.org/wiki/Bias_of_an_estimator">biased</a><span class="external-link">↗</span>, meaning that its expected value in repeated sampling deviates from the true value, but it is still <a href="https://en.wikipedia.org/wiki/Consistent_estimator#Biased_but_consistent">consistent</a><span class="external-link">↗</span>. Its mean squared error, on the other hand, may be lower than that of <a href="https://en.wikipedia.org/wiki/Unbiased_estimation_of_standard_deviation">the unbiased estimator</a><span class="external-link">↗</span>.</p>
-    <h3>Standard deviation of average height for adult men</h3>
-    <p>If the population of interest is approximately normally distributed, the standard deviation provides information on the proportion of observations above or below certain values. For example, the <a href="https://en.wikipedia.org/wiki/Average_human_height">average height for adult men</a><span class="external-link">↗</span> in the <a href="https://en.wikipedia.org/wiki/United_States">United States</a><span class="external-link">↗</span> is about <abbr title="69 inches (175 cm, 5 ft 9 in)">69 inches</abbr>, with a standard deviation of around <abbr title="3 inches (7.62 cm)">3 inches</abbr>. This means that most men (about 68%, assuming a <a href="https://en.wikipedia.org/wiki/normal_distribution">normal distribution</a><span class="external-link">↗</span>) have a height within 3 inches of the mean (<abbr title="66–72 inches (168–183 cm, 5 ft 6 in – 6 ft 0 in)">66–72 inches</abbr>) – one standard deviation – and almost all men (about 95%) have a height within <abbr title="6 inches (15.2 cm)">6 inches</abbr> of the mean (<abbr title="63–75 inches (160–190 cm, 5 ft 3 in – 6 ft 3 in)">63–75 inches</abbr>) – two standard deviations. If the standard deviation were zero, then all men would share an identical height of 69 inches. Three standard deviations account for 99.73% of the sample population being studied, assuming the distribution is <a href="https://en.wikipedia.org/wiki/Normal_distribution">normal</a><span class="external-link">↗</span> or bell-shaped (see the <a href="https://en.wikipedia.org/wiki/68–95–99.7_rule">68–95–99.7 rule</a><span class="external-link">↗</span>, or the <em>empirical rule</em>, for more information).</p>
-    <h2>Definition of population values</h2>
-    <p>Let <em>μ</em> be the <a href="https://en.wikipedia.org/wiki/expected_value">expected value</a><span class="external-link">↗</span> (the average) of a <a href="https://en.wikipedia.org/wiki/random_variable">random variable</a><span class="external-link">↗</span> <em>X</em> with probability density function <em>f</em>:</p>
-    <p>The standard deviation <em>σ</em> of <em>X</em> is defined as</p>
-    <p>which can be shown to equal</p>
-    <p>In other words, the standard deviation is the square root of the <a href="https://en.wikipedia.org/wiki/variance">variance</a><span class="external-link">↗</span> of <em>X</em>.</p>
-    <p>The standard deviation of a probability distribution is the same as that of a random variable having that distribution.</p>
-    <p>Not all random variables have a standard deviation. If the distribution has <a href="https://en.wikipedia.org/wiki/fat_tails">fat tails</a><span class="external-link">↗</span> going out to infinity, the standard deviation might not exist, because the integral might not converge. The <a href="https://en.wikipedia.org/wiki/normal_distribution">normal distribution</a><span class="external-link">↗</span> has tails going out to infinity, but its mean and standard deviation do exist, because the tails diminish quickly enough. The <a href="https://en.wikipedia.org/wiki/Pareto_distribution">Pareto distribution</a><span class="external-link">↗</span> with parameter has a mean, but not a standard deviation (loosely speaking, the standard deviation is infinite). The <a href="https://en.wikipedia.org/wiki/Cauchy_distribution">Cauchy distribution</a><span class="external-link">↗</span> has neither a mean nor a standard deviation.</p>
-    <h3>Discrete random variable</h3>
-    <p>In the case where <em>X</em> takes random values from a finite data set <em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, ..., <em>x</em><sub><em>N</em></sub>, with each value having the same probability, the standard deviation is</p>
-    <p>Note: The above expression has a built-in bias. See the discussion on <a href="https://en.wikipedia.org/wiki/Bessel's_correction">Bessel's correction</a><span class="external-link">↗</span> further down below.</p>
-    <p>or, by using <a href="https://en.wikipedia.org/wiki/summation">summation</a><span class="external-link">↗</span> notation,</p>
-    <p>If, instead of having equal probabilities, the values have different probabilities, let <em>x</em><sub>1</sub> have probability <em>p</em><sub>1</sub>, <em>x</em><sub>2</sub> have probability <em>p</em><sub>2</sub>, ..., <em>x</em><sub><em>N</em></sub> have probability <em>p</em><sub><em>N</em></sub> . In this case, the standard deviation will be</p>
-    <h3>Continuous random variable</h3>
-    <p>The standard deviation of a <a href="https://en.wikipedia.org/wiki/continuous_distribution">continuous real-valued random variable</a><span class="external-link">↗</span> <em>X</em> with <a href="https://en.wikipedia.org/wiki/probability_density_function">probability density function</a><span class="external-link">↗</span> <em>p</em>(<em>x</em>) is</p>
-    <p>and where the integrals are <a href="https://en.wikipedia.org/wiki/definite_integral">definite integral</a><span class="external-link">↗</span>s taken for <em>x</em> ranging over <strong>X</strong>, which represents the set of possible values of the random variable <em>X</em>.</p>
-    <p>In the case of a <a href="https://en.wikipedia.org/wiki/parametric_model">parametric family of distributions</a><span class="external-link">↗</span>, the standard deviation can often be expressed in terms of the parameters for the underlying distribution. For example, in the case of the <a href="https://en.wikipedia.org/wiki/log-normal_distribution">log-normal distribution</a><span class="external-link">↗</span> with parameters <em>μ</em> and <em>σ</em><sup>2</sup> for the underlying normal distribution, the standard deviation of the log-normal variable is given by the expression</p>
-    <h2>Estimation</h2>
-    <p>See also: <a href="https://en.wikipedia.org/wiki/Sample_variance">Sample variance</a><span class="external-link">↗</span> Main article: <a href="https://en.wikipedia.org/wiki/Unbiased_estimation_of_standard_deviation">Unbiased estimation of standard deviation</a><span class="external-link">↗</span></p>
-    <p>One can find the standard deviation of an entire population in cases (such as <a href="https://en.wikipedia.org/wiki/Standardized_testing_(statistics)">standardized testing</a><span class="external-link">↗</span>) where every member of a population is sampled. In cases where that cannot be done, the standard deviation <em>σ</em> is estimated by examining a random sample taken from the population and computing a <a href="https://en.wikipedia.org/wiki/statistic">statistic</a><span class="external-link">↗</span> of the sample, which is used as an estimate of the population standard deviation. Such a statistic is called an <a href="https://en.wikipedia.org/wiki/estimator">estimator</a><span class="external-link">↗</span>, and the estimator (or the value of the estimator, namely the estimate) is called a <strong>sample standard deviation</strong>, and is denoted by <em>s</em> (possibly with modifiers).</p>
-    <p>Unlike in the case of estimating the population mean of a normal distribution, for which the <a href="https://en.wikipedia.org/wiki/sample_mean">sample mean</a><span class="external-link">↗</span> is a simple estimator with many desirable properties (<a href="https://en.wikipedia.org/wiki/unbiased_estimator">unbiased</a><span class="external-link">↗</span>, <a href="https://en.wikipedia.org/wiki/Efficient_estimator">efficient</a><span class="external-link">↗</span>, maximum likelihood), there is no single estimator for the standard deviation with all these properties, and <a href="https://en.wikipedia.org/wiki/unbiased_estimation_of_standard_deviation">unbiased estimation of standard deviation</a><span class="external-link">↗</span> is a very technically involved problem. Most often, the standard deviation is estimated using the <em><a href="https://en.wikipedia.org/wiki/#Corrected_sample_standard_deviation">corrected sample standard deviation</a><span class="external-link">↗</span></em> (using <em>N</em> − 1), defined below, and this is often referred to as the "sample standard deviation", without qualifiers. However, other estimators are better in other respects: the uncorrected estimator (using <em>N</em>) yields lower mean squared error, while using <em>N</em> − 1.5 (for the normal distribution) almost eliminates bias.</p>
-    <h3>Uncorrected sample standard deviation</h3>
-    <p>The formula for the <em>population</em> standard deviation (of a finite population) can be applied to the sample, using the size of the sample as the size of the population (though the actual population size from which the sample is drawn may be much larger). This estimator, denoted by <em>s</em><sub><em>N</em></sub>, is known as the <em>uncorrected sample standard deviation</em>, or sometimes the <em>standard deviation of the sample</em> (considered as the entire population), and is defined as follows:</p>
-    <p>where {<em>x</em>1, <em>x</em>2, …, <em>xN</em>} are the observed values of the sample items and <em>x̄</em> is the mean value of these observations, while the denominator <em>N</em> stands for the size of the sample: this is the square root of the sample variance, which is the average of the <a href="https://en.wikipedia.org/wiki/squared_deviations">squared deviations</a><span class="external-link">↗</span> about the sample mean.</p>
-    <p>This is a <a href="https://en.wikipedia.org/wiki/consistent_estimator">consistent estimator</a><span class="external-link">↗</span> (it converges in probability to the population value as the number of samples goes to infinity), and is the <a href="https://en.wikipedia.org/wiki/maximum_likelihood">maximum-likelihood estimate</a><span class="external-link">↗</span> when the population is normally distributed. However, this is a <a href="https://en.wikipedia.org/wiki/biased_estimator">biased estimator</a><span class="external-link">↗</span>, as the estimates are generally too low. The bias decreases as sample size grows, dropping off as 1/<em>N</em>, and thus is most significant for small or moderate sample sizes; for <em>N</em> &gt; 75, the bias is below 1%. Thus for very large sample sizes, the uncorrected sample standard deviation is generally acceptable. This estimator also has a uniformly smaller <a href="https://en.wikipedia.org/wiki/mean_squared_error">mean squared error</a><span class="external-link">↗</span> than the corrected sample standard deviation.</p>
-    <h3>Corrected sample standard deviation</h3>
-    <p>If the <em>biased <a href="https://en.wikipedia.org/wiki/sample_variance">sample variance</a><span class="external-link">↗</span></em> (the second <a href="https://en.wikipedia.org/wiki/central_moment">central moment</a><span class="external-link">↗</span> of the sample, which is a downward-biased estimate of the population variance) is used to compute an estimate of the population's standard deviation, the result is</p>
-    <p>Here taking the square root introduces further downward bias, by <a href="https://en.wikipedia.org/wiki/Jensen's_inequality">Jensen's inequality</a><span class="external-link">↗</span>, due to the square root's being a <a href="https://en.wikipedia.org/wiki/concave_function">concave function</a><span class="external-link">↗</span>. The bias in the variance is easily corrected, but the bias from the square root is more difficult to correct, and depends on the distribution in question.</p>
-    <p>An unbiased estimator for the <em>variance</em> is given by applying <a href="https://en.wikipedia.org/wiki/Bessel's_correction">Bessel's correction</a><span class="external-link">↗</span>, using <em>N</em> − 1 instead of <em>N</em> to yield the <em>unbiased sample variance,</em> denoted <em>s</em><sup>2</sup>:</p>
-    <p>This estimator is unbiased if the variance exists and the sample values are drawn independently with replacement. <em>N</em> − 1 corresponds to the number of <a href="https://en.wikipedia.org/wiki/Degrees_of_freedom_(statistics)">degrees of freedom</a><span class="external-link">↗</span> in the vector of deviations from the mean,</p>
-    <p>Taking square roots reintroduces bias (because the square root is a nonlinear function which does not <a href="https://en.wikipedia.org/wiki/Commutative_property">commute</a><span class="external-link">↗</span> with the expectation, i.e. often ), yielding the <em>corrected sample standard deviation,</em> denoted by <em>s</em>:</p>
-    <p>As explained above, while <em>s</em><sup>2</sup> is an unbiased estimator for the population variance, <em>s</em> is still a biased estimator for the population standard deviation, though markedly less biased than the uncorrected sample standard deviation. This estimator is commonly used and generally known simply as the "sample standard deviation". The bias may still be large for small samples (<em>N</em> less than 10). As sample size increases, the amount of bias decreases. We obtain more information and the difference between and becomes smaller.</p>
-    <h3>Unbiased sample standard deviation</h3>
-    <p>For <a href="https://en.wikipedia.org/wiki/unbiased_estimation_of_standard_deviation">unbiased estimation of standard deviation</a><span class="external-link">↗</span>, there is no formula that works across all distributions, unlike for mean and variance. Instead, <em>s</em> is used as a basis, and is scaled by a correction factor to produce an unbiased estimate. For the normal distribution, an unbiased estimator is given by <sup><em>s</em></sup>⁄<sub><em>c</em><sub>4</sub></sub>, where the correction factor (which depends on <em>N</em>) is given in terms of the <a href="https://en.wikipedia.org/wiki/gamma_function">gamma function</a><span class="external-link">↗</span>, and equals:</p>
-    <p>This arises because the sampling distribution of the sample standard deviation follows a (scaled) <a href="https://en.wikipedia.org/wiki/chi_distribution">chi distribution</a><span class="external-link">↗</span>, and the correction factor is the mean of the chi distribution.</p>
-    <p>An approximation can be given by replacing <em>N</em> − 1 with <em>N</em> − 1.5, yielding:</p>
-    <p>The error in this approximation decays quadratically (as <sup>1</sup>⁄<sub><em>N</em><sup>2</sup></sub>), and it is suited for all but the smallest samples or highest precision: for <em>N</em> = 3 the bias is equal to 1.3%, and for <em>N</em> = 9 the bias is less than 0.1%.</p>
-    <p>A more accurate approximation is to replace <em>N</em> − 1.5 above with <em>N</em> − 1.5 + <sup>1</sup>⁄<sub>8(<em>N</em> − 1)</sub>.</p>
-    <p>For other distributions, the correct formula depends on the distribution, but a rule of thumb is to use the further refinement of the approximation:</p>
-    <p>where <em>γ</em><sub>2</sub> denotes the population <a href="https://en.wikipedia.org/wiki/excess_kurtosis">excess kurtosis</a><span class="external-link">↗</span>. The excess kurtosis may be either known beforehand for certain distributions, or estimated from the data.</p>
-    <h3>Confidence interval of a sampled standard deviation</h3>
-    <p>See also: <a href="https://en.wikipedia.org/wiki/Margin_of_error">Margin of error</a><span class="external-link">↗</span>, <a href="https://en.wikipedia.org/wiki/Variance#Distribution_of_the_sample_variance">Variance#Distribution of the sample variance</a><span class="external-link">↗</span>, and <a href="https://en.wikipedia.org/wiki/Student's_t-distribution#Robust_parametric_modeling">Student's t-distribution#Robust parametric modeling</a><span class="external-link">↗</span> The standard deviation we obtain by sampling a distribution is itself not absolutely accurate, both for mathematical reasons (explained here by the confidence interval) and for practical reasons of measurement (measurement error). The mathematical effect can be described by the <a href="https://en.wikipedia.org/wiki/confidence_interval">confidence interval</a><span class="external-link">↗</span> or CI.</p>
-    <p>To show how a larger sample will make the confidence interval narrower, consider the following examples: A small population of <em>N</em> = 2 has only one degree of freedom for estimating the standard deviation. The result is that a 95% CI of the SD runs from 0.45 × SD to 31.9 × SD; <a href="https://en.wikipedia.org/wiki/Confidence_interval#Statistical_theory">the factors here are as follows</a><span class="external-link">↗</span>:</p>
-    <p>where is the <em>p</em>-th quantile of the chi-square distribution with <em>k</em> degrees of freedom, and 1 − <em>α</em> is the confidence level. This is equivalent to the following:</p>
-    <p>With <em>k</em> = 1, <em>q</em><sub>0.025</sub> = 0.000982 and <em>q</em><sub>0.975</sub> = 5.024. The reciprocals of the square roots of these two numbers give us the factors 0.45 and 31.9 given above.</p>
-    <p>A larger population of <em>N</em> = 10 has 9 degrees of freedom for estimating the standard deviation. The same computations as above give us in this case a 95% CI running from 0.69 × SD to 1.83 × SD. So even with a sample population of 10, the actual SD can still be almost a factor 2 higher than the sampled SD. For a sample population <em>N</em> = 100, this is down to 0.88 × SD to 1.16 × SD. To be more certain that the sampled SD is close to the actual SD we need to sample a large number of points.</p>
-    <p>These same formulae can be used to obtain confidence intervals on the variance of residuals from a <a href="https://en.wikipedia.org/wiki/least_squares">least squares</a><span class="external-link">↗</span> fit under standard normal theory, where <em>k</em> is now the number of <a href="https://en.wikipedia.org/wiki/Degrees_of_freedom_(statistics)">degrees of freedom</a><span class="external-link">↗</span> for error.</p>
-    <h3>Bounds on standard deviation</h3>
-    <p>For a set of <em>N</em> &gt; 4 data spanning a range of values <em>R</em>, an upper bound on the standard deviation <em>s</em> is given by <em>s</em> = 0.6<em>R</em>. An estimate of the standard deviation for <em>N</em> &gt; 100 data taken to be approximately normal follows from the heuristic that 95% of the area under the normal curve lies roughly two standard deviations to either side of the mean, so that, with 95% probability the total range of values <em>R</em> represents four standard deviations so that <em>s</em> ≈ <em>R</em>/4. This so-called range rule is useful in <a href="https://en.wikipedia.org/wiki/sample_size">sample size</a><span class="external-link">↗</span> estimation, as the range of possible values is easier to estimate than the standard deviation. Other divisors <em>K</em>(<em>N</em>) of the range such that <em>s</em> ≈ <em>R</em>/<em>K</em>(<em>N</em>) are available for other values of <em>N</em> and for non-normal distributions.</p>
-    <h2>Identities and mathematical properties</h2>
-    <p>The standard deviation is invariant under changes in <a href="https://en.wikipedia.org/wiki/location_parameter">location</a><span class="external-link">↗</span>, and scales directly with the <a href="https://en.wikipedia.org/wiki/scale_parameter">scale</a><span class="external-link">↗</span> of the random variable. Thus, for a constant <em>c</em> and random variables <em>X</em> and <em>Y</em>:</p>
-    <p>The standard deviation of the sum of two random variables can be related to their individual standard deviations and the <a href="https://en.wikipedia.org/wiki/covariance">covariance</a><span class="external-link">↗</span> between them:</p>
-    <p>where and stand for variance and <a href="https://en.wikipedia.org/wiki/covariance">covariance</a><span class="external-link">↗</span>, respectively.</p>
-    <p>The calculation of the sum of squared deviations can be related to <a href="https://en.wikipedia.org/wiki/moment_(mathematics)">moment</a><span class="external-link">↗</span>s calculated directly from the data. In the following formula, the letter <em>E</em> is interpreted to mean expected value, i.e., mean.</p>
-    <p>The sample standard deviation can be computed as:</p>
-    <p>For a finite population with equal probabilities at all points, we have</p>
-    <p>which means that the standard deviation is equal to the square root of the difference between the average of the squares of the values and the square of the average value.</p>
-    <p>See computational formula for the variance for proof, and for an analogous result for the sample standard deviation.</p>
-    <h2>Interpretation and application</h2>
-    <p>Further information: <a href="https://en.wikipedia.org/wiki/Prediction_interval">Prediction interval</a><span class="external-link">↗</span> and <a href="https://en.wikipedia.org/wiki/Confidence_interval">Confidence interval</a><span class="external-link">↗</span></p>
-    <p>A large standard deviation indicates that the data points can spread far from the mean and a small standard deviation indicates that they are clustered closely around the mean.</p>
-    <p>For example, each of the three populations {0, 0, 14, 14}, {0, 6, 8, 14} and {6, 6, 8, 8} has a mean of 7. Their standard deviations are 7, 5, and 1, respectively. The third population has a much smaller standard deviation than the other two because its values are all close to 7. These standard deviations have the same units as the data points themselves. If, for instance, the data set {0, 6, 8, 14} represents the ages of a population of four siblings in years, the standard deviation is 5 years. As another example, the population {1000, 1006, 1008, 1014} may represent the distances traveled by four athletes, measured in meters. It has a mean of 1007 meters, and a standard deviation of 5 meters.</p>
-    <p>Standard deviation may serve as a measure of uncertainty. In physical science, for example, the reported standard deviation of a group of repeated <a href="https://en.wikipedia.org/wiki/measurement">measurement</a><span class="external-link">↗</span>s gives the <a href="https://en.wikipedia.org/wiki/accuracy_and_precision">precision</a><span class="external-link">↗</span> of those measurements. When deciding whether measurements agree with a theoretical prediction, the standard deviation of those measurements is of crucial importance: if the mean of the measurements is too far away from the prediction (with the distance measured in standard deviations), then the theory being tested probably needs to be revised. This makes sense since they fall outside the range of values that could reasonably be expected to occur if the prediction were correct and the standard deviation appropriately quantified. See <a href="https://en.wikipedia.org/wiki/prediction_interval">prediction interval</a><span class="external-link">↗</span>.</p>
-    <p>While the standard deviation does measure how far typical values tend to be from the mean, other measures are available. An example is the <a href="https://en.wikipedia.org/wiki/mean_absolute_deviation">mean absolute deviation</a><span class="external-link">↗</span>, which might be considered a more direct measure of average distance, compared to the <a href="https://en.wikipedia.org/wiki/Root-mean-square_deviation">root mean square distance</a><span class="external-link">↗</span> inherent in the standard deviation.</p>
-    <h3>Application examples</h3>
-    <p>The practical value of understanding the standard deviation of a set of values is in appreciating how much variation there is from the average (mean).</p>
-    <h4>Experiment, industrial and hypothesis testing</h4>
-    <p>Standard deviation is often used to compare real-world data against a model to test the model. For example, in industrial applications the weight of products coming off a production line may need to comply with a legally required value. By weighing some fraction of the products an average weight can be found, which will always be slightly different from the long-term average. By using standard deviations, a minimum and maximum value can be calculated that the averaged weight will be within some very high percentage of the time (99.9% or more). If it falls outside the range then the production process may or not need to be corrected. Statistical tests such as these are particularly important when the testing is relatively expensive. For example, if the product needs to be opened and drained and weighed, or if the product was otherwise used up by the test.</p>
-    <p>In experimental science, a theoretical model of reality is used. <a href="https://en.wikipedia.org/wiki/Particle_physics">Particle physics</a><span class="external-link">↗</span> conventionally uses a standard of "<strong>5 sigma</strong>" for the declaration of a discovery. A five-sigma level translates to one chance in 3.5 million that a random fluctuation would yield the result. For example, this level of certainty was required by each of two independent particle physics experiments at <a href="https://en.wikipedia.org/wiki/CERN">CERN</a><span class="external-link">↗</span> in order to announce that the <a href="https://en.wikipedia.org/wiki/Higgs_boson">Higgs boson</a><span class="external-link">↗</span> had been discovered, or by the <a href="https://en.wikipedia.org/wiki/LIGO_Scientific_Collaboration">LIGO Scientific Collaboration</a><span class="external-link">↗</span> to <a href="https://en.wikipedia.org/wiki/First_observation_of_gravitational_waves">conclusively confirm</a><span class="external-link">↗</span> the existence of <a href="https://en.wikipedia.org/wiki/gravitational_wave">gravitational wave</a><span class="external-link">↗</span>s.</p>
-    <h4>Weather</h4>
-    <p>As a simple example, consider the average daily maximum temperatures for two cities, one inland and one on the coast. It is helpful to understand that the range of daily maximum temperatures for cities near the coast is smaller than for cities inland. Thus, while these two cities may each have the same average maximum temperature, the standard deviation of the daily maximum temperature for the coastal city will be less than that of the inland city as, on any particular day, the actual maximum temperature is more likely to be farther from the average maximum temperature for the inland city than for the coastal one.</p>
-    <h4>Finance</h4>
-    <p>In finance, standard deviation is often used as a measure of the <a href="https://en.wikipedia.org/wiki/Risk#Finance">risk</a><span class="external-link">↗</span> associated with price-fluctuations of a given asset (stocks, bonds, property, etc.), or the risk of a portfolio of assets (actively managed mutual funds, index mutual funds, or ETFs). Risk is an important factor in determining how to efficiently manage a portfolio of investments because it determines the variation in returns on the asset or portfolio and gives investors a mathematical basis for investment decisions (known as <a href="https://en.wikipedia.org/wiki/Modern_portfolio_theory">mean-variance optimization</a><span class="external-link">↗</span>). The fundamental concept of risk is that as it increases, the expected return on an investment should increase as well, an increase known as the risk premium. In other words, investors should expect a higher return on an investment when that investment carries a higher level of risk or uncertainty. When evaluating investments, investors should estimate both the expected return and the uncertainty of future returns. Standard deviation provides a quantified estimate of the uncertainty of future returns.</p>
-    <p>For example, assume an investor had to choose between two stocks. Stock A over the past 20 years had an average return of 10 percent, with a standard deviation of 20 <a href="https://en.wikipedia.org/wiki/percentage_point">percentage point</a><span class="external-link">↗</span>s (pp) and Stock B, over the same period, had average returns of 12 percent but a higher standard deviation of 30 pp. On the basis of risk and return, an investor may decide that Stock A is the safer choice, because Stock B's additional two percentage points of return is not worth the additional 10 pp standard deviation (greater risk or uncertainty of the expected return). Stock B is likely to fall short of the initial investment (but also to exceed the initial investment) more often than Stock A under the same circumstances, and is estimated to return only two percent more on average. In this example, Stock A is expected to earn about 10 percent, plus or minus 20 pp (a range of 30 percent to −10 percent), about two-thirds of the future year returns. When considering more extreme possible returns or outcomes in future, an investor should expect results of as much as 10 percent plus or minus 60 pp, or a range from 70 percent to −50 percent, which includes outcomes for three standard deviations from the average return (about 99.7 percent of probable returns).</p>
-    <p>Calculating the average (or arithmetic mean) of the return of a security over a given period will generate the expected return of the asset. For each period, subtracting the expected return from the actual return results in the difference from the mean. Squaring the difference in each period and taking the average gives the overall variance of the return of the asset. The larger the variance, the greater risk the security carries. Finding the square root of this variance will give the standard deviation of the investment tool in question.</p>
-    <p>Financial time series are known to be non-stationary series, whereas the statistical calculations above, such as standard deviation, apply only to stationary series. To apply the above statistical tools to non-stationary series, the series first must be transformed to a stationary series, enabling use of statistical tools that now have a valid basis from which to work.</p>
-    <h3>Geometric interpretation</h3>
-    <p>To gain some geometric insights and clarification, we will start with a population of three values, <em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, <em>x</em><sub>3</sub>. This defines a point <em>P</em> = (<em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, <em>x</em><sub>3</sub>) in <strong>R</strong><sup>3</sup>. Consider the line <em>L</em> = {(<em>r</em>, <em>r</em>, <em>r</em>) : <em>r</em> ∈ <strong>R</strong>}. This is the "main diagonal" going through the origin. If our three given values were all equal, then the standard deviation would be zero and <em>P</em> would lie on <em>L</em>. So it is not unreasonable to assume that the standard deviation is related to the <em>distance</em> of <em>P</em> to <em>L</em>. That is indeed the case. To move orthogonally from <em>L</em> to the point <em>P</em>, one begins at the point:</p>
-    <p>whose coordinates are the mean of the values we started out with.</p>
-    <p><strong>Derivation of</strong></p>
-    <p>is on therefore for some .</p>
-    <p>The line <em>L</em> is to be orthogonal to the vector from <em>M</em> to <em>P</em>. Therefore:</p>
-    <p>A little algebra shows that the distance between <em>P</em> and <em>M</em> (which is the same as the <a href="https://en.wikipedia.org/wiki/orthogonal_distance">orthogonal distance</a><span class="external-link">↗</span> between <em>P</em> and the line <em>L</em>) is equal to the standard deviation of the vector (<em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, <em>x</em><sub>3</sub>), multiplied by the square root of the number of dimensions of the vector (3 in this case).</p>
-    <h3>Chebyshev's inequality</h3>
-    <p>Main article: <a href="https://en.wikipedia.org/wiki/Chebyshev's_inequality">Chebyshev's inequality</a><span class="external-link">↗</span> An observation is rarely more than a few standard deviations away from the mean. Chebyshev's inequality ensures that, for all distributions for which the standard deviation is defined, the amount of data within a number of standard deviations of the mean is at least as much as given in the following table.</p>
+    <h1>
+      Standard deviation
+    </h1>
+    <p>
+      In
+      <a href="https://en.wikipedia.org/wiki/statistics">
+        statistics
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , the
+      <strong>
+        standard deviation
+      </strong>
+      is a measure of the amount of variation of the values of a variable about its
+      <a href="https://en.wikipedia.org/wiki/arithmetic_mean">
+        (arithmetic) average
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . A low standard
+      <a href="https://en.wikipedia.org/wiki/Deviation_(statistics)">
+        deviation
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      indicates that the values of a set tend to be close to their average, while a high standard deviation indicates that the values are spread out over a wider range. Standard deviation may be abbreviated
+      <strong>
+        SD
+      </strong>
+      or
+      <strong>
+        std dev
+      </strong>
+      , and is most commonly represented in mathematical texts and equations by the lowercase
+      <a href="https://en.wikipedia.org/wiki/Greek_alphabet">
+        Greek letter
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      <strong>
+        <a href="https://en.wikipedia.org/wiki/Sigma">
+          <em>
+            σ
+          </em>
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </strong>
+      (sigma).
+    </p>
+    <p>
+      The standard deviation of a
+      <a href="https://en.wikipedia.org/wiki/random_variable">
+        random variable
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ,
+      <a href="https://en.wikipedia.org/wiki/Sample_(statistics)">
+        sample
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ,
+      <a href="https://en.wikipedia.org/wiki/statistical_population">
+        statistical population
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ,
+      <a href="https://en.wikipedia.org/wiki/data_set">
+        data set
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      or
+      <a href="https://en.wikipedia.org/wiki/probability_distribution">
+        probability distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      is the
+      <a href="https://en.wikipedia.org/wiki/square_root">
+        square root
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of its
+      <a href="https://en.wikipedia.org/wiki/variance">
+        variance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      (the variance being the average of the
+      <a href="https://en.wikipedia.org/wiki/squared_deviations_from_the_mean">
+        squared deviations from the mean
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ). A useful property of the standard deviation is that, unlike the variance, it is expressed in the same unit as the data. Standard deviation can also be used to calculate
+      <a href="https://en.wikipedia.org/wiki/standard_error">
+        standard error
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      for a finite sample, and to determine
+      <a href="https://en.wikipedia.org/wiki/statistical_significance">
+        statistical significance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <p>
+      When only a
+      <a href="https://en.wikipedia.org/wiki/statistical_sample">
+        sample
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of data from a population is available, the term
+      <em>
+        standard deviation of the sample
+      </em>
+      or
+      <em>
+        sample standard deviation
+      </em>
+      can refer to either the above-mentioned quantity as applied to those data, or to a modified quantity that is an unbiased estimate of the
+      <em>
+        population standard deviation
+      </em>
+      (the standard deviation of the entire population).
+    </p>
+    <h2>
+      Relationship with standard error and statistical significance
+    </h2>
+    <p>
+      The standard deviation of a
+      <a href="https://en.wikipedia.org/wiki/statistical_population">
+        population
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      or sample and the
+      <a href="https://en.wikipedia.org/wiki/standard_error">
+        standard error
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of a statistic (e.g., of the sample mean) are quite different, but related. The sample mean's standard error is the standard deviation of the set of means that would be found by drawing an
+      <a href="https://en.wikipedia.org/wiki/Infinity">
+        infinite
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      number of repeated samples from the population and computing a mean for each sample. The mean's standard error turns out to equal the population standard deviation divided by the square root of the sample size, and is estimated by using the sample standard deviation divided by the square root of the sample size. For example, a poll's standard error (what is reported as the
+      <a href="https://en.wikipedia.org/wiki/margin_of_error">
+        margin of error
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of the poll) is the expected standard deviation of the estimated mean if the same poll were to be conducted multiple times. Thus, the standard error estimates the standard deviation of an estimate, which itself measures how much the estimate depends on the particular sample that was taken from the population.
+    </p>
+    <p>
+      In
+      <a href="https://en.wikipedia.org/wiki/science">
+        science
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , it is common to report both the standard deviation of the data (as a summary statistic) and the standard error of the estimate (as a measure of potential error in the findings). By convention, only effects more than two standard errors away from a null expectation are considered "
+      <a href="https://en.wikipedia.org/wiki/Statistical_significance">
+        statistically significant
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ", a safeguard against spurious conclusion that is really due to random sampling error.
+    </p>
+    <h2>
+      Basic examples
+    </h2>
+    <h3>
+      Population standard deviation of grades of eight students
+    </h3>
+    <p>
+      Suppose that the entire population of interest is eight students in a particular class. Their marks are the following eight values:
+    </p>
+    <p>
+      For a finite set of numbers, the population standard deviation is found by taking the
+      <a href="https://en.wikipedia.org/wiki/square_root">
+        square root
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of the
+      <a href="https://en.wikipedia.org/wiki/average">
+        average
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of the squared deviations of the values subtracted from their average value, that is:
+    </p>
+    <p>
+      These eight data points have the
+      <a href="https://en.wikipedia.org/wiki/mean">
+        mean
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      (average) of 5:
+    </p>
+    <p>
+      Next, calculate the deviations of each data point from the mean. Then
+      <a href="https://en.wikipedia.org/wiki/square_(algebra)">
+        square
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      the result of each:
+    </p>
+    <p>
+      Next, the
+      <a href="https://en.wikipedia.org/wiki/variance">
+        variance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      is the mean of these values:
+    </p>
+    <p>
+      Finally, the
+      <em>
+        population
+      </em>
+      standard deviation is the square root of the variance:
+    </p>
+    <p>
+      If the eight values with which we began are not the entire population of interest, then this is only one of many possible estimates of the standard deviation in the whole population. This specific one is
+      <a href="https://en.wikipedia.org/wiki/Bias_of_an_estimator">
+        biased
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , meaning that its expected value in repeated sampling deviates from the true value, but it is still
+      <a href="https://en.wikipedia.org/wiki/Consistent_estimator#Biased_but_consistent">
+        consistent
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . Its mean squared error, on the other hand, may be lower than that of
+      <a href="https://en.wikipedia.org/wiki/Unbiased_estimation_of_standard_deviation">
+        the unbiased estimator
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <h3>
+      Standard deviation of average height for adult men
+    </h3>
+    <p>
+      If the population of interest is approximately normally distributed, the standard deviation provides information on the proportion of observations above or below certain values. For example, the
+      <a href="https://en.wikipedia.org/wiki/Average_human_height">
+        average height for adult men
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      in the
+      <a href="https://en.wikipedia.org/wiki/United_States">
+        United States
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      is about
+      <abbr title="69 inches (175 cm, 5 ft 9 in)">
+        69 inches
+      </abbr>
+      , with a standard deviation of around
+      <abbr title="3 inches (7.62 cm)">
+        3 inches
+      </abbr>
+      . This means that most men (about 68%, assuming a
+      <a href="https://en.wikipedia.org/wiki/normal_distribution">
+        normal distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ) have a height within 3 inches of the mean (
+      <abbr title="66–72 inches (168–183 cm, 5 ft 6 in – 6 ft 0 in)">
+        66–72 inches
+      </abbr>
+      ) – one standard deviation – and almost all men (about 95%) have a height within
+      <abbr title="6 inches (15.2 cm)">
+        6 inches
+      </abbr>
+      of the mean (
+      <abbr title="63–75 inches (160–190 cm, 5 ft 3 in – 6 ft 3 in)">
+        63–75 inches
+      </abbr>
+      ) – two standard deviations. If the standard deviation were zero, then all men would share an identical height of 69 inches. Three standard deviations account for 99.73% of the sample population being studied, assuming the distribution is
+      <a href="https://en.wikipedia.org/wiki/Normal_distribution">
+        normal
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      or bell-shaped (see the
+      <a href="https://en.wikipedia.org/wiki/68–95–99.7_rule">
+        68–95–99.7 rule
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , or the
+      <em>
+        empirical rule
+      </em>
+      , for more information).
+    </p>
+    <h2>
+      Definition of population values
+    </h2>
+    <p>
+      Let
+      <em>
+        μ
+      </em>
+      be the
+      <a href="https://en.wikipedia.org/wiki/expected_value">
+        expected value
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      (the average) of a
+      <a href="https://en.wikipedia.org/wiki/random_variable">
+        random variable
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      <em>
+        X
+      </em>
+      with probability density function
+      <em>
+        f
+      </em>
+      :
+    </p>
+    <p>
+      The standard deviation
+      <em>
+        σ
+      </em>
+      of
+      <em>
+        X
+      </em>
+      is defined as
+    </p>
+    <p>
+      which can be shown to equal
+    </p>
+    <p>
+      In other words, the standard deviation is the square root of the
+      <a href="https://en.wikipedia.org/wiki/variance">
+        variance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of
+      <em>
+        X
+      </em>
+      .
+    </p>
+    <p>
+      The standard deviation of a probability distribution is the same as that of a random variable having that distribution.
+    </p>
+    <p>
+      Not all random variables have a standard deviation. If the distribution has
+      <a href="https://en.wikipedia.org/wiki/fat_tails">
+        fat tails
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      going out to infinity, the standard deviation might not exist, because the integral might not converge. The
+      <a href="https://en.wikipedia.org/wiki/normal_distribution">
+        normal distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      has tails going out to infinity, but its mean and standard deviation do exist, because the tails diminish quickly enough. The
+      <a href="https://en.wikipedia.org/wiki/Pareto_distribution">
+        Pareto distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      with parameter has a mean, but not a standard deviation (loosely speaking, the standard deviation is infinite). The
+      <a href="https://en.wikipedia.org/wiki/Cauchy_distribution">
+        Cauchy distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      has neither a mean nor a standard deviation.
+    </p>
+    <h3>
+      Discrete random variable
+    </h3>
+    <p>
+      In the case where
+      <em>
+        X
+      </em>
+      takes random values from a finite data set
+      <em>
+        x
+      </em>
+      <sub>
+        1
+      </sub>
+      ,
+      <em>
+        x
+      </em>
+      <sub>
+        2
+      </sub>
+      , ...,
+      <em>
+        x
+      </em>
+      <sub>
+        <em>
+          N
+        </em>
+      </sub>
+      , with each value having the same probability, the standard deviation is
+    </p>
+    <p>
+      Note: The above expression has a built-in bias. See the discussion on
+      <a href="https://en.wikipedia.org/wiki/Bessel&apos;s_correction">
+        Bessel's correction
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      further down below.
+    </p>
+    <p>
+      or, by using
+      <a href="https://en.wikipedia.org/wiki/summation">
+        summation
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      notation,
+    </p>
+    <p>
+      If, instead of having equal probabilities, the values have different probabilities, let
+      <em>
+        x
+      </em>
+      <sub>
+        1
+      </sub>
+      have probability
+      <em>
+        p
+      </em>
+      <sub>
+        1
+      </sub>
+      ,
+      <em>
+        x
+      </em>
+      <sub>
+        2
+      </sub>
+      have probability
+      <em>
+        p
+      </em>
+      <sub>
+        2
+      </sub>
+      , ...,
+      <em>
+        x
+      </em>
+      <sub>
+        <em>
+          N
+        </em>
+      </sub>
+      have probability
+      <em>
+        p
+      </em>
+      <sub>
+        <em>
+          N
+        </em>
+      </sub>
+      . In this case, the standard deviation will be
+    </p>
+    <h3>
+      Continuous random variable
+    </h3>
+    <p>
+      The standard deviation of a
+      <a href="https://en.wikipedia.org/wiki/continuous_distribution">
+        continuous real-valued random variable
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      <em>
+        X
+      </em>
+      with
+      <a href="https://en.wikipedia.org/wiki/probability_density_function">
+        probability density function
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      <em>
+        p
+      </em>
+      (
+      <em>
+        x
+      </em>
+      ) is
+    </p>
+    <p>
+      and where the integrals are
+      <a href="https://en.wikipedia.org/wiki/definite_integral">
+        definite integral
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      s taken for
+      <em>
+        x
+      </em>
+      ranging over
+      <strong>
+        X
+      </strong>
+      , which represents the set of possible values of the random variable
+      <em>
+        X
+      </em>
+      .
+    </p>
+    <p>
+      In the case of a
+      <a href="https://en.wikipedia.org/wiki/parametric_model">
+        parametric family of distributions
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , the standard deviation can often be expressed in terms of the parameters for the underlying distribution. For example, in the case of the
+      <a href="https://en.wikipedia.org/wiki/log-normal_distribution">
+        log-normal distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      with parameters
+      <em>
+        μ
+      </em>
+      and
+      <em>
+        σ
+      </em>
+      <sup>
+        2
+      </sup>
+      for the underlying normal distribution, the standard deviation of the log-normal variable is given by the expression
+    </p>
+    <h2>
+      Estimation
+    </h2>
+    <p>
+      See also:
+      <a href="https://en.wikipedia.org/wiki/Sample_variance">
+        Sample variance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      Main article:
+      <a href="https://en.wikipedia.org/wiki/Unbiased_estimation_of_standard_deviation">
+        Unbiased estimation of standard deviation
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+    </p>
+    <p>
+      One can find the standard deviation of an entire population in cases (such as
+      <a href="https://en.wikipedia.org/wiki/Standardized_testing_(statistics)">
+        standardized testing
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ) where every member of a population is sampled. In cases where that cannot be done, the standard deviation
+      <em>
+        σ
+      </em>
+      is estimated by examining a random sample taken from the population and computing a
+      <a href="https://en.wikipedia.org/wiki/statistic">
+        statistic
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of the sample, which is used as an estimate of the population standard deviation. Such a statistic is called an
+      <a href="https://en.wikipedia.org/wiki/estimator">
+        estimator
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , and the estimator (or the value of the estimator, namely the estimate) is called a
+      <strong>
+        sample standard deviation
+      </strong>
+      , and is denoted by
+      <em>
+        s
+      </em>
+      (possibly with modifiers).
+    </p>
+    <p>
+      Unlike in the case of estimating the population mean of a normal distribution, for which the
+      <a href="https://en.wikipedia.org/wiki/sample_mean">
+        sample mean
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      is a simple estimator with many desirable properties (
+      <a href="https://en.wikipedia.org/wiki/unbiased_estimator">
+        unbiased
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ,
+      <a href="https://en.wikipedia.org/wiki/Efficient_estimator">
+        efficient
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , maximum likelihood), there is no single estimator for the standard deviation with all these properties, and
+      <a href="https://en.wikipedia.org/wiki/unbiased_estimation_of_standard_deviation">
+        unbiased estimation of standard deviation
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      is a very technically involved problem. Most often, the standard deviation is estimated using the
+      <em>
+        <a href="https://en.wikipedia.org/wiki/#Corrected_sample_standard_deviation">
+          corrected sample standard deviation
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </em>
+      (using
+      <em>
+        N
+      </em>
+      − 1), defined below, and this is often referred to as the "sample standard deviation", without qualifiers. However, other estimators are better in other respects: the uncorrected estimator (using
+      <em>
+        N
+      </em>
+      ) yields lower mean squared error, while using
+      <em>
+        N
+      </em>
+      − 1.5 (for the normal distribution) almost eliminates bias.
+    </p>
+    <h3>
+      Uncorrected sample standard deviation
+    </h3>
+    <p>
+      The formula for the
+      <em>
+        population
+      </em>
+      standard deviation (of a finite population) can be applied to the sample, using the size of the sample as the size of the population (though the actual population size from which the sample is drawn may be much larger). This estimator, denoted by
+      <em>
+        s
+      </em>
+      <sub>
+        <em>
+          N
+        </em>
+      </sub>
+      , is known as the
+      <em>
+        uncorrected sample standard deviation
+      </em>
+      , or sometimes the
+      <em>
+        standard deviation of the sample
+      </em>
+      (considered as the entire population), and is defined as follows:
+    </p>
+    <p>
+      where {
+      <em>
+        x
+      </em>
+      1,
+      <em>
+        x
+      </em>
+      2, …,
+      <em>
+        xN
+      </em>
+      } are the observed values of the sample items and
+      <em>
+        x̄
+      </em>
+      is the mean value of these observations, while the denominator
+      <em>
+        N
+      </em>
+      stands for the size of the sample: this is the square root of the sample variance, which is the average of the
+      <a href="https://en.wikipedia.org/wiki/squared_deviations">
+        squared deviations
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      about the sample mean.
+    </p>
+    <p>
+      This is a
+      <a href="https://en.wikipedia.org/wiki/consistent_estimator">
+        consistent estimator
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      (it converges in probability to the population value as the number of samples goes to infinity), and is the
+      <a href="https://en.wikipedia.org/wiki/maximum_likelihood">
+        maximum-likelihood estimate
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      when the population is normally distributed. However, this is a
+      <a href="https://en.wikipedia.org/wiki/biased_estimator">
+        biased estimator
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , as the estimates are generally too low. The bias decreases as sample size grows, dropping off as 1/
+      <em>
+        N
+      </em>
+      , and thus is most significant for small or moderate sample sizes; for
+      <em>
+        N
+      </em>
+      &gt; 75, the bias is below 1%. Thus for very large sample sizes, the uncorrected sample standard deviation is generally acceptable. This estimator also has a uniformly smaller
+      <a href="https://en.wikipedia.org/wiki/mean_squared_error">
+        mean squared error
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      than the corrected sample standard deviation.
+    </p>
+    <h3>
+      Corrected sample standard deviation
+    </h3>
+    <p>
+      If the
+      <em>
+        biased
+        <a href="https://en.wikipedia.org/wiki/sample_variance">
+          sample variance
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </em>
+      (the second
+      <a href="https://en.wikipedia.org/wiki/central_moment">
+        central moment
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of the sample, which is a downward-biased estimate of the population variance) is used to compute an estimate of the population's standard deviation, the result is
+    </p>
+    <p>
+      Here taking the square root introduces further downward bias, by
+      <a href="https://en.wikipedia.org/wiki/Jensen&apos;s_inequality">
+        Jensen's inequality
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , due to the square root's being a
+      <a href="https://en.wikipedia.org/wiki/concave_function">
+        concave function
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . The bias in the variance is easily corrected, but the bias from the square root is more difficult to correct, and depends on the distribution in question.
+    </p>
+    <p>
+      An unbiased estimator for the
+      <em>
+        variance
+      </em>
+      is given by applying
+      <a href="https://en.wikipedia.org/wiki/Bessel&apos;s_correction">
+        Bessel's correction
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , using
+      <em>
+        N
+      </em>
+      − 1 instead of
+      <em>
+        N
+      </em>
+      to yield the
+      <em>
+        unbiased sample variance,
+      </em>
+      denoted
+      <em>
+        s
+      </em>
+      <sup>
+        2
+      </sup>
+      :
+    </p>
+    <p>
+      This estimator is unbiased if the variance exists and the sample values are drawn independently with replacement.
+      <em>
+        N
+      </em>
+      − 1 corresponds to the number of
+      <a href="https://en.wikipedia.org/wiki/Degrees_of_freedom_(statistics)">
+        degrees of freedom
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      in the vector of deviations from the mean,
+    </p>
+    <p>
+      Taking square roots reintroduces bias (because the square root is a nonlinear function which does not
+      <a href="https://en.wikipedia.org/wiki/Commutative_property">
+        commute
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      with the expectation, i.e. often ), yielding the
+      <em>
+        corrected sample standard deviation,
+      </em>
+      denoted by
+      <em>
+        s
+      </em>
+      :
+    </p>
+    <p>
+      As explained above, while
+      <em>
+        s
+      </em>
+      <sup>
+        2
+      </sup>
+      is an unbiased estimator for the population variance,
+      <em>
+        s
+      </em>
+      is still a biased estimator for the population standard deviation, though markedly less biased than the uncorrected sample standard deviation. This estimator is commonly used and generally known simply as the "sample standard deviation". The bias may still be large for small samples (
+      <em>
+        N
+      </em>
+      less than 10). As sample size increases, the amount of bias decreases. We obtain more information and the difference between and becomes smaller.
+    </p>
+    <h3>
+      Unbiased sample standard deviation
+    </h3>
+    <p>
+      For
+      <a href="https://en.wikipedia.org/wiki/unbiased_estimation_of_standard_deviation">
+        unbiased estimation of standard deviation
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , there is no formula that works across all distributions, unlike for mean and variance. Instead,
+      <em>
+        s
+      </em>
+      is used as a basis, and is scaled by a correction factor to produce an unbiased estimate. For the normal distribution, an unbiased estimator is given by
+      <sup>
+        <em>
+          s
+        </em>
+      </sup>
+      ⁄
+      <sub>
+        <em>
+          c
+        </em>
+        <sub>
+          4
+        </sub>
+      </sub>
+      , where the correction factor (which depends on
+      <em>
+        N
+      </em>
+      ) is given in terms of the
+      <a href="https://en.wikipedia.org/wiki/gamma_function">
+        gamma function
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , and equals:
+    </p>
+    <p>
+      This arises because the sampling distribution of the sample standard deviation follows a (scaled)
+      <a href="https://en.wikipedia.org/wiki/chi_distribution">
+        chi distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , and the correction factor is the mean of the chi distribution.
+    </p>
+    <p>
+      An approximation can be given by replacing
+      <em>
+        N
+      </em>
+      − 1 with
+      <em>
+        N
+      </em>
+      − 1.5, yielding:
+    </p>
+    <p>
+      The error in this approximation decays quadratically (as
+      <sup>
+        1
+      </sup>
+      ⁄
+      <sub>
+        <em>
+          N
+        </em>
+        <sup>
+          2
+        </sup>
+      </sub>
+      ), and it is suited for all but the smallest samples or highest precision: for
+      <em>
+        N
+      </em>
+      = 3 the bias is equal to 1.3%, and for
+      <em>
+        N
+      </em>
+      = 9 the bias is less than 0.1%.
+    </p>
+    <p>
+      A more accurate approximation is to replace
+      <em>
+        N
+      </em>
+      − 1.5 above with
+      <em>
+        N
+      </em>
+      − 1.5 +
+      <sup>
+        1
+      </sup>
+      ⁄
+      <sub>
+        8(
+        <em>
+          N
+        </em>
+        − 1)
+      </sub>
+      .
+    </p>
+    <p>
+      For other distributions, the correct formula depends on the distribution, but a rule of thumb is to use the further refinement of the approximation:
+    </p>
+    <p>
+      where
+      <em>
+        γ
+      </em>
+      <sub>
+        2
+      </sub>
+      denotes the population
+      <a href="https://en.wikipedia.org/wiki/excess_kurtosis">
+        excess kurtosis
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . The excess kurtosis may be either known beforehand for certain distributions, or estimated from the data.
+    </p>
+    <h3>
+      Confidence interval of a sampled standard deviation
+    </h3>
+    <p>
+      See also:
+      <a href="https://en.wikipedia.org/wiki/Margin_of_error">
+        Margin of error
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ,
+      <a href="https://en.wikipedia.org/wiki/Variance#Distribution_of_the_sample_variance">
+        Variance#Distribution of the sample variance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , and
+      <a href="https://en.wikipedia.org/wiki/Student&apos;s_t-distribution#Robust_parametric_modeling">
+        Student's t-distribution#Robust parametric modeling
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      The standard deviation we obtain by sampling a distribution is itself not absolutely accurate, both for mathematical reasons (explained here by the confidence interval) and for practical reasons of measurement (measurement error). The mathematical effect can be described by the
+      <a href="https://en.wikipedia.org/wiki/confidence_interval">
+        confidence interval
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      or CI.
+    </p>
+    <p>
+      To show how a larger sample will make the confidence interval narrower, consider the following examples: A small population of
+      <em>
+        N
+      </em>
+      = 2 has only one degree of freedom for estimating the standard deviation. The result is that a 95% CI of the SD runs from 0.45 × SD to 31.9 × SD;
+      <a href="https://en.wikipedia.org/wiki/Confidence_interval#Statistical_theory">
+        the factors here are as follows
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      :
+    </p>
+    <p>
+      where is the
+      <em>
+        p
+      </em>
+      -th quantile of the chi-square distribution with
+      <em>
+        k
+      </em>
+      degrees of freedom, and 1 −
+      <em>
+        α
+      </em>
+      is the confidence level. This is equivalent to the following:
+    </p>
+    <p>
+      With
+      <em>
+        k
+      </em>
+      = 1,
+      <em>
+        q
+      </em>
+      <sub>
+        0.025
+      </sub>
+      = 0.000982 and
+      <em>
+        q
+      </em>
+      <sub>
+        0.975
+      </sub>
+      = 5.024. The reciprocals of the square roots of these two numbers give us the factors 0.45 and 31.9 given above.
+    </p>
+    <p>
+      A larger population of
+      <em>
+        N
+      </em>
+      = 10 has 9 degrees of freedom for estimating the standard deviation. The same computations as above give us in this case a 95% CI running from 0.69 × SD to 1.83 × SD. So even with a sample population of 10, the actual SD can still be almost a factor 2 higher than the sampled SD. For a sample population
+      <em>
+        N
+      </em>
+      = 100, this is down to 0.88 × SD to 1.16 × SD. To be more certain that the sampled SD is close to the actual SD we need to sample a large number of points.
+    </p>
+    <p>
+      These same formulae can be used to obtain confidence intervals on the variance of residuals from a
+      <a href="https://en.wikipedia.org/wiki/least_squares">
+        least squares
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      fit under standard normal theory, where
+      <em>
+        k
+      </em>
+      is now the number of
+      <a href="https://en.wikipedia.org/wiki/Degrees_of_freedom_(statistics)">
+        degrees of freedom
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      for error.
+    </p>
+    <h3>
+      Bounds on standard deviation
+    </h3>
+    <p>
+      For a set of
+      <em>
+        N
+      </em>
+      &gt; 4 data spanning a range of values
+      <em>
+        R
+      </em>
+      , an upper bound on the standard deviation
+      <em>
+        s
+      </em>
+      is given by
+      <em>
+        s
+      </em>
+      = 0.6
+      <em>
+        R
+      </em>
+      . An estimate of the standard deviation for
+      <em>
+        N
+      </em>
+      &gt; 100 data taken to be approximately normal follows from the heuristic that 95% of the area under the normal curve lies roughly two standard deviations to either side of the mean, so that, with 95% probability the total range of values
+      <em>
+        R
+      </em>
+      represents four standard deviations so that
+      <em>
+        s
+      </em>
+      ≈
+      <em>
+        R
+      </em>
+      /4. This so-called range rule is useful in
+      <a href="https://en.wikipedia.org/wiki/sample_size">
+        sample size
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      estimation, as the range of possible values is easier to estimate than the standard deviation. Other divisors
+      <em>
+        K
+      </em>
+      (
+      <em>
+        N
+      </em>
+      ) of the range such that
+      <em>
+        s
+      </em>
+      ≈
+      <em>
+        R
+      </em>
+      /
+      <em>
+        K
+      </em>
+      (
+      <em>
+        N
+      </em>
+      ) are available for other values of
+      <em>
+        N
+      </em>
+      and for non-normal distributions.
+    </p>
+    <h2>
+      Identities and mathematical properties
+    </h2>
+    <p>
+      The standard deviation is invariant under changes in
+      <a href="https://en.wikipedia.org/wiki/location_parameter">
+        location
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , and scales directly with the
+      <a href="https://en.wikipedia.org/wiki/scale_parameter">
+        scale
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of the random variable. Thus, for a constant
+      <em>
+        c
+      </em>
+      and random variables
+      <em>
+        X
+      </em>
+      and
+      <em>
+        Y
+      </em>
+      :
+    </p>
+    <p>
+      The standard deviation of the sum of two random variables can be related to their individual standard deviations and the
+      <a href="https://en.wikipedia.org/wiki/covariance">
+        covariance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      between them:
+    </p>
+    <p>
+      where and stand for variance and
+      <a href="https://en.wikipedia.org/wiki/covariance">
+        covariance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , respectively.
+    </p>
+    <p>
+      The calculation of the sum of squared deviations can be related to
+      <a href="https://en.wikipedia.org/wiki/moment_(mathematics)">
+        moment
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      s calculated directly from the data. In the following formula, the letter
+      <em>
+        E
+      </em>
+      is interpreted to mean expected value, i.e., mean.
+    </p>
+    <p>
+      The sample standard deviation can be computed as:
+    </p>
+    <p>
+      For a finite population with equal probabilities at all points, we have
+    </p>
+    <p>
+      which means that the standard deviation is equal to the square root of the difference between the average of the squares of the values and the square of the average value.
+    </p>
+    <p>
+      See computational formula for the variance for proof, and for an analogous result for the sample standard deviation.
+    </p>
+    <h2>
+      Interpretation and application
+    </h2>
+    <p>
+      Further information:
+      <a href="https://en.wikipedia.org/wiki/Prediction_interval">
+        Prediction interval
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      and
+      <a href="https://en.wikipedia.org/wiki/Confidence_interval">
+        Confidence interval
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+    </p>
+    <p>
+      A large standard deviation indicates that the data points can spread far from the mean and a small standard deviation indicates that they are clustered closely around the mean.
+    </p>
+    <p>
+      For example, each of the three populations {0, 0, 14, 14}, {0, 6, 8, 14} and {6, 6, 8, 8} has a mean of 7. Their standard deviations are 7, 5, and 1, respectively. The third population has a much smaller standard deviation than the other two because its values are all close to 7. These standard deviations have the same units as the data points themselves. If, for instance, the data set {0, 6, 8, 14} represents the ages of a population of four siblings in years, the standard deviation is 5 years. As another example, the population {1000, 1006, 1008, 1014} may represent the distances traveled by four athletes, measured in meters. It has a mean of 1007 meters, and a standard deviation of 5 meters.
+    </p>
+    <p>
+      Standard deviation may serve as a measure of uncertainty. In physical science, for example, the reported standard deviation of a group of repeated
+      <a href="https://en.wikipedia.org/wiki/measurement">
+        measurement
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      s gives the
+      <a href="https://en.wikipedia.org/wiki/accuracy_and_precision">
+        precision
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of those measurements. When deciding whether measurements agree with a theoretical prediction, the standard deviation of those measurements is of crucial importance: if the mean of the measurements is too far away from the prediction (with the distance measured in standard deviations), then the theory being tested probably needs to be revised. This makes sense since they fall outside the range of values that could reasonably be expected to occur if the prediction were correct and the standard deviation appropriately quantified. See
+      <a href="https://en.wikipedia.org/wiki/prediction_interval">
+        prediction interval
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <p>
+      While the standard deviation does measure how far typical values tend to be from the mean, other measures are available. An example is the
+      <a href="https://en.wikipedia.org/wiki/mean_absolute_deviation">
+        mean absolute deviation
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , which might be considered a more direct measure of average distance, compared to the
+      <a href="https://en.wikipedia.org/wiki/Root-mean-square_deviation">
+        root mean square distance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      inherent in the standard deviation.
+    </p>
+    <h3>
+      Application examples
+    </h3>
+    <p>
+      The practical value of understanding the standard deviation of a set of values is in appreciating how much variation there is from the average (mean).
+    </p>
+    <h4>
+      Experiment, industrial and hypothesis testing
+    </h4>
+    <p>
+      Standard deviation is often used to compare real-world data against a model to test the model. For example, in industrial applications the weight of products coming off a production line may need to comply with a legally required value. By weighing some fraction of the products an average weight can be found, which will always be slightly different from the long-term average. By using standard deviations, a minimum and maximum value can be calculated that the averaged weight will be within some very high percentage of the time (99.9% or more). If it falls outside the range then the production process may or not need to be corrected. Statistical tests such as these are particularly important when the testing is relatively expensive. For example, if the product needs to be opened and drained and weighed, or if the product was otherwise used up by the test.
+    </p>
+    <p>
+      In experimental science, a theoretical model of reality is used.
+      <a href="https://en.wikipedia.org/wiki/Particle_physics">
+        Particle physics
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      conventionally uses a standard of "
+      <strong>
+        5 sigma
+      </strong>
+      " for the declaration of a discovery. A five-sigma level translates to one chance in 3.5 million that a random fluctuation would yield the result. For example, this level of certainty was required by each of two independent particle physics experiments at
+      <a href="https://en.wikipedia.org/wiki/CERN">
+        CERN
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      in order to announce that the
+      <a href="https://en.wikipedia.org/wiki/Higgs_boson">
+        Higgs boson
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      had been discovered, or by the
+      <a href="https://en.wikipedia.org/wiki/LIGO_Scientific_Collaboration">
+        LIGO Scientific Collaboration
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      to
+      <a href="https://en.wikipedia.org/wiki/First_observation_of_gravitational_waves">
+        conclusively confirm
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      the existence of
+      <a href="https://en.wikipedia.org/wiki/gravitational_wave">
+        gravitational wave
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      s.
+    </p>
+    <h4>
+      Weather
+    </h4>
+    <p>
+      As a simple example, consider the average daily maximum temperatures for two cities, one inland and one on the coast. It is helpful to understand that the range of daily maximum temperatures for cities near the coast is smaller than for cities inland. Thus, while these two cities may each have the same average maximum temperature, the standard deviation of the daily maximum temperature for the coastal city will be less than that of the inland city as, on any particular day, the actual maximum temperature is more likely to be farther from the average maximum temperature for the inland city than for the coastal one.
+    </p>
+    <h4>
+      Finance
+    </h4>
+    <p>
+      In finance, standard deviation is often used as a measure of the
+      <a href="https://en.wikipedia.org/wiki/Risk#Finance">
+        risk
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      associated with price-fluctuations of a given asset (stocks, bonds, property, etc.), or the risk of a portfolio of assets (actively managed mutual funds, index mutual funds, or ETFs). Risk is an important factor in determining how to efficiently manage a portfolio of investments because it determines the variation in returns on the asset or portfolio and gives investors a mathematical basis for investment decisions (known as
+      <a href="https://en.wikipedia.org/wiki/Modern_portfolio_theory">
+        mean-variance optimization
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ). The fundamental concept of risk is that as it increases, the expected return on an investment should increase as well, an increase known as the risk premium. In other words, investors should expect a higher return on an investment when that investment carries a higher level of risk or uncertainty. When evaluating investments, investors should estimate both the expected return and the uncertainty of future returns. Standard deviation provides a quantified estimate of the uncertainty of future returns.
+    </p>
+    <p>
+      For example, assume an investor had to choose between two stocks. Stock A over the past 20 years had an average return of 10 percent, with a standard deviation of 20
+      <a href="https://en.wikipedia.org/wiki/percentage_point">
+        percentage point
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      s (pp) and Stock B, over the same period, had average returns of 12 percent but a higher standard deviation of 30 pp. On the basis of risk and return, an investor may decide that Stock A is the safer choice, because Stock B's additional two percentage points of return is not worth the additional 10 pp standard deviation (greater risk or uncertainty of the expected return). Stock B is likely to fall short of the initial investment (but also to exceed the initial investment) more often than Stock A under the same circumstances, and is estimated to return only two percent more on average. In this example, Stock A is expected to earn about 10 percent, plus or minus 20 pp (a range of 30 percent to −10 percent), about two-thirds of the future year returns. When considering more extreme possible returns or outcomes in future, an investor should expect results of as much as 10 percent plus or minus 60 pp, or a range from 70 percent to −50 percent, which includes outcomes for three standard deviations from the average return (about 99.7 percent of probable returns).
+    </p>
+    <p>
+      Calculating the average (or arithmetic mean) of the return of a security over a given period will generate the expected return of the asset. For each period, subtracting the expected return from the actual return results in the difference from the mean. Squaring the difference in each period and taking the average gives the overall variance of the return of the asset. The larger the variance, the greater risk the security carries. Finding the square root of this variance will give the standard deviation of the investment tool in question.
+    </p>
+    <p>
+      Financial time series are known to be non-stationary series, whereas the statistical calculations above, such as standard deviation, apply only to stationary series. To apply the above statistical tools to non-stationary series, the series first must be transformed to a stationary series, enabling use of statistical tools that now have a valid basis from which to work.
+    </p>
+    <h3>
+      Geometric interpretation
+    </h3>
+    <p>
+      To gain some geometric insights and clarification, we will start with a population of three values,
+      <em>
+        x
+      </em>
+      <sub>
+        1
+      </sub>
+      ,
+      <em>
+        x
+      </em>
+      <sub>
+        2
+      </sub>
+      ,
+      <em>
+        x
+      </em>
+      <sub>
+        3
+      </sub>
+      . This defines a point
+      <em>
+        P
+      </em>
+      = (
+      <em>
+        x
+      </em>
+      <sub>
+        1
+      </sub>
+      ,
+      <em>
+        x
+      </em>
+      <sub>
+        2
+      </sub>
+      ,
+      <em>
+        x
+      </em>
+      <sub>
+        3
+      </sub>
+      ) in
+      <strong>
+        R
+      </strong>
+      <sup>
+        3
+      </sup>
+      . Consider the line
+      <em>
+        L
+      </em>
+      = {(
+      <em>
+        r
+      </em>
+      ,
+      <em>
+        r
+      </em>
+      ,
+      <em>
+        r
+      </em>
+      ) :
+      <em>
+        r
+      </em>
+      ∈
+      <strong>
+        R
+      </strong>
+      }. This is the "main diagonal" going through the origin. If our three given values were all equal, then the standard deviation would be zero and
+      <em>
+        P
+      </em>
+      would lie on
+      <em>
+        L
+      </em>
+      . So it is not unreasonable to assume that the standard deviation is related to the
+      <em>
+        distance
+      </em>
+      of
+      <em>
+        P
+      </em>
+      to
+      <em>
+        L
+      </em>
+      . That is indeed the case. To move orthogonally from
+      <em>
+        L
+      </em>
+      to the point
+      <em>
+        P
+      </em>
+      , one begins at the point:
+    </p>
+    <p>
+      whose coordinates are the mean of the values we started out with.
+    </p>
+    <p>
+      <strong>
+        Derivation of
+      </strong>
+    </p>
+    <p>
+      is on therefore for some .
+    </p>
+    <p>
+      The line
+      <em>
+        L
+      </em>
+      is to be orthogonal to the vector from
+      <em>
+        M
+      </em>
+      to
+      <em>
+        P
+      </em>
+      . Therefore:
+    </p>
+    <p>
+      A little algebra shows that the distance between
+      <em>
+        P
+      </em>
+      and
+      <em>
+        M
+      </em>
+      (which is the same as the
+      <a href="https://en.wikipedia.org/wiki/orthogonal_distance">
+        orthogonal distance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      between
+      <em>
+        P
+      </em>
+      and the line
+      <em>
+        L
+      </em>
+      ) is equal to the standard deviation of the vector (
+      <em>
+        x
+      </em>
+      <sub>
+        1
+      </sub>
+      ,
+      <em>
+        x
+      </em>
+      <sub>
+        2
+      </sub>
+      ,
+      <em>
+        x
+      </em>
+      <sub>
+        3
+      </sub>
+      ), multiplied by the square root of the number of dimensions of the vector (3 in this case).
+    </p>
+    <h3>
+      Chebyshev's inequality
+    </h3>
+    <p>
+      Main article:
+      <a href="https://en.wikipedia.org/wiki/Chebyshev&apos;s_inequality">
+        Chebyshev's inequality
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      An observation is rarely more than a few standard deviations away from the mean. Chebyshev's inequality ensures that, for all distributions for which the standard deviation is defined, the amount of data within a number of standard deviations of the mean is at least as much as given in the following table.
+    </p>
     <table class="wikitable">
-  <thead>
-    <tr>
-      <th>Distance from mean</th>
-      <th>Minimum population</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td></td>
-      <td>50%</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>75%</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>89%</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>94%</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>96%</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>97%</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-    </tr>
-  </tbody>
-</table>
-    <h3>Rules for normally distributed data</h3>
-    <p>The <a href="https://en.wikipedia.org/wiki/central_limit_theorem">central limit theorem</a><span class="external-link">↗</span> states that the distribution of an average of many independent, identically distributed random variables tends toward the famous bell-shaped normal distribution with a <a href="https://en.wikipedia.org/wiki/probability_density_function">probability density function</a><span class="external-link">↗</span> of</p>
-    <p>where <em>μ</em> is the <a href="https://en.wikipedia.org/wiki/expected_value">expected value</a><span class="external-link">↗</span> of the random variables, <em>σ</em> equals their distribution's standard deviation divided by <em>n</em><sup>1/2</sup>, and <em>n</em> is the number of random variables. The standard deviation therefore is simply a scaling variable that adjusts how broad the curve will be, though it also appears in the <a href="https://en.wikipedia.org/wiki/normalizing_constant">normalizing constant</a><span class="external-link">↗</span>.</p>
-    <p>If a data distribution is approximately normal, then the proportion of data values within <em>z</em> standard deviations of the mean is defined by:</p>
-    <p>where is the <a href="https://en.wikipedia.org/wiki/error_function">error function</a><span class="external-link">↗</span>. The proportion that is less than or equal to a number, <em>x</em>, is given by the <a href="https://en.wikipedia.org/wiki/cumulative_distribution_function">cumulative distribution function</a><span class="external-link">↗</span>:</p>
-    <p>If a data distribution is approximately normal then about 68 percent of the data values are within one standard deviation of the mean (mathematically, <em>μ</em> ± <em>σ</em>, where <em>μ</em> is the arithmetic mean), about 95 percent are within two standard deviations (<em>μ</em> ± 2<em>σ</em>), and about 99.7 percent lie within three standard deviations (<em>μ</em> ± 3<em>σ</em>). This is known as the <em><a href="https://en.wikipedia.org/wiki/68–95–99.7_rule">68–95–99.7 rule</a><span class="external-link">↗</span></em>, or <em>the empirical rule</em>.</p>
-    <p>For various values of <em>z</em>, the percentage of values expected to lie in and outside the symmetric interval, <var>CI</var> = (−<em>z<strong>'σ</em>, <em>z</strong>'σ</em>), are as follows:</p>
+      <thead>
+        <tr>
+          <th>
+            Distance from mean
+          </th>
+          <th>
+            Minimum population
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td/>
+          <td>
+            50%
+          </td>
+        </tr>
+        <tr>
+          <td/>
+          <td>
+            75%
+          </td>
+        </tr>
+        <tr>
+          <td/>
+          <td>
+            89%
+          </td>
+        </tr>
+        <tr>
+          <td/>
+          <td>
+            94%
+          </td>
+        </tr>
+        <tr>
+          <td/>
+          <td>
+            96%
+          </td>
+        </tr>
+        <tr>
+          <td/>
+          <td>
+            97%
+          </td>
+        </tr>
+        <tr>
+          <td/>
+          <td/>
+        </tr>
+        <tr>
+          <td/>
+          <td/>
+        </tr>
+      </tbody>
+    </table>
+    <h3>
+      Rules for normally distributed data
+    </h3>
+    <p>
+      The
+      <a href="https://en.wikipedia.org/wiki/central_limit_theorem">
+        central limit theorem
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      states that the distribution of an average of many independent, identically distributed random variables tends toward the famous bell-shaped normal distribution with a
+      <a href="https://en.wikipedia.org/wiki/probability_density_function">
+        probability density function
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of
+    </p>
+    <p>
+      where
+      <em>
+        μ
+      </em>
+      is the
+      <a href="https://en.wikipedia.org/wiki/expected_value">
+        expected value
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of the random variables,
+      <em>
+        σ
+      </em>
+      equals their distribution's standard deviation divided by
+      <em>
+        n
+      </em>
+      <sup>
+        1/2
+      </sup>
+      , and
+      <em>
+        n
+      </em>
+      is the number of random variables. The standard deviation therefore is simply a scaling variable that adjusts how broad the curve will be, though it also appears in the
+      <a href="https://en.wikipedia.org/wiki/normalizing_constant">
+        normalizing constant
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <p>
+      If a data distribution is approximately normal, then the proportion of data values within
+      <em>
+        z
+      </em>
+      standard deviations of the mean is defined by:
+    </p>
+    <p>
+      where is the
+      <a href="https://en.wikipedia.org/wiki/error_function">
+        error function
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . The proportion that is less than or equal to a number,
+      <em>
+        x
+      </em>
+      , is given by the
+      <a href="https://en.wikipedia.org/wiki/cumulative_distribution_function">
+        cumulative distribution function
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      :
+    </p>
+    <p>
+      If a data distribution is approximately normal then about 68 percent of the data values are within one standard deviation of the mean (mathematically,
+      <em>
+        μ
+      </em>
+      ±
+      <em>
+        σ
+      </em>
+      , where
+      <em>
+        μ
+      </em>
+      is the arithmetic mean), about 95 percent are within two standard deviations (
+      <em>
+        μ
+      </em>
+      ± 2
+      <em>
+        σ
+      </em>
+      ), and about 99.7 percent lie within three standard deviations (
+      <em>
+        μ
+      </em>
+      ± 3
+      <em>
+        σ
+      </em>
+      ). This is known as the
+      <em>
+        <a href="https://en.wikipedia.org/wiki/68–95–99.7_rule">
+          68–95–99.7 rule
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </em>
+      , or
+      <em>
+        the empirical rule
+      </em>
+      .
+    </p>
+    <p>
+      For various values of
+      <em>
+        z
+      </em>
+      , the percentage of values expected to lie in and outside the symmetric interval,
+      <var>
+        CI
+      </var>
+      = (−
+      <em>
+        z
+      </em>
+      <em>
+        σ
+      </em>
+      ,
+      <em>
+        z
+      </em>
+      <em>
+        σ
+      </em>
+      ), are as follows:
+    </p>
     <table class="wikitable">
-  <thead>
-    <tr>
-      <th>Confidence</th>
-      <th>Proportion within</th>
-      <th>Proportion without</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Percentage</th>
-      <th>Percentage</th>
-      <th>Fraction</th>
-    </tr>
-    <tr>
-      <td>0.318639<em>σ</em></td>
-      <td>25%</td>
-      <td>75%</td>
-      <td>3 / 4</td>
-    </tr>
-    <tr>
-      <td>0.674490<em>σ</em></td>
-      <td>50%</td>
-      <td>50%</td>
-      <td>1 / 2</td>
-    </tr>
-    <tr>
-      <td><em>σ</em></td>
-      <td>66.6667%</td>
-      <td>33.3333%</td>
-      <td>1 / 3</td>
-    </tr>
-    <tr>
-      <td>0.994458<em>σ</em></td>
-      <td>68%</td>
-      <td>32%</td>
-      <td>1 / 3.125</td>
-    </tr>
-    <tr>
-      <td>1<em>σ</em></td>
-      <td>68.2689492%</td>
-      <td>31.7310508%</td>
-      <td>1 / 3.1514872</td>
-    </tr>
-    <tr>
-      <td>1.281552<em>σ</em></td>
-      <td>80%</td>
-      <td>20%</td>
-      <td>1 / 5</td>
-    </tr>
-    <tr>
-      <td>1.644854<em>σ</em></td>
-      <td>90%</td>
-      <td>10%</td>
-      <td>1 / 10</td>
-    </tr>
-    <tr>
-      <td>1.959964<em>σ</em></td>
-      <td>95%</td>
-      <td>5%</td>
-      <td>1 / 20</td>
-    </tr>
-    <tr>
-      <td>2<em>σ</em></td>
-      <td>95.4499736%</td>
-      <td>4.5500264%</td>
-      <td>1 / 21.977895</td>
-    </tr>
-    <tr>
-      <td>2.575829<em>σ</em></td>
-      <td>99%</td>
-      <td>1%</td>
-      <td>1 / 100</td>
-    </tr>
-    <tr>
-      <td>3<em>σ</em></td>
-      <td>99.7300204%</td>
-      <td>0.2699796%</td>
-      <td>1 / 370.398</td>
-    </tr>
-    <tr>
-      <td>3.290527<em>σ</em></td>
-      <td>99.9%</td>
-      <td>0.1%</td>
-      <td>1 / 1000</td>
-    </tr>
-    <tr>
-      <td>3.890592<em>σ</em></td>
-      <td>99.99%</td>
-      <td>0.01%</td>
-      <td>1 / 10000</td>
-    </tr>
-    <tr>
-      <td>4<em>σ</em></td>
-      <td>99.993666%</td>
-      <td>0.006334%</td>
-      <td>1 / 15787</td>
-    </tr>
-    <tr>
-      <td>4.417173<em>σ</em></td>
-      <td>99.999%</td>
-      <td>0.001%</td>
-      <td>1 / 100000</td>
-    </tr>
-    <tr>
-      <td>4.5<em>σ</em></td>
-      <td>99.999 320 465 3751%</td>
-      <td>0.000 679 534 6249%</td>
-      <td>1 / 147159.5358</td>
-    </tr>
-    <tr>
-      <td>4.891638<em>σ</em></td>
-      <td>99.9999%</td>
-      <td>0.0001%</td>
-      <td>1 / 1000000</td>
-    </tr>
-    <tr>
-      <td>5<em>σ</em></td>
-      <td>99.9999426697%</td>
-      <td>0.0000573303%</td>
-      <td>1 / 1744278</td>
-    </tr>
-    <tr>
-      <td>5.326724<em>σ</em></td>
-      <td>99.99999%</td>
-      <td>0.00001%</td>
-      <td>1 / 10000000</td>
-    </tr>
-    <tr>
-      <td>5.730729<em>σ</em></td>
-      <td>99.999999%</td>
-      <td>0.000001%</td>
-      <td>1 / 100000000</td>
-    </tr>
-    <tr>
-      <td><a href="https://en.wikipedia.org/wiki/Six_Sigma#Sigma_levels">6<em>σ</em></a><span class="external-link">↗</span></td>
-      <td>99.9999998027%</td>
-      <td>0.0000001973%</td>
-      <td>1 / 506797346</td>
-    </tr>
-    <tr>
-      <td>6.109410<em>σ</em></td>
-      <td>99.9999999%</td>
-      <td>0.0000001%</td>
-      <td>1 / 1000000000</td>
-    </tr>
-    <tr>
-      <td>6.466951<em>σ</em></td>
-      <td>99.99999999%</td>
-      <td>0.00000001%</td>
-      <td>1 / 10000000000</td>
-    </tr>
-    <tr>
-      <td>6.806502<em>σ</em></td>
-      <td>99.999999999%</td>
-      <td>0.000000001%</td>
-      <td>1 / 100000000000</td>
-    </tr>
-    <tr>
-      <td>7<em>σ</em></td>
-      <td>99.999 999 999 7440%</td>
-      <td>0.000000000256%</td>
-      <td>1 / 390682215445</td>
-    </tr>
-  </tbody>
-</table>
-    <h2>Standard deviation matrix</h2>
-    <p>The standard deviation matrix is the extension of the standard deviation to multiple dimensions. It is the <a href="https://en.wikipedia.org/wiki/Square_root_of_a_matrix">symmetric square root</a><span class="external-link">↗</span> of the covariance matrix .</p>
-    <p>linearly scales a random vector in multiple dimensions in the same way that does in one dimension. A scalar random variable with variance can be written as , where has unit variance. In the same way, a random vector in several dimensions with covariance can be written as , where is a normalized variable with identity covariance . This requires that . There are then infinite solutions for , and consequently there are multiple ways to whiten the distribution. The symmetric square root of is one of the solutions.</p>
-    <p>For example, a multivariate normal vector can be defined as , where is the multivariate standard normal.</p>
-    <h3>Properties</h3>
+      <thead>
+        <tr>
+          <th>
+            Confidence
+          </th>
+          <th>
+            Proportion within
+          </th>
+          <th>
+            Proportion without
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>
+            Percentage
+          </th>
+          <th>
+            Percentage
+          </th>
+          <th>
+            Fraction
+          </th>
+        </tr>
+        <tr>
+          <td>
+            0.318639
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            25%
+          </td>
+          <td>
+            75%
+          </td>
+          <td>
+            3 / 4
+          </td>
+        </tr>
+        <tr>
+          <td>
+            0.674490
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            50%
+          </td>
+          <td>
+            50%
+          </td>
+          <td>
+            1 / 2
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            66.6667%
+          </td>
+          <td>
+            33.3333%
+          </td>
+          <td>
+            1 / 3
+          </td>
+        </tr>
+        <tr>
+          <td>
+            0.994458
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            68%
+          </td>
+          <td>
+            32%
+          </td>
+          <td>
+            1 / 3.125
+          </td>
+        </tr>
+        <tr>
+          <td>
+            1
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            68.2689492%
+          </td>
+          <td>
+            31.7310508%
+          </td>
+          <td>
+            1 / 3.1514872
+          </td>
+        </tr>
+        <tr>
+          <td>
+            1.281552
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            80%
+          </td>
+          <td>
+            20%
+          </td>
+          <td>
+            1 / 5
+          </td>
+        </tr>
+        <tr>
+          <td>
+            1.644854
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            90%
+          </td>
+          <td>
+            10%
+          </td>
+          <td>
+            1 / 10
+          </td>
+        </tr>
+        <tr>
+          <td>
+            1.959964
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            95%
+          </td>
+          <td>
+            5%
+          </td>
+          <td>
+            1 / 20
+          </td>
+        </tr>
+        <tr>
+          <td>
+            2
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            95.4499736%
+          </td>
+          <td>
+            4.5500264%
+          </td>
+          <td>
+            1 / 21.977895
+          </td>
+        </tr>
+        <tr>
+          <td>
+            2.575829
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99%
+          </td>
+          <td>
+            1%
+          </td>
+          <td>
+            1 / 100
+          </td>
+        </tr>
+        <tr>
+          <td>
+            3
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99.7300204%
+          </td>
+          <td>
+            0.2699796%
+          </td>
+          <td>
+            1 / 370.398
+          </td>
+        </tr>
+        <tr>
+          <td>
+            3.290527
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99.9%
+          </td>
+          <td>
+            0.1%
+          </td>
+          <td>
+            1 / 1000
+          </td>
+        </tr>
+        <tr>
+          <td>
+            3.890592
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99.99%
+          </td>
+          <td>
+            0.01%
+          </td>
+          <td>
+            1 / 10000
+          </td>
+        </tr>
+        <tr>
+          <td>
+            4
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99.993666%
+          </td>
+          <td>
+            0.006334%
+          </td>
+          <td>
+            1 / 15787
+          </td>
+        </tr>
+        <tr>
+          <td>
+            4.417173
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99.999%
+          </td>
+          <td>
+            0.001%
+          </td>
+          <td>
+            1 / 100000
+          </td>
+        </tr>
+        <tr>
+          <td>
+            4.5
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99.999 320 465 3751%
+          </td>
+          <td>
+            0.000 679 534 6249%
+          </td>
+          <td>
+            1 / 147159.5358
+          </td>
+        </tr>
+        <tr>
+          <td>
+            4.891638
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99.9999%
+          </td>
+          <td>
+            0.0001%
+          </td>
+          <td>
+            1 / 1000000
+          </td>
+        </tr>
+        <tr>
+          <td>
+            5
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99.9999426697%
+          </td>
+          <td>
+            0.0000573303%
+          </td>
+          <td>
+            1 / 1744278
+          </td>
+        </tr>
+        <tr>
+          <td>
+            5.326724
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99.99999%
+          </td>
+          <td>
+            0.00001%
+          </td>
+          <td>
+            1 / 10000000
+          </td>
+        </tr>
+        <tr>
+          <td>
+            5.730729
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99.999999%
+          </td>
+          <td>
+            0.000001%
+          </td>
+          <td>
+            1 / 100000000
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://en.wikipedia.org/wiki/Six_Sigma#Sigma_levels">
+              6
+              <em>
+                σ
+              </em>
+            </a>
+            <span class="external-link">
+              ↗
+            </span>
+          </td>
+          <td>
+            99.9999998027%
+          </td>
+          <td>
+            0.0000001973%
+          </td>
+          <td>
+            1 / 506797346
+          </td>
+        </tr>
+        <tr>
+          <td>
+            6.109410
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99.9999999%
+          </td>
+          <td>
+            0.0000001%
+          </td>
+          <td>
+            1 / 1000000000
+          </td>
+        </tr>
+        <tr>
+          <td>
+            6.466951
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99.99999999%
+          </td>
+          <td>
+            0.00000001%
+          </td>
+          <td>
+            1 / 10000000000
+          </td>
+        </tr>
+        <tr>
+          <td>
+            6.806502
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99.999999999%
+          </td>
+          <td>
+            0.000000001%
+          </td>
+          <td>
+            1 / 100000000000
+          </td>
+        </tr>
+        <tr>
+          <td>
+            7
+            <em>
+              σ
+            </em>
+          </td>
+          <td>
+            99.999 999 999 7440%
+          </td>
+          <td>
+            0.000000000256%
+          </td>
+          <td>
+            1 / 390682215445
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2>
+      Standard deviation matrix
+    </h2>
+    <p>
+      The standard deviation matrix is the extension of the standard deviation to multiple dimensions. It is the
+      <a href="https://en.wikipedia.org/wiki/Square_root_of_a_matrix">
+        symmetric square root
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of the covariance matrix .
+    </p>
+    <p>
+      linearly scales a random vector in multiple dimensions in the same way that does in one dimension. A scalar random variable with variance can be written as , where has unit variance. In the same way, a random vector in several dimensions with covariance can be written as , where is a normalized variable with identity covariance . This requires that . There are then infinite solutions for , and consequently there are multiple ways to whiten the distribution. The symmetric square root of is one of the solutions.
+    </p>
+    <p>
+      For example, a multivariate normal vector can be defined as , where is the multivariate standard normal.
+    </p>
+    <h3>
+      Properties
+    </h3>
     <ul>
-    <li>The eigenvectors and eigenvalues of correspond to the axes of the 1 sd error ellipsoid of the multivariate normal distribution. See <em><a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Geometric_interpretation">Multivariate normal distribution: geometric interpretation</a><span class="external-link">↗</span></em>.</li>
-    <li>The standard deviation of the <em>projection</em> of the multivariate distribution (i.e. the marginal distribution) on to a line in the direction of the unit vector equals .</li>
-    <li>The standard deviation of a <em>slice</em> of the multivariate distribution (i.e. the conditional distribution) along the line in the direction of the unit vector equals .</li>
-    <li>The <a href="https://en.wikipedia.org/wiki/Sensitivity_index">discriminability index</a><span class="external-link">↗</span> between two equal-covariance distributions is their <a href="https://en.wikipedia.org/wiki/Mahalanobis_distance">Mahalanobis distance</a><span class="external-link">↗</span>, which can also be expressed in terms of the sd matrix: , where is the mean-difference vector.</li>
-    <li>Since scales a normalized variable, it can be used to invert the transformation, and make it decorrelated and unit-variance: has zero mean and identity covariance. This is called the <a href="https://en.wikipedia.org/wiki/Whitening_transformation">Mahalanobis whitening transform</a><span class="external-link">↗</span>.</li>
+      <li>
+        The eigenvectors and eigenvalues of correspond to the axes of the 1 sd error ellipsoid of the multivariate normal distribution. See
+        <em>
+          <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Geometric_interpretation">
+            Multivariate normal distribution: geometric interpretation
+          </a>
+          <span class="external-link">
+            ↗
+          </span>
+        </em>
+        .
+      </li>
+      <li>
+        The standard deviation of the
+        <em>
+          projection
+        </em>
+        of the multivariate distribution (i.e. the marginal distribution) on to a line in the direction of the unit vector equals .
+      </li>
+      <li>
+        The standard deviation of a
+        <em>
+          slice
+        </em>
+        of the multivariate distribution (i.e. the conditional distribution) along the line in the direction of the unit vector equals .
+      </li>
+      <li>
+        The
+        <a href="https://en.wikipedia.org/wiki/Sensitivity_index">
+          discriminability index
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        between two equal-covariance distributions is their
+        <a href="https://en.wikipedia.org/wiki/Mahalanobis_distance">
+          Mahalanobis distance
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        , which can also be expressed in terms of the sd matrix: , where is the mean-difference vector.
+      </li>
+      <li>
+        Since scales a normalized variable, it can be used to invert the transformation, and make it decorrelated and unit-variance: has zero mean and identity covariance. This is called the
+        <a href="https://en.wikipedia.org/wiki/Whitening_transformation">
+          Mahalanobis whitening transform
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+      </li>
     </ul>
-    <h2>Relationship between standard deviation and mean</h2>
-    <p>The mean and the standard deviation of a set of data are <a href="https://en.wikipedia.org/wiki/descriptive_statistics">descriptive statistics</a><span class="external-link">↗</span> usually reported together. In a certain sense, the standard deviation is a "natural" measure of <a href="https://en.wikipedia.org/wiki/statistical_dispersion">statistical dispersion</a><span class="external-link">↗</span> if the center of the data is measured about the mean. This is because the standard deviation from the mean is smaller than from any other point. The precise statement is the following: suppose <em>x</em><sub>1</sub>, ..., <em>x</em><sub><em>n</em></sub> are real numbers and define the function:</p>
-    <p>Using <a href="https://en.wikipedia.org/wiki/calculus">calculus</a><span class="external-link">↗</span> or by <a href="https://en.wikipedia.org/wiki/completing_the_square">completing the square</a><span class="external-link">↗</span>, it is possible to show that <em>σ</em>(<em>r</em>) has a unique minimum at the mean:</p>
-    <p>Variability can also be measured by the <a href="https://en.wikipedia.org/wiki/coefficient_of_variation">coefficient of variation</a><span class="external-link">↗</span>, which is the ratio of the standard deviation to the mean. It is a <a href="https://en.wikipedia.org/wiki/dimensionless_number">dimensionless number</a><span class="external-link">↗</span>.</p>
-    <h3>Standard deviation of the mean</h3>
-    <p>Main article: <a href="https://en.wikipedia.org/wiki/Standard_error_of_the_mean">Standard error of the mean</a><span class="external-link">↗</span> Often, we want some information about the precision of the mean we obtained. We can obtain this by determining the standard deviation of the sampled mean. Assuming statistical independence of the values in the sample, the <strong>standard deviation of the mean</strong> (<strong>SDOM</strong>) is related to the standard deviation of the distribution by:</p>
-    <p>where <em>N</em> is the number of observations in the sample used to estimate the mean. This can easily be proven with (see <a href="https://en.wikipedia.org/wiki/Variance#Propagation">basic properties of the variance</a><span class="external-link">↗</span>):</p>
-    <p>(Statistical independence is assumed.)</p>
-    <p>hence</p>
-    <p>Resulting in:</p>
-    <p>In order to estimate the standard deviation of the mean <em>σ</em><sub>mean</sub> it is necessary to know the standard deviation of the entire population <em>σ</em> beforehand. However, in most applications this parameter is unknown. For example, if a series of 10 measurements of a previously unknown quantity is performed in a laboratory, it is possible to calculate the resulting sample mean and sample standard deviation, but it is impossible to calculate the standard deviation of the mean. However, one can estimate the standard deviation of the entire population from the sample, and thus obtain an estimate for the standard error of the mean.</p>
-    <h2>Rapid calculation methods</h2>
-    <p>See also: <a href="https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance">Algorithms for calculating variance</a><span class="external-link">↗</span> The following two formulas can represent a running (repeatedly updated) standard deviation. A set of two power sums <em>s</em><sub>1</sub> and <em>s</em><sub>2</sub> are computed over a set of <em>N</em> values of <em>x</em>, denoted as <em>x</em><sub>1</sub>, ..., <em>x</em><sub><em>N</em></sub>:</p>
-    <p>Given the results of these running summations, the values <em>N</em>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub> can be used at any time to compute the <em>current</em> value of the running standard deviation:</p>
-    <p>Where <em>N</em>, as mentioned above, is the size of the set of values (or can also be regarded as <em>s</em><sub>0</sub>).</p>
-    <p>Similarly for sample standard deviation,</p>
-    <p>In a computer implementation, as the two <em>s</em><sub><em>j</em></sub> sums become large, we need to consider <a href="https://en.wikipedia.org/wiki/round-off_error">round-off error</a><span class="external-link">↗</span>, <a href="https://en.wikipedia.org/wiki/arithmetic_overflow">arithmetic overflow</a><span class="external-link">↗</span>, and <a href="https://en.wikipedia.org/wiki/arithmetic_underflow">arithmetic underflow</a><span class="external-link">↗</span>. The method below calculates the running sums method with reduced rounding errors. This is a "one pass" algorithm for calculating variance of <em>n</em> samples without the need to store prior data during the calculation. Applying this method to a time series will result in successive values of standard deviation corresponding to <em>n</em> data points as <em>n</em> grows larger with each new sample, rather than a constant-width sliding window calculation.</p>
-    <p>For <em>k</em> = 1, ..., <em>n</em>:</p>
-    <p>where <em>A</em> is the mean value.</p>
-    <p>Note: <em>Q</em><sub>1</sub> = 0 since <em>k</em> − 1 = 0 or <em>x</em><sub>1</sub> = <em>A</em><sub>1</sub>.</p>
-    <p>Sample variance:</p>
-    <p>Population variance:</p>
-    <h3>Weighted calculation</h3>
-    <p>When the values are weighted with unequal weights , the power sums <em>s</em><sub>0</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub> are each computed as:</p>
-    <p>And the standard deviation equations remain unchanged. <em>s</em><sub>0</sub> is now the sum of the weights and not the number of samples <em>N</em>.</p>
-    <p>The incremental method with reduced rounding errors can also be applied, with some additional complexity.</p>
-    <p>A running sum of weights must be computed for each <em>k</em> from 1 to <em>n</em>:</p>
-    <p>and places where 1/<em>k</em> is used above must be replaced by :</p>
-    <p>In the final division,</p>
-    <p>and</p>
-    <p>or</p>
-    <p>where <em>n</em> is the total number of elements, and <em>{{prime|n}}</em> is the number of elements with non-zero weights.</p>
-    <p>The above formulas become equal to the simpler formulas given above if weights are taken as equal to one.</p>
-    <h2>History</h2>
-    <p>The term <em>standard deviation</em> was first used in writing by <a href="https://en.wikipedia.org/wiki/Karl_Pearson">Karl Pearson</a><span class="external-link">↗</span> in 1894, following his use of it in lectures. This was as a replacement for earlier alternative names for the same idea: for example, <a href="https://en.wikipedia.org/wiki/Carl_Friedrich_Gauss">Gauss</a><span class="external-link">↗</span> used <em>mean error</em>.</p>
-    <h2>Standard deviation index</h2>
-    <p>The standard deviation index (SDI) is used in <a href="https://en.wikipedia.org/wiki/external_quality_assessment">external quality assessment</a><span class="external-link">↗</span>s, particularly for <a href="https://en.wikipedia.org/wiki/medical_laboratory">medical laboratories</a><span class="external-link">↗</span>. It is calculated as:</p>
-    <h2>Alternatives</h2>
-    <p>See also: <a href="https://en.wikipedia.org/wiki/Deviation_(statistics)#Dispersion">Deviation (statistics)#Dispersion</a><span class="external-link">↗</span> Standard deviation is <a href="https://en.wikipedia.org/wiki/algebra">algebra</a><span class="external-link">↗</span>ically simpler, though in practice less <a href="https://en.wikipedia.org/wiki/Robust_statistics">robust</a><span class="external-link">↗</span>, than the <a href="https://en.wikipedia.org/wiki/average_absolute_deviation">average absolute deviation</a><span class="external-link">↗</span>.</p>
-    <h2>See also</h2>
+    <h2>
+      Relationship between standard deviation and mean
+    </h2>
+    <p>
+      The mean and the standard deviation of a set of data are
+      <a href="https://en.wikipedia.org/wiki/descriptive_statistics">
+        descriptive statistics
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      usually reported together. In a certain sense, the standard deviation is a "natural" measure of
+      <a href="https://en.wikipedia.org/wiki/statistical_dispersion">
+        statistical dispersion
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      if the center of the data is measured about the mean. This is because the standard deviation from the mean is smaller than from any other point. The precise statement is the following: suppose
+      <em>
+        x
+      </em>
+      <sub>
+        1
+      </sub>
+      , ...,
+      <em>
+        x
+      </em>
+      <sub>
+        <em>
+          n
+        </em>
+      </sub>
+      are real numbers and define the function:
+    </p>
+    <p>
+      Using
+      <a href="https://en.wikipedia.org/wiki/calculus">
+        calculus
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      or by
+      <a href="https://en.wikipedia.org/wiki/completing_the_square">
+        completing the square
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , it is possible to show that
+      <em>
+        σ
+      </em>
+      (
+      <em>
+        r
+      </em>
+      ) has a unique minimum at the mean:
+    </p>
+    <p>
+      Variability can also be measured by the
+      <a href="https://en.wikipedia.org/wiki/coefficient_of_variation">
+        coefficient of variation
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , which is the ratio of the standard deviation to the mean. It is a
+      <a href="https://en.wikipedia.org/wiki/dimensionless_number">
+        dimensionless number
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <h3>
+      Standard deviation of the mean
+    </h3>
+    <p>
+      Main article:
+      <a href="https://en.wikipedia.org/wiki/Standard_error_of_the_mean">
+        Standard error of the mean
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      Often, we want some information about the precision of the mean we obtained. We can obtain this by determining the standard deviation of the sampled mean. Assuming statistical independence of the values in the sample, the
+      <strong>
+        standard deviation of the mean
+      </strong>
+      (
+      <strong>
+        SDOM
+      </strong>
+      ) is related to the standard deviation of the distribution by:
+    </p>
+    <p>
+      where
+      <em>
+        N
+      </em>
+      is the number of observations in the sample used to estimate the mean. This can easily be proven with (see
+      <a href="https://en.wikipedia.org/wiki/Variance#Propagation">
+        basic properties of the variance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ):
+    </p>
+    <p>
+      (Statistical independence is assumed.)
+    </p>
+    <p>
+      hence
+    </p>
+    <p>
+      Resulting in:
+    </p>
+    <p>
+      In order to estimate the standard deviation of the mean
+      <em>
+        σ
+      </em>
+      <sub>
+        mean
+      </sub>
+      it is necessary to know the standard deviation of the entire population
+      <em>
+        σ
+      </em>
+      beforehand. However, in most applications this parameter is unknown. For example, if a series of 10 measurements of a previously unknown quantity is performed in a laboratory, it is possible to calculate the resulting sample mean and sample standard deviation, but it is impossible to calculate the standard deviation of the mean. However, one can estimate the standard deviation of the entire population from the sample, and thus obtain an estimate for the standard error of the mean.
+    </p>
+    <h2>
+      Rapid calculation methods
+    </h2>
+    <p>
+      See also:
+      <a href="https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance">
+        Algorithms for calculating variance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      The following two formulas can represent a running (repeatedly updated) standard deviation. A set of two power sums
+      <em>
+        s
+      </em>
+      <sub>
+        1
+      </sub>
+      and
+      <em>
+        s
+      </em>
+      <sub>
+        2
+      </sub>
+      are computed over a set of
+      <em>
+        N
+      </em>
+      values of
+      <em>
+        x
+      </em>
+      , denoted as
+      <em>
+        x
+      </em>
+      <sub>
+        1
+      </sub>
+      , ...,
+      <em>
+        x
+      </em>
+      <sub>
+        <em>
+          N
+        </em>
+      </sub>
+      :
+    </p>
+    <p>
+      Given the results of these running summations, the values
+      <em>
+        N
+      </em>
+      ,
+      <em>
+        s
+      </em>
+      <sub>
+        1
+      </sub>
+      ,
+      <em>
+        s
+      </em>
+      <sub>
+        2
+      </sub>
+      can be used at any time to compute the
+      <em>
+        current
+      </em>
+      value of the running standard deviation:
+    </p>
+    <p>
+      Where
+      <em>
+        N
+      </em>
+      , as mentioned above, is the size of the set of values (or can also be regarded as
+      <em>
+        s
+      </em>
+      <sub>
+        0
+      </sub>
+      ).
+    </p>
+    <p>
+      Similarly for sample standard deviation,
+    </p>
+    <p>
+      In a computer implementation, as the two
+      <em>
+        s
+      </em>
+      <sub>
+        <em>
+          j
+        </em>
+      </sub>
+      sums become large, we need to consider
+      <a href="https://en.wikipedia.org/wiki/round-off_error">
+        round-off error
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ,
+      <a href="https://en.wikipedia.org/wiki/arithmetic_overflow">
+        arithmetic overflow
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , and
+      <a href="https://en.wikipedia.org/wiki/arithmetic_underflow">
+        arithmetic underflow
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . The method below calculates the running sums method with reduced rounding errors. This is a "one pass" algorithm for calculating variance of
+      <em>
+        n
+      </em>
+      samples without the need to store prior data during the calculation. Applying this method to a time series will result in successive values of standard deviation corresponding to
+      <em>
+        n
+      </em>
+      data points as
+      <em>
+        n
+      </em>
+      grows larger with each new sample, rather than a constant-width sliding window calculation.
+    </p>
+    <p>
+      For
+      <em>
+        k
+      </em>
+      = 1, ...,
+      <em>
+        n
+      </em>
+      :
+    </p>
+    <p>
+      where
+      <em>
+        A
+      </em>
+      is the mean value.
+    </p>
+    <p>
+      Note:
+      <em>
+        Q
+      </em>
+      <sub>
+        1
+      </sub>
+      = 0 since
+      <em>
+        k
+      </em>
+      − 1 = 0 or
+      <em>
+        x
+      </em>
+      <sub>
+        1
+      </sub>
+      =
+      <em>
+        A
+      </em>
+      <sub>
+        1
+      </sub>
+      .
+    </p>
+    <p>
+      Sample variance:
+    </p>
+    <p>
+      Population variance:
+    </p>
+    <h3>
+      Weighted calculation
+    </h3>
+    <p>
+      When the values are weighted with unequal weights , the power sums
+      <em>
+        s
+      </em>
+      <sub>
+        0
+      </sub>
+      ,
+      <em>
+        s
+      </em>
+      <sub>
+        1
+      </sub>
+      ,
+      <em>
+        s
+      </em>
+      <sub>
+        2
+      </sub>
+      are each computed as:
+    </p>
+    <p>
+      And the standard deviation equations remain unchanged.
+      <em>
+        s
+      </em>
+      <sub>
+        0
+      </sub>
+      is now the sum of the weights and not the number of samples
+      <em>
+        N
+      </em>
+      .
+    </p>
+    <p>
+      The incremental method with reduced rounding errors can also be applied, with some additional complexity.
+    </p>
+    <p>
+      A running sum of weights must be computed for each
+      <em>
+        k
+      </em>
+      from 1 to
+      <em>
+        n
+      </em>
+      :
+    </p>
+    <p>
+      and places where 1/
+      <em>
+        k
+      </em>
+      is used above must be replaced by :
+    </p>
+    <p>
+      In the final division,
+    </p>
+    <p>
+      and
+    </p>
+    <p>
+      or
+    </p>
+    <p>
+      where
+      <em>
+        n
+      </em>
+      is the total number of elements, and
+      <em>
+        {{prime|n}}
+      </em>
+      is the number of elements with non-zero weights.
+    </p>
+    <p>
+      The above formulas become equal to the simpler formulas given above if weights are taken as equal to one.
+    </p>
+    <h2>
+      History
+    </h2>
+    <p>
+      The term
+      <em>
+        standard deviation
+      </em>
+      was first used in writing by
+      <a href="https://en.wikipedia.org/wiki/Karl_Pearson">
+        Karl Pearson
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      in 1894, following his use of it in lectures. This was as a replacement for earlier alternative names for the same idea: for example,
+      <a href="https://en.wikipedia.org/wiki/Carl_Friedrich_Gauss">
+        Gauss
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      used
+      <em>
+        mean error
+      </em>
+      .
+    </p>
+    <h2>
+      Standard deviation index
+    </h2>
+    <p>
+      The standard deviation index (SDI) is used in
+      <a href="https://en.wikipedia.org/wiki/external_quality_assessment">
+        external quality assessment
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      s, particularly for
+      <a href="https://en.wikipedia.org/wiki/medical_laboratory">
+        medical laboratories
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . It is calculated as:
+    </p>
+    <h2>
+      Alternatives
+    </h2>
+    <p>
+      See also:
+      <a href="https://en.wikipedia.org/wiki/Deviation_(statistics)#Dispersion">
+        Deviation (statistics)#Dispersion
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      Standard deviation is
+      <a href="https://en.wikipedia.org/wiki/algebra">
+        algebra
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ically simpler, though in practice less
+      <a href="https://en.wikipedia.org/wiki/Robust_statistics">
+        robust
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , than the
+      <a href="https://en.wikipedia.org/wiki/average_absolute_deviation">
+        average absolute deviation
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <h2>
+      See also
+    </h2>
     <ul>
-    <li><a href="https://en.wikipedia.org/wiki/68–95–99.7_rule">68–95–99.7 rule</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Accuracy_and_precision">Accuracy and precision</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance">Algorithms for calculating variance</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Chebyshev's_inequality">Chebyshev's inequality</a><span class="external-link">↗</span> An inequality on location and scale parameters</li>
-    <li><a href="https://en.wikipedia.org/wiki/Coefficient_of_variation">Coefficient of variation</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Cumulant">Cumulant</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Deviation_(statistics)">Deviation (statistics)</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Distance_correlation">Distance correlation</a><span class="external-link">↗</span> Distance standard deviation</li>
-    <li><a href="https://en.wikipedia.org/wiki/Error_bar">Error bar</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Geometric_standard_deviation">Geometric standard deviation</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Mahalanobis_distance">Mahalanobis distance</a><span class="external-link">↗</span> generalizing number of standard deviations to the mean</li>
-    <li><a href="https://en.wikipedia.org/wiki/Mean_absolute_error">Mean absolute error</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Median_absolute_deviation">Median absolute deviation</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Pooled_variance">Pooled variance</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Propagation_of_uncertainty">Propagation of uncertainty</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Percentile">Percentile</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Raw_data">Raw data</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Reduced_chi-squared_statistic">Reduced chi-squared statistic</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Robust_standard_deviation">Robust standard deviation</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Root_mean_square">Root mean square</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Sample_size">Sample size</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Samuelson's_inequality">Samuelson's inequality</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Six_Sigma">Six Sigma</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Standard_error">Standard error</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Standard_score">Standard score</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Statistical_dispersion">Statistical dispersion</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Yamartino_method">Yamartino method</a><span class="external-link">↗</span> for calculating standard deviation of wind direction</li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/68–95–99.7_rule">
+          68–95–99.7 rule
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Accuracy_and_precision">
+          Accuracy and precision
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance">
+          Algorithms for calculating variance
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Chebyshev&apos;s_inequality">
+          Chebyshev's inequality
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        An inequality on location and scale parameters
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Coefficient_of_variation">
+          Coefficient of variation
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Cumulant">
+          Cumulant
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Deviation_(statistics)">
+          Deviation (statistics)
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Distance_correlation">
+          Distance correlation
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        Distance standard deviation
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Error_bar">
+          Error bar
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Geometric_standard_deviation">
+          Geometric standard deviation
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Mahalanobis_distance">
+          Mahalanobis distance
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        generalizing number of standard deviations to the mean
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Mean_absolute_error">
+          Mean absolute error
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Median_absolute_deviation">
+          Median absolute deviation
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Pooled_variance">
+          Pooled variance
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Propagation_of_uncertainty">
+          Propagation of uncertainty
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Percentile">
+          Percentile
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Raw_data">
+          Raw data
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Reduced_chi-squared_statistic">
+          Reduced chi-squared statistic
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Robust_standard_deviation">
+          Robust standard deviation
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Root_mean_square">
+          Root mean square
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Sample_size">
+          Sample size
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Samuelson&apos;s_inequality">
+          Samuelson's inequality
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Six_Sigma">
+          Six Sigma
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Standard_error">
+          Standard error
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Standard_score">
+          Standard score
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Statistical_dispersion">
+          Statistical dispersion
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Yamartino_method">
+          Yamartino method
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        for calculating standard deviation of wind direction
+      </li>
     </ul>
-    <h2>References</h2>
-    <ol class="references"><li>J.M. Bland and D.G. Altman. "Statistics notes: measurement error". <em>BMJ</em>. 1996, vol. 312, no. 7047, pp. 1654. doi:10.1136/bmj.312.7047.1654</li>
-<li><em>Anthropometric Reference Data for Children and Adults: United States, 2015–2018</em>. Centers for Disease Control and Prevention, January 2021. p. 16, Table 12</li>
-<li>Eric W. Weisstein. <a href="https://mathworld.wolfram.com/StandardDeviation.html">"Standard Deviation"</a><span class="external-link">↗</span>. <em>mathworld.wolfram.com</em></li>
-<li><a href="https://www.statlect.com/glossary/consistent-estimator">"Consistent estimator"</a><span class="external-link">↗</span>. <em>www.statlect.com</em></li>
-<li>John Gurland and Ram C. Tripathi. <em>A Simple Approximation for Unbiased Estimation of the Standard Deviation</em>. 1971. p. 30–32</li>
-<li><a href="https://purecalculators.com/standard-deviation-calculator">"Standard Deviation Calculator"</a><span class="external-link">↗</span>. <em>PureCalculators</em>. 2021-07-11</li>
-<li>Ronald E. Shiffler and Phillip D. Harsha. "Upper and Lower Bounds for the Sample Standard Deviation". <em>Teaching Statistics</em>. 1980, vol. 2, no. 3, pp. 84–86. doi:10.1111/j.1467-9639.1980.tb00398.x</li>
-<li>Richard H. Browne. "Using the Sample Range as a Basis for Calculating Sample Size in Power Calculations". <em>The American Statistician</em>. 2001, vol. 55, no. 4, pp. 293–298. doi:10.1198/000313001753272420. JSTOR 2685690</li>
-<li><a href="http://press-archive.web.cern.ch/press-archive/PressReleases/Releases2012/PR17.12E.html">"CERN experiments observe particle consistent with long-sought Higgs boson | CERN press office"</a><span class="external-link">↗</span>. Press.web.cern.ch. 4 July 2012</li>
-<li><em>Observation of Gravitational Waves from a Binary Black Hole Merger</em>. 2016</li>
-<li><a href="http://www.edupristine.com/blog/what-is-standard-deviation">"What is Standard Deviation"</a><span class="external-link">↗</span>. Pristine</li>
-<li>Saeed Ghahramani. <em>Fundamentals of Probability</em>. New Jersey: Prentice Hall, 2000. 2nd ed. p. 438. ISBN 9780130113290</li>
-<li>Eric W. Weisstein. <a href="https://mathworld.wolfram.com/DistributionFunction.html">"Distribution Function"</a><span class="external-link">↗</span>. <em>MathWorld</em>. Wolfram</li>
-<li>A. Kessy, A. Lewin, and K. Strimmer. "Optimal whitening and decorrelation". <em>The American Statistician</em>. 2018, vol. 72, no. 4, pp. 309–314. doi:10.1080/00031305.2016.1277159</li>
-<li>B. P. Welford. "Note on a Method for Calculating Corrected Sums of Squares and Products". <em>Technometrics</em>. August 1962, vol. 4, no. 3, pp. 419–420. doi:10.1080/00401706.1962.10490022</li>
-<li><a href="https://en.wikipedia.org/wiki/Yadolah_Dodge">Yadolah Dodge</a><span class="external-link">↗</span>. <em>The Oxford Dictionary of Statistical Terms</em>. Oxford University Press, 2003. ISBN 978-0-19-920613-1</li>
-<li><a href="https://en.wikipedia.org/wiki/Karl_Pearson">Karl Pearson</a><span class="external-link">↗</span>. "On the dissection of asymmetrical frequency curves". <em><a href="https://en.wikipedia.org/wiki/Philosophical_Transactions_of_the_Royal_Society_A">Philosophical Transactions of the Royal Society A</a><span class="external-link">↗</span></em>. 1894, vol. 185, pp. 71–110. doi:10.1098/rsta.1894.0003</li>
-<li>Jeff Miller. <a href="https://mathshistory.st-andrews.ac.uk/Miller/mathword/">"Earliest Known Uses of Some of the Words of Mathematics"</a><span class="external-link">↗</span></li>
-<li>Robert R. Harr. <em>Medical laboratory science review</em>. F. A. Davis Co., 2012. p. 236. ISBN 978-0-8036-3796-2. OCLC 818846942</li>
-<li><a href="https://en.wikipedia.org/wiki/Carl_Friedrich_Gauss">Carl Friedrich Gauss</a><span class="external-link">↗</span>. "Bestimmung der Genauigkeit der Beobachtungen". <em>Zeitschrift für Astronomie und Verwandte Wissenschaften</em>. 1816, vol. 1, pp. 187–197</li>
-<li><a href="https://en.wikipedia.org/wiki/Helen_M._Walker">Helen Walker</a><span class="external-link">↗</span>. <em>Studies in the History of the Statistical Method</em>. Baltimore, MD: Williams &amp; Wilkins Co, 1931. p. 24–25</li>
-</ol>
+    <h2>
+      References
+    </h2>
+    <ol class="references">
+      <li>
+        J.M. Bland and D.G. Altman. "Statistics notes: measurement error".
+        <em>
+          BMJ
+        </em>
+        . 1996, vol. 312, no. 7047, pp. 1654. doi:10.1136/bmj.312.7047.1654
+      </li>
+      <li>
+        <em>
+          Anthropometric Reference Data for Children and Adults: United States, 2015–2018
+        </em>
+        . Centers for Disease Control and Prevention, January 2021. p. 16, Table 12
+      </li>
+      <li>
+        Eric W. Weisstein.
+        <a href="https://mathworld.wolfram.com/StandardDeviation.html">
+          "Standard Deviation"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          mathworld.wolfram.com
+        </em>
+      </li>
+      <li>
+        <a href="https://www.statlect.com/glossary/consistent-estimator">
+          "Consistent estimator"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          www.statlect.com
+        </em>
+      </li>
+      <li>
+        John Gurland and Ram C. Tripathi.
+        <em>
+          A Simple Approximation for Unbiased Estimation of the Standard Deviation
+        </em>
+        . 1971. p. 30–32
+      </li>
+      <li>
+        <a href="https://purecalculators.com/standard-deviation-calculator">
+          "Standard Deviation Calculator"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          PureCalculators
+        </em>
+        . 2021-07-11
+      </li>
+      <li>
+        Ronald E. Shiffler and Phillip D. Harsha. "Upper and Lower Bounds for the Sample Standard Deviation".
+        <em>
+          Teaching Statistics
+        </em>
+        . 1980, vol. 2, no. 3, pp. 84–86. doi:10.1111/j.1467-9639.1980.tb00398.x
+      </li>
+      <li>
+        Richard H. Browne. "Using the Sample Range as a Basis for Calculating Sample Size in Power Calculations".
+        <em>
+          The American Statistician
+        </em>
+        . 2001, vol. 55, no. 4, pp. 293–298. doi:10.1198/000313001753272420. JSTOR 2685690
+      </li>
+      <li>
+        <a href="http://press-archive.web.cern.ch/press-archive/PressReleases/Releases2012/PR17.12E.html">
+          "CERN experiments observe particle consistent with long-sought Higgs boson | CERN press office"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        . Press.web.cern.ch. 4 July 2012
+      </li>
+      <li>
+        <em>
+          Observation of Gravitational Waves from a Binary Black Hole Merger
+        </em>
+        . 2016
+      </li>
+      <li>
+        <a href="http://www.edupristine.com/blog/what-is-standard-deviation">
+          "What is Standard Deviation"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        . Pristine
+      </li>
+      <li>
+        Saeed Ghahramani.
+        <em>
+          Fundamentals of Probability
+        </em>
+        . New Jersey: Prentice Hall, 2000. 2nd ed. p. 438. ISBN 9780130113290
+      </li>
+      <li>
+        Eric W. Weisstein.
+        <a href="https://mathworld.wolfram.com/DistributionFunction.html">
+          "Distribution Function"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          MathWorld
+        </em>
+        . Wolfram
+      </li>
+      <li>
+        A. Kessy, A. Lewin, and K. Strimmer. "Optimal whitening and decorrelation".
+        <em>
+          The American Statistician
+        </em>
+        . 2018, vol. 72, no. 4, pp. 309–314. doi:10.1080/00031305.2016.1277159
+      </li>
+      <li>
+        B. P. Welford. "Note on a Method for Calculating Corrected Sums of Squares and Products".
+        <em>
+          Technometrics
+        </em>
+        . August 1962, vol. 4, no. 3, pp. 419–420. doi:10.1080/00401706.1962.10490022
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Yadolah_Dodge">
+          Yadolah Dodge
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          The Oxford Dictionary of Statistical Terms
+        </em>
+        . Oxford University Press, 2003. ISBN 978-0-19-920613-1
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Karl_Pearson">
+          Karl Pearson
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        . "On the dissection of asymmetrical frequency curves".
+        <em>
+          <a href="https://en.wikipedia.org/wiki/Philosophical_Transactions_of_the_Royal_Society_A">
+            Philosophical Transactions of the Royal Society A
+          </a>
+          <span class="external-link">
+            ↗
+          </span>
+        </em>
+        . 1894, vol. 185, pp. 71–110. doi:10.1098/rsta.1894.0003
+      </li>
+      <li>
+        Jeff Miller.
+        <a href="https://mathshistory.st-andrews.ac.uk/Miller/mathword/">
+          "Earliest Known Uses of Some of the Words of Mathematics"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        Robert R. Harr.
+        <em>
+          Medical laboratory science review
+        </em>
+        . F. A. Davis Co., 2012. p. 236. ISBN 978-0-8036-3796-2. OCLC 818846942
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Carl_Friedrich_Gauss">
+          Carl Friedrich Gauss
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        . "Bestimmung der Genauigkeit der Beobachtungen".
+        <em>
+          Zeitschrift für Astronomie und Verwandte Wissenschaften
+        </em>
+        . 1816, vol. 1, pp. 187–197
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Helen_M._Walker">
+          Helen Walker
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          Studies in the History of the Statistical Method
+        </em>
+        . Baltimore, MD: Williams &amp; Wilkins Co, 1931. p. 24–25
+      </li>
+    </ol>
   </body>
 </html>

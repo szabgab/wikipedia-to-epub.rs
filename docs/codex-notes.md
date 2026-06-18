@@ -1,5 +1,39 @@
 # Codex Session Notes
 
+## 2026-06-18 Fix XHTML Tag Nesting Violations and Mismatched Tag Warnings
+
+### Summary
+Fixed the XHTML generator for book compilation failures in `hangul`, `joseon`, and `Standard_deviation` caused by malformed tag nesting. Resolved the issues by implementing a robust linear quote state machine for bold/italic formatting, and updated all affected expected book integration test fixtures.
+
+### Decisions Made
+- **Fixed Formatting Parser**:
+  - Replaced lookahead regex-based replacements in [`format_inline_text`](file:///opt/src/main.rs) with a stack-based linear quote state machine.
+  - The new state machine tracks active bold/italic states and performs tag transitions to guarantee perfectly nested and valid XHTML (e.g., `<em><strong>...</strong></em>` instead of `<em><strong>...</em></strong>`).
+  - Added a smart breakdown of quote counts (`count == 4` maps to two italic toggles; `count == 5` maps to one italic and one bold toggle; etc.) to cleanly support complex adjacent layouts like `''z''''\u03c3''` (rendering as `<em>z</em><em>\u03c3</em>`) and empty template boundaries like `''{{  }}''` (rendering as `<em></em>`).
+- **Prevented Quote Merging Bug**:
+  - Modified the possessive `'s` template mapping in [`src/templates/mod.rs`](file:///opt/src/templates/mod.rs) to replace literal apostrophes with a safe placeholder `__WIKIPEDIA_TO_EPUB_LITERAL_QUOTE__`, restoring them back to `'` after formatting. This prevents them from merging with surrounding formatting single quotes (e.g. `''Han''{{'s}}` becoming `''Han'''s` and breaking parsing).
+- **Regenerated Expected Book Fixtures**:
+  - Ran `./tools/regenerate.sh` for all five books (`hangul`, `joseon`, `Standard_deviation`, `han-dynasty`, `korean-language`) to update their expected XHTML fixtures under `expected/` to match the correct well-formed output.
+
+### Files Changed
+- [src/main.rs](file:///opt/src/main.rs) [MODIFY]
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+- [expected/Standard_deviation/OEBPS/Standard_deviation.xhtml](file:///opt/expected/Standard_deviation/OEBPS/Standard_deviation.xhtml) [MODIFY]
+- [expected/han-dynasty/OEBPS/Han_dynasty.xhtml](file:///opt/expected/han-dynasty/OEBPS/Han_dynasty.xhtml) [MODIFY]
+- [expected/hangul/OEBPS/Hangul.xhtml](file:///opt/expected/hangul/OEBPS/Hangul.xhtml) [MODIFY]
+- [expected/joseon/OEBPS/Joseon.xhtml](file:///opt/expected/joseon/OEBPS/Joseon.xhtml) [MODIFY]
+- [expected/korean-language/OEBPS/Korean_language.xhtml](file:///opt/expected/korean-language/OEBPS/Korean_language.xhtml) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and warnings: `cargo check` and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Checked code formatting: `cargo fmt -- --check` (passed cleanly).
+- Ran all tests: `cargo test` (all 424 unit/doc tests and 41 integration tests passed successfully).
+
+### Pending Follow-Ups
+- None.
+
+
 ## 2026-06-18 Handle lit., glossary, glossary end, fcn, dynamic list, SMS, SS, sronly, Expand language, Free-content attribution, pp, pp-sock, missing long citation, subscription, ambiguous, Bare URL PDF, better source, and More Templates
 
 ### Summary

@@ -105,7 +105,7 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
         ),
         ("pb", "__WIKIPEDIA_TO_EPUB_PB__"),
         ("okina", "ʻ"),
-        ("'s", "'s"),
+        ("'s", "__WIKIPEDIA_TO_EPUB_LITERAL_QUOTE__s"),
         ("=", "="),
         ("hidden end", ""),
         ("collapse bottom", ""),

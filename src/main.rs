@@ -1326,25 +1326,108 @@ fn cleanup_inline_markup_with_excluded_links(
 }
 
 fn format_inline_text(text: &str) -> String {
-    let mut text = text.to_string();
+    let mut result = String::new();
+    let mut current_stack: Vec<&str> = Vec::new();
+    let mut bold_active = false;
+    let mut italic_active = false;
 
-    text = Regex::new(r"'''(.*?)'''")
-        .unwrap()
-        .replace_all(
-            &text,
-            "__WIKIPEDIA_TO_EPUB_BOLD_START__${1}__WIKIPEDIA_TO_EPUB_BOLD_END__",
-        )
-        .into_owned();
-    text = Regex::new(r"''(.*?)''")
-        .unwrap()
-        .replace_all(
-            &text,
-            "__WIKIPEDIA_TO_EPUB_ITALIC_START__${1}__WIKIPEDIA_TO_EPUB_ITALIC_END__",
-        )
-        .into_owned();
-    text = text.replace("'''", "");
-    text = text.replace("''", "");
+    let chars: Vec<char> = text.chars().collect();
+    let mut i = 0;
+    let n = chars.len();
 
+    while i < n {
+        if chars[i] == '\'' {
+            // Count consecutive single quotes
+            let mut count = 0;
+            while i < n && chars[i] == '\'' {
+                count += 1;
+                i += 1;
+            }
+
+            let mut actions = Vec::new();
+            if count == 4 {
+                actions.push(2);
+                actions.push(2);
+            } else if count == 5 {
+                actions.push(2);
+                actions.push(3);
+            } else if count > 5 {
+                actions.push(2);
+                actions.push(3);
+                actions.extend(std::iter::repeat_n(1, count - 5));
+            } else {
+                actions.push(count);
+            }
+
+            for action in actions {
+                if action == 1 {
+                    result.push_str("__WIKIPEDIA_TO_EPUB_LITERAL_QUOTE__");
+                } else {
+                    if action == 2 {
+                        italic_active = !italic_active;
+                    } else if action == 3 {
+                        bold_active = !bold_active;
+                    }
+
+                    let mut desired_stack = Vec::new();
+                    if italic_active && bold_active {
+                        if current_stack.first() == Some(&"strong") {
+                            desired_stack.push("strong");
+                            desired_stack.push("em");
+                        } else {
+                            desired_stack.push("em");
+                            desired_stack.push("strong");
+                        }
+                    } else if italic_active {
+                        desired_stack.push("em");
+                    } else if bold_active {
+                        desired_stack.push("strong");
+                    }
+
+                    let mut common_len = 0;
+                    for (c, d) in current_stack.iter().zip(desired_stack.iter()) {
+                        if c == d {
+                            common_len += 1;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    while current_stack.len() > common_len {
+                        if let Some(tag) = current_stack.pop() {
+                            if tag == "em" {
+                                result.push_str("__WIKIPEDIA_TO_EPUB_ITALIC_END__");
+                            } else if tag == "strong" {
+                                result.push_str("__WIKIPEDIA_TO_EPUB_BOLD_END__");
+                            }
+                        }
+                    }
+
+                    for &tag in desired_stack.iter().skip(common_len) {
+                        if tag == "em" {
+                            result.push_str("__WIKIPEDIA_TO_EPUB_ITALIC_START__");
+                        } else if tag == "strong" {
+                            result.push_str("__WIKIPEDIA_TO_EPUB_BOLD_START__");
+                        }
+                        current_stack.push(tag);
+                    }
+                }
+            }
+        } else {
+            result.push(chars[i]);
+            i += 1;
+        }
+    }
+
+    while let Some(tag) = current_stack.pop() {
+        if tag == "em" {
+            result.push_str("__WIKIPEDIA_TO_EPUB_ITALIC_END__");
+        } else if tag == "strong" {
+            result.push_str("__WIKIPEDIA_TO_EPUB_BOLD_END__");
+        }
+    }
+
+    let mut text = result;
     let residual_tags_re = Regex::new(r"(?is)</?[a-z0-9]+(?:\s+[^>]*)?>").unwrap();
     text = residual_tags_re.replace_all(&text, "").into_owned();
 
@@ -1381,7 +1464,24 @@ fn format_inline_text(text: &str) -> String {
             "__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_START__",
             r#"<span title="Japanese-language text"><span lang="ja">"#,
         )
-        .replace("__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__", "</span></span>");
+        .replace("__WIKIPEDIA_TO_EPUB_JAPANESE_TEXT_END__", "</span></span>")
+        .replace(
+            "__WIKIPEDIA_TO_EPUB_JAPANESE_HIRAGANA_START__",
+            r#"<span lang="ja-Hira">"#,
+        )
+        .replace(
+            "__WIKIPEDIA_TO_EPUB_JAPANESE_KATAKANA_START__",
+            r#"<span lang="ja-Kana">"#,
+        )
+        .replace(
+            "__WIKIPEDIA_TO_EPUB_JAPANESE_KANJI_START__",
+            r#"<span lang="ja-Jpan">"#,
+        )
+        .replace("__WIKIPEDIA_TO_EPUB_JAPANESE_SCRIPT_END__", "</span>")
+        .replace("__WIKIPEDIA_TO_EPUB_DFN_START__", "<dfn>")
+        .replace("__WIKIPEDIA_TO_EPUB_DFN_END__", "</dfn>")
+        .replace("__WIKIPEDIA_TO_EPUB_CODE_START__", "<code>")
+        .replace("__WIKIPEDIA_TO_EPUB_CODE_END__", "</code>");
 
     let html = restore_lang_template_spans(&html);
     let html = restore_abbr_template_spans(&html);
@@ -1396,7 +1496,7 @@ fn format_inline_text(text: &str) -> String {
     let html = restore_sup_spans(&html);
     let html = restore_dfn_spans(&html);
     let html = restore_code_spans(&html);
-    restore_var_spans(&html)
+    restore_var_spans(&html).replace("__WIKIPEDIA_TO_EPUB_LITERAL_QUOTE__", "'")
 }
 
 #[derive(Clone, Debug)]
