@@ -705,7 +705,9 @@ articles:
     let mut chapter2_content = String::new();
     chapter2.read_to_string(&mut chapter2_content).unwrap();
     assert!(
-        chapter2_content.contains("<h1>Osaka Info</h1>"),
+        Regex::new(r"<h1>\s*Osaka Info\s*</h1>")
+            .unwrap()
+            .is_match(&chapter2_content),
         "chapter2 should have section title"
     );
 
@@ -789,7 +791,9 @@ articles:
         let mut chapter1_content = String::new();
         chapter1.read_to_string(&mut chapter1_content).unwrap();
         assert!(
-            chapter1_content.contains("<h1>1 Japan</h1>"),
+            Regex::new(r"<h1>\s*1 Japan\s*</h1>")
+                .unwrap()
+                .is_match(&chapter1_content),
             "chapter1 should have numbered title"
         );
     }
@@ -799,7 +803,9 @@ articles:
         let mut chapter2_content = String::new();
         chapter2.read_to_string(&mut chapter2_content).unwrap();
         assert!(
-            chapter2_content.contains("<h1>2 Osaka Info</h1>"),
+            Regex::new(r"<h1>\s*2 Osaka Info\s*</h1>")
+                .unwrap()
+                .is_match(&chapter2_content),
             "chapter2 should have numbered section title"
         );
     }
@@ -809,7 +815,9 @@ articles:
         let mut chapter3_content = String::new();
         chapter3.read_to_string(&mut chapter3_content).unwrap();
         assert!(
-            chapter3_content.contains("<h1>2.1 Osaka</h1>"),
+            Regex::new(r"<h1>\s*2.1 Osaka\s*</h1>")
+                .unwrap()
+                .is_match(&chapter3_content),
             "chapter3 should have nested numbered title"
         );
     }

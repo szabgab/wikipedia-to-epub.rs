@@ -1,91 +1,1038 @@
 <?xml version="1.0" encoding="utf-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
   <head>
-    <title>Statistical model</title>
+    <title>
+      Statistical model
+    </title>
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
-    <h1>Statistical model</h1>
-    <p>A <strong>statistical model</strong> is a <a href="https://en.wikipedia.org/wiki/mathematical_model">mathematical model</a><span class="external-link">↗</span> that embodies a set of <a href="https://en.wikipedia.org/wiki/statistical_assumptions">statistical assumptions</a><span class="external-link">↗</span> concerning the generation of <a href="https://en.wikipedia.org/wiki/Sample_(statistics)">sample data</a><span class="external-link">↗</span> (and similar data from a larger <a href="https://en.wikipedia.org/wiki/Statistical_population">population</a><span class="external-link">↗</span>). A statistical model represents, often in considerably idealized form, the <a href="https://en.wikipedia.org/wiki/Data_generating_process">data-generating process</a><span class="external-link">↗</span>. When referring specifically to <a href="https://en.wikipedia.org/wiki/probability">probabilities</a><span class="external-link">↗</span>, the corresponding term is <strong>probabilistic model</strong>. All <a href="https://en.wikipedia.org/wiki/Statistical_hypothesis_testing">statistical hypothesis tests</a><span class="external-link">↗</span> and all <a href="https://en.wikipedia.org/wiki/Estimator">statistical estimators</a><span class="external-link">↗</span> are derived via statistical models. More generally, statistical models are part of the foundation of <a href="https://en.wikipedia.org/wiki/statistical_inference">statistical inference</a><span class="external-link">↗</span>. A statistical model is usually specified as a mathematical relationship between one or more <a href="https://en.wikipedia.org/wiki/random_variables">random variables</a><span class="external-link">↗</span> and other non-random variables. As such, a statistical model is "a formal representation of a theory" (<a href="https://en.wikipedia.org/wiki/Herman_J._Adèr">Herman Adèr</a><span class="external-link">↗</span> quoting <a href="https://en.wikipedia.org/wiki/Kenneth_A._Bollen">Kenneth Bollen</a><span class="external-link">↗</span>).</p>
-    <h2>Introduction</h2>
-    <p>Informally, a statistical model can be thought of as a <a href="https://en.wikipedia.org/wiki/statistical_assumption">statistical assumption</a><span class="external-link">↗</span> (or set of statistical assumptions) with a certain property: that the assumption allows us to calculate the probability of any <a href="https://en.wikipedia.org/wiki/event_(probability_theory)">event</a><span class="external-link">↗</span>. As an example, consider a pair of ordinary six-sided <a href="https://en.wikipedia.org/wiki/dice">dice</a><span class="external-link">↗</span>. We will study two different statistical assumptions about the dice.</p>
-    <p>The first statistical assumption is this: for each of the dice, the probability of each face (1, 2, 3, 4, 5, and 6) coming up is <sup>1</sup>⁄<sub>6</sub>. From that assumption, we can calculate the probability of both dice coming up 5: <sup>1</sup>⁄<sub>6</sub> × <sup>1</sup>⁄<sub>6</sub> = <sup>1</sup>⁄<sub>36</sub>. More generally, we can calculate the probability of any event: e.g. (1 and 2) or (3 and 3) or (5 and 6). The alternative statistical assumption is this: for each of the dice, the probability of the face 5 coming up is <sup>1</sup>⁄<sub>8</sub> (because the dice are <a href="https://en.wikipedia.org/wiki/Dice#Loaded_dice">weighted</a><span class="external-link">↗</span>). From that assumption, we can calculate the probability of both dice coming up 5: <sup>1</sup>⁄<sub>8</sub> × <sup>1</sup>⁄<sub>8</sub> = <sup>1</sup>⁄<sub>64</sub>. We cannot, however, calculate the probability of any other nontrivial event, as the probabilities of the other faces are unknown.</p>
-    <p>The first statistical assumption constitutes a statistical model: because with the assumption alone, we can calculate the probability of any event. The alternative statistical assumption does <em>not</em> constitute a statistical model: because with the assumption alone, we cannot calculate the probability of every event. In the example above, with the first assumption, calculating the probability of an event is easy. With some other examples, though, the calculation can be difficult, or even impractical (e.g. it might require millions of years of computation). For an assumption to constitute a statistical model, such difficulty is acceptable: doing the calculation does not need to be practicable, just theoretically possible.</p>
-    <h2>Formal definition</h2>
-    <p>In mathematical terms, a statistical model is a pair (), where is the set of possible observations, i.e. the <a href="https://en.wikipedia.org/wiki/sample_space">sample space</a><span class="external-link">↗</span>, and is a set of <a href="https://en.wikipedia.org/wiki/probability_distributions">probability distributions</a><span class="external-link">↗</span> on . The set represents all of the models that are considered possible. This set is typically parameterized: . The set defines the <a href="https://en.wikipedia.org/wiki/Statistical_parameter">parameters</a><span class="external-link">↗</span> of the model. If a parameterization is such that distinct parameter values give rise to distinct distributions, i.e. (in other words, the mapping is <a href="https://en.wikipedia.org/wiki/Injective_function">injective</a><span class="external-link">↗</span>), it is said to be <em><a href="https://en.wikipedia.org/wiki/Identifiability">identifiable</a><span class="external-link">↗</span></em>.</p>
-    <p>In some cases, the model can be more complex.</p>
+    <h1>
+      Statistical model
+    </h1>
+    <p>
+      A
+      <strong>
+        statistical model
+      </strong>
+      is a
+      <a href="https://en.wikipedia.org/wiki/mathematical_model">
+        mathematical model
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      that embodies a set of
+      <a href="https://en.wikipedia.org/wiki/statistical_assumptions">
+        statistical assumptions
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      concerning the generation of
+      <a href="https://en.wikipedia.org/wiki/Sample_(statistics)">
+        sample data
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      (and similar data from a larger
+      <a href="https://en.wikipedia.org/wiki/Statistical_population">
+        population
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ). A statistical model represents, often in considerably idealized form, the
+      <a href="https://en.wikipedia.org/wiki/Data_generating_process">
+        data-generating process
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . When referring specifically to
+      <a href="https://en.wikipedia.org/wiki/probability">
+        probabilities
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , the corresponding term is
+      <strong>
+        probabilistic model
+      </strong>
+      . All
+      <a href="https://en.wikipedia.org/wiki/Statistical_hypothesis_testing">
+        statistical hypothesis tests
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      and all
+      <a href="https://en.wikipedia.org/wiki/Estimator">
+        statistical estimators
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      are derived via statistical models. More generally, statistical models are part of the foundation of
+      <a href="https://en.wikipedia.org/wiki/statistical_inference">
+        statistical inference
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . A statistical model is usually specified as a mathematical relationship between one or more
+      <a href="https://en.wikipedia.org/wiki/random_variables">
+        random variables
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      and other non-random variables. As such, a statistical model is "a formal representation of a theory" (
+      <a href="https://en.wikipedia.org/wiki/Herman_J._Adèr">
+        Herman Adèr
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      quoting
+      <a href="https://en.wikipedia.org/wiki/Kenneth_A._Bollen">
+        Kenneth Bollen
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ).
+    </p>
+    <h2>
+      Introduction
+    </h2>
+    <p>
+      Informally, a statistical model can be thought of as a
+      <a href="https://en.wikipedia.org/wiki/statistical_assumption">
+        statistical assumption
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      (or set of statistical assumptions) with a certain property: that the assumption allows us to calculate the probability of any
+      <a href="https://en.wikipedia.org/wiki/event_(probability_theory)">
+        event
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . As an example, consider a pair of ordinary six-sided
+      <a href="https://en.wikipedia.org/wiki/dice">
+        dice
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . We will study two different statistical assumptions about the dice.
+    </p>
+    <p>
+      The first statistical assumption is this: for each of the dice, the probability of each face (1, 2, 3, 4, 5, and 6) coming up is
+      <sup>
+        1
+      </sup>
+      ⁄
+      <sub>
+        6
+      </sub>
+      . From that assumption, we can calculate the probability of both dice coming up 5:
+      <sup>
+        1
+      </sup>
+      ⁄
+      <sub>
+        6
+      </sub>
+      ×
+      <sup>
+        1
+      </sup>
+      ⁄
+      <sub>
+        6
+      </sub>
+      =
+      <sup>
+        1
+      </sup>
+      ⁄
+      <sub>
+        36
+      </sub>
+      . More generally, we can calculate the probability of any event: e.g. (1 and 2) or (3 and 3) or (5 and 6). The alternative statistical assumption is this: for each of the dice, the probability of the face 5 coming up is
+      <sup>
+        1
+      </sup>
+      ⁄
+      <sub>
+        8
+      </sub>
+      (because the dice are
+      <a href="https://en.wikipedia.org/wiki/Dice#Loaded_dice">
+        weighted
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ). From that assumption, we can calculate the probability of both dice coming up 5:
+      <sup>
+        1
+      </sup>
+      ⁄
+      <sub>
+        8
+      </sub>
+      ×
+      <sup>
+        1
+      </sup>
+      ⁄
+      <sub>
+        8
+      </sub>
+      =
+      <sup>
+        1
+      </sup>
+      ⁄
+      <sub>
+        64
+      </sub>
+      . We cannot, however, calculate the probability of any other nontrivial event, as the probabilities of the other faces are unknown.
+    </p>
+    <p>
+      The first statistical assumption constitutes a statistical model: because with the assumption alone, we can calculate the probability of any event. The alternative statistical assumption does
+      <em>
+        not
+      </em>
+      constitute a statistical model: because with the assumption alone, we cannot calculate the probability of every event. In the example above, with the first assumption, calculating the probability of an event is easy. With some other examples, though, the calculation can be difficult, or even impractical (e.g. it might require millions of years of computation). For an assumption to constitute a statistical model, such difficulty is acceptable: doing the calculation does not need to be practicable, just theoretically possible.
+    </p>
+    <h2>
+      Formal definition
+    </h2>
+    <p>
+      In mathematical terms, a statistical model is a pair (), where is the set of possible observations, i.e. the
+      <a href="https://en.wikipedia.org/wiki/sample_space">
+        sample space
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , and is a set of
+      <a href="https://en.wikipedia.org/wiki/probability_distributions">
+        probability distributions
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      on . The set represents all of the models that are considered possible. This set is typically parameterized: . The set defines the
+      <a href="https://en.wikipedia.org/wiki/Statistical_parameter">
+        parameters
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of the model. If a parameterization is such that distinct parameter values give rise to distinct distributions, i.e. (in other words, the mapping is
+      <a href="https://en.wikipedia.org/wiki/Injective_function">
+        injective
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ), it is said to be
+      <em>
+        <a href="https://en.wikipedia.org/wiki/Identifiability">
+          identifiable
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </em>
+      .
+    </p>
+    <p>
+      In some cases, the model can be more complex.
+    </p>
     <ul>
-    <li>In <a href="https://en.wikipedia.org/wiki/Bayesian_statistics">Bayesian statistics</a><span class="external-link">↗</span>, the model is extended by adding a probability distribution over the parameter space .</li>
-    <li>A statistical model can sometimes distinguish two sets of probability distributions. The first set is the set of models considered for inference. The second set is the set of models that could have generated the data which is much larger than . Such statistical models are key in checking that a given procedure is <a href="https://en.wikipedia.org/wiki/Robust_statistics">robust</a><span class="external-link">↗</span>, i.e. that it does not produce catastrophic errors when its assumptions about the data are incorrect.</li>
+      <li>
+        In
+        <a href="https://en.wikipedia.org/wiki/Bayesian_statistics">
+          Bayesian statistics
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        , the model is extended by adding a probability distribution over the parameter space .
+      </li>
+      <li>
+        A statistical model can sometimes distinguish two sets of probability distributions. The first set is the set of models considered for inference. The second set is the set of models that could have generated the data which is much larger than . Such statistical models are key in checking that a given procedure is
+        <a href="https://en.wikipedia.org/wiki/Robust_statistics">
+          robust
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        , i.e. that it does not produce catastrophic errors when its assumptions about the data are incorrect.
+      </li>
     </ul>
-    <h2>An example</h2>
-    <p>Suppose that we have a population of children, with the ages of the children distributed <a href="https://en.wikipedia.org/wiki/Discrete_uniform_distribution">uniformly</a><span class="external-link">↗</span>, in the population. The height of a child will be <a href="https://en.wikipedia.org/wiki/stochastic">stochastic</a><span class="external-link">↗</span>ally related to the age: e.g. when we know that a child is of age 7, this influences the chance of the child being 1.5 meters tall. We could formalize that relationship in a <a href="https://en.wikipedia.org/wiki/linear_regression">linear regression</a><span class="external-link">↗</span> model, like this: height<em>i</em> = <em>b</em>0 + <em>b</em>1age<em>i</em> + ε<em>i</em>, where <em>b</em>0 is the intercept, <em>b</em>1 is a parameter that age is multiplied by to obtain a prediction of height, ε<em>i</em> is the error term, and <em>i</em> identifies the child. This implies that height is predicted by age, with some error.</p>
-    <p>An admissible model must be consistent with all the data points. Thus, a straight line (height<em>i</em> = <em>b</em>0 + <em>b</em>1age<em>i</em>) cannot be admissible for a model of the data—unless it exactly fits all the data points, i.e. all the data points lie perfectly on the line. The error term, ε<em>i</em>, must be included in the equation, so that the model is consistent with all the data points. To do <a href="https://en.wikipedia.org/wiki/statistical_inference">statistical inference</a><span class="external-link">↗</span>, we would first need to assume some probability distributions for the ε<em>i</em>. For instance, we might assume that the ε<em>i</em> distributions are <a href="https://en.wikipedia.org/wiki/i.i.d.">i.i.d.</a><span class="external-link">↗</span> Gaussian, with zero mean. In this instance, the model would have 3 parameters: <em>b</em>0, <em>b</em>1, and the variance of the Gaussian distribution. We can formally specify the model in the form () as follows. The sample space, , of our model comprises the set of all possible pairs (age, height). Each possible value of = (<em>b</em>0, <em>b</em>1, <em>σ</em>2) determines a distribution on ; denote that distribution by . If is the set of all possible values of , then . (The parameterization is identifiable, and this is easy to check.)</p>
-    <p>In this example, the model is determined by (1) specifying and (2) making some assumptions relevant to . There are two assumptions: that height can be approximated by a linear function of age; that errors in the approximation are distributed as i.i.d. Gaussian. The assumptions are sufficient to specify —as they are required to do.</p>
-    <h2>General remarks</h2>
-    <p>A statistical model is a special class of <a href="https://en.wikipedia.org/wiki/mathematical_model">mathematical model</a><span class="external-link">↗</span>. What distinguishes a statistical model from other mathematical models is that a statistical model is non-<a href="https://en.wikipedia.org/wiki/Deterministic_system">deterministic</a><span class="external-link">↗</span>. Thus, in a statistical model specified via mathematical equations, some of the variables do not have specific values, but instead have probability distributions; i.e. some of the variables are <a href="https://en.wikipedia.org/wiki/Random_variable">stochastic</a><span class="external-link">↗</span>. In the above example with children's heights, ε is a stochastic variable; without that stochastic variable, the model would be deterministic. Statistical models are often used even when the data-generating process being modeled is deterministic. For instance, <a href="https://en.wikipedia.org/wiki/coin_tossing">coin tossing</a><span class="external-link">↗</span> is, in principle, a deterministic process; yet it is commonly modeled as stochastic (via a <a href="https://en.wikipedia.org/wiki/Bernoulli_process">Bernoulli process</a><span class="external-link">↗</span>). Choosing an appropriate statistical model to represent a given data-generating process is sometimes extremely difficult, and may require knowledge of both the process and relevant statistical analyses. Relatedly, the statistician <a href="https://en.wikipedia.org/wiki/David_Cox_(statistician)">Sir David Cox</a><span class="external-link">↗</span> has said, "How [the] translation from subject-matter problem to statistical model is done is often the most critical part of an analysis".</p>
-    <p>There are three purposes for a statistical model, according to Konishi &amp; Kitagawa:</p>
+    <h2>
+      An example
+    </h2>
+    <p>
+      Suppose that we have a population of children, with the ages of the children distributed
+      <a href="https://en.wikipedia.org/wiki/Discrete_uniform_distribution">
+        uniformly
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , in the population. The height of a child will be
+      <a href="https://en.wikipedia.org/wiki/stochastic">
+        stochastic
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ally related to the age: e.g. when we know that a child is of age 7, this influences the chance of the child being 1.5 meters tall. We could formalize that relationship in a
+      <a href="https://en.wikipedia.org/wiki/linear_regression">
+        linear regression
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      model, like this: height
+      <em>
+        i
+      </em>
+      =
+      <em>
+        b
+      </em>
+      0 +
+      <em>
+        b
+      </em>
+      1age
+      <em>
+        i
+      </em>
+      + ε
+      <em>
+        i
+      </em>
+      , where
+      <em>
+        b
+      </em>
+      0 is the intercept,
+      <em>
+        b
+      </em>
+      1 is a parameter that age is multiplied by to obtain a prediction of height, ε
+      <em>
+        i
+      </em>
+      is the error term, and
+      <em>
+        i
+      </em>
+      identifies the child. This implies that height is predicted by age, with some error.
+    </p>
+    <p>
+      An admissible model must be consistent with all the data points. Thus, a straight line (height
+      <em>
+        i
+      </em>
+      =
+      <em>
+        b
+      </em>
+      0 +
+      <em>
+        b
+      </em>
+      1age
+      <em>
+        i
+      </em>
+      ) cannot be admissible for a model of the data—unless it exactly fits all the data points, i.e. all the data points lie perfectly on the line. The error term, ε
+      <em>
+        i
+      </em>
+      , must be included in the equation, so that the model is consistent with all the data points. To do
+      <a href="https://en.wikipedia.org/wiki/statistical_inference">
+        statistical inference
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , we would first need to assume some probability distributions for the ε
+      <em>
+        i
+      </em>
+      . For instance, we might assume that the ε
+      <em>
+        i
+      </em>
+      distributions are
+      <a href="https://en.wikipedia.org/wiki/i.i.d.">
+        i.i.d.
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      Gaussian, with zero mean. In this instance, the model would have 3 parameters:
+      <em>
+        b
+      </em>
+      0,
+      <em>
+        b
+      </em>
+      1, and the variance of the Gaussian distribution. We can formally specify the model in the form () as follows. The sample space, , of our model comprises the set of all possible pairs (age, height). Each possible value of = (
+      <em>
+        b
+      </em>
+      0,
+      <em>
+        b
+      </em>
+      1,
+      <em>
+        σ
+      </em>
+      2) determines a distribution on ; denote that distribution by . If is the set of all possible values of , then . (The parameterization is identifiable, and this is easy to check.)
+    </p>
+    <p>
+      In this example, the model is determined by (1) specifying and (2) making some assumptions relevant to . There are two assumptions: that height can be approximated by a linear function of age; that errors in the approximation are distributed as i.i.d. Gaussian. The assumptions are sufficient to specify —as they are required to do.
+    </p>
+    <h2>
+      General remarks
+    </h2>
+    <p>
+      A statistical model is a special class of
+      <a href="https://en.wikipedia.org/wiki/mathematical_model">
+        mathematical model
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . What distinguishes a statistical model from other mathematical models is that a statistical model is non-
+      <a href="https://en.wikipedia.org/wiki/Deterministic_system">
+        deterministic
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . Thus, in a statistical model specified via mathematical equations, some of the variables do not have specific values, but instead have probability distributions; i.e. some of the variables are
+      <a href="https://en.wikipedia.org/wiki/Random_variable">
+        stochastic
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . In the above example with children's heights, ε is a stochastic variable; without that stochastic variable, the model would be deterministic. Statistical models are often used even when the data-generating process being modeled is deterministic. For instance,
+      <a href="https://en.wikipedia.org/wiki/coin_tossing">
+        coin tossing
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      is, in principle, a deterministic process; yet it is commonly modeled as stochastic (via a
+      <a href="https://en.wikipedia.org/wiki/Bernoulli_process">
+        Bernoulli process
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ). Choosing an appropriate statistical model to represent a given data-generating process is sometimes extremely difficult, and may require knowledge of both the process and relevant statistical analyses. Relatedly, the statistician
+      <a href="https://en.wikipedia.org/wiki/David_Cox_(statistician)">
+        Sir David Cox
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      has said, "How [the] translation from subject-matter problem to statistical model is done is often the most critical part of an analysis".
+    </p>
+    <p>
+      There are three purposes for a statistical model, according to Konishi &amp; Kitagawa:
+    </p>
     <ol>
-    <li>Predictions</li>
-    <li>Extraction of information</li>
-    <li>Description of stochastic structures</li>
+      <li>
+        Predictions
+      </li>
+      <li>
+        Extraction of information
+      </li>
+      <li>
+        Description of stochastic structures
+      </li>
     </ol>
-    <p>Those three purposes are essentially the same as the three purposes indicated by Friendly &amp; Meyer: prediction, estimation, description.</p>
-    <h2>Dimension of a model</h2>
-    <p>Suppose that we have a statistical model () with . In notation, we write that where <em>k</em> is a positive integer ( denotes the <a href="https://en.wikipedia.org/wiki/real_numbers">real numbers</a><span class="external-link">↗</span>; other sets can be used, in principle). Here, <em>k</em> is called the <strong>dimension</strong> of the model. The model is said to be <em><a href="https://en.wikipedia.org/wiki/Parametric_model">parametric</a><span class="external-link">↗</span></em> if has finite dimension. As an example, if we assume that data arise from a univariate <a href="https://en.wikipedia.org/wiki/Gaussian_distribution">Gaussian distribution</a><span class="external-link">↗</span>, then we are assuming that :. In this example, the dimension, <em>k</em>, equals 2. As another example, suppose that the data consists of points (<em>x</em>, <em>y</em>) that we assume are distributed according to a straight line with i.i.d. Gaussian residuals (with zero mean): this leads to the same statistical model as was used in the example with children's heights. The dimension of the statistical model is 3: the intercept of the line, the slope of the line, and the variance of the distribution of the residuals. (Note the set of all possible lines has dimension 2, even though geometrically, a line has dimension 1.)</p>
-    <p>Although formally is a single parameter that has dimension <em>k</em>, it is sometimes regarded as comprising <em>k</em> separate parameters. For example, with the univariate Gaussian distribution, is formally a single parameter with dimension 2, but it is often regarded as comprising 2 separate parameters—the mean and the standard deviation. A statistical model is <a href="https://en.wikipedia.org/wiki/Nonparametric_statistics#Non-parametric_models"><em>nonparametric</em></a><span class="external-link">↗</span> if the parameter set is infinite dimensional. A statistical model is <a href="https://en.wikipedia.org/wiki/Semiparametric_model"><em>semiparametric</em></a><span class="external-link">↗</span> if it has both finite-dimensional and infinite-dimensional parameters. Formally, if <em>k</em> is the dimension of and <em>n</em> is the number of samples, both semiparametric and nonparametric models have as . If as , then the model is semiparametric; otherwise, the model is nonparametric.</p>
-    <p>Parametric models are by far the most commonly used statistical models. Regarding semiparametric and nonparametric models, <a href="https://en.wikipedia.org/wiki/David_Cox_(statistician)">Sir David Cox</a><span class="external-link">↗</span> has said, "These typically involve fewer assumptions of structure and distributional form but usually contain strong assumptions about independencies".</p>
-    <h2>Nested models</h2>
-    <p>Two statistical models are <strong>nested</strong> if the first model can be transformed into the second model by imposing constraints on the parameters of the first model. As an example, the set of all Gaussian distributions has, nested within it, the set of zero-mean Gaussian distributions: we constrain the mean in the set of all Gaussian distributions to get the zero-mean distributions. As a second example, the quadratic model :<em>y</em> = <em>b</em>0 + <em>b</em>1<em>x</em> + <em>b</em>2<em>x</em>2 + ε, ε ~ 𝒩(0, <em>σ</em>2) has, nested within it, the linear model :<em>y</em> = <em>b</em>0 + <em>b</em>1<em>x</em> + ε, ε ~ 𝒩(0, <em>σ</em>2) —we constrain the parameter <em>b</em>2 to equal 0.</p>
-    <p>In both those examples, the first model has a higher dimension than the second model (for the first example, the zero-mean model has dimension 1). Such is often, but not always, the case. As an example where they have the same dimension, the set of positive-mean Gaussian distributions is nested within the set of all Gaussian distributions; they both have dimension 2.</p>
-    <h2>Comparing models</h2>
-    <p>See also: <a href="https://en.wikipedia.org/wiki/Statistical_model_selection">Statistical model selection</a><span class="external-link">↗</span> Comparing statistical models is fundamental for much of <a href="https://en.wikipedia.org/wiki/statistical_inference">statistical inference</a><span class="external-link">↗</span>. Konishi &amp; Kitagawa (2008) state: "The majority of the problems in statistical inference can be considered to be problems related to statistical modeling. They are typically formulated as comparisons of several statistical models." Common criteria for comparing models include the following: <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination"><em>R</em>2</a><span class="external-link">↗</span>, <a href="https://en.wikipedia.org/wiki/Bayes_factor">Bayes factor</a><span class="external-link">↗</span>, <a href="https://en.wikipedia.org/wiki/Akaike_information_criterion">Akaike information criterion</a><span class="external-link">↗</span>, and the <a href="https://en.wikipedia.org/wiki/likelihood-ratio_test">likelihood-ratio test</a><span class="external-link">↗</span> together with its generalization, the <a href="https://en.wikipedia.org/wiki/relative_likelihood">relative likelihood</a><span class="external-link">↗</span>.</p>
-    <p>Another way of comparing two statistical models is through the notion of <a href="https://en.wikipedia.org/wiki/Deficiency_(statistics)">deficiency</a><span class="external-link">↗</span> introduced by <a href="https://en.wikipedia.org/wiki/Lucien_Le_Cam">Lucien Le Cam</a><span class="external-link">↗</span>.</p>
-    <h2>See also</h2>
+    <p>
+      Those three purposes are essentially the same as the three purposes indicated by Friendly &amp; Meyer: prediction, estimation, description.
+    </p>
+    <h2>
+      Dimension of a model
+    </h2>
+    <p>
+      Suppose that we have a statistical model () with . In notation, we write that where
+      <em>
+        k
+      </em>
+      is a positive integer ( denotes the
+      <a href="https://en.wikipedia.org/wiki/real_numbers">
+        real numbers
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ; other sets can be used, in principle). Here,
+      <em>
+        k
+      </em>
+      is called the
+      <strong>
+        dimension
+      </strong>
+      of the model. The model is said to be
+      <em>
+        <a href="https://en.wikipedia.org/wiki/Parametric_model">
+          parametric
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </em>
+      if has finite dimension. As an example, if we assume that data arise from a univariate
+      <a href="https://en.wikipedia.org/wiki/Gaussian_distribution">
+        Gaussian distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , then we are assuming that :. In this example, the dimension,
+      <em>
+        k
+      </em>
+      , equals 2. As another example, suppose that the data consists of points (
+      <em>
+        x
+      </em>
+      ,
+      <em>
+        y
+      </em>
+      ) that we assume are distributed according to a straight line with i.i.d. Gaussian residuals (with zero mean): this leads to the same statistical model as was used in the example with children's heights. The dimension of the statistical model is 3: the intercept of the line, the slope of the line, and the variance of the distribution of the residuals. (Note the set of all possible lines has dimension 2, even though geometrically, a line has dimension 1.)
+    </p>
+    <p>
+      Although formally is a single parameter that has dimension
+      <em>
+        k
+      </em>
+      , it is sometimes regarded as comprising
+      <em>
+        k
+      </em>
+      separate parameters. For example, with the univariate Gaussian distribution, is formally a single parameter with dimension 2, but it is often regarded as comprising 2 separate parameters—the mean and the standard deviation. A statistical model is
+      <a href="https://en.wikipedia.org/wiki/Nonparametric_statistics#Non-parametric_models">
+        <em>
+          nonparametric
+        </em>
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      if the parameter set is infinite dimensional. A statistical model is
+      <a href="https://en.wikipedia.org/wiki/Semiparametric_model">
+        <em>
+          semiparametric
+        </em>
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      if it has both finite-dimensional and infinite-dimensional parameters. Formally, if
+      <em>
+        k
+      </em>
+      is the dimension of and
+      <em>
+        n
+      </em>
+      is the number of samples, both semiparametric and nonparametric models have as . If as , then the model is semiparametric; otherwise, the model is nonparametric.
+    </p>
+    <p>
+      Parametric models are by far the most commonly used statistical models. Regarding semiparametric and nonparametric models,
+      <a href="https://en.wikipedia.org/wiki/David_Cox_(statistician)">
+        Sir David Cox
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      has said, "These typically involve fewer assumptions of structure and distributional form but usually contain strong assumptions about independencies".
+    </p>
+    <h2>
+      Nested models
+    </h2>
+    <p>
+      Two statistical models are
+      <strong>
+        nested
+      </strong>
+      if the first model can be transformed into the second model by imposing constraints on the parameters of the first model. As an example, the set of all Gaussian distributions has, nested within it, the set of zero-mean Gaussian distributions: we constrain the mean in the set of all Gaussian distributions to get the zero-mean distributions. As a second example, the quadratic model :
+      <em>
+        y
+      </em>
+      =
+      <em>
+        b
+      </em>
+      0 +
+      <em>
+        b
+      </em>
+      1
+      <em>
+        x
+      </em>
+      +
+      <em>
+        b
+      </em>
+      2
+      <em>
+        x
+      </em>
+      2 + ε, ε ~ 𝒩(0,
+      <em>
+        σ
+      </em>
+      2) has, nested within it, the linear model :
+      <em>
+        y
+      </em>
+      =
+      <em>
+        b
+      </em>
+      0 +
+      <em>
+        b
+      </em>
+      1
+      <em>
+        x
+      </em>
+      + ε, ε ~ 𝒩(0,
+      <em>
+        σ
+      </em>
+      2) —we constrain the parameter
+      <em>
+        b
+      </em>
+      2 to equal 0.
+    </p>
+    <p>
+      In both those examples, the first model has a higher dimension than the second model (for the first example, the zero-mean model has dimension 1). Such is often, but not always, the case. As an example where they have the same dimension, the set of positive-mean Gaussian distributions is nested within the set of all Gaussian distributions; they both have dimension 2.
+    </p>
+    <h2>
+      Comparing models
+    </h2>
+    <p>
+      See also:
+      <a href="https://en.wikipedia.org/wiki/Statistical_model_selection">
+        Statistical model selection
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      Comparing statistical models is fundamental for much of
+      <a href="https://en.wikipedia.org/wiki/statistical_inference">
+        statistical inference
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . Konishi &amp; Kitagawa (2008) state: "The majority of the problems in statistical inference can be considered to be problems related to statistical modeling. They are typically formulated as comparisons of several statistical models." Common criteria for comparing models include the following:
+      <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination">
+        <em>
+          R
+        </em>
+        2
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ,
+      <a href="https://en.wikipedia.org/wiki/Bayes_factor">
+        Bayes factor
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ,
+      <a href="https://en.wikipedia.org/wiki/Akaike_information_criterion">
+        Akaike information criterion
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , and the
+      <a href="https://en.wikipedia.org/wiki/likelihood-ratio_test">
+        likelihood-ratio test
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      together with its generalization, the
+      <a href="https://en.wikipedia.org/wiki/relative_likelihood">
+        relative likelihood
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <p>
+      Another way of comparing two statistical models is through the notion of
+      <a href="https://en.wikipedia.org/wiki/Deficiency_(statistics)">
+        deficiency
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      introduced by
+      <a href="https://en.wikipedia.org/wiki/Lucien_Le_Cam">
+        Lucien Le Cam
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <h2>
+      See also
+    </h2>
     <ul>
-    <li><a href="https://en.wikipedia.org/wiki/All_models_are_wrong">All models are wrong</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Blockmodel">Blockmodel</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Conceptual_model">Conceptual model</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Design_of_experiments">Design of experiments</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Deterministic_model">Deterministic model</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Effective_theory">Effective theory</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Predictive_model">Predictive model</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Response_modeling_methodology">Response modeling methodology</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/SackSEER">SackSEER</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Scientific_model">Scientific model</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Statistical_inference">Statistical inference</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Statistical_model_specification">Statistical model specification</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Statistical_model_validation">Statistical model validation</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Statistical_theory">Statistical theory</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Stochastic_process">Stochastic process</a><span class="external-link">↗</span></li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/All_models_are_wrong">
+          All models are wrong
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Blockmodel">
+          Blockmodel
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Conceptual_model">
+          Conceptual model
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Design_of_experiments">
+          Design of experiments
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Deterministic_model">
+          Deterministic model
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Effective_theory">
+          Effective theory
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Predictive_model">
+          Predictive model
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Response_modeling_methodology">
+          Response modeling methodology
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/SackSEER">
+          SackSEER
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Scientific_model">
+          Scientific model
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Statistical_inference">
+          Statistical inference
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Statistical_model_specification">
+          Statistical model specification
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Statistical_model_validation">
+          Statistical model validation
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Statistical_theory">
+          Statistical theory
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Stochastic_process">
+          Stochastic process
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
     </ul>
-    <h2>Notes</h2>
-    <ol class="references"><li>Cox 2006</li>
-<li>Adèr 2008, p. 280</li>
-<li>McCullagh 2002</li>
-<li>Cox 2006</li>
-<li>Konishi &amp; Kitagawa 2008, §1.1</li>
-<li>Friendly &amp; Meyer 2016, §11.6</li>
-<li>Cox 2006</li>
-<li>Lucien Le Cam. "Sufficiency and Approximate Sufficiency". <em><a href="https://en.wikipedia.org/wiki/Annals_of_Mathematical_Statistics">Annals of Mathematical Statistics</a><span class="external-link">↗</span></em>. 1964, vol. 35, no. 4, pp. 1429. doi:10.1214/aoms/1177700372</li>
-</ol>
-    <h2>References</h2>
+    <h2>
+      Notes
+    </h2>
+    <ol class="references">
+      <li>
+        Cox 2006
+      </li>
+      <li>
+        Adèr 2008, p. 280
+      </li>
+      <li>
+        McCullagh 2002
+      </li>
+      <li>
+        Cox 2006
+      </li>
+      <li>
+        Konishi &amp; Kitagawa 2008, §1.1
+      </li>
+      <li>
+        Friendly &amp; Meyer 2016, §11.6
+      </li>
+      <li>
+        Cox 2006
+      </li>
+      <li>
+        Lucien Le Cam. "Sufficiency and Approximate Sufficiency".
+        <em>
+          <a href="https://en.wikipedia.org/wiki/Annals_of_Mathematical_Statistics">
+            Annals of Mathematical Statistics
+          </a>
+          <span class="external-link">
+            ↗
+          </span>
+        </em>
+        . 1964, vol. 35, no. 4, pp. 1429. doi:10.1214/aoms/1177700372
+      </li>
+    </ol>
+    <h2>
+      References
+    </h2>
     <ul>
-    <li><a href="https://en.wikipedia.org/wiki/Herman_J._Adèr">H. J. Adèr</a><span class="external-link">↗</span>. Modelling. <em>Advising on Research Methods: A consultant's companion</em>. Huizen, The Netherlands: Johannes van Kessel Publishing, 2008. p. 271–304.</li>
-    <li>K. P. Burnham and D. R. Anderson. <em>Model Selection and Multimodel Inference</em>. Springer-Verlag, 2002. 2nd ed.</li>
-    <li><a href="https://en.wikipedia.org/wiki/David_Cox_(statistician)">D. R. Cox</a><span class="external-link">↗</span>. <em>Principles of Statistical Inference</em>. <a href="https://en.wikipedia.org/wiki/Cambridge_University_Press">Cambridge University Press</a><span class="external-link">↗</span>, 2006. ISBN 978-0-521-86673-6.</li>
-    <li>M. Friendly and D. Meyer. <em>Discrete Data Analysis with R</em>. <a href="https://en.wikipedia.org/wiki/Chapman_&amp;_Hall">Chapman &amp; Hall</a><span class="external-link">↗</span>, 2016.</li>
-    <li>S. Konishi and G. Kitagawa. <em>Information Criteria and Statistical Modeling</em>. Springer, 2008.</li>
-    <li><a href="https://en.wikipedia.org/wiki/Peter_McCullagh">P. McCullagh</a><span class="external-link">↗</span>. <em>What is a statistical model?</em>. 2002. p. 1225–1310.</li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Herman_J._Adèr">
+          H. J. Adèr
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        . Modelling.
+        <em>
+          Advising on Research Methods: A consultant's companion
+        </em>
+        . Huizen, The Netherlands: Johannes van Kessel Publishing, 2008. p. 271–304.
+      </li>
+      <li>
+        K. P. Burnham and D. R. Anderson.
+        <em>
+          Model Selection and Multimodel Inference
+        </em>
+        . Springer-Verlag, 2002. 2nd ed.
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/David_Cox_(statistician)">
+          D. R. Cox
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          Principles of Statistical Inference
+        </em>
+        .
+        <a href="https://en.wikipedia.org/wiki/Cambridge_University_Press">
+          Cambridge University Press
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        , 2006. ISBN 978-0-521-86673-6.
+      </li>
+      <li>
+        M. Friendly and D. Meyer.
+        <em>
+          Discrete Data Analysis with R
+        </em>
+        .
+        <a href="https://en.wikipedia.org/wiki/Chapman_&amp;_Hall">
+          Chapman &amp; Hall
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        , 2016.
+      </li>
+      <li>
+        S. Konishi and G. Kitagawa.
+        <em>
+          Information Criteria and Statistical Modeling
+        </em>
+        . Springer, 2008.
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Peter_McCullagh">
+          P. McCullagh
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          What is a statistical model?
+        </em>
+        . 2002. p. 1225–1310.
+      </li>
     </ul>
-    <h2>Further reading</h2>
+    <h2>
+      Further reading
+    </h2>
     <ul>
-    <li>Davison, A. C. (2008), <em>Statistical Models</em>, <a href="https://en.wikipedia.org/wiki/Cambridge_University_Press">Cambridge University Press</a><span class="external-link">↗</span></li>
-    <li><em>Algebraic statistical models</em>. 2007. p. 1273–1297</li>
-    <li>Freedman, D. A. (2009), <em>Statistical Models</em>, <a href="https://en.wikipedia.org/wiki/Cambridge_University_Press">Cambridge University Press</a><span class="external-link">↗</span></li>
-    <li>Helland, I. S. (2010), <em>Steps Towards a Unified Basis for Scientific Models and Methods</em>, <a href="https://en.wikipedia.org/wiki/World_Scientific">World Scientific</a><span class="external-link">↗</span></li>
-    <li><a href="https://en.wikipedia.org/wiki/Dirk_Kroese">Kroese, D. P.</a><span class="external-link">↗</span>; Chan, J. C. C. (2014), <em>Statistical Modeling and Computation</em>, <a href="https://en.wikipedia.org/wiki/Springer_Science+Business_Media">Springer</a><span class="external-link">↗</span></li>
-    <li><em>To explain or to predict?</em>. 2010. p. 289–310</li>
+      <li>
+        Davison, A. C. (2008),
+        <em>
+          Statistical Models
+        </em>
+        ,
+        <a href="https://en.wikipedia.org/wiki/Cambridge_University_Press">
+          Cambridge University Press
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <em>
+          Algebraic statistical models
+        </em>
+        . 2007. p. 1273–1297
+      </li>
+      <li>
+        Freedman, D. A. (2009),
+        <em>
+          Statistical Models
+        </em>
+        ,
+        <a href="https://en.wikipedia.org/wiki/Cambridge_University_Press">
+          Cambridge University Press
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        Helland, I. S. (2010),
+        <em>
+          Steps Towards a Unified Basis for Scientific Models and Methods
+        </em>
+        ,
+        <a href="https://en.wikipedia.org/wiki/World_Scientific">
+          World Scientific
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Dirk_Kroese">
+          Kroese, D. P.
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        ; Chan, J. C. C. (2014),
+        <em>
+          Statistical Modeling and Computation
+        </em>
+        ,
+        <a href="https://en.wikipedia.org/wiki/Springer_Science+Business_Media">
+          Springer
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <em>
+          To explain or to predict?
+        </em>
+        . 2010. p. 289–310
+      </li>
     </ul>
   </body>
 </html>

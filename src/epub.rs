@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::cache::PageResponse;
 use crate::config::{BookConfig, LinksToExcludedPages, Metadata, current_utc_date_string};
 use crate::error::AppResult;
@@ -10,11 +12,13 @@ use html_escape::{encode_double_quoted_attribute, encode_text};
 use std::fs::{self, File};
 use std::io::Write;
 use std::path::Path;
-use tracing::info;
+use tracing::{error, info};
 use zip::{
     CompressionMethod, ZipWriter,
     write::{FileOptions, SimpleFileOptions},
 };
+
+use xmlem::Document;
 
 #[derive(Debug)]
 pub struct Chapter {
@@ -105,7 +109,17 @@ pub fn write_epub(
 
     for chapter in chapters {
         zip.start_file(format!("OEBPS/{}", chapter.file_name), deflated)?;
-        zip.write_all(chapter.content.as_bytes())?;
+        let doc = match Document::from_str(&chapter.content) {
+            Ok(doc) => doc.to_string_pretty(),
+            Err(err) => {
+                error!(
+                    "Could not parse generated html for {} {err}",
+                    chapter.file_name
+                );
+                chapter.content.clone()
+            }
+        };
+        zip.write_all(doc.as_bytes())?;
     }
 
     for image in images {
