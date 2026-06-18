@@ -1,5 +1,27 @@
 # Codex Session Notes
 
+## 2026-06-18 Fix Ignored Real-API Book Generation Test
+
+### Summary
+Fixed the ignored real-API integration test (`generate_example_books_from_real_wikipedia_api`) that failed because of pretty-printed whitespace/newlines in the XHTML `<title>` and `<h1>` tags of the generated chapters.
+
+### Decisions Made
+- **Normalized Whitespace in Assertions**:
+  - Modified the real-API book test assertion helper [`assert_real_api_generates_book`](file:///opt/tests/books.rs) to collapse and normalize all whitespace/newlines in the generated XHTML chapter contents before asserting the presence of the expected `<title>` and `<h1>` elements. This robustly accommodates formatting and pretty-printing of XHTML files.
+
+### Files Changed
+- [tests/books.rs](file:///opt/tests/books.rs) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt -- --check`, and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all ignored tests passed successfully).
+- Verified standard tests: `cargo test` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
+
 ## 2026-06-18 Fix XHTML Tag Nesting Violations and Mismatched Tag Warnings
 
 ### Summary

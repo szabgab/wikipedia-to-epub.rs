@@ -437,15 +437,18 @@ fn assert_real_api_generates_book(book: &str, chapter_titles: &[&str]) {
     for (index, title) in chapter_titles.iter().enumerate() {
         let filename = sanitize_chapter_filename(title);
         let chapter = read_epub_entry(&mut epub, &format!("OEBPS/{filename}"));
+        let normalized = chapter.split_whitespace().collect::<Vec<_>>().join(" ");
         assert!(
-            chapter.contains(&format!("<title>{title}</title>")),
-            "chapter {} is missing expected title {title:?}",
-            index + 1
+            normalized.contains(&format!("<title> {title} </title>")),
+            "chapter {} is missing expected title {title:?}\nchapter content:\n{}",
+            index + 1,
+            chapter
         );
         assert!(
-            chapter.contains(&format!("<h1>{title}</h1>")),
-            "chapter {} is missing expected heading {title:?}",
-            index + 1
+            normalized.contains(&format!("<h1> {title} </h1>")),
+            "chapter {} is missing expected heading {title:?}\nchapter content:\n{}",
+            index + 1,
+            chapter
         );
     }
 
