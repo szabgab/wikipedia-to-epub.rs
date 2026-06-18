@@ -1,5 +1,47 @@
 # Codex Session Notes
 
+## 2026-06-18 Handle tyo, nag, tba, dagger, yen, stl, rcb, vertical header, sticky-header, jarc, JPYConvert, Inlang, and JRKSN Templates
+
+### Summary
+Implemented, tested, and documented rendering handlers for 13 Wikipedia templates: `"tyo"`, `"nag"`, `"tba"`, `"dagger"`, `"yen"`, `"stl"`, `"rcb"`, `"vertical header"`, `"sticky-header"`, `"jarc"`, `"JPYConvert"`, `"Inlang"`, and `"JRKSN"`. Added them to the dispatch tables, wrote separate unit tests, sorted the silent templates CSV file, and documented conversion rules in `DEVELOPMENT.md`.
+
+### Decisions Made
+- **Implemented / Registered Renderers**:
+  - `tyo` (`render_tyo_template`) & `nag` (`render_nag_template`): Format stock exchange ticker codes for Tokyo and Nagoya.
+  - `tba` & `dagger`: Mapped as fixed text replacements (`TBA` and `†`) in `get_fixed()`.
+  - `yen` & `¥`: Mapped to the existing `render_jpy_template`.
+  - `stl` (`render_stl_template`): Generates standard railway station links using parameter 2 (station).
+  - `rcb` (`render_rcb_template`): Generates railway line links using parameter 2 (line).
+  - `vertical header` (`render_vertical_header_template`): Wraps parameter and returns content to display horizontally.
+  - `sticky-header`: Omitted from output by adding to `src/silent.csv`.
+  - `jarc` & `Inlang`: Registered in the dispatch table, delegating to `render_ja_rail_color_template` and `render_in_lang_template` respectively.
+  - `JPYConvert` (`render_jpy_convert_template`): Formats Yen values and converts them to US Dollars at a fixed 110.0 rate.
+  - `JRKSN` (`render_jrksn_template`): Concatenates railway line code and station number.
+- **Added Unit Tests**:
+  - Added 13 separate test cases in `src/tests.rs` verifying each template separately.
+- **Sorted CSV Files**:
+  - Added `sticky-header` to `src/silent.csv` and ran `./tools/sort.sh` to keep CSVs sorted.
+- **Updated Documentation**:
+  - Appended conversion rules for the templates in `DEVELOPMENT.md`.
+
+### Files Changed
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/templates/convert.rs](file:///opt/src/templates/convert.rs) [MODIFY]
+- [src/templates/lang.rs](file:///opt/src/templates/lang.rs) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Verified formatting, compilation, lints, and tests: `cargo fmt`, `cargo check`, `cargo clippy --all-targets -- -D warnings`, and `cargo test` (All passed successfully).
+- Ran `./tools/sort.sh` to sort CSV files.
+
+### Pending Follow-Ups
+- None.
+
+
 ## 2026-06-18 Handle sisterlinks, frac2, vanchor, block indent, dfni, radic, diagonal split header, pipe, legend-line, empty section, prime, isup, fv, family name hatnote, clear right, cjkv, udl, Bare URL inline, wikiquote, and Wikinews Templates
 
 ### Summary

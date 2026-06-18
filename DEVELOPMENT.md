@@ -69,6 +69,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Nihongo4|''[[Edo (Tokyo)|Edo]]''|[[wikt:江戸|江戸]]}}` becomes an italicized `Edo` article link followed by the Japanese text in a `lang="ja"` span
 * `{{lang|ko|서울}}` becomes `<span lang="ko">서울</span>`
 * `{{in lang|ko}}` becomes `(in Korean)`
+* `{{Inlang|ja}}` formats language indicators, redirecting to `{{in lang}}`: `(in Japanese)`
 * `{{linktext|漢|字}}` becomes `漢字`
 * `{{langx|ko|溝樓|lit=Walled City|label=none}}` becomes `<span lang="ko">溝樓</span>, lit. Walled City`
 * `{{Lang-zh|t=朝鮮|p=Cháoxiǎn|labels=no}}` becomes `<span lang="zh">朝鮮</span> (Cháoxiǎn)`
@@ -79,6 +80,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{lit|Vernacular Script Commission}}` becomes `lit. Vernacular Script Commission`
 * `{{ISBN|0-8248-0673-5}}` becomes `ISBN 0-8248-0673-5`
 * `{{ASIN|B00086U61Y}}` becomes `ASIN B00086U61Y`
+* `{{tyo|6758}}` and `{{nag|6758}}` format stock ticker links/codes for Tokyo (`TYO: 6758`) and Nagoya (`Nagoya: 6758`) exchanges
+* `{{tba}}` and `{{dagger}}` display standard fixed abbreviation and symbol text ("TBA" and "†")
 * `{{Script|Hani|神}}` becomes `神`
 * `{{oclc|58053128}}` becomes `OCLC 58053128`
 * `{{doi|10.1080/02757206.2013.726990}}` becomes `doi:10.1080/02757206.2013.726990`
@@ -287,16 +290,23 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{ROKS|Sejong the Great||2}}` becomes a link to `ROKS Sejong the Great` with the visible label `ROKS Sejong the Great`
 * `{{STN|Ginza}}` and `{{STN|Hamaōtsu|x}}` create railway station links such as `[[Ginza Station|Ginza]]` and `[[Hamaōtsu Station|Hamaōtsu]]`
 * `{{Station|Shibuya|1|Tokyo}}` renders a railway station link with customizable capitalization, location suffix, and label parameters: `[[Shibuya Station (Tokyo)|Shibuya]]`
+* `{{stl|Keikyu|Shinagawa}}` formats railway station links using the second parameter: `[[Shinagawa Station|Shinagawa]]`
+* `{{rcb|Keikyu|Yamanote}}` formats railway line links using the second parameter: `[[Yamanote Line|Yamanote]]`
 * `{{For-multi|topic1|link1|topic2|link2}}` alternates topics and links, rendering as `For topic1, see [[link1]]; for topic2, see [[link2]].`
 * `{{Inflation|US|12|1950}}` and `{{Inflation/year|US}}` adjust values using US CPI table indices (1950 to 2023)
 * `{{FXConvert|KOR|293.823|b|cursign=[[₩]]|year=2020|showdate=no}}` formats and converts historical currency values (e.g. `₩293.82 billion (US$248.95 million)`)
 * `{{JPY|1234.56}}` displays formatted currency with the Yen symbol: `¥1,234.56`; if no amount is provided, displays just `¥`
+* `{{JPYConvert|100}}` formats Yen currency amounts and converts them to US Dollars at a fixed rate: `¥100 (US$0.91)`
+* `{{yen|123}}` (or `{{¥|123}}`) renders Yen currency amounts: `¥123`
 * `{{stack|content}}` acts as a generic passthrough wrapper preserving inner wikitext
 * `{{longitem|content}}` acts as a generic passthrough wrapper preserving inner wikitext
+* `{{vertical header|text}}` wraps and displays header text horizontally
 * `{{USS|Missouri|BB-63|6}}`, `{{HMS|Jamaica|44|6}}`, and `{{ship|Japanese cruiser|Kiso}}` render as formatted, italicized ship names linked to their respective articles
 * `{{Nb5}}` renders as five non-breaking spaces (e.g. `     `)
 * `{{color|red|text}}` (and its British spelling alias `colour`) renders text with the given foreground color: `<span style="color: red;">text</span>`
 * `{{Ja-rail-color|JY}}` returns the standardized hex color code for the Japanese rail line (e.g. `#80c241`)
+* `{{jarc|JY}}` returns the standardized hex color code for the Japanese rail line (e.g. `#80c241`), redirecting to `{{Ja-rail-color}}`
+* `{{JRKSN|JK|01}}` formats station numbering icons as a string concatenation: `JK01`
 * `{{Ja-platform|pfn=1|name=Yamanote Line|dir=for Tokyo}}` (or `{{jpf}}`, `{{Ja-platform-m}}`, `{{jpfm}}`) renders a Japanese rail platform layout as a table row inside wikitables
 * `{{ja-rail-linem|m|linename=Tokyo Metro|linecol=blue}}` renders a Japanese railway line row inside wikitables, supporting customizable symbol types, line colors, names, and direction descriptions
 * `{{rail-interchange|JR East|JT}}` (or `{{ric}}`, `{{rint}}`) displays railway system/line abbreviations in brackets, e.g. `[JT]`
@@ -373,7 +383,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{udl|wrap=content}}` formats an unindented description list wrapping its content
 * Wikipedia navigation templates listed in `src/navigations.csv`  are omitted; both `src/navigations.csv` and `src/silent.csv` support comma-separated comments, ignoring any text after the comma in the code; template names are normalized by converting underscores to spaces before checking for matches.
 * Wikipedia succession-box templates such as `{{Succession box}}` or those whose names start with `s-`, such as `{{s-start}}`, `{{s-bef}}`, `{{s-ttl}}`, and `{{s-end}}`, are omitted
-* Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{More citations needed}}`, `{{additional citations needed}}`, `{{Refimprove}}`, `{{FACT}}`, `{{citation needed}}`, `{{cn}}`, `{{huh}}`, `{{when}}`, `{{who}}`, `{{By whom}}`, `{{more cn section}}`, `{{prose}}`, `{{Unreliable source?}}`, `{{Better source needed}}`, `{{Dead link}}`, `{{Page needed}}`, `{{New archival link needed}}`, `{{clear}}`, `{{div}}`, `{{columns-list}}`, `{{location map+}}`, `{{Wide image}}`, `{{Pie chart}}`, `{{ahnentafel}}`, `{{Spoken Wikipedia}}`, `{{very long}}`, `{{long}}`, `{{Explain}}`, `{{Ref}}`, `{{R}}`, `{{Pd-notice}}`, `{{Contains special characters}}`, `{{tree chart}}`, `{{tree chart/start}}`, `{{tree chart/end}}`, `{{tree list}}`, `{{tree list/end}}`, `{{tree list/final branch}}`, `{{tree list/branching}}`, `{{tree list/final branching}}`, `{{chart top}}`, `{{chart bottom}}`, `{{Japanese clan name}}`, `{{-}}`, `{{redirect-several}}`, `{{bots}}`, `{{Div end}}`, `{{Sister bar}}`, `{{Expand section}}`, `{{Unreferencedsect}}`, `{{Clear left}}`, `{{Cleanup}}`, `{{tone}}`, `{{Wikiatlas}}`, `{{update section}}`, `{{party color}}`, `{{category see also}}`, `{{clarify}}`, `{{clarification needed}}`, `{{failed verification}}`, `{{colbegin}}`, `{{colend}}`, `{{POV}}`, `{{dubious}}`, `{{commonscat}}`, `{{Commons-inline}}`, `{{disambiguation}}`, `{{in title}}`, `{{look from}}`, `{{tocright}}`, `{{CS1 config}}`, `{{unsolved}}`, `{{discuss}}`, `{{j-railservice start}}`, `{{j-route}}`, `{{j-rserv}}`, `{{ja-rail-line}}`, `{{pp-dispute}}`, `{{Attribution needed}}`, `{{incomplete short citation}}`, `{{Wikidata fallback link}}`, `{{flagicon image}}`, `{{external media}}`, `{{Wikiquote-inline}}`, `{{wikispecies-inline}}`, `{{IMDb name}}`, `{{PM20}}`, `{{NoteTag}}`, `{{wikisource category}}`, `{{0}}`, `{{end plainlist}}`, `{{surname}}`, `{{sisterlinks}}`, `{{sister links}}`, `{{Wikinews}}`, `{{wikiquote}}`, `{{fv}}`, `{{clear right}}`, `{{clr}}`, `{{empty section}}`, `{{family name hatnote}}`, `{{Bare URL inline}}`, and `{{DEFAULTSORT:...}}` are omitted
+* Maintenance and metadata templates such as `{{unreferenced section}}`, `{{Excessive citations inline}}`, `{{More citations needed}}`, `{{additional citations needed}}`, `{{Refimprove}}`, `{{FACT}}`, `{{citation needed}}`, `{{cn}}`, `{{huh}}`, `{{when}}`, `{{who}}`, `{{By whom}}`, `{{more cn section}}`, `{{prose}}`, `{{Unreliable source?}}`, `{{Better source needed}}`, `{{Dead link}}`, `{{Page needed}}`, `{{New archival link needed}}`, `{{clear}}`, `{{div}}`, `{{columns-list}}`, `{{location map+}}`, `{{Wide image}}`, `{{Pie chart}}`, `{{ahnentafel}}`, `{{Spoken Wikipedia}}`, `{{very long}}`, `{{long}}`, `{{Explain}}`, `{{Ref}}`, `{{R}}`, `{{Pd-notice}}`, `{{Contains special characters}}`, `{{tree chart}}`, `{{tree chart/start}}`, `{{tree chart/end}}`, `{{tree list}}`, `{{tree list/end}}`, `{{tree list/final branch}}`, `{{tree list/branching}}`, `{{tree list/final branching}}`, `{{chart top}}`, `{{chart bottom}}`, `{{Japanese clan name}}`, `{{-}}`, `{{redirect-several}}`, `{{bots}}`, `{{Div end}}`, `{{Sister bar}}`, `{{Expand section}}`, `{{Unreferencedsect}}`, `{{Clear left}}`, `{{Cleanup}}`, `{{tone}}`, `{{Wikiatlas}}`, `{{update section}}`, `{{party color}}`, `{{category see also}}`, `{{clarify}}`, `{{clarification needed}}`, `{{failed verification}}`, `{{colbegin}}`, `{{colend}}`, `{{POV}}`, `{{dubious}}`, `{{commonscat}}`, `{{Commons-inline}}`, `{{disambiguation}}`, `{{in title}}`, `{{look from}}`, `{{tocright}}`, `{{CS1 config}}`, `{{unsolved}}`, `{{discuss}}`, `{{j-railservice start}}`, `{{j-route}}`, `{{j-rserv}}`, `{{ja-rail-line}}`, `{{pp-dispute}}`, `{{Attribution needed}}`, `{{incomplete short citation}}`, `{{Wikidata fallback link}}`, `{{flagicon image}}`, `{{external media}}`, `{{Wikiquote-inline}}`, `{{wikispecies-inline}}`, `{{IMDb name}}`, `{{PM20}}`, `{{NoteTag}}`, `{{wikisource category}}`, `{{0}}`, `{{end plainlist}}`, `{{surname}}`, `{{sisterlinks}}`, `{{sister links}}`, `{{Wikinews}}`, `{{wikiquote}}`, `{{fv}}`, `{{clear right}}`, `{{clr}}`, `{{empty section}}`, `{{family name hatnote}}`, `{{Bare URL inline}}`, `{{sticky-header}}`, and `{{DEFAULTSORT:...}}` are omitted
 * `{{Reflist}}` renders collected `<ref>...</ref>` content as an ordered reference list; grouped reflists such as `{{Reflist|group=n}}` render the matching group when those references are used
 * Reference-list wrappers and source metadata such as `{{notelist}}`, `{{notelist-ua}}`, `{{NoteFoot}}`, `{{Refbegin}}`, `{{Refend}}`, `{{SfnRef}}`, and `{{source-attribution}}` are omitted while surrounding list contents are preserved
 * Footnote wrappers such as `{{efn|...}}`, `{{efn-ua|...}}`, and `{{refn|...}}` are omitted

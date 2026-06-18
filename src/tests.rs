@@ -5102,6 +5102,120 @@ fn render_wikitext_silently_skips_end_box_template() {
 }
 
 #[test]
+fn render_wikitext_formats_tyo_template() {
+    assert_eq!(render_templates("{{tyo}}"), "TYO");
+    assert_eq!(render_templates("{{tyo|6758}}"), "TYO: 6758");
+}
+
+#[test]
+fn render_wikitext_formats_nag_template() {
+    assert_eq!(render_templates("{{nag}}"), "Nagoya");
+    assert_eq!(render_templates("{{nag|6758}}"), "Nagoya: 6758");
+}
+
+#[test]
+fn render_wikitext_formats_tba_template() {
+    assert_eq!(render_templates("{{tba}}"), "TBA");
+}
+
+#[test]
+fn render_wikitext_formats_dagger_template() {
+    assert_eq!(render_templates("{{dagger}}"), "†");
+}
+
+#[test]
+fn render_wikitext_formats_yen_template() {
+    assert_eq!(render_templates("{{yen|123}}"), "¥123");
+    assert_eq!(render_templates("{{¥|123}}"), "¥123");
+}
+
+#[test]
+fn render_wikitext_formats_stl_template() {
+    assert_eq!(
+        render_templates("{{stl|Keikyu|Shinagawa}}"),
+        "[[Shinagawa Station|Shinagawa]]"
+    );
+    assert_eq!(
+        render_templates("{{stl|system=Keikyu|station=Shinagawa}}"),
+        "[[Shinagawa Station|Shinagawa]]"
+    );
+    assert_eq!(render_templates("{{stl|Keikyu}}"), "[[Keikyu]]");
+}
+
+#[test]
+fn render_wikitext_formats_rcb_template() {
+    assert_eq!(
+        render_templates("{{rcb|Keikyu|Yamanote}}"),
+        "[[Yamanote Line|Yamanote]]"
+    );
+    assert_eq!(
+        render_templates("{{rcb|Keikyu|Yamanote Line}}"),
+        "[[Yamanote Line|Yamanote Line]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_vertical_header_template() {
+    assert_eq!(
+        render_templates("{{vertical header|Some text}}"),
+        "Some text"
+    );
+    assert_eq!(
+        render_templates("{{vertical header|1=Some text}}"),
+        "Some text"
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_sticky_header_template() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{sticky-header}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("sticky-header"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 1,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
+fn render_wikitext_formats_jarc_template() {
+    assert_eq!(render_templates("{{jarc|JY}}"), "#80c241");
+    assert_eq!(render_templates("{{jarc}}"), "#333333");
+}
+
+#[test]
+fn render_wikitext_formats_jpy_convert_template() {
+    assert_eq!(render_templates("{{JPYConvert|100}}"), "¥100 (US$0.91)");
+    assert_eq!(
+        render_templates("{{JPYConvert|100|k}}"),
+        "¥100 thousand (US$0.91 thousand)"
+    );
+    assert_eq!(render_templates("{{JPYConvert|100|convert=no}}"), "¥100");
+}
+
+#[test]
+fn render_wikitext_formats_inlang_template() {
+    assert_eq!(render_templates("{{Inlang|ja}}"), "(in Japanese)");
+    assert_eq!(
+        render_templates("{{Inlang|ja|ko}}"),
+        "(in Japanese and Korean)"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_jrksn_template() {
+    assert_eq!(render_templates("{{JRKSN|JK|01}}"), "JK01");
+}
+
+#[test]
 fn render_wikitext_formats_mp_template() {
     assert_eq!(
         render_templates("{{Mp|2004 MN|4}}"),

@@ -1313,5 +1313,7 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             "ja-rail-linem",
             render_ja_rail_linem_template as TemplateHandler,
         ),
+        ("jarc", render_ja_rail_color_template as TemplateHandler),
+        ("inlang", render_in_lang_template as TemplateHandler),
     ])
 }

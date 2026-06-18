@@ -941,5 +941,52 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("value", render_val_template as TemplateHandler),
         ("fxconvert", render_fx_convert_template as TemplateHandler),
         ("jpy", render_jpy_template as TemplateHandler),
+        ("yen", render_jpy_template as TemplateHandler),
+        ("¥", render_jpy_template as TemplateHandler),
+        ("jpyconvert", render_jpy_convert_template as TemplateHandler),
     ])
+}
+
+/// [JPYConvert](https://en.wikipedia.org/wiki/Template:JPYConvert)
+fn render_jpy_convert_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    if positional.is_empty() {
+        return String::new();
+    }
+
+    let value_str = &positional[0];
+    let unit = positional.get(1).map(String::as_str).unwrap_or("");
+
+    let val: f64 = value_str.parse().unwrap_or(0.0);
+
+    let scale_word = match unit.to_ascii_lowercase().as_str() {
+        "k" => "thousand",
+        "m" => "million",
+        "b" => "billion",
+        "t" => "trillion",
+        _ => unit,
+    };
+
+    let formatted_val = format_number_with_commas(&val.to_string());
+    let jpy_str = if scale_word.is_empty() {
+        format!("¥{formatted_val}")
+    } else {
+        format!("¥{formatted_val} {scale_word}")
+    };
+
+    let usd_val = val / 110.0;
+    let usd_str = if scale_word.is_empty() {
+        format!("US${}", format_number_with_commas(&format!("{usd_val:.2}")))
+    } else {
+        format!("US${:.2} {}", usd_val, scale_word)
+    };
+
+    let show_convert = named.get("convert").map(String::as_str).unwrap_or("yes");
+    if show_convert.eq_ignore_ascii_case("no") {
+        jpy_str
+    } else {
+        format!("{jpy_str} ({usd_str})")
+    }
 }

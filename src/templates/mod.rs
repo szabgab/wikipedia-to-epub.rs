@@ -87,6 +87,8 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
         ("\"'", "\"'"),
         ("!", "|"),
         ("pipe", "|"),
+        ("tba", "TBA"),
+        ("dagger", "†"),
         ("nbsp", " "),
         ("snd", " – "),
         ("dash", " – "),
@@ -614,6 +616,19 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("isup")
         || template.eq_ignore_ascii_case("cjkv")
         || template.eq_ignore_ascii_case("udl")
+        || template.eq_ignore_ascii_case("tyo")
+        || template.eq_ignore_ascii_case("nag")
+        || template.eq_ignore_ascii_case("tba")
+        || template.eq_ignore_ascii_case("dagger")
+        || template.eq_ignore_ascii_case("yen")
+        || template == "¥"
+        || template.eq_ignore_ascii_case("stl")
+        || template.eq_ignore_ascii_case("rcb")
+        || template.eq_ignore_ascii_case("vertical header")
+        || template.eq_ignore_ascii_case("jarc")
+        || template.eq_ignore_ascii_case("JPYConvert")
+        || template.eq_ignore_ascii_case("inlang")
+        || template.eq_ignore_ascii_case("JRKSN")
         || find_map_image(template).is_some()
         || is_silent_template_name(template)
 }

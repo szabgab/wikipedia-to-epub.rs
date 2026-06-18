@@ -4639,6 +4639,15 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("isup", render_isup_template as TemplateHandler),
         ("cjkv", render_cjkv_template as TemplateHandler),
         ("udl", render_udl_template as TemplateHandler),
+        ("tyo", render_tyo_template as TemplateHandler),
+        ("nag", render_nag_template as TemplateHandler),
+        ("stl", render_stl_template as TemplateHandler),
+        ("rcb", render_rcb_template as TemplateHandler),
+        (
+            "vertical header",
+            render_vertical_header_template as TemplateHandler,
+        ),
+        ("jrksn", render_jrksn_template as TemplateHandler),
         ("poem quote", render_poem_quote_template as TemplateHandler),
         ("poemquote", render_poem_quote_template as TemplateHandler),
         (
@@ -6064,4 +6073,94 @@ fn render_udl_template(params: &str) -> String {
     } else {
         render_templates(&content)
     }
+}
+
+/// [tyo](https://en.wikipedia.org/wiki/Template:Tokyo_Stock_Exchange)
+fn render_tyo_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let ticker = positional.first().map(String::as_str).unwrap_or("");
+    if ticker.is_empty() {
+        "TYO".to_string()
+    } else {
+        format!("TYO: {ticker}")
+    }
+}
+
+/// [nag](https://en.wikipedia.org/wiki/Template:Nagoya_Stock_Exchange)
+fn render_nag_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let ticker = positional.first().map(String::as_str).unwrap_or("");
+    if ticker.is_empty() {
+        "Nagoya".to_string()
+    } else {
+        format!("Nagoya: {ticker}")
+    }
+}
+
+/// [stl](https://en.wikipedia.org/wiki/Template:Station_link)
+fn render_stl_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let station = template_param(&named, &["station", "2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .unwrap_or("");
+
+    if station.is_empty() {
+        let system = template_param(&named, &["system", "1"])
+            .or_else(|| positional.first().map(String::as_str))
+            .unwrap_or("");
+        if system.is_empty() {
+            String::new()
+        } else {
+            format!("[[{system}]]")
+        }
+    } else {
+        format!("[[{station} Station|{station}]]")
+    }
+}
+
+/// [rcb](https://en.wikipedia.org/wiki/Template:Rail_color_box)
+fn render_rcb_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let line = template_param(&named, &["line", "2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .unwrap_or("");
+
+    if line.is_empty() {
+        String::new()
+    } else {
+        let line_with_suffix = if line.to_lowercase().contains("line") {
+            line.to_string()
+        } else {
+            format!("{line} Line")
+        };
+        format!("[[{line_with_suffix}|{line}]]")
+    }
+}
+
+/// [vertical header](https://en.wikipedia.org/wiki/Template:Vertical_header)
+fn render_vertical_header_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let content = if let Some(val) = template_param(&named, &["1"]) {
+        val.to_string()
+    } else {
+        let positional = template_positional_params(params);
+        if let Some(val) = positional.first() {
+            val.to_string()
+        } else {
+            String::new()
+        }
+    };
+    render_templates(&content)
+}
+
+/// [JRKSN](https://en.wikipedia.org/wiki/Template:JRKSN)
+fn render_jrksn_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let line_code = positional.first().map(String::as_str).unwrap_or("");
+    let station_num = positional.get(1).map(String::as_str).unwrap_or("");
+    format!("{line_code}{station_num}")
 }

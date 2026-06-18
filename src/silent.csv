@@ -1,5 +1,5 @@
-'
 -
+'
 0
 About,                       Linking the reader to other meaning of the same word.,      https://en.wikipedia.org/wiki/Template:About
 additional citations needed, Asks for help.,                                             https://en.wikipedia.org/wiki/Template:Additional_citation_needed
@@ -42,8 +42,8 @@ columns-list
 Commons
 Commons and category
 Commons category
-Commons category inline
 Commons category-inline
+Commons category inline
 commonscat,                  Link to category in Wikimedia Commons.,                     https://en.wikipedia.org/wiki/Template:Commons_category
 Commons-inline
 Confusing section
@@ -59,8 +59,8 @@ Distinguish
 div
 div col
 divcol
-div col end
 divcol end
+div col end
 Div end
 dubious
 efn
@@ -182,11 +182,12 @@ solar system delta v map.svg
 source-attribution
 Source needed
 Spoken Wikipedia
+sticky-header
 Subject bar
 Subscription required
 surname
-TOClimit
 TOC limit
+TOClimit
 tocright
 Tokyo Metropolis Labelled Map
 tone
