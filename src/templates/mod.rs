@@ -160,6 +160,10 @@ pub(crate) fn render_template(content: &str) -> String {
         render_ship_template("USS", params)
     } else if template.eq_ignore_ascii_case("HMS") {
         render_ship_template("HMS", params)
+    } else if template.eq_ignore_ascii_case("SMS") {
+        render_ship_template("SMS", params)
+    } else if template.eq_ignore_ascii_case("SS") {
+        render_ship_template("SS", params)
     } else if template.eq_ignore_ascii_case("L1") {
         render_lagrange_template("1")
     } else if template.eq_ignore_ascii_case("L2") {
@@ -629,6 +633,14 @@ fn is_handled_template_name(template: &str) -> bool {
         || template.eq_ignore_ascii_case("JPYConvert")
         || template.eq_ignore_ascii_case("inlang")
         || template.eq_ignore_ascii_case("JRKSN")
+        || template.eq_ignore_ascii_case("lit.")
+        || template.eq_ignore_ascii_case("glossary")
+        || template.eq_ignore_ascii_case("glossary end")
+        || template.eq_ignore_ascii_case("SMS")
+        || template.eq_ignore_ascii_case("SS")
+        || template.eq_ignore_ascii_case("sronly")
+        || template.eq_ignore_ascii_case("Free-content attribution")
+        || template.eq_ignore_ascii_case("More")
         || find_map_image(template).is_some()
         || is_silent_template_name(template)
 }

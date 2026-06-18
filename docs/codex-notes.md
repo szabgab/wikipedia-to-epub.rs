@@ -1,5 +1,46 @@
 # Codex Session Notes
 
+## 2026-06-18 Handle lit., glossary, glossary end, fcn, dynamic list, SMS, SS, sronly, Expand language, Free-content attribution, pp, pp-sock, missing long citation, subscription, ambiguous, Bare URL PDF, better source, and More Templates
+
+### Summary
+Implemented, tested, and documented rendering handlers for 18 Wikipedia templates: `"lit."`, `"glossary"`, `"glossary end"`, `"fcn"`, `"dynamic list"`, `"SMS"`, `"SS"`, `"sronly"`, `"Expand language"`, `"Free-content attribution"`, `"pp"`, `"pp-sock"`, `"missing long citation"`, `"subscription"`, `"ambiguous"`, `"Bare URL PDF"`, `"better source"`, and `"More"`. Added them to the dispatch tables/CSVs, wrote separate unit tests, ran the sorting tool, and documented the rules in `DEVELOPMENT.md`.
+
+### Decisions Made
+- **Implemented / Registered Renderers**:
+  - `lit.`: Registered case-insensitively to map to `render_literal_template` in `src/templates/lang.rs`.
+  - `glossary` & `glossary end`: Handled as silent/omitted block structures, returning `String::new()` in `src/templates/formatting.rs` to allow child term/defn tags to compile cleanly.
+  - `SMS` & `SS`: Dispatched to ship templates (HMS/USS equivalent) in `src/templates/mod.rs`.
+  - `sronly`: Passes through the visible parameter text.
+  - `Free-content attribution`: Parsed named parameters and formatted using CS1 free license attribution style.
+  - `More`: Handled as an alias for the `Further` template.
+- **Omitted Silent Templates**:
+  - Registered `fcn`, `dynamic list`, `Expand language`, `pp`, `pp-sock`, `missing long citation`, `subscription`, `ambiguous`, `Bare URL PDF`, and `better source` into `src/silent.csv` to be skipped silently.
+- **Added Unit Tests**:
+  - Added 18 unit tests in `src/tests.rs` verifying each template case individually.
+- **Sorted CSV Files**:
+  - Sorted `src/silent.csv` using `./tools/sort.sh`.
+- **Updated Documentation**:
+  - Added new rules and updated list of omitted/formatting templates in `DEVELOPMENT.md`.
+
+### Files Changed
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+- [src/templates/lang.rs](file:///opt/src/templates/lang.rs) [MODIFY]
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt -- --check`, and `cargo clippy --all-targets -- -D warnings` (all passed cleanly).
+- Verified unit and integration tests: `cargo test` (all 424 unit/doc tests and 41 integration tests passed successfully).
+- Ran `./tools/sort.sh` to sort CSV databases.
+
+### Pending Follow-Ups
+- None.
+
+
 ## 2026-06-18 Handle tyo, nag, tba, dagger, yen, stl, rcb, vertical header, sticky-header, jarc, JPYConvert, Inlang, and JRKSN Templates
 
 ### Summary

@@ -4648,6 +4648,10 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_vertical_header_template as TemplateHandler,
         ),
         ("jrksn", render_jrksn_template as TemplateHandler),
+        ("glossary", render_glossary_template as TemplateHandler),
+        ("glossary end", render_glossary_template as TemplateHandler),
+        ("sronly", render_sronly_template as TemplateHandler),
+        ("more", render_further_template as TemplateHandler),
         ("poem quote", render_poem_quote_template as TemplateHandler),
         ("poemquote", render_poem_quote_template as TemplateHandler),
         (
@@ -6163,4 +6167,20 @@ fn render_jrksn_template(params: &str) -> String {
     let line_code = positional.first().map(String::as_str).unwrap_or("");
     let station_num = positional.get(1).map(String::as_str).unwrap_or("");
     format!("{line_code}{station_num}")
+}
+
+/// [glossary](https://en.wikipedia.org/wiki/Template:Glossary)
+/// [glossary end](https://en.wikipedia.org/wiki/Template:Glossary_end)
+fn render_glossary_template(_params: &str) -> String {
+    String::new()
+}
+
+/// [sronly](https://en.wikipedia.org/wiki/Template:Sronly)
+fn render_sronly_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let text = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .unwrap_or("");
+    render_templates(text)
 }

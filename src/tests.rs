@@ -5216,6 +5216,264 @@ fn render_wikitext_formats_jrksn_template() {
 }
 
 #[test]
+fn render_wikitext_formats_lit_dot_template() {
+    assert_eq!(
+        render_templates("{{lit.|Eastern Capital}}"),
+        "lit. Eastern Capital"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_glossary_templates() {
+    assert_eq!(render_templates("{{glossary}}"), "");
+    assert_eq!(render_templates("{{glossary end}}"), "");
+}
+
+#[test]
+fn render_wikitext_silently_skips_fcn_template() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{fcn}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("fcn"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 1,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_dynamic_list_template() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{dynamic list}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("dynamic list"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 1,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
+fn render_wikitext_formats_sms_template() {
+    assert_eq!(
+        render_templates("{{SMS|Nassau}}"),
+        "[[SMS Nassau|SMS ''Nassau'']]"
+    );
+    assert_eq!(
+        render_templates("{{SMS|Nassau|1908}}"),
+        "[[SMS Nassau (1908)|SMS ''Nassau'' (1908)]]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_ss_template() {
+    assert_eq!(
+        render_templates("{{SS|City of Rio de Janeiro}}"),
+        "[[SS City of Rio de Janeiro|SS ''City of Rio de Janeiro'']]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_sronly_template() {
+    assert_eq!(render_templates("{{sronly|visible text}}"), "visible text");
+    assert_eq!(
+        render_templates("{{sronly|1=visible text}}"),
+        "visible text"
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_expand_language_template() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{Expand language|ja}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("Expand language"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 1,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
+fn render_wikitext_formats_free_content_attribution_template() {
+    assert_eq!(
+        render_templates(
+            "{{Free-content attribution|title=Open Book|author=Jane|publisher=Press|license=CC-BY}}"
+        ),
+        "This article incorporates text from a free content work. Licensed under CC-BY: ''Open Book'', Jane, Press"
+    );
+    assert_eq!(
+        render_templates(
+            "{{Free-content attribution|title=Open Book|documentURL=http://example.com}}"
+        ),
+        "This article incorporates text from a free content work. Licensed under free license: ''[[official-url:http://example.com|Open Book]]''"
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_protection_templates() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{pp|small=yes}}\n{{pp-sock|expiry=indef}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("pp"), "{rendered}");
+    assert!(!rendered.contains("pp-sock"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 2,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_missing_long_citation_template() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{missing long citation}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("missing long citation"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 1,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_subscription_template() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{subscription}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("subscription"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 1,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_ambiguous_template() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{ambiguous}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("ambiguous"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 1,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_bare_url_pdf_template() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{Bare URL PDF}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("Bare URL PDF"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 1,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_bare_url_pdf_cased_template() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{Bare URL PDF}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("Bare URL PDF"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 1,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
+fn render_wikitext_silently_skips_better_source_template() {
+    let (rendered, counts) = render_wikitext_with_template_counts(
+        "Sample",
+        "{{better source}}",
+        &InternalLinks::new(),
+        "en",
+        None,
+    );
+    assert!(!rendered.contains("better source"), "{rendered}");
+    assert_eq!(
+        counts,
+        TemplateSkipCounts {
+            recognized: 1,
+            unknown: 0
+        }
+    );
+}
+
+#[test]
+fn render_wikitext_formats_more_template() {
+    assert_eq!(
+        render_templates("{{More|Standard model}}"),
+        "Further information: [[Standard model]]"
+    );
+}
+
+#[test]
 fn render_wikitext_formats_mp_template() {
     assert_eq!(
         render_templates("{{Mp|2004 MN|4}}"),

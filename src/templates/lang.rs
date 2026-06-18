@@ -1251,6 +1251,7 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_korean_transliteration_template as TemplateHandler,
         ),
         ("lit", render_literal_template as TemplateHandler),
+        ("lit.", render_literal_template as TemplateHandler),
         (
             "literal translation",
             render_literal_template as TemplateHandler,

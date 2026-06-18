@@ -1774,6 +1774,10 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             "london gazette",
             render_london_gazette_template as TemplateHandler,
         ),
+        (
+            "free-content attribution",
+            render_free_content_attribution_template as TemplateHandler,
+        ),
     ])
 }
 
@@ -2036,4 +2040,43 @@ fn render_london_gazette_template(params: &str) -> String {
     }
 
     parts.join(". ")
+}
+
+fn render_free_content_attribution_template(params: &str) -> String {
+    let named = template_named_params(params);
+
+    let title = named.get("title").map(String::as_str).unwrap_or("");
+    if title.is_empty() {
+        return String::new();
+    }
+
+    let license = named
+        .get("license")
+        .map(String::as_str)
+        .unwrap_or("free license");
+    let author = named.get("author").map(String::as_str).unwrap_or("");
+    let publisher = named.get("publisher").map(String::as_str).unwrap_or("");
+    let document_url = named.get("documenturl").map(String::as_str).unwrap_or("");
+
+    let title_rendered = render_templates(title);
+    let title_part = if !document_url.is_empty() {
+        format!("''[[official-url:{}|{}]]''", document_url, title_rendered)
+    } else {
+        format!("''{}''", title_rendered)
+    };
+
+    let mut parts = Vec::new();
+    parts.push(title_part);
+    if !author.is_empty() {
+        parts.push(render_templates(author));
+    }
+    if !publisher.is_empty() {
+        parts.push(render_templates(publisher));
+    }
+
+    format!(
+        "This article incorporates text from a free content work. Licensed under {}: {}",
+        license,
+        parts.join(", ")
+    )
 }
