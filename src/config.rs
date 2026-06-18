@@ -158,9 +158,7 @@ fn collect_duplicate_articles(
         match article {
             ArticleConfig::Simple(title) => record_article_title(path, title, seen)?,
             ArticleConfig::Detailed(detailed) => {
-                if detailed.r#type != Some(ArticleType::Section) {
-                    record_article_title(path, &detailed.title, seen)?;
-                }
+                record_article_title(path, &detailed.title, seen)?;
                 collect_duplicate_articles(path, &detailed.articles, seen)?;
             }
         }

@@ -1,5 +1,30 @@
 # Codex Session Notes
 
+## 2026-06-18 Validate Section Chapter Titles for Duplication
+
+### Summary
+Enhanced the YAML configuration validation to verify that section chapter titles are also unique and do not conflict with other article names or section titles, avoiding late-stage zip duplicate filename errors. Added 2 new unit tests to cover duplicate section titles and section title colliding with article names.
+
+### Decisions Made
+- **Modified Uniqueness Validation**:
+  - Updated `collect_duplicate_articles` in [src/config.rs](file:///opt/src/config.rs) to unconditionally record the title of all detailed articles, including those of type `Section`.
+- **Wrote Unit Tests**:
+  - Added `read_config_rejects_duplicate_section_title_and_article` in [src/tests.rs](file:///opt/src/tests.rs) to verify that the config parser rejects configurations where a section title matches an article name.
+  - Added `read_config_rejects_duplicate_section_titles` in [src/tests.rs](file:///opt/src/tests.rs) to verify that the config parser rejects configurations where two section titles are identical.
+
+### Files Changed
+- [src/config.rs](file:///opt/src/config.rs) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and warnings: `cargo check --all-targets` and `cargo clippy --all-targets -- -D warnings` (Passed cleanly, no warnings/errors).
+- Formatting check: `cargo fmt --check` (Passed cleanly).
+- Verified unit and integration tests: `cargo test` (All 371 unit/doc tests and 42 integration tests passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-17 Handle templates right, Cite peakbagger, wikibooks inline, refh, By whom, M
 
 ### Summary

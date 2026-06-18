@@ -3332,6 +3332,79 @@ articles:
 }
 
 #[test]
+fn read_config_rejects_duplicate_section_title_and_article() {
+    let error = parse_config_str(
+        Path::new("sample.yaml"),
+        r#"chapters: title
+metadata:
+  title: Sample
+  author: Wikipedia contributors
+  language: en
+  edition: First edition
+output-file: sample.epub
+cover: "None"
+links_to_pages: false
+links_to_excluded_pages: emphasize
+caching: none
+depth: 0
+articles:
+  - title: Jōmon period
+    type: section
+    articles:
+      - Jōmon period
+"#,
+    )
+    .expect_err("config should reject duplicate page when section title and article are the same");
+
+    let message = error.to_string();
+    assert!(
+        message.contains("invalid configuration in sample.yaml"),
+        "{message}"
+    );
+    assert!(
+        message.contains("duplicate page `Jōmon period`"),
+        "{message}"
+    );
+}
+
+#[test]
+fn read_config_rejects_duplicate_section_titles() {
+    let error = parse_config_str(
+        Path::new("sample.yaml"),
+        r#"chapters: title
+metadata:
+  title: Sample
+  author: Wikipedia contributors
+  language: en
+  edition: First edition
+output-file: sample.epub
+cover: "None"
+links_to_pages: false
+links_to_excluded_pages: emphasize
+caching: none
+depth: 0
+articles:
+  - title: History
+    type: section
+    articles:
+      - Korea
+  - title: History
+    type: section
+    articles:
+      - Japan
+"#,
+    )
+    .expect_err("config should reject duplicate page when section titles are duplicate");
+
+    let message = error.to_string();
+    assert!(
+        message.contains("invalid configuration in sample.yaml"),
+        "{message}"
+    );
+    assert!(message.contains("duplicate page `History`"), "{message}");
+}
+
+#[test]
 fn fixture_page_source_uses_local_page_dumps() {
     let source = FixturePageSource::new("pages");
     let page = source.load_page("Korea").expect("fixture page should load");
