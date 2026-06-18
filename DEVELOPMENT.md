@@ -341,6 +341,16 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Wikibooks inline|Work|Custom Label}}` (and its alias `{{wikibooks-inline}}`) formats an inline link to Wikibooks
 * `{{refh}}` renders reference column header labels: "Refs." (or "Ref." if `multi=no` is specified)
 * `{{M|w|7.2}}` (and its aliases `{{m}}` and `{{earthquake magnitude}}`) formats earthquake magnitude scale labels and values
+* `{{cite video|title=My Video}}` (alias for `{{cite AV media}}`) formats a citation to video or media
+* `{{cite tweet|user=jack|number=20}}` formats a tweet citation link using user/username and status ID
+* `{{cite constitution|country=United States|article=I}}` formats a constitution citation
+* `{{cite bioRxiv|biorxiv=10.1101/123456}}` formats bioRxiv preprint citations with their DOI suffix
+* `{{Harvard citation text|Smith|2020}}` (alias for `{{harvtxt}}`) formats Harvard text citations
+* `{{cite MW|entry=word}}` (alias for `{{cite merriam-webster}}`) formats Merriam-Webster dictionary citations
+* `{{term|glossary term}}` and `{{defn|definition}}` format glossary term definitions
+* `{{cquote|quote|author}}` formats centered blockquotes
+* `{{London Gazette|12345|page=12}}` formats London Gazette issues and pages as styled citations
+* `{{US$|123.45}}` formats US dollar amounts
 * `{{also|Standard solar model}}` renders like other see-also cross-reference templates
 * `{{solar radius|1.2}}` and `{{solar radius}}` render values with the solar radius symbol: `1.2 R<sub>☉</sub>` and `R<sub>☉</sub>`
 * `{{±|10|2}}` and `{{±}}` render mathematical plus-minus values or characters: `± 10 2` and `±`

@@ -1,5 +1,46 @@
 # Codex Session Notes
 
+## 2026-06-18 Handle cite video, Cite tweet, cite constitution, cite bioRxiv, Harvard citation text, Cite MW, term, defn, cquote, London Gazette, and US$ Templates
+
+### Summary
+Implemented Wikipedia template renderers and aliases for `"cite video"`, `"Cite tweet"`, `"cite constitution"`, `"cite bioRxiv"`, `"Harvard citation text"`, `"Cite MW"`, `"term"`, `"defn"`, `"cquote"`, `"London Gazette"`, and `"US$"`. Wrote unit tests for each new template separately and documented the conversion rules.
+
+### Decisions Made
+- **Implemented template renderers**:
+  - `cite video`: Mapped to the existing `render_cite_av_media_template` renderer.
+  - `Cite tweet`: Formats tweets inline with author/holder name, user handle, text, tweet URL (constructed via user + status number or explicit link), date, and access date.
+  - `cite constitution`: Formats citations of national constitutions.
+  - `cite bioRxiv`: Formats bioRxiv preprints with authorship, title, year, and DOI-based link.
+  - `Harvard citation text`: Mapped to the existing `render_harvtxt_template` renderer.
+  - `Cite MW`: Mapped to the existing `render_cite_merriam_webster_template` renderer.
+  - `term` and `defn`: Formats definition lists (term name bolded, and definition text passed through).
+  - `cquote`: Formats centered blockquotes with quote text, author, and source.
+  - `London Gazette`: Formats issue, page, date, and supplement status linked to the Gazette archives.
+  - `US$`: Formats US dollar currency values.
+- **Registered templates**:
+  - Added case-insensitive matching for all 11 templates in `is_handled_template_name` within [src/templates/mod.rs](file:///opt/src/templates/mod.rs).
+  - Mapped handlers in [src/templates/citation.rs](file:///opt/src/templates/citation.rs) and [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+- **Added unit tests**:
+  - Added separate unit tests in [src/tests.rs](file:///opt/src/tests.rs) for each of the new templates.
+- **Documented conversion rules**:
+  - Appended documentation and example rules for each template in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and warnings: `cargo check --all-targets` and `cargo clippy --all-targets -- -D warnings` (Passed cleanly, no warnings/errors).
+- Formatting check: `cargo fmt --check` (Passed cleanly).
+- Verified unit and integration tests: `cargo test` (All 381 unit/doc tests and 42 integration tests passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-18 Validate Section Chapter Titles for Duplication
 
 ### Summary

@@ -7270,3 +7270,94 @@ fn render_wikitext_formats_earthquake_magnitude_template() {
         "[[Seismic magnitude scales#Mw|M<sub>w</sub>]]\u{2009}7.2"
     );
 }
+
+#[test]
+fn render_wikitext_formats_cite_video_template() {
+    let rendered = render_templates(
+        "{{cite video|title=My Video|url=http://example.com/video|publisher=Publisher|date=2020-01-01}}",
+    );
+    assert_eq!(
+        rendered,
+        "[http://example.com/video \"My Video\"]. Publisher. 2020-01-01"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_cite_tweet_template() {
+    let rendered = render_templates(
+        "{{cite tweet|user=jack|number=20|tweet=just setting up my twttr|date=2006-03-21}}",
+    );
+    assert_eq!(
+        rendered,
+        "@jack. [https://twitter.com/jack/status/20 \"just setting up my twttr\"]. (Tweet). 2006-03-21. via Twitter"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_cite_constitution_template() {
+    let rendered = render_templates(
+        "{{cite constitution|country=United States|article=I|section=8|date=1787}}",
+    );
+    assert_eq!(
+        rendered,
+        "Constitution of United States, Art. I, Sec. 8, 1787"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_cite_biorxiv_template() {
+    let rendered =
+        render_templates("{{cite bioRxiv|title=A paper|biorxiv=10.1101/123456|date=2020}}");
+    assert_eq!(
+        rendered,
+        "\"A paper\". 2020. bioRxiv:[https://doi.org/10.1101/10.1101/123456 10.1101/123456]"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_harvard_citation_text_template() {
+    let rendered = render_templates("{{Harvard citation text|Smith|2020|p=15}}");
+    assert_eq!(rendered, "Smith (2020, p. 15)");
+}
+
+#[test]
+fn render_wikitext_formats_cite_mw_template() {
+    let rendered = render_templates("{{cite MW|entry=dictionary}}");
+    assert_eq!(
+        rendered,
+        "[[official-url:https://www.merriam-webster.com/dictionary/dictionary|\"dictionary\"]]. ''Merriam-Webster.com Dictionary''. Merriam-Webster"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_term_and_defn_templates() {
+    let rendered_term = render_templates("{{term|1=glossary term}}");
+    assert_eq!(rendered_term, "'''glossary term'''");
+
+    let rendered_defn = render_templates("{{defn|1=the definition of glossary term}}");
+    assert_eq!(rendered_defn, "the definition of glossary term");
+}
+
+#[test]
+fn render_wikitext_formats_cquote_template() {
+    let rendered = render_templates("{{cquote|A fine quote|An Author|Some Book}}");
+    assert!(rendered.contains("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_START__"));
+    assert!(rendered.contains("A fine quote"));
+    assert!(rendered.contains("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_SOURCE__An Author, Some Book"));
+    assert!(rendered.contains("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_END__"));
+}
+
+#[test]
+fn render_wikitext_formats_london_gazette_template() {
+    let rendered = render_templates("{{London Gazette|12345|page=12|date=1914-11-20}}");
+    assert_eq!(
+        rendered,
+        "[https://www.thegazette.co.uk/London/issue/12345/page/12 \"No. 12345\"]. ''The London Gazette''. 1914-11-20. p. 12"
+    );
+}
+
+#[test]
+fn render_wikitext_formats_us_dollar_template() {
+    let rendered = render_templates("{{US$|123.45}}");
+    assert_eq!(rendered, "US$123.45");
+}

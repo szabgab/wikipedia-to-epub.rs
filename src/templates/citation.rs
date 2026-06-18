@@ -1749,6 +1749,31 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             "cite peakbagger",
             render_cite_peakbagger_template as TemplateHandler,
         ),
+        (
+            "cite video",
+            render_cite_av_media_template as TemplateHandler,
+        ),
+        ("cite tweet", render_cite_tweet_template as TemplateHandler),
+        (
+            "cite constitution",
+            render_cite_constitution_template as TemplateHandler,
+        ),
+        (
+            "cite biorxiv",
+            render_cite_biorxiv_template as TemplateHandler,
+        ),
+        (
+            "harvard citation text",
+            render_harvtxt_template as TemplateHandler,
+        ),
+        (
+            "cite mw",
+            render_cite_merriam_webster_template as TemplateHandler,
+        ),
+        (
+            "london gazette",
+            render_london_gazette_template as TemplateHandler,
+        ),
     ])
 }
 
@@ -1808,4 +1833,207 @@ fn render_cite_peakbagger_template(params: &str) -> String {
     }
 
     base
+}
+
+fn render_cite_tweet_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let user = template_param(&named, &["user", "username"]);
+    let author = template_param(&named, &["author", "holder", "last"]);
+
+    let mut author_str = String::new();
+    if let Some(auth) = author {
+        author_str.push_str(&render_templates(auth));
+    }
+    if let Some(usr) = user {
+        let usr_rendered = render_templates(usr);
+        let usr_clean = if usr_rendered.starts_with('@') {
+            usr_rendered
+        } else {
+            format!("@{}", usr_rendered)
+        };
+        if !author_str.is_empty() {
+            author_str.push_str(&format!(" [{}]", usr_clean));
+        } else {
+            author_str.push_str(&usr_clean);
+        }
+    }
+    if !author_str.is_empty() {
+        parts.push(author_str);
+    }
+
+    let tweet_text = template_param(&named, &["tweet", "title", "text"]);
+    let number = template_param(&named, &["number"]);
+
+    let url = if let Some(explicit_url) = template_param(&named, &["url", "link"]) {
+        Some(explicit_url.to_string())
+    } else if let (Some(usr), Some(num)) = (user, number) {
+        let mut usr_clean = render_templates(usr);
+        if usr_clean.starts_with('@') {
+            usr_clean.remove(0);
+        }
+        Some(format!(
+            "https://twitter.com/{}/status/{}",
+            usr_clean,
+            render_templates(num)
+        ))
+    } else {
+        None
+    };
+
+    if let Some(text) = tweet_text {
+        let text_rendered = render_templates(text);
+        if let Some(url_str) = url {
+            parts.push(format!("[{} \"{}\"]", url_str, text_rendered));
+        } else {
+            parts.push(format!("\"{}\"", text_rendered));
+        }
+    }
+
+    parts.push("(Tweet)".to_string());
+
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        parts.push(render_templates(date));
+    }
+
+    parts.push("via Twitter".to_string());
+
+    if let Some(access_date) = template_param(&named, &["access-date", "accessdate"]) {
+        parts.push(format!("Retrieved {}", render_templates(access_date)));
+    }
+
+    parts.join(". ")
+}
+
+fn render_cite_constitution_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let country = template_param(&named, &["country"]);
+    let title = template_param(&named, &["title"]);
+    let article = template_param(&named, &["article"]);
+    let section = template_param(&named, &["section"]);
+    let amendment = template_param(&named, &["amendment"]);
+    let date = template_param(&named, &["date"]);
+    let url = template_param(&named, &["url"]);
+
+    let mut title_part = String::new();
+    if let Some(t) = title {
+        title_part.push_str(&render_templates(t));
+    } else {
+        title_part.push_str("Constitution");
+    }
+
+    if let Some(c) = country {
+        title_part.push_str(&format!(" of {}", render_templates(c)));
+    }
+
+    let title_link = match url {
+        Some(u) => format!("[{} {}]", render_templates(u), title_part),
+        None => title_part,
+    };
+    parts.push(title_link);
+
+    if let Some(a) = article {
+        parts.push(format!("Art. {}", render_templates(a)));
+    }
+    if let Some(s) = section {
+        parts.push(format!("Sec. {}", render_templates(s)));
+    }
+    if let Some(am) = amendment {
+        parts.push(format!("Amend. {}", render_templates(am)));
+    }
+    if let Some(d) = date {
+        parts.push(render_templates(d));
+    }
+
+    parts.join(", ")
+}
+
+fn render_cite_biorxiv_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(title) = template_param(&named, &["title"]) {
+        let title_link = match template_param(&named, &["url"]) {
+            Some(url) => format!(
+                "[{} \"{}\"]",
+                render_templates(url),
+                render_templates(title)
+            ),
+            None => format!("\"{}\"", render_templates(title)),
+        };
+        parts.push(title_link);
+    }
+
+    if let Some(date) = template_param(&named, &["date", "year"]) {
+        parts.push(render_templates(date));
+    }
+
+    if let Some(biorxiv) = template_param(&named, &["biorxiv", "id"]) {
+        let biorxiv = biorxiv.trim();
+        parts.push(format!(
+            "bioRxiv:[https://doi.org/10.1101/{} {}]",
+            biorxiv, biorxiv
+        ));
+    }
+
+    parts.join(". ")
+}
+
+fn render_london_gazette_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let issue = template_param(&named, &["issue", "1"])
+        .map(str::to_string)
+        .or_else(|| positional.first().cloned())
+        .map(|v| v.trim().to_string())
+        .unwrap_or_default();
+
+    let page = template_param(&named, &["page", "pages", "2"])
+        .map(str::to_string)
+        .or_else(|| positional.get(1).cloned())
+        .map(|v| v.trim().to_string());
+
+    let date = template_param(&named, &["date", "3"])
+        .map(str::to_string)
+        .or_else(|| positional.get(2).cloned())
+        .map(|v| v.trim().to_string());
+
+    let supp = template_param(&named, &["supp", "supplement"])
+        .map(|v| v.trim().eq_ignore_ascii_case("y") || v.trim().eq_ignore_ascii_case("yes"))
+        .unwrap_or(false);
+
+    if issue.is_empty() {
+        return String::new();
+    }
+
+    let mut parts = Vec::new();
+
+    let mut url = format!("https://www.thegazette.co.uk/London/issue/{}", issue);
+    if let Some(ref p) = page {
+        let path_type = if supp { "supplement" } else { "page" };
+        url.push_str(&format!("/{}/{}", path_type, p));
+    }
+
+    let issue_str = format!("\"No. {}\"", issue);
+    parts.push(format!("[{} {}]", url, issue_str));
+    parts.push("''The London Gazette''".to_string());
+
+    if let Some(d) = date {
+        parts.push(render_templates(&d));
+    }
+
+    if let Some(p) = page {
+        parts.push(format!("p. {}", render_templates(&p)));
+    }
+
+    parts.join(". ")
 }

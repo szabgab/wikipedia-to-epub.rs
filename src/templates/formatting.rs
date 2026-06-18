@@ -4615,6 +4615,10 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("xref", render_passthrough_template as TemplateHandler),
         ("quote box", render_blockquote_template as TemplateHandler),
         ("quote", render_blockquote_template as TemplateHandler),
+        ("cquote", render_cquote_template as TemplateHandler),
+        ("term", render_term_template as TemplateHandler),
+        ("defn", render_defn_template as TemplateHandler),
+        ("us$", render_us_dollar_template as TemplateHandler),
         ("poem quote", render_poem_quote_template as TemplateHandler),
         ("poemquote", render_poem_quote_template as TemplateHandler),
         (
@@ -5734,4 +5738,114 @@ pub(crate) fn get_empty_dispatch_table() -> HashMap<&'static str, fn() -> String
         ),
     ]);
     empty_lookup
+}
+
+fn render_cquote_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let text = template_param(&named, &["text", "quote", "1"])
+        .map(str::to_string)
+        .or_else(|| positional.first().cloned())
+        .map(|value| render_templates(&value).replace('\n', " "))
+        .unwrap_or_default();
+
+    let author = template_param(&named, &["author", "2"])
+        .map(str::to_string)
+        .or_else(|| positional.get(1).cloned())
+        .map(|value| render_templates(&value).replace('\n', " "));
+
+    let source = template_param(&named, &["source", "cite", "3"])
+        .map(str::to_string)
+        .or_else(|| positional.get(2).cloned())
+        .map(|value| render_templates(&value).replace('\n', " "));
+
+    if text.trim().is_empty() {
+        return String::new();
+    }
+
+    let mut attribution = String::new();
+    if let Some(auth_val) = author {
+        let auth_trimmed = auth_val.trim();
+        if !auth_trimmed.is_empty() {
+            attribution.push_str(auth_trimmed);
+        }
+    }
+    if let Some(src_val) = source {
+        let src_trimmed = src_val.trim();
+        if !src_trimmed.is_empty() {
+            if !attribution.is_empty() {
+                attribution.push_str(", ");
+            }
+            attribution.push_str(src_trimmed);
+        }
+    }
+
+    let mut rendered = format!(
+        "\n__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_START__\n__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_TEXT__{}\n",
+        text.trim()
+    );
+    if !attribution.is_empty() {
+        rendered.push_str(&format!(
+            "__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_SOURCE__{}\n",
+            attribution
+        ));
+    }
+    rendered.push_str("__WIKIPEDIA_TO_EPUB_BLOCKQUOTE_END__\n");
+    rendered
+}
+
+fn render_term_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let term = if let Some(val) = template_param(&named, &["1", "term"]) {
+        val.to_string()
+    } else {
+        let positional = template_positional_params(params);
+        if let Some(val) = positional.first() {
+            val.to_string()
+        } else {
+            String::new()
+        }
+    };
+    if term.is_empty() {
+        String::new()
+    } else {
+        format!("'''{}'''", render_templates(&term))
+    }
+}
+
+fn render_defn_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let content = if let Some(val) = template_param(&named, &["1", "defn"]) {
+        val.to_string()
+    } else {
+        let positional = template_positional_params(params);
+        if let Some(val) = positional.first() {
+            val.to_string()
+        } else {
+            String::new()
+        }
+    };
+    if content.is_empty() {
+        String::new()
+    } else {
+        render_templates(&content)
+    }
+}
+
+fn render_us_dollar_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let amount = template_param(&named, &["1"])
+        .map(str::to_string)
+        .or_else(|| positional.first().cloned())
+        .map(|v| v.trim().to_string())
+        .unwrap_or_default();
+
+    if amount.is_empty() {
+        "US$".to_string()
+    } else {
+        format!("US${}", render_templates(&amount))
+    }
 }
