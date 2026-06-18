@@ -5,6 +5,7 @@ About,                       Linking the reader to other meaning of the same wor
 additional citations needed, Asks for help.,                                             https://en.wikipedia.org/wiki/Template:Additional_citation_needed
 Advert,                      This article contains promotional content.,                 https://en.wikipedia.org/wiki/Template:Advert
 ahnentafel
+AI-generated section,       Needs review.,           https://en.wikipedia.org/wiki/Template:AI-generated_section
 Americana Poster
 anchor,                      Used for inbound links. Not relevant in epub.,              https://en.wikipedia.org/wiki/Template:Anchor
 Attribution needed
@@ -12,6 +13,7 @@ Audio,                       Link to an audio file. Not really relevant in epub 
 Authority control,           Validate formats and values.,                               https://en.wikipedia.org/wiki/Template:Authority_control
 Better source needed,        Ask for help.,                                              https://en.wikipedia.org/wiki/Template:Better_source_needed
 bots,                        Control if bots can edit the page.,                         https://en.wikipedia.org/wiki/Template:Bots
+Broken link,                Dead link,               https://en.wikipedia.org/wiki/Template:Dead_link
 By whom,                      Asks for attribution.,                                      https://en.wikipedia.org/wiki/Template:By_whom
 Campaignbox Korean War
 category see also
@@ -23,12 +25,13 @@ citation needed
 clarification needed
 clarify
 Cleanup
+Cleanup rewrite,            Needs cleanup,           https://en.wikipedia.org/wiki/Template:Cleanup_rewrite
 clear
 Clear left
 Closed access
 cn
-colbegin
 col-begin
+colbegin
 col-break
 colend
 col-end
@@ -45,6 +48,7 @@ Contains special characters
 coord missing
 CS1 config
 Dead link
+Dead link,                  Dead link,               https://en.wikipedia.org/wiki/Template:Dead_link
 disambiguation
 discuss
 disputed section
@@ -52,13 +56,14 @@ Distinguish
 div
 div col
 divcol
-div col end
 divcol end
+div col end
 Div end
 dubious
 efn
 efn-ua
 end box
+end,                        ?,                       https://en.wikipedia.org/wiki/Template:S-end
 end plainlist
 EngvarB
 example needed
@@ -123,10 +128,12 @@ Original research,           One needs to reference sources.,                   
 Other uses of,               For other uses...,                                          https://en.wikipedia.org/wiki/Template:Other_uses_of
 Overly detailed
 Page needed
+Page needed,                Page Number needed,      https://en.wikipedia.org/wiki/Template:Page_needed
 party color
 Pd-notice
 Pie chart,                   TODO: should be converted on an image.,                     https://en.wikipedia.org/wiki/Template:Pie_chart
 PM20,                        TODO:,                                                      https://en.wikipedia.org/wiki/Template:PM20
+pn,                         Page Number needed,      https://en.wikipedia.org/wiki/Template:Page_needed
 Portal,                      A visible list of portals.,                                 https://en.wikipedia.org/wiki/Template:Portal
 Portal bar,                  A visible list of portals.,                                 https://en.wikipedia.org/wiki/Template:Portal_bar
 POV,                         Point of view issue with the content.,                      https://en.wikipedia.org/wiki/Template:POV
@@ -194,7 +201,9 @@ unsolved
 unsourced,                   Citation needed.,                                           https://en.wikipedia.org/wiki/Template:Unreferenced
 Update inline
 update section
+verify source,              Need to verify source,   https://en.wikipedia.org/wiki/Template:Verify_source
 very long
+vs,                         Need to verify source,   https://en.wikipedia.org/wiki/Template:Verify_source
 Weather box
 when
 which?
