@@ -2473,68 +2473,151 @@ fn render_wikitable(
         return String::new();
     }
 
-    // Render to XHTML
     let class_attr = extract_class_attr(attrs_line).unwrap_or_else(|| "wikitable".to_string());
     let mut html = String::new();
-    html.push_str(&format!(
-        "<table class=\"{}\">\n",
-        encode_double_quoted_attribute(&class_attr)
-    ));
 
-    // Determine if the first row is all-header to wrap in <thead>
-    let first_all_header = rows
-        .first()
-        .map(|r| r.iter().all(|c| c.is_header))
-        .unwrap_or(false);
-    let (header_rows, body_rows) = if first_all_header {
-        (&rows[..1], &rows[1..])
+    // Determine the maximum column count across all rows
+    let col_count = rows.iter().map(|r| r.len()).max().unwrap_or(0);
+
+    if col_count == 1 {
+        // 1 column: Simple Bulleted List
+        html.push_str(&format!(
+            "<ul class=\"responsive-list {}\">\n",
+            encode_double_quoted_attribute(&class_attr)
+        ));
+        for row in &rows {
+            for cell in row {
+                let cleaned = cleanup_inline_markup_with_excluded_links(
+                    &cell.content,
+                    image_registry.as_deref_mut(),
+                    internal_links,
+                    language,
+                    links_to_excluded_pages,
+                    source_page,
+                );
+                html.push_str(&format!("  <li>{}</li>\n", cleaned));
+            }
+        }
+        html.push_str("</ul>\n");
+    } else if col_count == 2 {
+        // 2 columns: Description List
+        html.push_str(&format!(
+            "<dl class=\"responsive-dl {}\">\n",
+            encode_double_quoted_attribute(&class_attr)
+        ));
+        for row in &rows {
+            if row.is_empty() {
+                continue;
+            }
+            if row.len() == 1 {
+                let val = cleanup_inline_markup_with_excluded_links(
+                    &row[0].content,
+                    image_registry.as_deref_mut(),
+                    internal_links,
+                    language,
+                    links_to_excluded_pages,
+                    source_page,
+                );
+                html.push_str(&format!("  <dd>{}</dd>\n", val));
+            } else {
+                let key = cleanup_inline_markup_with_excluded_links(
+                    &row[0].content,
+                    image_registry.as_deref_mut(),
+                    internal_links,
+                    language,
+                    links_to_excluded_pages,
+                    source_page,
+                );
+                html.push_str(&format!("  <dt>{}</dt>\n", key));
+                for cell in &row[1..] {
+                    let val = cleanup_inline_markup_with_excluded_links(
+                        &cell.content,
+                        image_registry.as_deref_mut(),
+                        internal_links,
+                        language,
+                        links_to_excluded_pages,
+                        source_page,
+                    );
+                    html.push_str(&format!("  <dd>{}</dd>\n", val));
+                }
+            }
+        }
+        html.push_str("</dl>\n");
     } else {
-        (&rows[..0], &rows[..])
-    };
+        // 3+ columns: Linearized Card Layout
+        html.push_str(&format!(
+            "<div class=\"responsive-card-container {}\">\n",
+            encode_double_quoted_attribute(&class_attr)
+        ));
 
-    if !header_rows.is_empty() {
-        html.push_str("  <thead>\n");
-        for row in header_rows {
-            html.push_str("    <tr>\n");
-            for cell in row {
-                let cleaned = cleanup_inline_markup_with_excluded_links(
-                    &cell.content,
-                    image_registry.as_deref_mut(),
-                    internal_links,
-                    language,
-                    links_to_excluded_pages,
-                    source_page,
-                );
-                let tag = if cell.is_header { "th" } else { "td" };
-                html.push_str(&format!("      <{tag}>{cleaned}</{tag}>\n"));
+        // Determine if the first row is all-header to wrap/treat as headers
+        let has_headers = rows
+            .first()
+            .map(|r| r.iter().all(|c| c.is_header))
+            .unwrap_or(false);
+
+        let headers: Vec<String> = if has_headers {
+            rows[0]
+                .iter()
+                .map(|cell| {
+                    cleanup_inline_markup_with_excluded_links(
+                        &cell.content,
+                        image_registry.as_deref_mut(),
+                        internal_links,
+                        language,
+                        links_to_excluded_pages,
+                        source_page,
+                    )
+                })
+                .collect()
+        } else {
+            Vec::new()
+        };
+
+        let start_idx = if has_headers { 1 } else { 0 };
+        for row in &rows[start_idx..] {
+            if row.is_empty() {
+                continue;
             }
-            html.push_str("    </tr>\n");
+
+            html.push_str("  <div class=\"responsive-card\">\n");
+
+            // Primary column acts as card title
+            let title = cleanup_inline_markup_with_excluded_links(
+                &row[0].content,
+                image_registry.as_deref_mut(),
+                internal_links,
+                language,
+                links_to_excluded_pages,
+                source_page,
+            );
+            html.push_str(&format!("    <div class=\"card-title\">{}</div>\n", title));
+
+            if row.len() > 1 {
+                html.push_str("    <ul class=\"card-list\">\n");
+                for (i, cell) in row.iter().skip(1).enumerate() {
+                    let label = headers.get(i + 1).cloned().unwrap_or_default();
+                    let cleaned_val = cleanup_inline_markup_with_excluded_links(
+                        &cell.content,
+                        image_registry.as_deref_mut(),
+                        internal_links,
+                        language,
+                        links_to_excluded_pages,
+                        source_page,
+                    );
+                    html.push_str("      <li>");
+                    if !label.is_empty() {
+                        html.push_str(&format!("<strong>{}:</strong> ", label));
+                    }
+                    html.push_str(&format!("{}</li>\n", cleaned_val));
+                }
+                html.push_str("    </ul>\n");
+            }
+            html.push_str("  </div>\n");
         }
-        html.push_str("  </thead>\n");
+        html.push_str("</div>\n");
     }
 
-    if !body_rows.is_empty() {
-        html.push_str("  <tbody>\n");
-        for row in body_rows {
-            html.push_str("    <tr>\n");
-            for cell in row {
-                let cleaned = cleanup_inline_markup_with_excluded_links(
-                    &cell.content,
-                    image_registry.as_deref_mut(),
-                    internal_links,
-                    language,
-                    links_to_excluded_pages,
-                    source_page,
-                );
-                let tag = if cell.is_header { "th" } else { "td" };
-                html.push_str(&format!("      <{tag}>{cleaned}</{tag}>\n"));
-            }
-            html.push_str("    </tr>\n");
-        }
-        html.push_str("  </tbody>\n");
-    }
-
-    html.push_str("</table>");
     html
 }
 

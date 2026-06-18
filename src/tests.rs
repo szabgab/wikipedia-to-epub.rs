@@ -2983,21 +2983,21 @@ fn render_wikitable_preserves_various_classes_and_skips_unrecognized() {
     let wikitext_sortable =
         "before\n{| class=\"wikitable sortable\"\n|-\n! Header\n|-\n| Cell\n|}\nafter";
     let rendered_sortable = render_wikitext("Sample", wikitext_sortable, &internal_links, "en");
-    assert!(rendered_sortable.contains("<table class=\"wikitable sortable\">"));
-    assert!(rendered_sortable.contains("<th>Header</th>"));
-    assert!(rendered_sortable.contains("<td>Cell</td>"));
+    assert!(rendered_sortable.contains("<ul class=\"responsive-list wikitable sortable\">"));
+    assert!(rendered_sortable.contains("<li>Header</li>"));
+    assert!(rendered_sortable.contains("<li>Cell</li>"));
 
     // 2. A table with class="wikitable plainrowheaders" is rendered with its classes preserved
     let wikitext_plain =
         "before\n{| class=\"wikitable plainrowheaders\"\n|-\n! Header\n|-\n| Cell\n|}\nafter";
     let rendered_plain = render_wikitext("Sample", wikitext_plain, &internal_links, "en");
-    assert!(rendered_plain.contains("<table class=\"wikitable plainrowheaders\">"));
+    assert!(rendered_plain.contains("<ul class=\"responsive-list wikitable plainrowheaders\">"));
 
     // 3. A table with an unrecognized class is skipped (stripped) entirely
     let wikitext_unrecognized = "before\n{| class=\"infobox\"\n|-\n| Cell\n|}\nafter";
     let rendered_unrecognized =
         render_wikitext("Sample", wikitext_unrecognized, &internal_links, "en");
-    assert!(!rendered_unrecognized.contains("<table"));
+    assert!(!rendered_unrecognized.contains("responsive-list"));
     assert!(!rendered_unrecognized.contains("Cell"));
     assert!(rendered_unrecognized.contains("before"));
     assert!(rendered_unrecognized.contains("after"));
@@ -3005,8 +3005,8 @@ fn render_wikitable_preserves_various_classes_and_skips_unrecognized() {
     // 4. A table with no class is rendered with the default "wikitable" class
     let wikitext_no_class = "before\n{|\n|-\n| Cell\n|}\nafter";
     let rendered_no_class = render_wikitext("Sample", wikitext_no_class, &internal_links, "en");
-    assert!(rendered_no_class.contains("<table class=\"wikitable\">"));
-    assert!(rendered_no_class.contains("<td>Cell</td>"));
+    assert!(rendered_no_class.contains("<ul class=\"responsive-list wikitable\">"));
+    assert!(rendered_no_class.contains("<li>Cell</li>"));
 }
 
 #[test]
@@ -6275,11 +6275,11 @@ fn render_wikitext_formats_ja_platform_template() {
         "en",
     );
     assert!(
-        rendered.contains("<td><strong>1</strong></td>"),
+        rendered.contains("<div class=\"card-title\"><strong>1</strong></div>"),
         "{rendered}"
     );
-    assert!(rendered.contains("<td>Yamanote Line</td>"), "{rendered}");
-    assert!(rendered.contains("<td>for Tokyo</td>"), "{rendered}");
+    assert!(rendered.contains("<li>Yamanote Line</li>"), "{rendered}");
+    assert!(rendered.contains("<li>for Tokyo</li>"), "{rendered}");
 }
 
 #[test]

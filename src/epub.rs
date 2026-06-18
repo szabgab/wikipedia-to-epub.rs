@@ -192,6 +192,55 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.9em;
   margin-top: 0.25em;
 }
+
+/* Responsive Card styling */
+.responsive-card-container {
+  margin: 1em 0;
+}
+.responsive-card {
+  border: 1px solid #ddd;
+  background-color: #fcfcfc;
+  margin: 0.8em 0;
+  padding: 0.8em;
+  border-radius: 4px;
+}
+.card-title {
+  font-weight: bold;
+  font-size: 1.1em;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.3em;
+  margin-bottom: 0.5em;
+}
+.card-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.card-list li {
+  margin-bottom: 0.3em;
+  padding-left: 0.5em;
+}
+
+/* Responsive Description Lists */
+.responsive-dl {
+  margin: 0.8em 0;
+  padding: 0;
+}
+.responsive-dl dt {
+  font-weight: bold;
+  margin-top: 0.6em;
+  color: #333;
+}
+.responsive-dl dd {
+  margin-left: 1.2em;
+  margin-bottom: 0.6em;
+}
+
+/* Responsive Bulleted Lists */
+.responsive-list {
+  margin: 0.8em 0;
+  padding-left: 1.5em;
+}
 "#
 }
 
