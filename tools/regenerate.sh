@@ -1,14 +1,18 @@
 #!/usr/bin/bash -e
 
 function regenerate() {
-    echo $filename;
+    echo "##################### Filename: $filename"
+    if [ "$filename" == "examples/all-en.yaml" ]; then
+        echo "skipping $filename"
+        return;
+    fi
     rm -f demo.epub
-    cargo run -- --output demo.epub --local pages/ $filename
+    cargo run -- --output demo.epub --local pages/ $filename > /dev/null 2> /dev/null
 
     name=$(basename $filename | cut -f1 -d'.')
-    echo $name
+    echo "********************* Name: $name"
     cd expected/$name
-    unzip -o ../../demo.epub
+    unzip -o ../../demo.epub > /dev/null 2> /dev/null
     cd -
 }
 
