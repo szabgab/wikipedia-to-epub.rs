@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
+use cached::macros::cached;
 use regex::Regex;
 use tracing::warn;
-use cached::macros::cached;
 
 use crate::types::{
     DispatchTable, EmptyDispatchTable, EmptyHandler, TemplateHandler, TemplateParamsDispatchTable,
@@ -3251,8 +3251,11 @@ fn render_main_template(params: &str) -> String {
 
     match articles.as_slice() {
         [] => String::new(),
-        [article] => format!("Main article: [[{article}]]"),
-        articles => format!("Main articles: {}", join_template_articles(articles)),
+        [article] => format!("\n\nMain article: [[{article}]]\n\n"),
+        articles => format!(
+            "\n\nMain articles: {}\n\n",
+            join_template_articles(articles)
+        ),
     }
 }
 
@@ -5802,7 +5805,6 @@ fn render_m_template(params: &str) -> String {
 
     result
 }
-
 
 fn render_cquote_template(params: &str) -> String {
     let named = template_named_params(params);

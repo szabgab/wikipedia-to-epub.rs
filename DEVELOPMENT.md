@@ -260,7 +260,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{ill|Ch'ilchŏngsan|ko}}` (along with its aliases `{{illm}}`, `{{Interlanguage link}}`, and `{{Interlanguage link multi}}`) becomes a link to `Ch'ilchŏngsan` followed by `[ko]`
 * `{{Reign|1400|1418}}` becomes `r. 1400–1418`
 * `{{Open access}}` and `{{Free access}}` become an open-lock marker: `<span title="open access">&#128275;</span>`
-* `{{Main|Names of Korea}}` (or `{{Main article|Names of Korea}}`) becomes `Main article:` followed by a link to `Names of Korea`
+* `{{Main|Names of Korea}}` (or `{{Main article|Names of Korea}}`) becomes `Main article:` followed by a link to `Names of Korea`, separated from the rest of the text with an empty row
 * `{{Main list|List of members of the Diet of Japan}}` becomes `For a more comprehensive list, see` followed by a link to `List of members of the Diet of Japan`
 * `{{See also|Korean tea ceremony|Korean royal court cuisine}}` becomes `See also:` followed by links to those articles
 * `{{Further|Joseon dynasty|Downtown Seoul}}` (or `{{More|...}}`) becomes `Further information:` followed by links to those articles

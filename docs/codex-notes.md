@@ -6215,3 +6215,31 @@ Latest verification passed:
 
 * None.
 
+
+## Session Note: 2026-06-19 - Separate Main Article Template display with empty row
+
+### Decisions Made
+
+* Updated `render_main_template` in `src/templates/formatting.rs` to output prepended and appended double newlines, ensuring that `Main` and `Main article` templates render in their own paragraph, separated from other elements with an empty row.
+* Regenerated expected XHTML fixtures for all book examples to match the new template paragraph separation format.
+* Updated `DEVELOPMENT.md` to reflect the updated rendering description.
+* Ran formatting, check, clippy, unit tests, and integration tests to ensure clean passing.
+
+### Files Changed
+
+* `src/templates/formatting.rs` [MODIFY]
+* `DEVELOPMENT.md` [MODIFY]
+* Expected XHTML fixtures in the `expected/` directory [MODIFY]
+* `docs/codex-notes.md` [MODIFY]
+
+### Tests Run
+
+* `cargo fmt --check`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test` and `cargo test --locked -- --ignored`
+
+### Pending Follow-Ups
+
+* None.
+
