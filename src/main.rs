@@ -12,12 +12,12 @@ use reqwest::Url;
 use tracing::{Level, info, warn};
 use tracing_subscriber::fmt as tracing_fmt;
 
-pub(crate) mod cache;
-pub(crate) mod config;
-pub(crate) mod epub;
-pub(crate) mod error;
-pub(crate) mod image;
-pub(crate) mod templates;
+mod cache;
+mod config;
+mod epub;
+mod error;
+mod image;
+mod templates;
 mod tools;
 mod types;
 
@@ -25,24 +25,22 @@ use crate::tools::{
     split_template_name, split_template_params, template_named_params, template_param,
 };
 
-pub(crate) use cache::{
+use cache::{
     DownloadCache, DownloadStats, FixturePageSource, PageResponse, PageSource,
     WikipediaApiPageSource, default_cache_root, log_download_stats, normalize_lookup_key,
     normalized_wikipedia_language,
 };
-pub(crate) use config::{
+use config::{
     ArticleConfig, ArticleType, BookConfig, CachingMode, ChapterStyle, CliArgs,
     LinksToExcludedPages, current_utc_date_string, parse_args, read_config,
 };
-pub(crate) use epub::{
+use epub::{
     Chapter, TocNode, html_language_attributes, internal_links, load_chapter,
     load_markdown_chapter, sanitize_chapter_filename, write_epub,
 };
-pub(crate) use error::{AppError, AppResult};
-pub(crate) use image::{
-    ImageRegistry, ParsedFileLink, image_marker_id, render_image_html, resolve_images,
-};
-pub(crate) use templates::{matching_template_end, render_templates};
+use error::{AppError, AppResult};
+use image::{ImageRegistry, ParsedFileLink, image_marker_id, render_image_html, resolve_images};
+use templates::{matching_template_end, render_templates};
 
 type InternalLinks = HashMap<String, String>;
 type CoverImage = (Vec<u8>, String, &'static str);

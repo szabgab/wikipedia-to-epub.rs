@@ -15,35 +15,35 @@ use std::time::Duration;
 use tracing::{debug, info, warn};
 
 #[derive(Debug)]
-pub enum BookImageSource {
+enum BookImageSource {
     Local(PathBuf),
     Remote { title: String },
 }
 
 #[derive(Debug)]
-pub struct ResolvedImage {
-    pub href: String,
-    pub media_type: String,
-    pub bytes: Vec<u8>,
+pub(crate) struct ResolvedImage {
+    pub(crate) href: String,
+    pub(crate) media_type: String,
+    pub(crate) bytes: Vec<u8>,
 }
 
 #[derive(Debug)]
-pub struct ImageOccurrence {
-    pub href: String,
-    pub alt: String,
-    pub caption: String,
+pub(crate) struct ImageOccurrence {
+    pub(crate) href: String,
+    pub(crate) alt: String,
+    pub(crate) caption: String,
 }
 
 #[derive(Debug)]
-pub struct ImageRegistry {
-    pub availability: ImageAvailability,
-    pub images: Vec<BookImage>,
-    pub images_by_title: HashMap<String, usize>,
-    pub occurrences: Vec<ImageOccurrence>,
+pub(crate) struct ImageRegistry {
+    availability: ImageAvailability,
+    pub(crate) images: Vec<BookImage>,
+    images_by_title: HashMap<String, usize>,
+    pub(crate) occurrences: Vec<ImageOccurrence>,
 }
 
 #[derive(Debug)]
-pub enum ImageAvailability {
+enum ImageAvailability {
     All,
     Local {
         root: PathBuf,
@@ -52,30 +52,30 @@ pub enum ImageAvailability {
 }
 
 #[derive(Clone, Debug, Deserialize)]
-pub struct LocalImageFixture {
-    pub path: PathBuf,
+struct LocalImageFixture {
+    path: PathBuf,
     #[serde(rename = "media-type")]
-    pub media_type: String,
+    media_type: String,
 }
 
 #[derive(Debug)]
-pub struct BookImage {
-    pub title: String,
-    pub href: String,
-    pub media_type: String,
-    pub source_pages: Vec<String>,
-    pub source: BookImageSource,
+pub(crate) struct BookImage {
+    title: String,
+    href: String,
+    media_type: String,
+    source_pages: Vec<String>,
+    source: BookImageSource,
 }
 
 #[derive(Debug)]
-pub struct ParsedFileLink {
-    pub title: String,
-    pub caption: String,
-    pub alt: String,
+pub(crate) struct ParsedFileLink {
+    pub(crate) title: String,
+    pub(crate) caption: String,
+    pub(crate) alt: String,
 }
 
 impl ImageRegistry {
-    pub fn new(local_pages_dir: Option<&Path>) -> AppResult<Self> {
+    pub(crate) fn new(local_pages_dir: Option<&Path>) -> AppResult<Self> {
         let availability = match local_pages_dir {
             Some(pages_dir) => {
                 let manifest_path = pages_dir.join("images").join("manifest.json");
@@ -104,7 +104,11 @@ impl ImageRegistry {
         })
     }
 
-    pub fn register(&mut self, file_link: ParsedFileLink, source_page: &str) -> Option<usize> {
+    pub(crate) fn register(
+        &mut self,
+        file_link: ParsedFileLink,
+        source_page: &str,
+    ) -> Option<usize> {
         let key = normalize_image_title(&file_link.title);
         let image_index = if let Some(index) = self.images_by_title.get(&key).copied() {
             let image = &mut self.images[index];
@@ -170,16 +174,16 @@ impl ImageRegistry {
         Some(occurrence_id)
     }
 
-    pub fn occurrence(&self, id: usize) -> Option<&ImageOccurrence> {
+    pub(crate) fn occurrence(&self, id: usize) -> Option<&ImageOccurrence> {
         self.occurrences.get(id)
     }
 }
 
-pub fn normalize_image_title(title: &str) -> String {
+fn normalize_image_title(title: &str) -> String {
     title.trim().replace('_', " ").to_ascii_lowercase()
 }
 
-pub fn image_extension(title: &str) -> String {
+fn image_extension(title: &str) -> String {
     title
         .rsplit_once('.')
         .map(|(_, extension)| sanitize_extension(extension))
@@ -187,14 +191,14 @@ pub fn image_extension(title: &str) -> String {
         .unwrap_or_else(|| "img".to_string())
 }
 
-pub fn path_extension(path: &Path) -> Option<String> {
+fn path_extension(path: &Path) -> Option<String> {
     path.extension()
         .and_then(|extension| extension.to_str())
         .map(sanitize_extension)
         .filter(|extension| !extension.is_empty())
 }
 
-pub fn sanitize_extension(extension: &str) -> String {
+fn sanitize_extension(extension: &str) -> String {
     extension
         .chars()
         .filter(|ch| ch.is_ascii_alphanumeric())
@@ -202,7 +206,7 @@ pub fn sanitize_extension(extension: &str) -> String {
         .collect()
 }
 
-pub fn media_type_from_title(title: &str) -> &'static str {
+fn media_type_from_title(title: &str) -> &'static str {
     match image_extension(title).as_str() {
         "jpg" | "jpeg" => "image/jpeg",
         "png" => "image/png",
@@ -213,7 +217,7 @@ pub fn media_type_from_title(title: &str) -> &'static str {
     }
 }
 
-pub fn resolve_images(
+pub(crate) fn resolve_images(
     registry: ImageRegistry,
     wikipedia_language: &str,
     cache: Option<&DownloadCache>,
@@ -444,14 +448,14 @@ fn image_extension_from_media_type(media_type: &str) -> Option<&'static str> {
     }
 }
 
-pub fn image_marker_id(line: &str) -> Option<usize> {
+pub(crate) fn image_marker_id(line: &str) -> Option<usize> {
     line.strip_prefix("__WIKIPEDIA_TO_EPUB_IMAGE_")?
         .strip_suffix("__")?
         .parse()
         .ok()
 }
 
-pub fn render_image_html(image: &ImageOccurrence) -> String {
+pub(crate) fn render_image_html(image: &ImageOccurrence) -> String {
     let caption = if image.caption.trim().is_empty() {
         String::new()
     } else {

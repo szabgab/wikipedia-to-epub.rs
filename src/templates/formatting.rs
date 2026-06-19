@@ -4160,7 +4160,7 @@ fn render_visible_anchor_template(params: &str) -> String {
 /// [L3](https://en.wikipedia.org/wiki/Template:L3)
 /// [L4](https://en.wikipedia.org/wiki/Template:L4)
 /// [L5](https://en.wikipedia.org/wiki/Template:L5)
-pub(crate) fn render_lagrange_template(template: &str, _params: &str) -> String {
+fn render_lagrange_template(template: &str, _params: &str) -> String {
     let point = template.trim_start_matches('L');
     format!(
         "L__WIKIPEDIA_TO_EPUB_SUB_START__{}__WIKIPEDIA_TO_EPUB_SUB_END__",

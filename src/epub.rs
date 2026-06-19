@@ -21,21 +21,21 @@ use zip::{
 use xmlem::Document;
 
 #[derive(Debug)]
-pub struct Chapter {
-    pub file_name: String,
-    pub title: String,
-    pub content: String,
-    pub template_skip_counts: TemplateSkipCounts,
+pub(crate) struct Chapter {
+    pub(crate) file_name: String,
+    pub(crate) title: String,
+    pub(crate) content: String,
+    pub(crate) template_skip_counts: TemplateSkipCounts,
 }
 
 #[derive(Debug, Clone)]
-pub struct TocNode {
-    pub title: String,
-    pub file_name: String,
-    pub children: Vec<TocNode>,
+pub(crate) struct TocNode {
+    pub(crate) title: String,
+    pub(crate) file_name: String,
+    pub(crate) children: Vec<TocNode>,
 }
 
-pub fn write_epub(
+pub(crate) fn write_epub(
     config: &BookConfig,
     chapters: &[Chapter],
     images: &[ResolvedImage],
@@ -541,7 +541,7 @@ fn book_identifier() -> String {
     format!("urn:uuid:{id}")
 }
 
-pub fn sanitize_chapter_filename(title: &str) -> String {
+pub(crate) fn sanitize_chapter_filename(title: &str) -> String {
     let ascii_title = any_ascii::any_ascii(title);
     let sanitized: String = ascii_title
         .chars()
@@ -556,7 +556,7 @@ pub fn sanitize_chapter_filename(title: &str) -> String {
     format!("{}.xhtml", sanitized)
 }
 
-pub fn internal_links(articles: &[String]) -> InternalLinks {
+pub(crate) fn internal_links(articles: &[String]) -> InternalLinks {
     let mut links = InternalLinks::new();
     for article in articles {
         links
@@ -566,7 +566,7 @@ pub fn internal_links(articles: &[String]) -> InternalLinks {
     links
 }
 
-pub fn load_markdown_chapter(path: &Path, language: &str) -> AppResult<Chapter> {
+pub(crate) fn load_markdown_chapter(path: &Path, language: &str) -> AppResult<Chapter> {
     let content = fs::read_to_string(path)?;
     let mut title = path
         .file_stem()
@@ -618,7 +618,7 @@ pub fn load_markdown_chapter(path: &Path, language: &str) -> AppResult<Chapter> 
     })
 }
 
-pub fn load_chapter(
+pub(crate) fn load_chapter(
     page: &PageResponse,
     display_title: String,
     internal_links: &InternalLinks,
@@ -651,7 +651,7 @@ pub fn load_chapter(
     })
 }
 
-pub fn html_language_attributes(language: &str) -> String {
+pub(crate) fn html_language_attributes(language: &str) -> String {
     let language = encode_double_quoted_attribute(language);
     if is_right_to_left_language(&language) {
         format!(r#"xml:lang="{language}" dir="rtl""#)
@@ -660,7 +660,7 @@ pub fn html_language_attributes(language: &str) -> String {
     }
 }
 
-pub fn is_right_to_left_language(language: &str) -> bool {
+fn is_right_to_left_language(language: &str) -> bool {
     let base_language = language.split_once('-').map_or(language, |(base, _)| base);
     matches!(base_language, "ar" | "fa" | "he" | "ur")
 }

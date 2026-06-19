@@ -872,7 +872,7 @@ fn render_val_template(params: &str) -> String {
     render_templates(&rendered)
 }
 
-pub(crate) fn format_convert_value(value: &str) -> String {
+fn format_convert_value(value: &str) -> String {
     let trimmed = value.trim();
     let (sign, rest) = if let Some(rest) = trimmed.strip_prefix("&minus;") {
         ("−", rest)

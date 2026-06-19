@@ -1,7 +1,7 @@
-pub mod citation;
-pub mod convert;
-pub mod formatting;
-pub mod lang;
+pub(crate) mod citation;
+pub(crate) mod convert;
+pub(crate) mod formatting;
+pub(crate) mod lang;
 
 use std::collections::HashMap;
 
@@ -133,7 +133,7 @@ fn get_dispatch_table() -> DispatchTable {
     table
 }
 
-pub(crate) fn render_template(content: &str) -> String {
+fn render_template(content: &str) -> String {
     let (template, params) = split_template_name(content);
     let template_normalized = template.trim().replace('_', " ");
     let template = template_normalized.as_str();

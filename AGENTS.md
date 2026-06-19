@@ -14,6 +14,8 @@
 
 * Never make any changes except what I explicitely asked for.
 
+* Prefer to keep definitions private. Avoid using `pub` and `pub(crate)`.
+
 Skills can be found in the `.agents/skills/` folder.
 
 
