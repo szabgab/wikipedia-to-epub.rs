@@ -1231,6 +1231,31 @@ Added support for the `official` template name by routing it through the existin
 
 * None.
 
+
+## Session Note: 2026-06-19 - Add normalize_reference_attr unit tests
+
+### Decisions Made
+
+* Added focused unit tests for `normalize_reference_attr` in `src/cleanup.rs`.
+* Covered whitespace trimming, double-quoted values, single-quoted values, and whitespace inside surrounding quotes.
+
+### Files Changed
+
+* `src/cleanup.rs` [MODIFY]
+* `docs/codex-notes.md` [MODIFY]
+
+### Tests Run
+
+* Pending: `cargo test`
+* Pending: `cargo fmt`
+* Pending: `cargo check`
+* Pending: `cargo clippy --all-targets -- -D warnings`
+* Pending: `cargo test --locked -- --ignored`
+
+### Pending Follow-Ups
+
+* None.
+
 ## 2026-06-08 Add Google Books Template Support
 
 ### Summary
@@ -6242,4 +6267,3 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * None.
-
