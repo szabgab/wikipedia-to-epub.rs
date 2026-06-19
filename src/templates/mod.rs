@@ -139,8 +139,9 @@ pub(crate) fn render_template(content: &str) -> String {
     let template_normalized = template.trim().replace('_', " ");
     let template = template_normalized.as_str();
 
-    let fixed = get_fixed();
     let lower = template.to_lowercase();
+
+    let fixed = get_fixed();
     if fixed.contains_key(&lower.as_str()) {
         return fixed.get(lower.as_str()).unwrap().to_string();
     }
@@ -151,7 +152,6 @@ pub(crate) fn render_template(content: &str) -> String {
     }
 
     let empty_lookup = get_empty_dispatch_table();
-
     if empty_lookup.contains_key(&lower.as_str()) {
         return empty_lookup.get(lower.as_str()).unwrap()();
     }
