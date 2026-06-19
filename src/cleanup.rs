@@ -12,6 +12,7 @@ pub(crate) fn normalize_reference_attr(value: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::normalize_reference_attr;
+    use super::parse_reference_tags;
 
     #[test]
     fn normalize_reference_attr_trims_outer_whitespace() {
@@ -31,6 +32,61 @@ mod tests {
     #[test]
     fn normalize_reference_attr_trims_whitespace_inside_quotes() {
         assert_eq!(normalize_reference_attr(r#""  alpha  ""#), "alpha");
+    }
+
+    #[test]
+    fn parse_reference_tags_reads_named_reference_with_content() {
+        let tags = parse_reference_tags(
+            r#"Intro <ref name="alpha" group="note"> Example reference </ref> outro."#,
+        );
+
+        assert_eq!(tags.len(), 1);
+        assert_eq!(tags[0].name.as_deref(), Some("alpha"));
+        assert_eq!(tags[0].group, "note");
+        assert_eq!(tags[0].content.as_deref(), Some("Example reference"));
+    }
+
+    #[test]
+    fn parse_reference_tags_reads_self_closing_named_reference() {
+        let tags = parse_reference_tags(r#"Intro <ref group='n' name='alpha' /> outro."#);
+
+        assert_eq!(tags.len(), 1);
+        assert_eq!(tags[0].name.as_deref(), Some("alpha"));
+        assert_eq!(tags[0].group, "n");
+        assert_eq!(tags[0].content, None);
+    }
+
+    #[test]
+    fn parse_reference_tags_reads_unquoted_attributes() {
+        let tags = parse_reference_tags(r#"<ref name=alpha group=n>Body</ref>"#);
+
+        assert_eq!(tags.len(), 1);
+        assert_eq!(tags[0].name.as_deref(), Some("alpha"));
+        assert_eq!(tags[0].group, "n");
+        assert_eq!(tags[0].content.as_deref(), Some("Body"));
+    }
+
+    #[test]
+    fn parse_reference_tags_filters_empty_name_and_content() {
+        let tags = parse_reference_tags(r#"<ref name="">   </ref>"#);
+
+        assert_eq!(tags.len(), 1);
+        assert_eq!(tags[0].name, None);
+        assert_eq!(tags[0].group, "");
+        assert_eq!(tags[0].content, None);
+    }
+
+    #[test]
+    fn parse_reference_tags_preserves_reference_order() {
+        let tags = parse_reference_tags(
+            r#"<ref name="first">One</ref> middle <ref name="second">Two</ref>"#,
+        );
+
+        assert_eq!(tags.len(), 2);
+        assert_eq!(tags[0].name.as_deref(), Some("first"));
+        assert_eq!(tags[0].content.as_deref(), Some("One"));
+        assert_eq!(tags[1].name.as_deref(), Some("second"));
+        assert_eq!(tags[1].content.as_deref(), Some("Two"));
     }
 }
 
