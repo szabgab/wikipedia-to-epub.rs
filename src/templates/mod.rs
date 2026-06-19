@@ -14,7 +14,6 @@ use crate::tools::split_template_name;
 
 use crate::templates::formatting::{
     get_dispatch_template_params, get_empty_dispatch_table, render_formatnum_template,
-    render_lagrange_template,
 };
 
 use crate::increment_recognized_skipped_template_count;
@@ -161,17 +160,7 @@ pub(crate) fn render_template(content: &str) -> String {
         return template_params_lookup.get(lower.as_str()).unwrap()(template, params);
     }
 
-    if template.eq_ignore_ascii_case("L1") {
-        render_lagrange_template("1")
-    } else if template.eq_ignore_ascii_case("L2") {
-        render_lagrange_template("2")
-    } else if template.eq_ignore_ascii_case("L3") {
-        render_lagrange_template("3")
-    } else if template.eq_ignore_ascii_case("L4") {
-        render_lagrange_template("4")
-    } else if template.eq_ignore_ascii_case("L5") {
-        render_lagrange_template("5")
-    } else if template
+    if template
         .get(.."formatnum:".len())
         .is_some_and(|prefix| prefix.eq_ignore_ascii_case("formatnum:"))
         || template.eq_ignore_ascii_case("formatnum")
