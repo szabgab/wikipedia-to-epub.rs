@@ -1,10 +1,10 @@
 use std::error::Error;
 use std::fmt::{self, Display};
 
-pub type AppResult<T> = Result<T, AppError>;
+pub(crate) type AppResult<T> = Result<T, AppError>;
 
 #[derive(Debug)]
-pub enum AppError {
+pub(crate) enum AppError {
     Io(std::io::Error),
     Json(serde_json::Error),
     Yaml(serde_yaml::Error),

@@ -14,48 +14,48 @@ use std::rc::Rc;
 use tracing::{info, warn};
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct PageResponse {
-    pub parse: ParsedPage,
+pub(crate) struct PageResponse {
+    pub(crate) parse: ParsedPage,
 }
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct ParsedPage {
-    pub title: String,
-    pub wikitext: WikitextValue,
+pub(crate) struct ParsedPage {
+    pub(crate) title: String,
+    pub(crate) wikitext: WikitextValue,
 }
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct WikitextValue {
+pub(crate) struct WikitextValue {
     #[serde(rename = "*")]
-    pub text: String,
+    pub(crate) text: String,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct WikipediaErrorResponse {
-    pub error: Option<WikipediaError>,
+struct WikipediaErrorResponse {
+    error: Option<WikipediaError>,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct WikipediaError {
-    pub code: String,
-    pub info: String,
+struct WikipediaError {
+    code: String,
+    info: String,
 }
 
-pub trait PageSource {
+pub(crate) trait PageSource {
     fn load_page(&self, article: &str) -> AppResult<PageResponse>;
     fn is_cache_hit(&self, article: &str) -> bool;
 }
 
-pub struct WikipediaApiPageSource {
-    pub client: Client,
-    pub api_url: Url,
-    pub language: String,
-    pub cache: DownloadCache,
-    pub cache_hits: RefCell<HashSet<String>>,
+pub(crate) struct WikipediaApiPageSource {
+    client: Client,
+    api_url: Url,
+    language: String,
+    cache: DownloadCache,
+    cache_hits: RefCell<HashSet<String>>,
 }
 
 impl WikipediaApiPageSource {
-    pub fn new(language: &str, cache: DownloadCache) -> AppResult<Self> {
+    pub(crate) fn new(language: &str, cache: DownloadCache) -> AppResult<Self> {
         let client = Client::builder().user_agent(USER_AGENT).build()?;
         let api_url = wikipedia_parse_api_url(language)?;
         Ok(Self {
@@ -193,15 +193,15 @@ pub(crate) fn http_failure_detail(headers: &HeaderMap, body: &str) -> Option<Str
 }
 
 #[derive(Clone, Debug)]
-pub struct DownloadCache {
-    pub root: PathBuf,
-    pub refresh: bool,
-    pub stats: DownloadStats,
-    pub enabled: bool,
+pub(crate) struct DownloadCache {
+    root: PathBuf,
+    pub(crate) refresh: bool,
+    pub(crate) stats: DownloadStats,
+    pub(crate) enabled: bool,
 }
 
 impl DownloadCache {
-    pub fn new(root: PathBuf, refresh: bool, stats: DownloadStats, enabled: bool) -> Self {
+    pub(crate) fn new(root: PathBuf, refresh: bool, stats: DownloadStats, enabled: bool) -> Self {
         Self {
             root,
             refresh,
@@ -210,14 +210,14 @@ impl DownloadCache {
         }
     }
 
-    pub fn page_json_path(&self, language: &str, article: &str) -> PathBuf {
+    pub(crate) fn page_json_path(&self, language: &str, article: &str) -> PathBuf {
         self.root
             .join("pages")
             .join(language)
             .join(format!("{}.json", cache_key(article)))
     }
 
-    pub fn image_metadata_path(&self, language: &str, title: &str) -> PathBuf {
+    pub(crate) fn image_metadata_path(&self, language: &str, title: &str) -> PathBuf {
         self.root
             .join("images")
             .join("metadata")
@@ -225,7 +225,7 @@ impl DownloadCache {
             .join(format!("{}.json", cache_key(title)))
     }
 
-    pub fn image_file_path(&self, url: &str, extension: &str) -> PathBuf {
+    pub(crate) fn image_file_path(&self, url: &str, extension: &str) -> PathBuf {
         self.root
             .join("images")
             .join("files")
@@ -234,29 +234,29 @@ impl DownloadCache {
 }
 
 #[derive(Clone, Debug, Default)]
-pub struct DownloadStats {
-    pub json: Rc<FileDownloadStats>,
-    pub images: Rc<FileDownloadStats>,
+pub(crate) struct DownloadStats {
+    pub(crate) json: Rc<FileDownloadStats>,
+    pub(crate) images: Rc<FileDownloadStats>,
 }
 
 #[derive(Debug, Default)]
-pub struct FileDownloadStats {
-    pub needed: Cell<usize>,
-    pub from_cache: Cell<usize>,
-    pub downloaded: Cell<usize>,
-    pub failed: Cell<usize>,
+pub(crate) struct FileDownloadStats {
+    pub(crate) needed: Cell<usize>,
+    pub(crate) from_cache: Cell<usize>,
+    pub(crate) downloaded: Cell<usize>,
+    pub(crate) failed: Cell<usize>,
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
-pub struct FileDownloadSnapshot {
-    pub needed: usize,
-    pub from_cache: usize,
-    pub downloaded: usize,
-    pub failed: usize,
+pub(crate) struct FileDownloadSnapshot {
+    pub(crate) needed: usize,
+    pub(crate) from_cache: usize,
+    pub(crate) downloaded: usize,
+    pub(crate) failed: usize,
 }
 
 impl FileDownloadStats {
-    pub fn snapshot(&self) -> FileDownloadSnapshot {
+    pub(crate) fn snapshot(&self) -> FileDownloadSnapshot {
         FileDownloadSnapshot {
             needed: self.needed.get(),
             from_cache: self.from_cache.get(),
@@ -267,17 +267,17 @@ impl FileDownloadStats {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum CacheSource {
+pub(crate) enum CacheSource {
     Hit,
     Refreshed,
 }
 
-pub struct FixturePageSource {
-    pub pages_dir: PathBuf,
+pub(crate) struct FixturePageSource {
+    pages_dir: PathBuf,
 }
 
 impl FixturePageSource {
-    pub fn new(pages_dir: impl Into<PathBuf>) -> Self {
+    pub(crate) fn new(pages_dir: impl Into<PathBuf>) -> Self {
         Self {
             pages_dir: pages_dir.into(),
         }
@@ -295,12 +295,12 @@ impl PageSource for FixturePageSource {
     }
 }
 
-pub fn read_json<T: for<'de> Deserialize<'de>>(path: &Path) -> AppResult<T> {
+pub(crate) fn read_json<T: for<'de> Deserialize<'de>>(path: &Path) -> AppResult<T> {
     let content = fs::read_to_string(path)?;
     Ok(serde_json::from_str(&content)?)
 }
 
-pub fn default_cache_root() -> AppResult<PathBuf> {
+pub(crate) fn default_cache_root() -> AppResult<PathBuf> {
     let cache_dir = if cfg!(target_os = "windows") {
         std::env::var_os("LOCALAPPDATA").map(PathBuf::from)
     } else if cfg!(target_os = "macos") {
@@ -322,7 +322,7 @@ pub fn default_cache_root() -> AppResult<PathBuf> {
         })
 }
 
-pub fn read_or_fetch_text_with_stats(
+pub(crate) fn read_or_fetch_text_with_stats(
     cache_path: &Path,
     refresh: bool,
     stats: Option<&FileDownloadStats>,
@@ -351,7 +351,7 @@ pub fn read_or_fetch_text_with_stats(
     Ok((content, CacheSource::Refreshed))
 }
 
-pub fn fetch_and_write_text_with_stats(
+pub(crate) fn fetch_and_write_text_with_stats(
     cache_path: &Path,
     stats: Option<&FileDownloadStats>,
     enabled: bool,
@@ -378,7 +378,7 @@ pub fn fetch_and_write_text_with_stats(
     Ok(content)
 }
 
-pub fn read_or_fetch_bytes_with_stats(
+pub(crate) fn read_or_fetch_bytes_with_stats(
     cache_path: &Path,
     refresh: bool,
     stats: Option<&FileDownloadStats>,
@@ -424,7 +424,7 @@ pub fn read_or_fetch_bytes_with_stats(
     Ok((content, CacheSource::Refreshed))
 }
 
-pub fn log_download_stats(stats: &DownloadStats) {
+pub(crate) fn log_download_stats(stats: &DownloadStats) {
     let json = stats.json.snapshot();
     let images = stats.images.snapshot();
     info!(
@@ -440,11 +440,11 @@ pub fn log_download_stats(stats: &DownloadStats) {
     );
 }
 
-pub fn write_cache_text(cache_path: &Path, content: &str) -> AppResult<()> {
+pub(crate) fn write_cache_text(cache_path: &Path, content: &str) -> AppResult<()> {
     write_cache_bytes(cache_path, content.as_bytes())
 }
 
-pub fn write_cache_bytes(cache_path: &Path, content: &[u8]) -> AppResult<()> {
+fn write_cache_bytes(cache_path: &Path, content: &[u8]) -> AppResult<()> {
     if let Some(parent) = cache_path.parent() {
         fs::create_dir_all(parent)?;
     }
@@ -452,7 +452,7 @@ pub fn write_cache_bytes(cache_path: &Path, content: &[u8]) -> AppResult<()> {
     Ok(())
 }
 
-pub fn cache_key(value: &str) -> String {
+fn cache_key(value: &str) -> String {
     let mut hash = 0xcbf29ce484222325u64;
     for byte in value.as_bytes() {
         hash ^= u64::from(*byte);
@@ -461,13 +461,13 @@ pub fn cache_key(value: &str) -> String {
     format!("{hash:016x}")
 }
 
-pub fn wikipedia_parse_api_url(language: &str) -> AppResult<Url> {
+pub(crate) fn wikipedia_parse_api_url(language: &str) -> AppResult<Url> {
     let language = normalized_wikipedia_language(language)?;
     Url::parse(&format!("https://{language}.wikipedia.org/w/api.php"))
         .map_err(|err| AppError::Message(format!("invalid Wikipedia API URL: {err}")))
 }
 
-pub fn normalized_wikipedia_language(language: &str) -> AppResult<String> {
+pub(crate) fn normalized_wikipedia_language(language: &str) -> AppResult<String> {
     let language = language.trim().to_ascii_lowercase();
     let valid = !language.is_empty()
         && language
@@ -481,7 +481,7 @@ pub fn normalized_wikipedia_language(language: &str) -> AppResult<String> {
     Ok(language)
 }
 
-pub fn normalize_lookup_key(value: &str) -> String {
+pub(crate) fn normalize_lookup_key(value: &str) -> String {
     value
         .chars()
         .flat_map(char::to_lowercase)

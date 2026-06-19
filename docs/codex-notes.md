@@ -6150,3 +6150,45 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * None.
+
+
+## Session Note: 2026-06-19 - Restrict Visibility of Crate Elements
+
+### Decisions Made
+
+* Restricted the visibility of modules, structs, enums, fields, and functions throughout the codebase where possible to minimize public API surface.
+* **`src/main.rs`**: Made all submodule declarations and imports private.
+* **`src/templates/mod.rs`**: Made internal submodules (`citation`, `convert`, `formatting`, `lang`) private. Changed `render_template` helper function to private.
+* **`src/templates/formatting.rs`**: Made `render_lagrange_template` private.
+* **`src/templates/convert.rs`**: Made `format_convert_value` private.
+* **`src/epub.rs`**: Changed `Chapter`, `TocNode`, their fields, and various loading/utility functions to `pub(crate)`. Changed `is_right_to_left_language` to private.
+* **`src/image.rs`**: Changed internal helper structs (`BookImageSource`, `LocalImageFixture`, `BookImage`, `ImageAvailability`) to private or `pub(crate)`, and restricted their fields and functions accordingly.
+* **`src/cache.rs`**: Changed structures (`PageResponse`, `ParsedPage`, `WikitextValue`, `DownloadCache`, `DownloadStats`, `FileDownloadStats`, `FileDownloadSnapshot`, `CacheSource`, `FixturePageSource`), traits (`PageSource`), methods, and functions (`wikipedia_parse_api_url`, `normalized_wikipedia_language`, `normalize_lookup_key`, etc.) to `pub(crate)`. Restricted `WikipediaErrorResponse`, `WikipediaError`, and helper functions like `cache_key` to private. Made `write_cache_text` `pub(crate)` as it is used in tests.
+* **`src/config.rs`**: Changed `ChapterStyle` visibility to `pub(crate)`.
+* **`src/error.rs`**: Restricted `AppError` and `AppResult` to `pub(crate)`.
+* Verified that all unit tests, integration tests, and doc-tests continue to compile and pass cleanly.
+
+### Files Changed
+
+* [src/main.rs](file:///opt/src/main.rs) [MODIFY]
+* [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+* [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+* [src/templates/convert.rs](file:///opt/src/templates/convert.rs) [MODIFY]
+* [src/epub.rs](file:///opt/src/epub.rs) [MODIFY]
+* [src/image.rs](file:///opt/src/image.rs) [MODIFY]
+* [src/cache.rs](file:///opt/src/cache.rs) [MODIFY]
+* [src/config.rs](file:///opt/src/config.rs) [MODIFY]
+* [src/error.rs](file:///opt/src/error.rs) [MODIFY]
+* [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+
+* `cargo fmt` (clean formatting check)
+* `cargo check` (clean compile with no warnings)
+* `cargo clippy --all-targets -- -D warnings` (clean lint verification)
+* `cargo test` and `cargo test --locked -- --ignored` (all passed successfully)
+
+### Pending Follow-Ups
+
+* None.
+

@@ -40,7 +40,7 @@ pub(crate) struct DetailedArticle {
 
 #[derive(Debug, Deserialize, Clone, Copy, PartialEq, Eq, Default)]
 #[serde(rename_all = "kebab-case")]
-pub enum ChapterStyle {
+pub(crate) enum ChapterStyle {
     #[default]
     Title,
     NumberedTitle,

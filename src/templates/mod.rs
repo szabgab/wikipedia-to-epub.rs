@@ -1,7 +1,7 @@
-pub(crate) mod citation;
-pub(crate) mod convert;
-pub(crate) mod formatting;
-pub(crate) mod lang;
+mod citation;
+mod convert;
+mod formatting;
+mod lang;
 
 use std::collections::HashMap;
 
