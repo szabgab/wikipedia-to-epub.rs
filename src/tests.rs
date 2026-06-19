@@ -1503,11 +1503,13 @@ Visible text."#,
         None,
     );
 
+    // We stopped counting recursively at the first unknown template,
+    // so we only count the outermost unknown template and the recognized Short description template.
     assert_eq!(
         counts,
         TemplateSkipCounts {
-            recognized: 2,
-            unknown: 2
+            recognized: 1,
+            unknown: 1
         }
     );
 }

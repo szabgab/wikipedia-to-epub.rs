@@ -6192,3 +6192,26 @@ Latest verification passed:
 
 * None.
 
+
+## Session Note: 2026-06-19 - Explain log_and_count_nested_skipped_templates
+
+### Decisions Made
+
+* Explained the necessity of `log_and_count_nested_skipped_templates`.
+* Verified workspace cleanliness and successfully ran cargo formatting, check, clippy, and test validations.
+
+### Files Changed
+
+* `docs/codex-notes.md`
+
+### Tests Run
+
+* `cargo fmt`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test` and `cargo test --locked -- --ignored`
+
+### Pending Follow-Ups
+
+* None.
+
