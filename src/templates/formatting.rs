@@ -3,7 +3,10 @@ use std::collections::HashMap;
 use regex::Regex;
 use tracing::warn;
 
-use crate::types::{DispatchTable, EmptyDispatchTable, EmptyHandler, TemplateHandler};
+use crate::types::{
+    DispatchTable, EmptyDispatchTable, EmptyHandler, TemplateHandler, TemplateParamsDispatchTable,
+    TemplateParamsHandler,
+};
 
 use crate::config::current_utc_date;
 use crate::config::parse_date_string;
@@ -14,6 +17,15 @@ use crate::tools::{
 };
 
 use crate::templates::render_templates;
+
+pub(crate) fn get_dispatch_template_params() -> TemplateParamsDispatchTable {
+    HashMap::from([
+        ("uss", render_ship_template as TemplateParamsHandler),
+        ("hms", render_ship_template as TemplateParamsHandler),
+        ("sms", render_ship_template as TemplateParamsHandler),
+        ("ss", render_ship_template as TemplateParamsHandler),
+    ])
+}
 
 pub(crate) fn get_dispatch_table() -> DispatchTable {
     HashMap::from([
@@ -3871,15 +3883,16 @@ fn render_for_multi_template(params: &str) -> String {
 /// [HMS](https://en.wikipedia.org/wiki/Template:HMS) Royal Navy ship template
 /// [SMS](https://en.wikipedia.org/wiki/Template:SMS) Seiner Majestät Schiff -  Imperial German Navy or Austro-Hungarian Navy
 /// [SS](https://en.wikipedia.org/wiki/Template:SS) Steamship template
-pub(crate) fn render_ship_template(prefix: &str, params: &str) -> String {
+fn render_ship_template(prefix: &str, params: &str) -> String {
     let positional = template_positional_params(params);
+    let prefix = prefix.to_uppercase();
     let Some(name) = positional
         .first()
         .map(String::as_str)
         .filter(|name| !name.is_empty())
     else {
         warn!("'{}' template missing name parameter '{}'", prefix, params);
-        return prefix.to_string();
+        return prefix;
     };
 
     let id = positional

@@ -13,8 +13,8 @@ use crate::types::DispatchTable;
 use crate::tools::split_template_name;
 
 use crate::templates::formatting::{
-    get_empty_dispatch_table, render_formatnum_template, render_lagrange_template,
-    render_ship_template,
+    get_dispatch_template_params, get_empty_dispatch_table, render_formatnum_template,
+    render_lagrange_template,
 };
 
 use crate::increment_recognized_skipped_template_count;
@@ -156,15 +156,12 @@ pub(crate) fn render_template(content: &str) -> String {
         return empty_lookup.get(lower.as_str()).unwrap()();
     }
 
-    if template.eq_ignore_ascii_case("USS") {
-        render_ship_template("USS", params)
-    } else if template.eq_ignore_ascii_case("HMS") {
-        render_ship_template("HMS", params)
-    } else if template.eq_ignore_ascii_case("SMS") {
-        render_ship_template("SMS", params)
-    } else if template.eq_ignore_ascii_case("SS") {
-        render_ship_template("SS", params)
-    } else if template.eq_ignore_ascii_case("L1") {
+    let template_params_lookup = get_dispatch_template_params();
+    if template_params_lookup.contains_key(&lower.as_str()) {
+        return template_params_lookup.get(lower.as_str()).unwrap()(template, params);
+    }
+
+    if template.eq_ignore_ascii_case("L1") {
         render_lagrange_template("1")
     } else if template.eq_ignore_ascii_case("L2") {
         render_lagrange_template("2")
