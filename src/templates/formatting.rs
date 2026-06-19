@@ -1170,6 +1170,9 @@ pub(crate) fn format_number_with_commas(s: &str) -> String {
 }
 
 /// [formatnum](https://en.wikipedia.org/wiki/Template:Formatnum)
+/// The 'Kyoto' page has {{formatnum:13870}} renderd as 13,870.
+/// The 'Cebu' page has some instructions that fetches numbers from "PH wikidata" and then formats them.`
+/// The 'Auckland' also has it with instructions to fetch numbers from "NZ population data" and then format them.
 pub(crate) fn render_formatnum_template(template: &str, params: &str) -> String {
     let mut num_str = String::new();
     if let Some(colon_idx) = template.find(':') {
