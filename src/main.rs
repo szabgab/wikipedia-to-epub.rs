@@ -22,7 +22,7 @@ mod templates;
 mod tools;
 mod types;
 
-use crate::cleanup::normalize_reference_attr;
+use crate::cleanup::{normalize_reference_attr, parse_reference_tags};
 
 use crate::tools::{
     split_template_name, split_template_params, template_named_params, template_param,
@@ -1513,50 +1513,6 @@ fn format_inline_text(text: &str) -> String {
     let html = restore_dfn_spans(&html);
     let html = restore_code_spans(&html);
     restore_var_spans(&html).replace("__WIKIPEDIA_TO_EPUB_LITERAL_QUOTE__", "'")
-}
-
-#[derive(Clone, Debug)]
-struct ReferenceTag {
-    group: String,
-    name: Option<String>,
-    content: Option<String>,
-}
-
-fn parse_reference_tags(text: &str) -> Vec<ReferenceTag> {
-    let ref_re = Regex::new(r#"(?is)<ref\b([^>/]*?)/>|<ref\b([^>]*)>(.*?)</ref>"#).unwrap();
-    let name_re = Regex::new(r#"(?i)\bname\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))"#).unwrap();
-    let group_re = Regex::new(r#"(?i)\bgroup\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))"#).unwrap();
-
-    ref_re
-        .captures_iter(text)
-        .map(|captures| {
-            let attrs = captures
-                .get(1)
-                .or_else(|| captures.get(2))
-                .map(|m| m.as_str())
-                .unwrap_or("");
-            let name = name_re
-                .captures(attrs)
-                .and_then(|caps| caps.get(1).or_else(|| caps.get(2)).or_else(|| caps.get(3)))
-                .map(|m| normalize_reference_attr(m.as_str()))
-                .filter(|value| !value.is_empty());
-            let group = group_re
-                .captures(attrs)
-                .and_then(|caps| caps.get(1).or_else(|| caps.get(2)).or_else(|| caps.get(3)))
-                .map(|m| normalize_reference_attr(m.as_str()))
-                .unwrap_or_default();
-            let content = captures
-                .get(3)
-                .map(|m| m.as_str().trim().to_string())
-                .filter(|value| !value.is_empty());
-
-            ReferenceTag {
-                group,
-                name,
-                content,
-            }
-        })
-        .collect()
 }
 
 fn strip_reflist_templates(text: &str) -> String {
