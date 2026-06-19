@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use regex::Regex;
 use tracing::warn;
+use cached::macros::cached;
 
 use crate::types::{
     DispatchTable, EmptyDispatchTable, EmptyHandler, TemplateHandler, TemplateParamsDispatchTable,
@@ -18,6 +19,30 @@ use crate::tools::{
 
 use crate::templates::render_templates;
 
+#[cached]
+pub(crate) fn get_empty_dispatch_table() -> HashMap<&'static str, fn() -> String> {
+    let empty_lookup: EmptyDispatchTable = HashMap::from([
+        ("awol", render_awol_template as EmptyHandler),
+        (
+            "died of wounds",
+            render_died_of_wounds_template as EmptyHandler,
+        ),
+        ("dow", render_died_of_wounds_template as EmptyHandler),
+        ("pkia", render_pkia_template as EmptyHandler),
+        ("pow", render_pow_template as EmptyHandler),
+        ("mia", render_mia_template as EmptyHandler),
+        ("wia", render_wia_template as EmptyHandler),
+        ("open access", render_open_access_template as EmptyHandler),
+        ("free access", render_open_access_template as EmptyHandler),
+        (
+            "nb5",
+            render_five_nonbreaking_spaces_template as EmptyHandler,
+        ),
+    ]);
+    empty_lookup
+}
+
+#[cached]
 pub(crate) fn get_dispatch_template_params() -> TemplateParamsDispatchTable {
     HashMap::from([
         ("uss", render_ship_template as TemplateParamsHandler),
@@ -32,6 +57,7 @@ pub(crate) fn get_dispatch_template_params() -> TemplateParamsDispatchTable {
     ])
 }
 
+#[cached]
 pub(crate) fn get_dispatch_table() -> DispatchTable {
     HashMap::from([
         (
@@ -5777,27 +5803,6 @@ fn render_m_template(params: &str) -> String {
     result
 }
 
-pub(crate) fn get_empty_dispatch_table() -> HashMap<&'static str, fn() -> String> {
-    let empty_lookup: EmptyDispatchTable = HashMap::from([
-        ("awol", render_awol_template as EmptyHandler),
-        (
-            "died of wounds",
-            render_died_of_wounds_template as EmptyHandler,
-        ),
-        ("dow", render_died_of_wounds_template as EmptyHandler),
-        ("pkia", render_pkia_template as EmptyHandler),
-        ("pow", render_pow_template as EmptyHandler),
-        ("mia", render_mia_template as EmptyHandler),
-        ("wia", render_wia_template as EmptyHandler),
-        ("open access", render_open_access_template as EmptyHandler),
-        ("free access", render_open_access_template as EmptyHandler),
-        (
-            "nb5",
-            render_five_nonbreaking_spaces_template as EmptyHandler,
-        ),
-    ]);
-    empty_lookup
-}
 
 fn render_cquote_template(params: &str) -> String {
     let named = template_named_params(params);
