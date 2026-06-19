@@ -976,6 +976,37 @@ fn increment_unknown_skipped_template_count() {
     });
 }
 
+fn remove_comments(text: &str) -> String {
+    Regex::new(r"(?s)<!--.*?-->")
+        .unwrap()
+        .replace_all(&text, "")
+        .into_owned()
+}
+
+fn remove_ref(text: &str) -> String {
+    let text = Regex::new(r"(?is)<ref\b[^>/]*/>")
+        .unwrap()
+        .replace_all(&text, "")
+        .into_owned();
+    let text = Regex::new(r"(?is)<ref\b[^>]*>.*?</ref>")
+        .unwrap()
+        .replace_all(&text, "")
+        .into_owned();
+    text
+}
+
+fn remove_some_html_tags(text: &str) -> String {
+    let mut text = text.to_string();
+    for tag in ["gallery", "timeline", "math", "score", "syntaxhighlight"] {
+        let pattern = format!(r"(?is)<{tag}\b[^>]*>.*?</{tag}>");
+        text = Regex::new(&pattern)
+            .unwrap()
+            .replace_all(&text, "")
+            .into_owned();
+    }
+    text
+}
+
 fn render_wikitext_impl(
     title: &str,
     wikitext: &str,
@@ -984,14 +1015,11 @@ fn render_wikitext_impl(
     links_to_excluded_pages: LinksToExcludedPages,
     mut image_registry: Option<&mut ImageRegistry>,
 ) -> String {
-    let mut text = wikitext.replace("\r\n", "\n");
-    text = Regex::new(r"(?s)<!--.*?-->")
-        .unwrap()
-        .replace_all(&text, "")
-        .into_owned();
+    let text = wikitext.replace("\r\n", "\n");
+    let text = remove_comments(&text);
     let reference_groups = collect_reference_groups(&text);
     let mut reflists = Vec::new();
-    text = replace_reflist_templates(
+    let text = replace_reflist_templates(
         &text,
         &reference_groups,
         &mut reflists,
@@ -999,21 +1027,9 @@ fn render_wikitext_impl(
         language,
         links_to_excluded_pages,
     );
-    text = Regex::new(r"(?is)<ref\b[^>/]*/>")
-        .unwrap()
-        .replace_all(&text, "")
-        .into_owned();
-    text = Regex::new(r"(?is)<ref\b[^>]*>.*?</ref>")
-        .unwrap()
-        .replace_all(&text, "")
-        .into_owned();
-    for tag in ["gallery", "timeline", "math", "score", "syntaxhighlight"] {
-        let pattern = format!(r"(?is)<{tag}\b[^>]*>.*?</{tag}>");
-        text = Regex::new(&pattern)
-            .unwrap()
-            .replace_all(&text, "")
-            .into_owned();
-    }
+    let text = remove_ref(&text);
+    let mut text = remove_some_html_tags(&text);
+
     text = Regex::new(r"(?i)<br\s*/?>")
         .unwrap()
         .replace_all(&text, "\n")
@@ -1205,19 +1221,18 @@ fn render_wikitext_impl(
         r#"<?xml version="1.0" encoding="utf-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" {language_attributes}>
   <head>
-    <title>{}</title>
+    <title>{title}</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
-    <h1>{}</h1>
-    {}
+    <h1>{title}</h1>
+    {body}
   </body>
 </html>
 "#,
-        encode_text(title),
-        encode_text(title),
-        html.join("\n    "),
         language_attributes = html_language_attributes(language),
+        title = encode_text(title),
+        body = html.join("\n    "),
     )
 }
 
