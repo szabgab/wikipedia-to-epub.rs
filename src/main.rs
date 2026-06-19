@@ -982,20 +982,19 @@ fn increment_unknown_skipped_template_count() {
 fn remove_comments(text: &str) -> String {
     Regex::new(r"(?s)<!--.*?-->")
         .unwrap()
-        .replace_all(&text, "")
+        .replace_all(text, "")
         .into_owned()
 }
 
 fn remove_ref(text: &str) -> String {
     let text = Regex::new(r"(?is)<ref\b[^>/]*/>")
         .unwrap()
-        .replace_all(&text, "")
+        .replace_all(text, "")
         .into_owned();
-    let text = Regex::new(r"(?is)<ref\b[^>]*>.*?</ref>")
+    Regex::new(r"(?is)<ref\b[^>]*>.*?</ref>")
         .unwrap()
         .replace_all(&text, "")
-        .into_owned();
-    text
+        .into_owned()
 }
 
 fn remove_some_html_tags(text: &str) -> String {
