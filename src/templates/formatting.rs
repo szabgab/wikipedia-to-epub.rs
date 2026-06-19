@@ -15,6 +15,460 @@ use crate::tools::{
 
 use crate::templates::render_templates;
 
+pub(crate) fn get_dispatch_table() -> DispatchTable {
+    HashMap::from([
+        (
+            "airport codes",
+            render_airport_codes_template as TemplateHandler,
+        ),
+        (
+            "airport-dest-list",
+            render_airport_dest_list_template as TemplateHandler,
+        ),
+        (
+            "nws-current",
+            render_nws_current_template as TemplateHandler,
+        ),
+        ("right", render_right_template as TemplateHandler),
+        (
+            "wikibooks inline",
+            render_wikibooks_inline_template as TemplateHandler,
+        ),
+        (
+            "wikibooks-inline",
+            render_wikibooks_inline_template as TemplateHandler,
+        ),
+        ("refh", render_refh_template as TemplateHandler),
+        ("M", render_m_template as TemplateHandler),
+        ("m", render_m_template as TemplateHandler),
+        ("earthquake magnitude", render_m_template as TemplateHandler),
+        ("nowrap", render_passthrough_template as TemplateHandler),
+        ("nobr", render_passthrough_template as TemplateHandler),
+        (
+            "collapse top",
+            render_collapse_top_template as TemplateHandler,
+        ),
+        ("var", render_var_template as TemplateHandler),
+        ("gaps", render_gaps_template as TemplateHandler),
+        ("center", render_passthrough_template as TemplateHandler),
+        (
+            "crossreference",
+            render_passthrough_template as TemplateHandler,
+        ),
+        ("nobold", render_passthrough_template as TemplateHandler),
+        ("stack", render_passthrough_template as TemplateHandler),
+        ("longitem", render_passthrough_template as TemplateHandler),
+        ("xref", render_passthrough_template as TemplateHandler),
+        ("quote box", render_blockquote_template as TemplateHandler),
+        ("quote", render_blockquote_template as TemplateHandler),
+        ("cquote", render_cquote_template as TemplateHandler),
+        ("term", render_term_template as TemplateHandler),
+        ("defn", render_defn_template as TemplateHandler),
+        ("us$", render_us_dollar_template as TemplateHandler),
+        ("frac2", render_sfrac_template as TemplateHandler),
+        ("vanchor", render_visible_anchor_template as TemplateHandler),
+        (
+            "block indent",
+            render_block_indent_template as TemplateHandler,
+        ),
+        ("dfni", render_dfni_template as TemplateHandler),
+        ("radic", render_radic_template as TemplateHandler),
+        (
+            "diagonal split header",
+            render_diagonal_split_header_template as TemplateHandler,
+        ),
+        (
+            "legend-line",
+            render_legend_line_template as TemplateHandler,
+        ),
+        ("prime", render_prime_template as TemplateHandler),
+        ("isup", render_isup_template as TemplateHandler),
+        ("cjkv", render_cjkv_template as TemplateHandler),
+        ("udl", render_udl_template as TemplateHandler),
+        ("tyo", render_tyo_template as TemplateHandler),
+        ("nag", render_nag_template as TemplateHandler),
+        ("stl", render_stl_template as TemplateHandler),
+        ("rcb", render_rcb_template as TemplateHandler),
+        (
+            "vertical header",
+            render_vertical_header_template as TemplateHandler,
+        ),
+        ("jrksn", render_jrksn_template as TemplateHandler),
+        ("glossary", render_glossary_template as TemplateHandler),
+        ("glossary end", render_glossary_template as TemplateHandler),
+        ("sronly", render_sronly_template as TemplateHandler),
+        ("more", render_further_template as TemplateHandler),
+        ("poem quote", render_poem_quote_template as TemplateHandler),
+        ("poemquote", render_poem_quote_template as TemplateHandler),
+        (
+            "verse translation",
+            render_verse_translation_template as TemplateHandler,
+        ),
+        (
+            "verse transliteration-translation",
+            render_verse_transliteration_translation_template as TemplateHandler,
+        ),
+        ("smaller", render_smaller_template as TemplateHandler),
+        ("small", render_smaller_template as TemplateHandler),
+        ("sic", render_sic_template as TemplateHandler),
+        ("circa", render_circa_template as TemplateHandler),
+        ("c.", render_circa_template as TemplateHandler),
+        ("cx", render_circa_template as TemplateHandler),
+        ("isbn", render_isbn_template as TemplateHandler),
+        ("asin", render_asin_template as TemplateHandler),
+        ("oclc", render_oclc_template as TemplateHandler),
+        ("abbr", render_abbr_template as TemplateHandler),
+        (
+            "assassinated",
+            render_assassinated_template as TemplateHandler,
+        ),
+        ("executed", render_executed_template as TemplateHandler),
+        ("kia", render_kia_template as TemplateHandler),
+        ("kia2", render_kia2_template as TemplateHandler),
+        (
+            "natural causes",
+            render_natural_causes_template as TemplateHandler,
+        ),
+        ("suicide", render_suicide_template as TemplateHandler),
+        (
+            "surrendered",
+            render_surrendered_template as TemplateHandler,
+        ),
+        ("turncoat", render_turncoat_template as TemplateHandler),
+        ("frac", render_frac_template as TemplateHandler),
+        ("fraction", render_frac_template as TemplateHandler),
+        ("sfrac", render_sfrac_template as TemplateHandler),
+        ("mvar", render_mvar_template as TemplateHandler),
+        ("math", render_math_template as TemplateHandler),
+        ("tmath", render_tmath_template as TemplateHandler),
+        ("jstor", render_jstor_template as TemplateHandler),
+        ("wspsm", render_wspsm_template as TemplateHandler),
+        ("em", render_em_template as TemplateHandler),
+        ("mathworld", render_mathworld_template as TemplateHandler),
+        ("as ref", render_as_ref_template as TemplateHandler),
+        ("oeis2c", render_oeis2c_template as TemplateHandler),
+        ("thinsp", render_thinsp_template as TemplateHandler),
+        ("dfn", render_dfn_template as TemplateHandler),
+        ("subsup", render_subsup_template as TemplateHandler),
+        ("abs", render_abs_template as TemplateHandler),
+        ("mono", render_mono_template as TemplateHandler),
+        ("pi", render_pi_template as TemplateHandler),
+        ("springer", render_springer_template as TemplateHandler),
+        (
+            "closed-open",
+            render_closed_open_template as TemplateHandler,
+        ),
+        ("sqrt", render_sqrt_template as TemplateHandler),
+        (
+            "section link",
+            render_section_link_template as TemplateHandler,
+        ),
+        ("mset", render_mset_template as TemplateHandler),
+        (
+            "hidden begin",
+            render_hidden_begin_template as TemplateHandler,
+        ),
+        ("floruit", render_floruit_template as TemplateHandler),
+        ("coord", render_coord_template as TemplateHandler),
+        ("rp", render_reference_page_template as TemplateHandler),
+        (
+            "reference page",
+            render_reference_page_template as TemplateHandler,
+        ),
+        ("as of", render_as_of_template as TemplateHandler),
+        ("died-in", render_died_in_template as TemplateHandler),
+        ("blockquote", render_blockquote_template as TemplateHandler),
+        ("for", render_for_template as TemplateHandler),
+        (
+            "for timeline",
+            render_for_timeline_template as TemplateHandler,
+        ),
+        ("slink", render_section_link_template as TemplateHandler),
+        ("legend", render_legend_template as TemplateHandler),
+        ("legend0", render_legend_template as TemplateHandler),
+        ("numero", render_numero_template as TemplateHandler),
+        ("anl", render_article_link_template as TemplateHandler),
+        ("excerpt", render_excerpt_template as TemplateHandler),
+        ("main", render_main_template as TemplateHandler),
+        ("main article", render_main_template as TemplateHandler),
+        ("main list", render_main_list_template as TemplateHandler),
+        ("see also", render_see_also_template as TemplateHandler),
+        ("also", render_see_also_template as TemplateHandler),
+        ("further", render_further_template as TemplateHandler),
+        ("wiktionary", render_wiktionary_template as TemplateHandler),
+        ("wikivoyage", render_wikivoyage_template as TemplateHandler),
+        (
+            "wikivoyage-inline",
+            render_wikivoyage_template as TemplateHandler,
+        ),
+        (
+            "wikivoyage inline",
+            render_wikivoyage_template as TemplateHandler,
+        ),
+        ("wikisource", render_wikisource_template as TemplateHandler),
+        ("wikibooks", render_wikibooks_template as TemplateHandler),
+        ("britannica", render_britannica_template as TemplateHandler),
+        (
+            "official website",
+            render_official_website_template as TemplateHandler,
+        ),
+        (
+            "official",
+            render_official_website_template as TemplateHandler,
+        ),
+        ("url", render_url_template as TemplateHandler),
+        (
+            "osmrelation-inline",
+            render_openstreetmap_relation_template as TemplateHandler,
+        ),
+        (
+            "osmway",
+            render_openstreetmap_way_template as TemplateHandler,
+        ),
+        ("webarchive", render_webarchive_template as TemplateHandler),
+        (
+            "largest cities",
+            render_largest_cities_template as TemplateHandler,
+        ),
+        (
+            "historical populations",
+            render_historical_populations_template as TemplateHandler,
+        ),
+        (
+            "climate chart",
+            render_climate_chart_template as TemplateHandler,
+        ),
+        ("sclass", render_ship_class_template as TemplateHandler),
+        ("arrow", render_arrow_template as TemplateHandler),
+        (
+            "roks",
+            render_republic_of_korea_ship_template as TemplateHandler,
+        ),
+        ("ill", render_interlanguage_link_template as TemplateHandler),
+        (
+            "illm",
+            render_interlanguage_link_template as TemplateHandler,
+        ),
+        (
+            "interlanguage link",
+            render_interlanguage_link_template as TemplateHandler,
+        ),
+        (
+            "interlanguage link multi",
+            render_interlanguage_link_template as TemplateHandler,
+        ),
+        ("reign", render_reign_template as TemplateHandler),
+        ("for-multi", render_for_multi_template as TemplateHandler),
+        ("flagdeco", render_flagdeco_template as TemplateHandler),
+        ("pprime", render_pprime_template as TemplateHandler),
+        ("ra", render_ra_template as TemplateHandler),
+        (
+            "indented plainlist",
+            render_plainlist_template as TemplateHandler,
+        ),
+        (
+            "bulleted list",
+            render_unbulleted_list_template as TemplateHandler,
+        ),
+        ("blist", render_unbulleted_list_template as TemplateHandler),
+        ("hyphen", render_hyphen_template as TemplateHandler),
+        ("ship", render_generic_ship_template as TemplateHandler),
+        ("proto", render_proto_template as TemplateHandler),
+        (
+            "infobox",
+            render_infobox_generic_template as TemplateHandler,
+        ),
+        ("chem2", render_chem2_template as TemplateHandler),
+        ("e", render_e_template as TemplateHandler),
+        ("sup", render_sup_template as TemplateHandler),
+        ("sub", render_sub_template as TemplateHandler),
+        ("su", render_su_template as TemplateHandler),
+        ("mpl", render_mpl_template as TemplateHandler),
+        (
+            "columns list",
+            render_columns_list_template as TemplateHandler,
+        ),
+        (
+            "annotated link",
+            render_annotated_link_template as TemplateHandler,
+        ),
+        ("dp", render_dp_template as TemplateHandler),
+        (
+            "visible anchor",
+            render_visible_anchor_template as TemplateHandler,
+        ),
+        ("spaces", render_spaces_template as TemplateHandler),
+        ("mpl-", render_mpl_dash_template as TemplateHandler),
+        ("chem", render_chem_template as TemplateHandler),
+        (
+            "solar radius",
+            render_solar_radius_template as TemplateHandler,
+        ),
+        ("±", render_plus_minus_template as TemplateHandler),
+        (
+            "collapsible list",
+            render_collapsible_list_template as TemplateHandler,
+        ),
+        (
+            "internet archive short film",
+            render_internet_archive_short_film_template as TemplateHandler,
+        ),
+        (
+            "worldhistory",
+            render_worldhistory_template as TemplateHandler,
+        ),
+        ("shy", render_soft_hyphen_template as TemplateHandler),
+        ("color box", render_color_box_template as TemplateHandler),
+        ("color", render_color_template as TemplateHandler),
+        ("colour", render_color_template as TemplateHandler),
+        (
+            "osm relation",
+            render_openstreetmap_relation_template as TemplateHandler,
+        ),
+        (
+            "osm way",
+            render_openstreetmap_way_template as TemplateHandler,
+        ),
+        ("ndldc", render_ndldc_template as TemplateHandler),
+        ("plainlist", render_plainlist_template as TemplateHandler),
+        (
+            "unbulleted list",
+            render_unbulleted_list_template as TemplateHandler,
+        ),
+        ("ubl", render_unbulleted_list_template as TemplateHandler),
+        ("ubli", render_unbulleted_list_template as TemplateHandler),
+        (
+            "unbulleted indent list",
+            render_unbulleted_list_template as TemplateHandler,
+        ),
+        ("note", render_note_template as TemplateHandler),
+        (
+            "fs interlinear",
+            render_fs_interlinear_template as TemplateHandler,
+        ),
+        ("tooltip", render_tooltip_template as TemplateHandler),
+        ("jaanus", render_jaanus_template as TemplateHandler),
+        (
+            "easy css image crop",
+            render_easy_css_image_crop_template as TemplateHandler,
+        ),
+        (
+            "multiple images",
+            render_multiple_images_template as TemplateHandler,
+        ),
+        (
+            "multiple image",
+            render_multiple_images_template as TemplateHandler,
+        ),
+        ("issn", render_issn_template as TemplateHandler),
+        ("stn", render_stn_template as TemplateHandler),
+        ("station", render_station_template as TemplateHandler),
+        ("jpn", render_jpn_template as TemplateHandler),
+        (
+            "track gauge",
+            render_track_gauge_template as TemplateHandler,
+        ),
+        ("railgauge", render_track_gauge_template as TemplateHandler),
+        ("gburl", render_gburl_template as TemplateHandler),
+        (
+            "google books",
+            render_google_books_template as TemplateHandler,
+        ),
+        ("usurped", render_usurped_template as TemplateHandler),
+        ("break", render_break_template as TemplateHandler),
+        ("br", render_break_template as TemplateHandler),
+        ("brk", render_break_template as TemplateHandler),
+        ("crlf", render_break_template as TemplateHandler),
+        ("jct", render_jct_template as TemplateHandler),
+        ("dts", render_dts_template as TemplateHandler),
+        ("doi", render_doi_template as TemplateHandler),
+        ("age", render_age_template as TemplateHandler),
+        (
+            "birth date and age",
+            render_birth_date_and_age_template as TemplateHandler,
+        ),
+        ("ayd", render_ayd_template as TemplateHandler),
+        (
+            "age in years and days nts",
+            render_ayd_template as TemplateHandler,
+        ),
+        ("routebox", render_route_box_template as TemplateHandler),
+        ("rail-interchange", render_ric_template as TemplateHandler),
+        ("ric", render_ric_template as TemplateHandler),
+        ("rint", render_ric_template as TemplateHandler),
+        ("line link", render_lnl_template as TemplateHandler),
+        ("lnl", render_lnl_template as TemplateHandler),
+        (
+            "infobox mountain",
+            render_infobox_mountain_template as TemplateHandler,
+        ),
+        (
+            "infobox country",
+            render_infobox_country_template as TemplateHandler,
+        ),
+        (
+            "infobox military conflict",
+            render_infobox_military_conflict_template as TemplateHandler,
+        ),
+        (
+            "infobox planet",
+            render_infobox_planet_template as TemplateHandler,
+        ),
+        (
+            "infobox settlement",
+            render_infobox_settlement_template as TemplateHandler,
+        ),
+        (
+            "infobox",
+            render_infobox_generic_template as TemplateHandler,
+        ),
+        (
+            "native name list",
+            render_native_name_list_template as TemplateHandler,
+        ),
+        ("hlist", render_hlist_template as TemplateHandler),
+        ("flatlist", render_hlist_template as TemplateHandler),
+        ("ublist", render_unbulleted_list_template as TemplateHandler),
+        ("parabr", render_parabr_template as TemplateHandler),
+        (
+            "age in years, months, weeks and days",
+            render_age_in_years_months_weeks_days_template as TemplateHandler,
+        ),
+        ("est.", render_est_template as TemplateHandler),
+        (
+            "britannica url",
+            render_britannica_url_template as TemplateHandler,
+        ),
+        ("olist", render_ordered_list_template as TemplateHandler),
+        (
+            "ordered list",
+            render_ordered_list_template as TemplateHandler,
+        ),
+        ("webtrans", render_webtrans_template as TemplateHandler),
+        ("osm", render_osm_template as TemplateHandler),
+        (
+            "wiktionary-inline",
+            render_wiktionary_inline_template as TemplateHandler,
+        ),
+        (
+            "wiktionary inline",
+            render_wiktionary_inline_template as TemplateHandler,
+        ),
+        ("wti", render_wiktionary_inline_template as TemplateHandler),
+        ("colorbull", render_colorbull_template as TemplateHandler),
+        (
+            "portal-inline",
+            render_portal_inline_template as TemplateHandler,
+        ),
+        (
+            "portal inline",
+            render_portal_inline_template as TemplateHandler,
+        ),
+        ("mp", render_mp_template as TemplateHandler),
+        ("minor planet", render_mp_template as TemplateHandler),
+    ])
+}
+
 /// [jct](https://en.wikipedia.org/wiki/Template:Jct)
 fn render_jct_template(params: &str) -> String {
     let mut country = None;
@@ -3462,7 +3916,7 @@ pub(crate) fn render_ship_template(prefix: &str, params: &str) -> String {
 }
 
 /// [Nb5](https://en.wikipedia.org/wiki/Template:Nb5)
-pub(crate) fn render_five_nonbreaking_spaces_template() -> String {
+fn render_five_nonbreaking_spaces_template() -> String {
     "\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}".to_string()
 }
 
@@ -3944,7 +4398,7 @@ fn render_reign_template(params: &str) -> String {
 
 /// [open access](https://en.wikipedia.org/wiki/Template:Open_access)
 /// [free access](https://en.wikipedia.org/wiki/Template:Free_access)
-pub(crate) fn render_open_access_template() -> String {
+fn render_open_access_template() -> String {
     "__WIKIPEDIA_TO_EPUB_OPEN_ACCESS__".to_string()
 }
 
@@ -4090,7 +4544,7 @@ fn format_convert_value(value: &str) -> String {
 }
 
 /// [AWOL](https://en.wikipedia.org/wiki/Template:AWOL)
-pub(crate) fn render_awol_template() -> String {
+fn render_awol_template() -> String {
     render_templates("&nbsp;([[Absent without leave|{{abbr|AWOL|Desertion}}]])")
 }
 
@@ -4123,7 +4577,7 @@ fn render_assassinated_template(params: &str) -> String {
 
 /// [DOW](https://en.wikipedia.org/wiki/Template:DOW)
 /// [Died of wounds](https://en.wikipedia.org/wiki/Template:Died_of_wounds)
-pub(crate) fn render_died_of_wounds_template() -> String {
+fn render_died_of_wounds_template() -> String {
     render_templates("&nbsp;([[Killed in action|{{abbr|DOW|Died of wounds}}]])")
 }
 
@@ -4171,7 +4625,7 @@ fn render_kia2_template(_params: &str) -> String {
 }
 
 /// [MIA](https://en.wikipedia.org/wiki/Template:MIA)
-pub(crate) fn render_mia_template() -> String {
+fn render_mia_template() -> String {
     render_templates("&nbsp;([[Missing in action|{{abbr|MIA|Missing in action}}]])")
 }
 
@@ -4206,12 +4660,12 @@ fn render_natural_causes_template(params: &str) -> String {
 }
 
 /// [PKIA](https://en.wikipedia.org/wiki/Template:PKIA)
-pub(crate) fn render_pkia_template() -> String {
+fn render_pkia_template() -> String {
     render_templates("&nbsp;([[Killed in action|{{abbr|PKIA|Presumed killed in action}}]])")
 }
 
 /// [POW](https://en.wikipedia.org/wiki/Template:POW)
-pub(crate) fn render_pow_template() -> String {
+fn render_pow_template() -> String {
     render_templates(
         "&#x20;<span style=\"white-space:nowrap\">([[Prisoner of war|{{abbr|POW|Prisoner of war}}]])</span>",
     )
@@ -4268,7 +4722,7 @@ fn render_turncoat_template(params: &str) -> String {
 }
 
 /// [WIA](https://en.wikipedia.org/wiki/Template:WIA)
-pub(crate) fn render_wia_template() -> String {
+fn render_wia_template() -> String {
     render_templates("&nbsp;([[Wounded in action|{{abbr|WIA|Wounded in action}}]])")
 }
 
@@ -4574,460 +5028,6 @@ fn format_interlanguage_link(
         Some(language) => format!("{link} [{language}]"),
         None => link,
     }
-}
-
-pub(crate) fn get_dispatch_table() -> DispatchTable {
-    HashMap::from([
-        (
-            "airport codes",
-            render_airport_codes_template as TemplateHandler,
-        ),
-        (
-            "airport-dest-list",
-            render_airport_dest_list_template as TemplateHandler,
-        ),
-        (
-            "nws-current",
-            render_nws_current_template as TemplateHandler,
-        ),
-        ("right", render_right_template as TemplateHandler),
-        (
-            "wikibooks inline",
-            render_wikibooks_inline_template as TemplateHandler,
-        ),
-        (
-            "wikibooks-inline",
-            render_wikibooks_inline_template as TemplateHandler,
-        ),
-        ("refh", render_refh_template as TemplateHandler),
-        ("M", render_m_template as TemplateHandler),
-        ("m", render_m_template as TemplateHandler),
-        ("earthquake magnitude", render_m_template as TemplateHandler),
-        ("nowrap", render_passthrough_template as TemplateHandler),
-        ("nobr", render_passthrough_template as TemplateHandler),
-        (
-            "collapse top",
-            render_collapse_top_template as TemplateHandler,
-        ),
-        ("var", render_var_template as TemplateHandler),
-        ("gaps", render_gaps_template as TemplateHandler),
-        ("center", render_passthrough_template as TemplateHandler),
-        (
-            "crossreference",
-            render_passthrough_template as TemplateHandler,
-        ),
-        ("nobold", render_passthrough_template as TemplateHandler),
-        ("stack", render_passthrough_template as TemplateHandler),
-        ("longitem", render_passthrough_template as TemplateHandler),
-        ("xref", render_passthrough_template as TemplateHandler),
-        ("quote box", render_blockquote_template as TemplateHandler),
-        ("quote", render_blockquote_template as TemplateHandler),
-        ("cquote", render_cquote_template as TemplateHandler),
-        ("term", render_term_template as TemplateHandler),
-        ("defn", render_defn_template as TemplateHandler),
-        ("us$", render_us_dollar_template as TemplateHandler),
-        ("frac2", render_sfrac_template as TemplateHandler),
-        ("vanchor", render_visible_anchor_template as TemplateHandler),
-        (
-            "block indent",
-            render_block_indent_template as TemplateHandler,
-        ),
-        ("dfni", render_dfni_template as TemplateHandler),
-        ("radic", render_radic_template as TemplateHandler),
-        (
-            "diagonal split header",
-            render_diagonal_split_header_template as TemplateHandler,
-        ),
-        (
-            "legend-line",
-            render_legend_line_template as TemplateHandler,
-        ),
-        ("prime", render_prime_template as TemplateHandler),
-        ("isup", render_isup_template as TemplateHandler),
-        ("cjkv", render_cjkv_template as TemplateHandler),
-        ("udl", render_udl_template as TemplateHandler),
-        ("tyo", render_tyo_template as TemplateHandler),
-        ("nag", render_nag_template as TemplateHandler),
-        ("stl", render_stl_template as TemplateHandler),
-        ("rcb", render_rcb_template as TemplateHandler),
-        (
-            "vertical header",
-            render_vertical_header_template as TemplateHandler,
-        ),
-        ("jrksn", render_jrksn_template as TemplateHandler),
-        ("glossary", render_glossary_template as TemplateHandler),
-        ("glossary end", render_glossary_template as TemplateHandler),
-        ("sronly", render_sronly_template as TemplateHandler),
-        ("more", render_further_template as TemplateHandler),
-        ("poem quote", render_poem_quote_template as TemplateHandler),
-        ("poemquote", render_poem_quote_template as TemplateHandler),
-        (
-            "verse translation",
-            render_verse_translation_template as TemplateHandler,
-        ),
-        (
-            "verse transliteration-translation",
-            render_verse_transliteration_translation_template as TemplateHandler,
-        ),
-        ("smaller", render_smaller_template as TemplateHandler),
-        ("small", render_smaller_template as TemplateHandler),
-        ("sic", render_sic_template as TemplateHandler),
-        ("circa", render_circa_template as TemplateHandler),
-        ("c.", render_circa_template as TemplateHandler),
-        ("cx", render_circa_template as TemplateHandler),
-        ("isbn", render_isbn_template as TemplateHandler),
-        ("asin", render_asin_template as TemplateHandler),
-        ("oclc", render_oclc_template as TemplateHandler),
-        ("abbr", render_abbr_template as TemplateHandler),
-        (
-            "assassinated",
-            render_assassinated_template as TemplateHandler,
-        ),
-        ("executed", render_executed_template as TemplateHandler),
-        ("kia", render_kia_template as TemplateHandler),
-        ("kia2", render_kia2_template as TemplateHandler),
-        (
-            "natural causes",
-            render_natural_causes_template as TemplateHandler,
-        ),
-        ("suicide", render_suicide_template as TemplateHandler),
-        (
-            "surrendered",
-            render_surrendered_template as TemplateHandler,
-        ),
-        ("turncoat", render_turncoat_template as TemplateHandler),
-        ("frac", render_frac_template as TemplateHandler),
-        ("fraction", render_frac_template as TemplateHandler),
-        ("sfrac", render_sfrac_template as TemplateHandler),
-        ("mvar", render_mvar_template as TemplateHandler),
-        ("math", render_math_template as TemplateHandler),
-        ("tmath", render_tmath_template as TemplateHandler),
-        ("jstor", render_jstor_template as TemplateHandler),
-        ("wspsm", render_wspsm_template as TemplateHandler),
-        ("em", render_em_template as TemplateHandler),
-        ("mathworld", render_mathworld_template as TemplateHandler),
-        ("as ref", render_as_ref_template as TemplateHandler),
-        ("oeis2c", render_oeis2c_template as TemplateHandler),
-        ("thinsp", render_thinsp_template as TemplateHandler),
-        ("dfn", render_dfn_template as TemplateHandler),
-        ("subsup", render_subsup_template as TemplateHandler),
-        ("abs", render_abs_template as TemplateHandler),
-        ("mono", render_mono_template as TemplateHandler),
-        ("pi", render_pi_template as TemplateHandler),
-        ("springer", render_springer_template as TemplateHandler),
-        (
-            "closed-open",
-            render_closed_open_template as TemplateHandler,
-        ),
-        ("sqrt", render_sqrt_template as TemplateHandler),
-        (
-            "section link",
-            render_section_link_template as TemplateHandler,
-        ),
-        ("mset", render_mset_template as TemplateHandler),
-        (
-            "hidden begin",
-            render_hidden_begin_template as TemplateHandler,
-        ),
-        ("floruit", render_floruit_template as TemplateHandler),
-        ("coord", render_coord_template as TemplateHandler),
-        ("rp", render_reference_page_template as TemplateHandler),
-        (
-            "reference page",
-            render_reference_page_template as TemplateHandler,
-        ),
-        ("as of", render_as_of_template as TemplateHandler),
-        ("died-in", render_died_in_template as TemplateHandler),
-        ("blockquote", render_blockquote_template as TemplateHandler),
-        ("for", render_for_template as TemplateHandler),
-        (
-            "for timeline",
-            render_for_timeline_template as TemplateHandler,
-        ),
-        ("slink", render_section_link_template as TemplateHandler),
-        ("legend", render_legend_template as TemplateHandler),
-        ("legend0", render_legend_template as TemplateHandler),
-        ("numero", render_numero_template as TemplateHandler),
-        ("anl", render_article_link_template as TemplateHandler),
-        ("excerpt", render_excerpt_template as TemplateHandler),
-        ("main", render_main_template as TemplateHandler),
-        ("main article", render_main_template as TemplateHandler),
-        ("main list", render_main_list_template as TemplateHandler),
-        ("see also", render_see_also_template as TemplateHandler),
-        ("also", render_see_also_template as TemplateHandler),
-        ("further", render_further_template as TemplateHandler),
-        ("wiktionary", render_wiktionary_template as TemplateHandler),
-        ("wikivoyage", render_wikivoyage_template as TemplateHandler),
-        (
-            "wikivoyage-inline",
-            render_wikivoyage_template as TemplateHandler,
-        ),
-        (
-            "wikivoyage inline",
-            render_wikivoyage_template as TemplateHandler,
-        ),
-        ("wikisource", render_wikisource_template as TemplateHandler),
-        ("wikibooks", render_wikibooks_template as TemplateHandler),
-        ("britannica", render_britannica_template as TemplateHandler),
-        (
-            "official website",
-            render_official_website_template as TemplateHandler,
-        ),
-        (
-            "official",
-            render_official_website_template as TemplateHandler,
-        ),
-        ("url", render_url_template as TemplateHandler),
-        (
-            "osmrelation-inline",
-            render_openstreetmap_relation_template as TemplateHandler,
-        ),
-        (
-            "osmway",
-            render_openstreetmap_way_template as TemplateHandler,
-        ),
-        ("webarchive", render_webarchive_template as TemplateHandler),
-        (
-            "largest cities",
-            render_largest_cities_template as TemplateHandler,
-        ),
-        (
-            "historical populations",
-            render_historical_populations_template as TemplateHandler,
-        ),
-        (
-            "climate chart",
-            render_climate_chart_template as TemplateHandler,
-        ),
-        ("sclass", render_ship_class_template as TemplateHandler),
-        ("arrow", render_arrow_template as TemplateHandler),
-        (
-            "roks",
-            render_republic_of_korea_ship_template as TemplateHandler,
-        ),
-        ("ill", render_interlanguage_link_template as TemplateHandler),
-        (
-            "illm",
-            render_interlanguage_link_template as TemplateHandler,
-        ),
-        (
-            "interlanguage link",
-            render_interlanguage_link_template as TemplateHandler,
-        ),
-        (
-            "interlanguage link multi",
-            render_interlanguage_link_template as TemplateHandler,
-        ),
-        ("reign", render_reign_template as TemplateHandler),
-        ("for-multi", render_for_multi_template as TemplateHandler),
-        ("flagdeco", render_flagdeco_template as TemplateHandler),
-        ("pprime", render_pprime_template as TemplateHandler),
-        ("ra", render_ra_template as TemplateHandler),
-        (
-            "indented plainlist",
-            render_plainlist_template as TemplateHandler,
-        ),
-        (
-            "bulleted list",
-            render_unbulleted_list_template as TemplateHandler,
-        ),
-        ("blist", render_unbulleted_list_template as TemplateHandler),
-        ("hyphen", render_hyphen_template as TemplateHandler),
-        ("ship", render_generic_ship_template as TemplateHandler),
-        ("proto", render_proto_template as TemplateHandler),
-        (
-            "infobox",
-            render_infobox_generic_template as TemplateHandler,
-        ),
-        ("chem2", render_chem2_template as TemplateHandler),
-        ("e", render_e_template as TemplateHandler),
-        ("sup", render_sup_template as TemplateHandler),
-        ("sub", render_sub_template as TemplateHandler),
-        ("su", render_su_template as TemplateHandler),
-        ("mpl", render_mpl_template as TemplateHandler),
-        (
-            "columns list",
-            render_columns_list_template as TemplateHandler,
-        ),
-        (
-            "annotated link",
-            render_annotated_link_template as TemplateHandler,
-        ),
-        ("dp", render_dp_template as TemplateHandler),
-        (
-            "visible anchor",
-            render_visible_anchor_template as TemplateHandler,
-        ),
-        ("spaces", render_spaces_template as TemplateHandler),
-        ("mpl-", render_mpl_dash_template as TemplateHandler),
-        ("chem", render_chem_template as TemplateHandler),
-        (
-            "solar radius",
-            render_solar_radius_template as TemplateHandler,
-        ),
-        ("±", render_plus_minus_template as TemplateHandler),
-        (
-            "collapsible list",
-            render_collapsible_list_template as TemplateHandler,
-        ),
-        (
-            "internet archive short film",
-            render_internet_archive_short_film_template as TemplateHandler,
-        ),
-        (
-            "worldhistory",
-            render_worldhistory_template as TemplateHandler,
-        ),
-        ("shy", render_soft_hyphen_template as TemplateHandler),
-        ("color box", render_color_box_template as TemplateHandler),
-        ("color", render_color_template as TemplateHandler),
-        ("colour", render_color_template as TemplateHandler),
-        (
-            "osm relation",
-            render_openstreetmap_relation_template as TemplateHandler,
-        ),
-        (
-            "osm way",
-            render_openstreetmap_way_template as TemplateHandler,
-        ),
-        ("ndldc", render_ndldc_template as TemplateHandler),
-        ("plainlist", render_plainlist_template as TemplateHandler),
-        (
-            "unbulleted list",
-            render_unbulleted_list_template as TemplateHandler,
-        ),
-        ("ubl", render_unbulleted_list_template as TemplateHandler),
-        ("ubli", render_unbulleted_list_template as TemplateHandler),
-        (
-            "unbulleted indent list",
-            render_unbulleted_list_template as TemplateHandler,
-        ),
-        ("note", render_note_template as TemplateHandler),
-        (
-            "fs interlinear",
-            render_fs_interlinear_template as TemplateHandler,
-        ),
-        ("tooltip", render_tooltip_template as TemplateHandler),
-        ("jaanus", render_jaanus_template as TemplateHandler),
-        (
-            "easy css image crop",
-            render_easy_css_image_crop_template as TemplateHandler,
-        ),
-        (
-            "multiple images",
-            render_multiple_images_template as TemplateHandler,
-        ),
-        (
-            "multiple image",
-            render_multiple_images_template as TemplateHandler,
-        ),
-        ("issn", render_issn_template as TemplateHandler),
-        ("stn", render_stn_template as TemplateHandler),
-        ("station", render_station_template as TemplateHandler),
-        ("jpn", render_jpn_template as TemplateHandler),
-        (
-            "track gauge",
-            render_track_gauge_template as TemplateHandler,
-        ),
-        ("railgauge", render_track_gauge_template as TemplateHandler),
-        ("gburl", render_gburl_template as TemplateHandler),
-        (
-            "google books",
-            render_google_books_template as TemplateHandler,
-        ),
-        ("usurped", render_usurped_template as TemplateHandler),
-        ("break", render_break_template as TemplateHandler),
-        ("br", render_break_template as TemplateHandler),
-        ("brk", render_break_template as TemplateHandler),
-        ("crlf", render_break_template as TemplateHandler),
-        ("jct", render_jct_template as TemplateHandler),
-        ("dts", render_dts_template as TemplateHandler),
-        ("doi", render_doi_template as TemplateHandler),
-        ("age", render_age_template as TemplateHandler),
-        (
-            "birth date and age",
-            render_birth_date_and_age_template as TemplateHandler,
-        ),
-        ("ayd", render_ayd_template as TemplateHandler),
-        (
-            "age in years and days nts",
-            render_ayd_template as TemplateHandler,
-        ),
-        ("routebox", render_route_box_template as TemplateHandler),
-        ("rail-interchange", render_ric_template as TemplateHandler),
-        ("ric", render_ric_template as TemplateHandler),
-        ("rint", render_ric_template as TemplateHandler),
-        ("line link", render_lnl_template as TemplateHandler),
-        ("lnl", render_lnl_template as TemplateHandler),
-        (
-            "infobox mountain",
-            render_infobox_mountain_template as TemplateHandler,
-        ),
-        (
-            "infobox country",
-            render_infobox_country_template as TemplateHandler,
-        ),
-        (
-            "infobox military conflict",
-            render_infobox_military_conflict_template as TemplateHandler,
-        ),
-        (
-            "infobox planet",
-            render_infobox_planet_template as TemplateHandler,
-        ),
-        (
-            "infobox settlement",
-            render_infobox_settlement_template as TemplateHandler,
-        ),
-        (
-            "infobox",
-            render_infobox_generic_template as TemplateHandler,
-        ),
-        (
-            "native name list",
-            render_native_name_list_template as TemplateHandler,
-        ),
-        ("hlist", render_hlist_template as TemplateHandler),
-        ("flatlist", render_hlist_template as TemplateHandler),
-        ("ublist", render_unbulleted_list_template as TemplateHandler),
-        ("parabr", render_parabr_template as TemplateHandler),
-        (
-            "age in years, months, weeks and days",
-            render_age_in_years_months_weeks_days_template as TemplateHandler,
-        ),
-        ("est.", render_est_template as TemplateHandler),
-        (
-            "britannica url",
-            render_britannica_url_template as TemplateHandler,
-        ),
-        ("olist", render_ordered_list_template as TemplateHandler),
-        (
-            "ordered list",
-            render_ordered_list_template as TemplateHandler,
-        ),
-        ("webtrans", render_webtrans_template as TemplateHandler),
-        ("osm", render_osm_template as TemplateHandler),
-        (
-            "wiktionary-inline",
-            render_wiktionary_inline_template as TemplateHandler,
-        ),
-        (
-            "wiktionary inline",
-            render_wiktionary_inline_template as TemplateHandler,
-        ),
-        ("wti", render_wiktionary_inline_template as TemplateHandler),
-        ("colorbull", render_colorbull_template as TemplateHandler),
-        (
-            "portal-inline",
-            render_portal_inline_template as TemplateHandler,
-        ),
-        (
-            "portal inline",
-            render_portal_inline_template as TemplateHandler,
-        ),
-        ("mp", render_mp_template as TemplateHandler),
-        ("minor planet", render_mp_template as TemplateHandler),
-    ])
 }
 
 fn render_parabr_template(_params: &str) -> String {
