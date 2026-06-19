@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use regex::Regex;
+use tracing::warn;
 
 use crate::types::{DispatchTable, EmptyDispatchTable, EmptyHandler, TemplateHandler};
 
@@ -3409,8 +3410,10 @@ fn render_for_multi_template(params: &str) -> String {
     format!("For {}.", chunks.join("; for "))
 }
 
-/// [USS](https://en.wikipedia.org/wiki/Template:USS)
-/// [HMS](https://en.wikipedia.org/wiki/Template:HMS)
+/// [USS](https://en.wikipedia.org/wiki/Template:USS) US Navy ship template
+/// [HMS](https://en.wikipedia.org/wiki/Template:HMS) Royal Navy ship template
+/// [SMS](https://en.wikipedia.org/wiki/Template:SMS) Seiner Majestät Schiff -  Imperial German Navy or Austro-Hungarian Navy
+/// [SS](https://en.wikipedia.org/wiki/Template:SS) Steamship template
 pub(crate) fn render_ship_template(prefix: &str, params: &str) -> String {
     let positional = template_positional_params(params);
     let Some(name) = positional
@@ -3418,6 +3421,7 @@ pub(crate) fn render_ship_template(prefix: &str, params: &str) -> String {
         .map(String::as_str)
         .filter(|name| !name.is_empty())
     else {
+        warn!("'{}' template missing name parameter '{}'", prefix, params);
         return prefix.to_string();
     };
 
