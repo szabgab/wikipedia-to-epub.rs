@@ -16,6 +16,7 @@ use crate::templates::formatting::{
     get_dispatch_template_params, get_empty_dispatch_table, render_formatnum_template,
 };
 
+use crate::cleanup::matching_template_end;
 use crate::increment_recognized_skipped_template_count;
 use crate::increment_unknown_skipped_template_count;
 
@@ -38,29 +39,6 @@ pub(crate) fn render_templates(text: &str) -> String {
 
     rendered.push_str(&text[offset..]);
     rendered
-}
-
-pub(crate) fn matching_template_end(text: &str, start: usize) -> Option<usize> {
-    let bytes = text.as_bytes();
-    let mut depth = 1usize;
-    let mut index = start + 2;
-
-    while index + 1 < bytes.len() {
-        if bytes[index] == b'{' && bytes[index + 1] == b'{' {
-            depth += 1;
-            index += 2;
-        } else if bytes[index] == b'}' && bytes[index + 1] == b'}' {
-            depth -= 1;
-            if depth == 0 {
-                return Some(index);
-            }
-            index += 2;
-        } else {
-            index += 1;
-        }
-    }
-
-    None
 }
 
 /// [nbsp](https://en.wikipedia.org/wiki/Template:Nbsp)

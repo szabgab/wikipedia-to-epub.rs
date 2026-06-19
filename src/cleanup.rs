@@ -53,6 +53,29 @@ pub(crate) fn parse_reference_tags(text: &str) -> Vec<ReferenceTag> {
         .collect()
 }
 
+pub(crate) fn matching_template_end(text: &str, start: usize) -> Option<usize> {
+    let bytes = text.as_bytes();
+    let mut depth = 1usize;
+    let mut index = start + 2;
+
+    while index + 1 < bytes.len() {
+        if bytes[index] == b'{' && bytes[index + 1] == b'{' {
+            depth += 1;
+            index += 2;
+        } else if bytes[index] == b'}' && bytes[index + 1] == b'}' {
+            depth -= 1;
+            if depth == 0 {
+                return Some(index);
+            }
+            index += 2;
+        } else {
+            index += 1;
+        }
+    }
+
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::normalize_reference_attr;

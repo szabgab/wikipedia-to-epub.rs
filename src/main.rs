@@ -22,7 +22,7 @@ mod templates;
 mod tools;
 mod types;
 
-use crate::cleanup::{normalize_reference_attr, parse_reference_tags};
+use crate::cleanup::{matching_template_end, normalize_reference_attr, parse_reference_tags};
 
 use crate::tools::{
     split_template_name, split_template_params, template_named_params, template_param,
@@ -43,7 +43,7 @@ use epub::{
 };
 use error::{AppError, AppResult};
 use image::{ImageRegistry, ParsedFileLink, image_marker_id, render_image_html, resolve_images};
-use templates::{matching_template_end, render_templates};
+use templates::render_templates;
 
 type InternalLinks = HashMap<String, String>;
 type CoverImage = (Vec<u8>, String, &'static str);
