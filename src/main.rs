@@ -13,6 +13,7 @@ use tracing::{Level, info, warn};
 use tracing_subscriber::fmt as tracing_fmt;
 
 mod cache;
+mod cleanup;
 mod config;
 mod epub;
 mod error;
@@ -20,6 +21,8 @@ mod image;
 mod templates;
 mod tools;
 mod types;
+
+use crate::cleanup::normalize_reference_attr;
 
 use crate::tools::{
     split_template_name, split_template_params, template_named_params, template_param,
@@ -1517,15 +1520,6 @@ struct ReferenceTag {
     group: String,
     name: Option<String>,
     content: Option<String>,
-}
-
-fn normalize_reference_attr(value: &str) -> String {
-    value
-        .trim()
-        .trim_matches('"')
-        .trim_matches('\'')
-        .trim()
-        .to_string()
 }
 
 fn parse_reference_tags(text: &str) -> Vec<ReferenceTag> {
