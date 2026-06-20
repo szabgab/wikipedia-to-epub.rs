@@ -28,8 +28,8 @@ use crate::cleanup::{cleanup_wikitext, normalize_reference_attr, remove_some_htm
 use crate::refs::collect_reference_groups;
 
 use crate::tools::{
-    is_file_link_start, matching_template_end, split_template_name, split_template_params,
-    template_named_params, template_param,
+    balanced_wiki_link_end, is_file_link_start, matching_template_end, split_template_name,
+    split_template_params, template_named_params, template_param,
 };
 
 use cache::{
@@ -2734,35 +2734,6 @@ fn file_link_param_is_option(value: &str) -> bool {
         || lowercase.starts_with("class=")
         || lowercase.starts_with("lang=")
         || lowercase.starts_with("page=")
-}
-
-fn balanced_wiki_link_end(text: &str, start: usize) -> Option<usize> {
-    let mut depth = 0usize;
-    let mut index = start;
-
-    while index < text.len() {
-        let remaining = &text[index..];
-
-        if remaining.starts_with("[[") {
-            depth += 1;
-            index += 2;
-            continue;
-        }
-
-        if remaining.starts_with("]]") && depth > 0 {
-            depth -= 1;
-            index += 2;
-            if depth == 0 {
-                return Some(index);
-            }
-            continue;
-        }
-
-        let ch = remaining.chars().next().unwrap();
-        index += ch.len_utf8();
-    }
-
-    None
 }
 
 #[cfg(test)]

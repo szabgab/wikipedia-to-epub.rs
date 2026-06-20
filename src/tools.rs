@@ -268,6 +268,35 @@ pub(crate) fn is_file_link_start(text: &str) -> bool {
     lowercase.starts_with("file:") || lowercase.starts_with("image:")
 }
 
+pub(crate) fn balanced_wiki_link_end(text: &str, start: usize) -> Option<usize> {
+    let mut depth = 0usize;
+    let mut index = start;
+
+    while index < text.len() {
+        let remaining = &text[index..];
+
+        if remaining.starts_with("[[") {
+            depth += 1;
+            index += 2;
+            continue;
+        }
+
+        if remaining.starts_with("]]") && depth > 0 {
+            depth -= 1;
+            index += 2;
+            if depth == 0 {
+                return Some(index);
+            }
+            continue;
+        }
+
+        let ch = remaining.chars().next().unwrap();
+        index += ch.len_utf8();
+    }
+
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::{
