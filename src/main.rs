@@ -23,7 +23,7 @@ mod templates;
 mod tools;
 mod types;
 
-use crate::cleanup::{cleanup_wikitext, normalize_reference_attr, remove_some_html_tags};
+use crate::cleanup::{normalize_reference_attr, remove_comments, remove_some_html_tags};
 
 use crate::refs::collect_reference_groups;
 
@@ -1002,7 +1002,8 @@ fn render_wikitext_impl(
     links_to_excluded_pages: LinksToExcludedPages,
     mut image_registry: Option<&mut ImageRegistry>,
 ) -> String {
-    let text = cleanup_wikitext(wikitext);
+    let text = wikitext.replace("\r\n", "\n");
+    let text = remove_comments(&text);
     let reference_groups = collect_reference_groups(&text);
     let mut reflists = Vec::new();
     let text = replace_reflist_templates(
