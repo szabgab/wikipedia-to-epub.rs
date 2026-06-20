@@ -13,7 +13,6 @@ use tracing::{Level, info, warn};
 use tracing_subscriber::fmt as tracing_fmt;
 
 mod cache;
-mod cleanup;
 mod config;
 mod epub;
 mod error;
@@ -22,8 +21,9 @@ mod refs;
 mod templates;
 mod tools;
 mod types;
+mod wikitext;
 
-use crate::cleanup::{normalize_reference_attr, remove_comments, remove_some_html_tags};
+use crate::wikitext::{normalize_reference_attr, remove_comments, remove_some_html_tags};
 
 use crate::refs::collect_reference_groups;
 

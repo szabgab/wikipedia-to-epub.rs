@@ -2,8 +2,8 @@ use std::collections::{HashMap, HashSet};
 
 use regex::Regex;
 
-use crate::cleanup::normalize_reference_attr;
 use crate::tools::{matching_template_end, split_template_name};
+use crate::wikitext::normalize_reference_attr;
 
 #[derive(Clone, Debug)]
 pub(crate) struct ReferenceTag {
