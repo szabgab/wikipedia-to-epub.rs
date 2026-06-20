@@ -117,6 +117,7 @@ mod tests {
     use super::matching_template_end;
     use super::normalize_reference_attr;
     use super::parse_reference_tags;
+    use super::strip_reflist_templates;
 
     #[test]
     fn normalize_reference_attr_trims_outer_whitespace() {
@@ -223,5 +224,49 @@ mod tests {
         let start = text.find("{{Second").unwrap();
 
         assert_eq!(matching_template_end(text, start), Some(29));
+    }
+
+    #[test]
+    fn strip_reflist_templates_removes_simple_reflist_template() {
+        assert_eq!(
+            strip_reflist_templates("Before {{reflist}} after"),
+            "Before  after"
+        );
+    }
+
+    #[test]
+    fn strip_reflist_templates_removes_reflist_template_with_parameters() {
+        assert_eq!(
+            strip_reflist_templates("Before {{reflist|group=note}} after"),
+            "Before  after"
+        );
+        assert_eq!(
+            strip_reflist_templates("Before {{RefList|1}} after"),
+            "Before  after"
+        );
+    }
+
+    #[test]
+    fn strip_reflist_templates_preserves_other_templates() {
+        assert_eq!(
+            strip_reflist_templates("Before {{other|reflist}} after"),
+            "Before {{other|reflist}} after"
+        );
+    }
+
+    #[test]
+    fn strip_reflist_templates_preserves_unclosed_reflist_template() {
+        assert_eq!(
+            strip_reflist_templates("Before {{reflist after"),
+            "Before {{reflist after"
+        );
+    }
+
+    #[test]
+    fn strip_reflist_templates_removes_multiple_reflist_templates() {
+        assert_eq!(
+            strip_reflist_templates("{{reflist}} middle {{Reflist|group=n}}"),
+            " middle "
+        );
     }
 }
