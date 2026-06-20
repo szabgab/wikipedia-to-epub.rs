@@ -24,6 +24,7 @@ mod types;
 
 use crate::cleanup::{
     cleanup_wikitext, matching_template_end, normalize_reference_attr, parse_reference_tags,
+    strip_reflist_templates,
 };
 
 use crate::tools::{
@@ -1506,28 +1507,6 @@ fn format_inline_text(text: &str) -> String {
     let html = restore_dfn_spans(&html);
     let html = restore_code_spans(&html);
     restore_var_spans(&html).replace("__WIKIPEDIA_TO_EPUB_LITERAL_QUOTE__", "'")
-}
-
-fn strip_reflist_templates(text: &str) -> String {
-    let mut output = String::with_capacity(text.len());
-    let mut offset = 0usize;
-
-    while let Some(start) = text[offset..].find("{{").map(|index| offset + index) {
-        output.push_str(&text[offset..start]);
-        if let Some(end) = matching_template_end(text, start) {
-            let content = &text[start + 2..end];
-            let (template, _) = split_template_name(content);
-            if template.trim().eq_ignore_ascii_case("reflist") {
-                offset = end + 2;
-                continue;
-            }
-        }
-        output.push_str("{{");
-        offset = start + 2;
-    }
-
-    output.push_str(&text[offset..]);
-    output
 }
 
 fn collect_reference_groups(text: &str) -> HashMap<String, Vec<String>> {

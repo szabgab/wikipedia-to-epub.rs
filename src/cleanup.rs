@@ -1,5 +1,7 @@
 use regex::Regex;
 
+use crate::tools::split_template_name;
+
 pub(crate) fn cleanup_wikitext(text: &str) -> String {
     let text = text.replace("\r\n", "\n");
     remove_comments(&text)
@@ -86,6 +88,28 @@ pub(crate) fn matching_template_end(text: &str, start: usize) -> Option<usize> {
     }
 
     None
+}
+
+pub(crate) fn strip_reflist_templates(text: &str) -> String {
+    let mut output = String::with_capacity(text.len());
+    let mut offset = 0usize;
+
+    while let Some(start) = text[offset..].find("{{").map(|index| offset + index) {
+        output.push_str(&text[offset..start]);
+        if let Some(end) = matching_template_end(text, start) {
+            let content = &text[start + 2..end];
+            let (template, _) = split_template_name(content);
+            if template.trim().eq_ignore_ascii_case("reflist") {
+                offset = end + 2;
+                continue;
+            }
+        }
+        output.push_str("{{");
+        offset = start + 2;
+    }
+
+    output.push_str(&text[offset..]);
+    output
 }
 
 #[cfg(test)]
