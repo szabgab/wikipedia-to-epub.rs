@@ -18,14 +18,16 @@ mod config;
 mod epub;
 mod error;
 mod image;
+mod refs;
 mod templates;
 mod tools;
 mod types;
 
 use crate::cleanup::{
-    cleanup_wikitext, collect_reference_groups, matching_template_end, normalize_reference_attr,
-    remove_some_html_tags,
+    cleanup_wikitext, matching_template_end, normalize_reference_attr, remove_some_html_tags,
 };
+
+use crate::refs::collect_reference_groups;
 
 use crate::tools::{
     split_template_name, split_template_params, template_named_params, template_param,
