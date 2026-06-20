@@ -1,7 +1,5 @@
 use regex::Regex;
 
-use crate::tools::{matching_template_end, split_template_name};
-
 pub(crate) fn cleanup_wikitext(text: &str) -> String {
     let text = text.replace("\r\n", "\n");
     remove_comments(&text)
@@ -41,33 +39,10 @@ pub(crate) fn normalize_reference_attr(value: &str) -> String {
         .to_string()
 }
 
-pub(crate) fn strip_reflist_templates(text: &str) -> String {
-    let mut output = String::with_capacity(text.len());
-    let mut offset = 0usize;
-
-    while let Some(start) = text[offset..].find("{{").map(|index| offset + index) {
-        output.push_str(&text[offset..start]);
-        if let Some(end) = matching_template_end(text, start) {
-            let content = &text[start + 2..end];
-            let (template, _) = split_template_name(content);
-            if template.trim().eq_ignore_ascii_case("reflist") {
-                offset = end + 2;
-                continue;
-            }
-        }
-        output.push_str("{{");
-        offset = start + 2;
-    }
-
-    output.push_str(&text[offset..]);
-    output
-}
-
 #[cfg(test)]
 mod tests {
     use super::normalize_reference_attr;
     use super::remove_some_html_tags;
-    use super::strip_reflist_templates;
 
     #[test]
     fn normalize_reference_attr_trims_outer_whitespace() {
@@ -87,50 +62,6 @@ mod tests {
     #[test]
     fn normalize_reference_attr_trims_whitespace_inside_quotes() {
         assert_eq!(normalize_reference_attr(r#""  alpha  ""#), "alpha");
-    }
-
-    #[test]
-    fn strip_reflist_templates_removes_simple_reflist_template() {
-        assert_eq!(
-            strip_reflist_templates("Before {{reflist}} after"),
-            "Before  after"
-        );
-    }
-
-    #[test]
-    fn strip_reflist_templates_removes_reflist_template_with_parameters() {
-        assert_eq!(
-            strip_reflist_templates("Before {{reflist|group=note}} after"),
-            "Before  after"
-        );
-        assert_eq!(
-            strip_reflist_templates("Before {{RefList|1}} after"),
-            "Before  after"
-        );
-    }
-
-    #[test]
-    fn strip_reflist_templates_preserves_other_templates() {
-        assert_eq!(
-            strip_reflist_templates("Before {{other|reflist}} after"),
-            "Before {{other|reflist}} after"
-        );
-    }
-
-    #[test]
-    fn strip_reflist_templates_preserves_unclosed_reflist_template() {
-        assert_eq!(
-            strip_reflist_templates("Before {{reflist after"),
-            "Before {{reflist after"
-        );
-    }
-
-    #[test]
-    fn strip_reflist_templates_removes_multiple_reflist_templates() {
-        assert_eq!(
-            strip_reflist_templates("{{reflist}} middle {{Reflist|group=n}}"),
-            " middle "
-        );
     }
 
     #[test]

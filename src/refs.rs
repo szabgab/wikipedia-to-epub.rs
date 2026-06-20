@@ -2,7 +2,8 @@ use std::collections::{HashMap, HashSet};
 
 use regex::Regex;
 
-use crate::cleanup::{normalize_reference_attr, strip_reflist_templates};
+use crate::cleanup::normalize_reference_attr;
+use crate::tools::{matching_template_end, split_template_name};
 
 #[derive(Clone, Debug)]
 pub(crate) struct ReferenceTag {
@@ -85,10 +86,33 @@ pub(crate) fn collect_reference_groups(text: &str) -> HashMap<String, Vec<String
     groups
 }
 
+pub(crate) fn strip_reflist_templates(text: &str) -> String {
+    let mut output = String::with_capacity(text.len());
+    let mut offset = 0usize;
+
+    while let Some(start) = text[offset..].find("{{").map(|index| offset + index) {
+        output.push_str(&text[offset..start]);
+        if let Some(end) = matching_template_end(text, start) {
+            let content = &text[start + 2..end];
+            let (template, _) = split_template_name(content);
+            if template.trim().eq_ignore_ascii_case("reflist") {
+                offset = end + 2;
+                continue;
+            }
+        }
+        output.push_str("{{");
+        offset = start + 2;
+    }
+
+    output.push_str(&text[offset..]);
+    output
+}
+
 #[cfg(test)]
 mod tests {
     use super::collect_reference_groups;
     use super::parse_reference_tags;
+    use super::strip_reflist_templates;
 
     #[test]
     fn collect_reference_groups_collects_anonymous_references() {
@@ -185,5 +209,49 @@ mod tests {
         assert_eq!(tags[0].content.as_deref(), Some("One"));
         assert_eq!(tags[1].name.as_deref(), Some("second"));
         assert_eq!(tags[1].content.as_deref(), Some("Two"));
+    }
+
+    #[test]
+    fn strip_reflist_templates_removes_simple_reflist_template() {
+        assert_eq!(
+            strip_reflist_templates("Before {{reflist}} after"),
+            "Before  after"
+        );
+    }
+
+    #[test]
+    fn strip_reflist_templates_removes_reflist_template_with_parameters() {
+        assert_eq!(
+            strip_reflist_templates("Before {{reflist|group=note}} after"),
+            "Before  after"
+        );
+        assert_eq!(
+            strip_reflist_templates("Before {{RefList|1}} after"),
+            "Before  after"
+        );
+    }
+
+    #[test]
+    fn strip_reflist_templates_preserves_other_templates() {
+        assert_eq!(
+            strip_reflist_templates("Before {{other|reflist}} after"),
+            "Before {{other|reflist}} after"
+        );
+    }
+
+    #[test]
+    fn strip_reflist_templates_preserves_unclosed_reflist_template() {
+        assert_eq!(
+            strip_reflist_templates("Before {{reflist after"),
+            "Before {{reflist after"
+        );
+    }
+
+    #[test]
+    fn strip_reflist_templates_removes_multiple_reflist_templates() {
+        assert_eq!(
+            strip_reflist_templates("{{reflist}} middle {{Reflist|group=n}}"),
+            " middle "
+        );
     }
 }
