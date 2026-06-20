@@ -262,6 +262,12 @@ pub(crate) fn matching_template_end(text: &str, start: usize) -> Option<usize> {
     None
 }
 
+pub(crate) fn is_file_link_start(text: &str) -> bool {
+    let trimmed = text.trim_start();
+    let lowercase = trimmed.chars().take(6).collect::<String>().to_lowercase();
+    lowercase.starts_with("file:") || lowercase.starts_with("image:")
+}
+
 #[cfg(test)]
 mod tests {
     use super::{matching_template_end, parse_template_number, split_template_name};
