@@ -1,5 +1,17 @@
 use regex::Regex;
 
+pub(crate) fn cleanup_wikitext(text: &str) -> String {
+    let text = text.replace("\r\n", "\n");
+    remove_comments(&text)
+}
+
+fn remove_comments(text: &str) -> String {
+    Regex::new(r"(?s)<!--.*?-->")
+        .unwrap()
+        .replace_all(text, "")
+        .into_owned()
+}
+
 pub(crate) fn normalize_reference_attr(value: &str) -> String {
     value
         .trim()

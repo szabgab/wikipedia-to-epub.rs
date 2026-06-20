@@ -22,7 +22,9 @@ mod templates;
 mod tools;
 mod types;
 
-use crate::cleanup::{matching_template_end, normalize_reference_attr, parse_reference_tags};
+use crate::cleanup::{
+    cleanup_wikitext, matching_template_end, normalize_reference_attr, parse_reference_tags,
+};
 
 use crate::tools::{
     split_template_name, split_template_params, template_named_params, template_param,
@@ -979,13 +981,6 @@ fn increment_unknown_skipped_template_count() {
     });
 }
 
-fn remove_comments(text: &str) -> String {
-    Regex::new(r"(?s)<!--.*?-->")
-        .unwrap()
-        .replace_all(text, "")
-        .into_owned()
-}
-
 fn remove_ref(text: &str) -> String {
     let text = Regex::new(r"(?is)<ref\b[^>/]*/>")
         .unwrap()
@@ -1017,8 +1012,7 @@ fn render_wikitext_impl(
     links_to_excluded_pages: LinksToExcludedPages,
     mut image_registry: Option<&mut ImageRegistry>,
 ) -> String {
-    let text = wikitext.replace("\r\n", "\n");
-    let text = remove_comments(&text);
+    let text = cleanup_wikitext(wikitext);
     let reference_groups = collect_reference_groups(&text);
     let mut reflists = Vec::new();
     let text = replace_reflist_templates(
