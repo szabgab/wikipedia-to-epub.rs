@@ -1,6 +1,6 @@
 use std::{
     cell::RefCell,
-    collections::{BTreeMap, BTreeSet, HashMap, HashSet},
+    collections::{BTreeMap, BTreeSet, HashMap},
     env, fs,
     path::{Path, PathBuf},
 };
@@ -23,8 +23,7 @@ mod tools;
 mod types;
 
 use crate::cleanup::{
-    cleanup_wikitext, matching_template_end, normalize_reference_attr, parse_reference_tags,
-    strip_reflist_templates,
+    cleanup_wikitext, collect_reference_groups, matching_template_end, normalize_reference_attr,
 };
 
 use crate::tools::{
@@ -1507,43 +1506,6 @@ fn format_inline_text(text: &str) -> String {
     let html = restore_dfn_spans(&html);
     let html = restore_code_spans(&html);
     restore_var_spans(&html).replace("__WIKIPEDIA_TO_EPUB_LITERAL_QUOTE__", "'")
-}
-
-fn collect_reference_groups(text: &str) -> HashMap<String, Vec<String>> {
-    let mut named_definitions = HashMap::<(String, String), String>::new();
-    for tag in parse_reference_tags(text) {
-        if let (Some(name), Some(content)) = (tag.name, tag.content) {
-            named_definitions.insert((tag.group, name), content);
-        }
-    }
-
-    let mut groups = HashMap::<String, Vec<String>>::new();
-    let mut seen_named = HashSet::<(String, String)>::new();
-    let occurrence_text = strip_reflist_templates(text);
-
-    for tag in parse_reference_tags(&occurrence_text) {
-        match (tag.name, tag.content) {
-            (Some(name), Some(content)) => {
-                if seen_named.insert((tag.group.clone(), name)) {
-                    groups.entry(tag.group).or_default().push(content);
-                }
-            }
-            (Some(name), None) => {
-                let key = (tag.group.clone(), name.clone());
-                if seen_named.insert(key.clone())
-                    && let Some(content) = named_definitions.get(&key)
-                {
-                    groups.entry(tag.group).or_default().push(content.clone());
-                }
-            }
-            (None, Some(content)) => {
-                groups.entry(tag.group).or_default().push(content);
-            }
-            (None, None) => {}
-        }
-    }
-
-    groups
 }
 
 fn render_reference_list(

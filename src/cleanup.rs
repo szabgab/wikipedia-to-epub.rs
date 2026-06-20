@@ -1,3 +1,5 @@
+use std::collections::{HashMap, HashSet};
+
 use regex::Regex;
 
 use crate::tools::split_template_name;
@@ -110,6 +112,43 @@ pub(crate) fn strip_reflist_templates(text: &str) -> String {
 
     output.push_str(&text[offset..]);
     output
+}
+
+pub(crate) fn collect_reference_groups(text: &str) -> HashMap<String, Vec<String>> {
+    let mut named_definitions = HashMap::<(String, String), String>::new();
+    for tag in parse_reference_tags(text) {
+        if let (Some(name), Some(content)) = (tag.name, tag.content) {
+            named_definitions.insert((tag.group, name), content);
+        }
+    }
+
+    let mut groups = HashMap::<String, Vec<String>>::new();
+    let mut seen_named = HashSet::<(String, String)>::new();
+    let occurrence_text = strip_reflist_templates(text);
+
+    for tag in parse_reference_tags(&occurrence_text) {
+        match (tag.name, tag.content) {
+            (Some(name), Some(content)) => {
+                if seen_named.insert((tag.group.clone(), name)) {
+                    groups.entry(tag.group).or_default().push(content);
+                }
+            }
+            (Some(name), None) => {
+                let key = (tag.group.clone(), name.clone());
+                if seen_named.insert(key.clone())
+                    && let Some(content) = named_definitions.get(&key)
+                {
+                    groups.entry(tag.group).or_default().push(content.clone());
+                }
+            }
+            (None, Some(content)) => {
+                groups.entry(tag.group).or_default().push(content);
+            }
+            (None, None) => {}
+        }
+    }
+
+    groups
 }
 
 #[cfg(test)]
