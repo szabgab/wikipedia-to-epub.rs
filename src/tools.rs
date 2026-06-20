@@ -300,7 +300,8 @@ pub(crate) fn balanced_wiki_link_end(text: &str, start: usize) -> Option<usize> 
 #[cfg(test)]
 mod tests {
     use super::{
-        is_file_link_start, matching_template_end, parse_template_number, split_template_name,
+        balanced_wiki_link_end, is_file_link_start, matching_template_end, parse_template_number,
+        split_template_name,
     };
 
     #[test]
@@ -385,5 +386,53 @@ mod tests {
         assert!(!is_file_link_start("fil:example.jpg"));
         assert!(!is_file_link_start("imag:example.jpg"));
         assert!(!is_file_link_start(""));
+    }
+
+    #[test]
+    fn balanced_wiki_link_end_finds_simple_link_end() {
+        let text = "Before [[Link]] after";
+        let start = text.find("[[").unwrap();
+
+        assert_eq!(balanced_wiki_link_end(text, start), Some(15));
+    }
+
+    #[test]
+    fn balanced_wiki_link_end_finds_outer_nested_link_end() {
+        let text = "[[File:Image.png|[[Inner link]] and [[Other]]]] tail";
+        let start = text.find("[[").unwrap();
+
+        assert_eq!(balanced_wiki_link_end(text, start), Some(47));
+    }
+
+    #[test]
+    fn balanced_wiki_link_end_returns_none_for_unclosed_link() {
+        let text = "Before [[Link without end";
+        let start = text.find("[[").unwrap();
+
+        assert_eq!(balanced_wiki_link_end(text, start), None);
+    }
+
+    #[test]
+    fn balanced_wiki_link_end_returns_none_for_unopened_link() {
+        let text = "Link]] without start";
+        let start = 0;
+
+        assert_eq!(balanced_wiki_link_end(text, start), None);
+    }
+
+    #[test]
+    fn balanced_wiki_link_end_handles_non_ascii() {
+        let text = "[[Lïnk é]] suffix";
+        let start = 0;
+
+        assert_eq!(balanced_wiki_link_end(text, start), Some(12));
+    }
+
+    #[test]
+    fn balanced_wiki_link_end_uses_requested_start_offset() {
+        let text = "[[First]] text [[Second|value]]";
+        let start = text.find("[[Second").unwrap();
+
+        assert_eq!(balanced_wiki_link_end(text, start), Some(31));
     }
 }

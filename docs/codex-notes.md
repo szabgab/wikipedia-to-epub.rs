@@ -1,5 +1,34 @@
 # Codex Session Notes
 
+## 2026-06-20 Add Unit Tests to balanced_wiki_link_end Function
+
+### Summary
+Added unit-tests to the [balanced_wiki_link_end](file:///opt/src/tools.rs#L271) function in [src/tools.rs](file:///opt/src/tools.rs) to cover all scenarios, including simple links, nested links, unclosed links, unopened links, UTF-8 characters, and starting offset behavior.
+
+### Decisions Made
+- **Implemented Comprehensive Unit Tests**:
+  - Added [balanced_wiki_link_end_finds_simple_link_end](file:///opt/src/tools.rs#L391)
+  - Added [balanced_wiki_link_end_finds_outer_nested_link_end](file:///opt/src/tools.rs#L399)
+  - Added [balanced_wiki_link_end_returns_none_for_unclosed_link](file:///opt/src/tools.rs#L407)
+  - Added [balanced_wiki_link_end_returns_none_for_unopened_link](file:///opt/src/tools.rs#L415)
+  - Added [balanced_wiki_link_end_handles_non_ascii](file:///opt/src/tools.rs#L423)
+  - Added [balanced_wiki_link_end_uses_requested_start_offset](file:///opt/src/tools.rs#L431)
+- **Updated Imports**:
+  - Explicitly imported `balanced_wiki_link_end` in the `tests` module in [src/tools.rs](file:///opt/src/tools.rs) without using wildcard imports.
+
+### Files Changed
+- [src/tools.rs](file:///opt/src/tools.rs) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt`, and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully, including new test cases).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
+
 ## 2026-06-18 Fix Ignored Real-API Book Generation Test
 
 ### Summary
