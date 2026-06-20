@@ -270,7 +270,9 @@ pub(crate) fn is_file_link_start(text: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::{matching_template_end, parse_template_number, split_template_name};
+    use super::{
+        is_file_link_start, matching_template_end, parse_template_number, split_template_name,
+    };
 
     #[test]
     fn test_parse_template_number() {
@@ -332,5 +334,27 @@ mod tests {
         let start = text.find("{{Second").unwrap();
 
         assert_eq!(matching_template_end(text, start), Some(29));
+    }
+
+    #[test]
+    fn test_is_file_link_start_returns_true_for_file_prefix() {
+        assert!(is_file_link_start("file:example.jpg"));
+        assert!(is_file_link_start("File:example.jpg"));
+        assert!(is_file_link_start("  file:example.jpg"));
+    }
+
+    #[test]
+    fn test_is_file_link_start_returns_true_for_image_prefix() {
+        assert!(is_file_link_start("image:example.jpg"));
+        assert!(is_file_link_start("IMAGE:example.jpg"));
+        assert!(is_file_link_start("  image:example.jpg"));
+    }
+
+    #[test]
+    fn test_is_file_link_start_returns_false_for_other_prefixes() {
+        assert!(!is_file_link_start("not_file:example.jpg"));
+        assert!(!is_file_link_start("fil:example.jpg"));
+        assert!(!is_file_link_start("imag:example.jpg"));
+        assert!(!is_file_link_start(""));
     }
 }

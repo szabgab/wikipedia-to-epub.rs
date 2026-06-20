@@ -6341,3 +6341,27 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * None.
+
+
+## Session Note: 2026-06-20 - Add unit tests for is_file_link_start
+
+### Decisions Made
+
+* Added comprehensive unit tests for `is_file_link_start` in `src/tools.rs`.
+* Validated that all checks and unit/integration tests compile and pass cleanly.
+
+### Files Changed
+
+* `src/tools.rs` [MODIFY]
+* `docs/codex-notes.md` [MODIFY]
+
+### Tests Run
+
+* `cargo fmt --check`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test` and `cargo test --locked -- --ignored`
+
+### Pending Follow-Ups
+
+* None.
