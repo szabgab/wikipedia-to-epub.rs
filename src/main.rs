@@ -24,6 +24,7 @@ mod types;
 
 use crate::cleanup::{
     cleanup_wikitext, collect_reference_groups, matching_template_end, normalize_reference_attr,
+    remove_some_html_tags,
 };
 
 use crate::tools::{
@@ -990,24 +991,6 @@ fn remove_ref(text: &str) -> String {
         .unwrap()
         .replace_all(&text, "")
         .into_owned()
-}
-
-fn remove_some_html_tags(text: &str) -> String {
-    let mut text = text.to_string();
-    for tag in ["gallery", "timeline", "math", "score", "syntaxhighlight"] {
-        let pattern = format!(r"(?is)<{tag}\b[^>]*>.*?</{tag}>");
-        text = Regex::new(&pattern)
-            .unwrap()
-            .replace_all(&text, "")
-            .into_owned();
-    }
-
-    text = Regex::new(r"(?i)<br\s*/?>")
-        .unwrap()
-        .replace_all(&text, "\n")
-        .into_owned();
-
-    text
 }
 
 fn render_wikitext_impl(

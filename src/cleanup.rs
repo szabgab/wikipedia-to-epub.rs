@@ -16,6 +16,24 @@ fn remove_comments(text: &str) -> String {
         .into_owned()
 }
 
+pub(crate) fn remove_some_html_tags(text: &str) -> String {
+    let mut text = text.to_string();
+    for tag in ["gallery", "timeline", "math", "score", "syntaxhighlight"] {
+        let pattern = format!(r"(?is)<{tag}\b[^>]*>.*?</{tag}>");
+        text = Regex::new(&pattern)
+            .unwrap()
+            .replace_all(&text, "")
+            .into_owned();
+    }
+
+    text = Regex::new(r"(?i)<br\s*/?>")
+        .unwrap()
+        .replace_all(&text, "\n")
+        .into_owned();
+
+    text
+}
+
 pub(crate) fn normalize_reference_attr(value: &str) -> String {
     value
         .trim()
