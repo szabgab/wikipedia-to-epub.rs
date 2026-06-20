@@ -6317,3 +6317,27 @@ Latest verification passed:
 ### Pending Follow-Ups
 
 * None.
+
+
+## Session Note: 2026-06-20 - Add unit tests for remove_some_html_tags
+
+### Decisions Made
+
+* Added comprehensive unit tests for `remove_some_html_tags` in `src/cleanup.rs`.
+* Validated that all checks and unit/integration tests compile and pass cleanly.
+
+### Files Changed
+
+* `src/cleanup.rs` [MODIFY]
+* `docs/codex-notes.md` [MODIFY]
+
+### Tests Run
+
+* `cargo fmt --check`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test` and `cargo test --locked -- --ignored`
+
+### Pending Follow-Ups
+
+* None.

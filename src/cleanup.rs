@@ -175,6 +175,7 @@ mod tests {
     use super::matching_template_end;
     use super::normalize_reference_attr;
     use super::parse_reference_tags;
+    use super::remove_some_html_tags;
     use super::strip_reflist_templates;
 
     #[test]
@@ -368,5 +369,49 @@ mod tests {
     fn collect_reference_groups_ignores_reflist_content() {
         let groups = collect_reference_groups("<ref>Keep</ref> {{reflist|<ref>Ignore</ref>}}");
         assert_eq!(groups.get(""), Some(&vec!["Keep".to_string()]));
+    }
+
+    #[test]
+    fn remove_some_html_tags_removes_gallery_tags() {
+        assert_eq!(
+            remove_some_html_tags("<gallery>Image1.png|Label1\nImage2.png</gallery>"),
+            ""
+        );
+        assert_eq!(
+            remove_some_html_tags("<gallery class=\"abc\">Image1.png|Label1</gallery>"),
+            ""
+        );
+    }
+
+    #[test]
+    fn remove_some_html_tags_removes_math_tags() {
+        assert_eq!(remove_some_html_tags("<math>1 + 1 = 2</math>"), "");
+    }
+
+    #[test]
+    fn remove_some_html_tags_removes_timeline_score_syntaxhighlight_tags() {
+        assert_eq!(
+            remove_some_html_tags(
+                "<timeline>Timeline info</timeline> <score>Score info</score> <syntaxhighlight lang=\"rust\">println!(\"Hello\");</syntaxhighlight>"
+            ),
+            "  "
+        );
+    }
+
+    #[test]
+    fn remove_some_html_tags_converts_br_to_newline() {
+        assert_eq!(
+            remove_some_html_tags("Line1<br>Line2<br/>Line3<br   />Line4"),
+            "Line1\nLine2\nLine3\nLine4"
+        );
+        assert_eq!(remove_some_html_tags("Line1<BR>Line2"), "Line1\nLine2");
+    }
+
+    #[test]
+    fn remove_some_html_tags_preserves_other_html() {
+        assert_eq!(
+            remove_some_html_tags("<p>Paragraph</p> <b>bold</b>"),
+            "<p>Paragraph</p> <b>bold</b>"
+        );
     }
 }
