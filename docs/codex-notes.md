@@ -1232,13 +1232,14 @@ Added support for the `official` template name by routing it through the existin
 * None.
 
 
-## Session Note: 2026-06-19 - Add cleanup reference parsing unit tests
+## Session Note: 2026-06-19 - Add cleanup parser unit tests
 
 ### Decisions Made
 
 * Added focused unit tests for `normalize_reference_attr` in `src/cleanup.rs`.
 * Covered whitespace trimming, double-quoted values, single-quoted values, and whitespace inside surrounding quotes.
 * Added focused unit tests for `parse_reference_tags` covering content refs, self-closing refs, unquoted attributes, empty value filtering, and reference order.
+* Added focused unit tests for `matching_template_end` covering simple, nested, unclosed, and nonzero-offset templates.
 
 ### Files Changed
 
@@ -1250,12 +1251,12 @@ Added support for the `official` template name by routing it through the existin
 * `cargo test` (passed)
 * `cargo fmt` (passed)
 * `cargo check` (passed)
-* `cargo clippy --all-targets -- -D warnings` (failed on existing `src/main.rs` lints: `needless_borrow` and `let_and_return` around reference stripping)
+* `cargo clippy --all-targets -- -D warnings` (passed)
 * `cargo test --locked -- --ignored` (passed)
 
 ### Pending Follow-Ups
 
-* Decide whether to fix the unrelated clippy findings in `src/main.rs`.
+* None.
 
 ## 2026-06-08 Add Google Books Template Support
 

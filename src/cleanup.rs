@@ -78,6 +78,7 @@ pub(crate) fn matching_template_end(text: &str, start: usize) -> Option<usize> {
 
 #[cfg(test)]
 mod tests {
+    use super::matching_template_end;
     use super::normalize_reference_attr;
     use super::parse_reference_tags;
 
@@ -154,5 +155,37 @@ mod tests {
         assert_eq!(tags[0].content.as_deref(), Some("One"));
         assert_eq!(tags[1].name.as_deref(), Some("second"));
         assert_eq!(tags[1].content.as_deref(), Some("Two"));
+    }
+
+    #[test]
+    fn matching_template_end_finds_simple_template_end() {
+        let text = "Before {{Main|Korea}} after";
+        let start = text.find("{{").unwrap();
+
+        assert_eq!(matching_template_end(text, start), Some(19));
+    }
+
+    #[test]
+    fn matching_template_end_finds_outer_nested_template_end() {
+        let text = "{{Outer|before {{Inner|value}} after}} tail";
+        let start = text.find("{{").unwrap();
+
+        assert_eq!(matching_template_end(text, start), Some(36));
+    }
+
+    #[test]
+    fn matching_template_end_returns_none_for_unclosed_template() {
+        let text = "Before {{Outer|{{Inner}} after";
+        let start = text.find("{{").unwrap();
+
+        assert_eq!(matching_template_end(text, start), None);
+    }
+
+    #[test]
+    fn matching_template_end_uses_the_requested_start_offset() {
+        let text = "{{First}} text {{Second|value}}";
+        let start = text.find("{{Second").unwrap();
+
+        assert_eq!(matching_template_end(text, start), Some(29));
     }
 }
