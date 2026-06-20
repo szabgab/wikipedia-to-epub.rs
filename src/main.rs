@@ -1001,6 +1001,12 @@ fn remove_some_html_tags(text: &str) -> String {
             .replace_all(&text, "")
             .into_owned();
     }
+
+    text = Regex::new(r"(?i)<br\s*/?>")
+        .unwrap()
+        .replace_all(&text, "\n")
+        .into_owned();
+
     text
 }
 
@@ -1026,10 +1032,6 @@ fn render_wikitext_impl(
     let text = remove_ref(&text);
     let mut text = remove_some_html_tags(&text);
 
-    text = Regex::new(r"(?i)<br\s*/?>")
-        .unwrap()
-        .replace_all(&text, "\n")
-        .into_owned();
     text = render_templates(&text);
     let mut tables = Vec::new();
     text = render_wikitext_tables_with_excluded_links(
