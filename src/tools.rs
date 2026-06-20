@@ -239,9 +239,32 @@ pub(crate) fn template_param_owned(
         .map(String::from)
 }
 
+pub(crate) fn matching_template_end(text: &str, start: usize) -> Option<usize> {
+    let bytes = text.as_bytes();
+    let mut depth = 1usize;
+    let mut index = start + 2;
+
+    while index + 1 < bytes.len() {
+        if bytes[index] == b'{' && bytes[index + 1] == b'{' {
+            depth += 1;
+            index += 2;
+        } else if bytes[index] == b'}' && bytes[index + 1] == b'}' {
+            depth -= 1;
+            if depth == 0 {
+                return Some(index);
+            }
+            index += 2;
+        } else {
+            index += 1;
+        }
+    }
+
+    None
+}
+
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::{matching_template_end, parse_template_number, split_template_name};
 
     #[test]
     fn test_parse_template_number() {
@@ -271,5 +294,37 @@ mod tests {
             ("name", "a=[[b|c]]|d")
         );
         assert_eq!(split_template_name(" name | p=1 "), (" name ", " p=1 "));
+    }
+
+    #[test]
+    fn matching_template_end_finds_simple_template_end() {
+        let text = "Before {{Main|Korea}} after";
+        let start = text.find("{{").unwrap();
+
+        assert_eq!(matching_template_end(text, start), Some(19));
+    }
+
+    #[test]
+    fn matching_template_end_finds_outer_nested_template_end() {
+        let text = "{{Outer|before {{Inner|value}} after}} tail";
+        let start = text.find("{{").unwrap();
+
+        assert_eq!(matching_template_end(text, start), Some(36));
+    }
+
+    #[test]
+    fn matching_template_end_returns_none_for_unclosed_template() {
+        let text = "Before {{Outer|{{Inner}} after";
+        let start = text.find("{{").unwrap();
+
+        assert_eq!(matching_template_end(text, start), None);
+    }
+
+    #[test]
+    fn matching_template_end_uses_the_requested_start_offset() {
+        let text = "{{First}} text {{Second|value}}";
+        let start = text.find("{{Second").unwrap();
+
+        assert_eq!(matching_template_end(text, start), Some(29));
     }
 }

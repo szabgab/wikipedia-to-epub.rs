@@ -10,13 +10,12 @@ use tracing::warn;
 
 use crate::types::DispatchTable;
 
-use crate::tools::split_template_name;
+use crate::tools::{matching_template_end, split_template_name};
 
 use crate::templates::formatting::{
     get_dispatch_template_params, get_empty_dispatch_table, render_formatnum_template,
 };
 
-use crate::cleanup::matching_template_end;
 use crate::increment_recognized_skipped_template_count;
 use crate::increment_unknown_skipped_template_count;
 
