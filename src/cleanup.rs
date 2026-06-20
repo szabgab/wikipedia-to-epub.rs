@@ -153,6 +153,7 @@ pub(crate) fn collect_reference_groups(text: &str) -> HashMap<String, Vec<String
 
 #[cfg(test)]
 mod tests {
+    use super::collect_reference_groups;
     use super::matching_template_end;
     use super::normalize_reference_attr;
     use super::parse_reference_tags;
@@ -307,5 +308,47 @@ mod tests {
             strip_reflist_templates("{{reflist}} middle {{Reflist|group=n}}"),
             " middle "
         );
+    }
+
+    #[test]
+    fn collect_reference_groups_collects_anonymous_references() {
+        let groups = collect_reference_groups("Text <ref>One</ref> more <ref>Two</ref>");
+        assert_eq!(
+            groups.get(""),
+            Some(&vec!["One".to_string(), "Two".to_string()])
+        );
+    }
+
+    #[test]
+    fn collect_reference_groups_collects_grouped_references() {
+        let groups = collect_reference_groups(
+            "Text <ref group=note>Note 1</ref> <ref>Ref 1</ref> <ref group=note>Note 2</ref>",
+        );
+        assert_eq!(
+            groups.get("note"),
+            Some(&vec!["Note 1".to_string(), "Note 2".to_string()])
+        );
+        assert_eq!(groups.get(""), Some(&vec!["Ref 1".to_string()]));
+    }
+
+    #[test]
+    fn collect_reference_groups_resolves_named_references() {
+        let groups =
+            collect_reference_groups("Text <ref name=abc>Content</ref> and reuse <ref name=abc />");
+        assert_eq!(groups.get(""), Some(&vec!["Content".to_string()]));
+    }
+
+    #[test]
+    fn collect_reference_groups_resolves_out_of_order_named_references() {
+        let groups = collect_reference_groups(
+            "Reuse <ref name=abc /> before definition <ref name=abc>Content</ref>",
+        );
+        assert_eq!(groups.get(""), Some(&vec!["Content".to_string()]));
+    }
+
+    #[test]
+    fn collect_reference_groups_ignores_reflist_content() {
+        let groups = collect_reference_groups("<ref>Keep</ref> {{reflist|<ref>Ignore</ref>}}");
+        assert_eq!(groups.get(""), Some(&vec!["Keep".to_string()]));
     }
 }
