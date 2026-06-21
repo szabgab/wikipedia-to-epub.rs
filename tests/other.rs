@@ -1,11 +1,7 @@
 mod common;
 
 use common::{repo_root, unique_test_dir};
-use std::{
-    fs,
-    process::Command,
-};
-
+use std::{fs, process::Command};
 
 #[test]
 fn generate_book_fails_if_front_matter_file_is_missing() {
@@ -58,5 +54,3 @@ articles:
 
     fs::remove_dir_all(&work_dir).unwrap();
 }
-
-
