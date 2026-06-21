@@ -21,6 +21,7 @@ use crate::cache::FileDownloadSnapshot;
 use crate::cache::FileDownloadStats;
 use crate::cache::PageSource;
 use crate::cache::http_failure_detail;
+use crate::cache::normalized_wikipedia_language;
 use crate::cache::read_or_fetch_bytes_with_stats;
 use crate::cache::read_or_fetch_text_with_stats;
 use crate::cache::wikipedia_parse_api_url;
@@ -28,15 +29,16 @@ use crate::cache::write_cache_text;
 use crate::config::parse_args_from;
 use crate::config::parse_config_str;
 use crate::config::{ArticleConfig, ArticleType, BookConfig, CachingMode, LinksToExcludedPages};
+use crate::epub::html_language_attributes;
+use crate::epub::internal_links;
+use crate::epub::load_markdown_chapter;
 use crate::error::{AppError, AppResult};
-use crate::html_language_attributes;
-use crate::internal_links;
-use crate::normalized_wikipedia_language;
-use crate::render_templates;
-use crate::render_wikitext_tables;
 use crate::render_wikitext_with_template_counts;
 use crate::render_wikitext_with_template_counts_and_excluded_links;
 use crate::strip_file_links;
+use crate::tables::render_wikitext_tables;
+use crate::tables::render_wikitext_tables_with_excluded_links;
+use crate::templates::render_templates;
 use crate::templates::template_log_content;
 use crate::templates::template_name_is_in_csv;
 use crate::wikipedia_article_url;
@@ -3090,7 +3092,7 @@ fn test_render_table_with_image() {
 |}
 "#;
     let mut tables = Vec::new();
-    let text = crate::render_wikitext_tables_with_excluded_links(
+    let text = render_wikitext_tables_with_excluded_links(
         wikitext,
         &mut tables,
         &internal_links,
@@ -6330,7 +6332,7 @@ Hello world! This is a **markdown** paragraph.
 ";
     file.write_all(md_content.as_bytes()).unwrap();
 
-    let chapter = crate::load_markdown_chapter(&file_path, "en").unwrap();
+    let chapter = load_markdown_chapter(&file_path, "en").unwrap();
     assert_eq!(chapter.title, "My Test Chapter");
     assert_eq!(chapter.file_name, "test_chapter.xhtml");
 

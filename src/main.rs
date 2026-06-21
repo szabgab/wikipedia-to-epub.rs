@@ -24,10 +24,7 @@ mod tools;
 mod types;
 mod wikitext;
 
-pub(crate) use tables::{render_wikitext_tables_with_excluded_links, table_marker_id};
-
-#[cfg(test)]
-pub(crate) use tables::render_wikitext_tables;
+use tables::{render_wikitext_tables_with_excluded_links, table_marker_id};
 
 use crate::wikitext::{normalize_reference_attr, remove_comments, remove_some_html_tags};
 
