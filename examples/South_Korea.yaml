@@ -1,12 +1,12 @@
-id: north-korea-fixed-id
+id: south-korea-fixed-id
 chapters: title
 metadata:
-  title: North Korea
+  title: South Korea
   author: Wikipedia contributors
   license: Creative Commons Attribution-ShareAlike 4.0 License
   language: en
   edition: First edition
-output-file: north-korea.epub
+output-file: South_Korea.epub
 images: false
 caching: central
 depth: 0
@@ -15,4 +15,4 @@ links_to_pages: false
 links_to_excluded_pages: emphasize
 cover: "None"
 articles:
-  - North Korea
+  - South Korea

@@ -87,12 +87,12 @@ fn generate_sejong_the_great_book_from_local_page_dumps() {
 
 #[test]
 fn generate_south_korea_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("south-korea");
+    assert_generated_book_matches_expected("South_Korea");
 }
 
 #[test]
 fn generate_north_korea_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("north-korea");
+    assert_generated_book_matches_expected("North_Korea");
 }
 
 #[test]
