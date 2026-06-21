@@ -1,5 +1,28 @@
 # Codex Session Notes
 
+## 2026-06-21 Log Total Elapsed Time at End of Process
+
+### Summary
+Added duration tracking to measure and log the total elapsed time of the process run.
+
+### Decisions Made
+- **Recorded Start Instant and Logged Elapsed Duration**:
+  - Initialized a start timer `std::time::Instant::now()` at the beginning of [try_main](file:///opt/src/main.rs#L88).
+  - Logged `elapsed_seconds` as a float using `info!` structured logging at the end of `try_main`, capturing the total execution time of the entire main operation (including `run`).
+
+### Files Changed
+- [src/main.rs](file:///opt/src/main.rs) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt`, and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
+
 ## 2026-06-21 Move repo_root Helper to Shared Module
 
 ### Summary

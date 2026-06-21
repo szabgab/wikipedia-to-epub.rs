@@ -86,6 +86,7 @@ fn main() {
 }
 
 fn try_main() -> AppResult<()> {
+    let start_time = std::time::Instant::now();
     let args = parse_args()?;
     init_logging(args.log_level, args.logfile.as_deref());
     info!(
@@ -94,7 +95,12 @@ fn try_main() -> AppResult<()> {
         log_level = ?args.log_level,
         "starting wikipedia-to-epub"
     );
-    run(args)
+    let result = run(args);
+    info!(
+        elapsed_seconds = start_time.elapsed().as_secs_f64(),
+        "total elapsed time"
+    );
+    result
 }
 
 #[allow(clippy::too_many_arguments)]
