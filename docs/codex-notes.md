@@ -1,5 +1,32 @@
 # Codex Session Notes
 
+## 2026-06-21 Refactor Tables into a Separate Module
+
+### Summary
+Refactored wikitext table parsing, extraction, and rendering functions from [src/main.rs](file:///opt/src/main.rs) into a new dedicated module [src/tables.rs](file:///opt/src/tables.rs).
+
+### Decisions Made
+- **Created the Tables Module**:
+  - Moved `extract_class_attr`, `table_marker_id`, `render_wikitext_tables`, `render_wikitext_tables_with_excluded_links`, `is_wikitable_attrs`, `render_wikitable`, and `extract_cell_content` to [src/tables.rs](file:///opt/src/tables.rs).
+- **Exposed Re-exports in main.rs**:
+  - Registered `mod tables;` and re-exported `render_wikitext_tables_with_excluded_links`, `table_marker_id`, and `render_wikitext_tables` inside [src/main.rs](file:///opt/src/main.rs) to avoid modifying import statements in tests or other modules.
+- **Adjusted Visibility**:
+  - Made [cleanup_inline_markup_with_excluded_links](file:///opt/src/main.rs#L1258) in `src/main.rs` package-private (`pub(crate)`) so that it can be invoked by the table renderer in `src/tables.rs`.
+
+### Files Changed
+- [src/main.rs](file:///opt/src/main.rs) [MODIFY]
+- [src/tables.rs](file:///opt/src/tables.rs) [CREATE]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt`, and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
+
 ## 2026-06-21 Log Total Elapsed Time at End of Process
 
 ### Summary
