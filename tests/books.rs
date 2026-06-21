@@ -1,3 +1,6 @@
+mod common;
+
+use common::repo_root;
 use std::{
     fs::{self, File},
     io::Read,
@@ -460,10 +463,6 @@ fn assert_real_api_generates_book(book: &str, chapter_titles: &[&str]) {
             err
         )
     });
-}
-
-fn repo_root() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }
 
 fn assert_cli_stdout(stdout: &[u8], output_file_name: &str) {

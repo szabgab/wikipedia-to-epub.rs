@@ -1,5 +1,30 @@
 # Codex Session Notes
 
+## 2026-06-21 Move repo_root Helper to Shared Module
+
+### Summary
+Moved the [repo_root](file:///opt/tests/common/mod.rs#L3) helper function from [tests/books.rs](file:///opt/tests/books.rs) to a new shared module [tests/common/mod.rs](file:///opt/tests/common/mod.rs) to make it reusable across future integration test files.
+
+### Decisions Made
+- **Created a Shared Test Helper Module**:
+  - Defined the new module [tests/common/mod.rs](file:///opt/tests/common/mod.rs) and moved the `repo_root` helper function there.
+- **Imported `repo_root` in Existing Tests**:
+  - Declared `mod common;` and explicitly imported `repo_root` in [tests/books.rs](file:///opt/tests/books.rs) without wildcard imports.
+
+### Files Changed
+- [tests/books.rs](file:///opt/tests/books.rs) [MODIFY]
+- [tests/common/mod.rs](file:///opt/tests/common/mod.rs) [CREATE]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt`, and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
+
 ## 2026-06-20 Add Unit Tests to balanced_wiki_link_end Function
 
 ### Summary
