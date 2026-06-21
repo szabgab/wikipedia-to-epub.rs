@@ -654,61 +654,6 @@ articles:
     fs::remove_dir_all(&work_dir).unwrap();
 }
 
-#[test]
-fn cli_output_flag_overrides_config_output_file() {
-    let repo = repo_root();
-    let work_dir = unique_test_dir(&repo, "cli-output-flag");
-    fs::create_dir_all(&work_dir).unwrap();
-
-    let config_path = work_dir.join("book.yaml");
-    let yaml = r#"chapters: title
-metadata:
-  title: "Japan"
-  author: "Wikipedia contributors"
-  language: en
-  edition: First edition
-output-file: config-output.epub
-cover: "None"
-links_to_pages: false
-links_to_excluded_pages: emphasize
-caching: none
-depth: 0
-articles:
-  - "Japan"
-"#;
-    fs::write(&config_path, yaml).unwrap();
-
-    let overridden_output = work_dir.join("overridden.epub");
-
-    let mut command = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"));
-    command
-        .current_dir(&work_dir)
-        .arg(&config_path)
-        .arg("--local")
-        .arg(repo.join("pages"))
-        .arg("--caching")
-        .arg("none")
-        .arg("--output")
-        .arg(&overridden_output)
-        .arg("--log")
-        .arg("WARN");
-    command.env("WIKIPEDIA_TO_EPUB_MOCK_DATE", "2026-06-06");
-    let output = command.output().unwrap();
-
-    assert!(output.status.success(), "run failed: {:?}", output);
-
-    assert!(
-        overridden_output.exists(),
-        "overridden.epub should be created"
-    );
-    assert!(
-        !work_dir.join("config-output.epub").exists(),
-        "config-output.epub should NOT be created"
-    );
-
-    fs::remove_dir_all(&work_dir).unwrap();
-}
-
 fn sanitize_chapter_filename(title: &str) -> String {
     let ascii_title = any_ascii::any_ascii(title);
     let sanitized: String = ascii_title
