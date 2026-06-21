@@ -122,7 +122,12 @@ where
 }
 
 pub(crate) fn read_config(path: &Path) -> AppResult<BookConfig> {
-    let content = fs::read_to_string(path)?;
+    let content = fs::read_to_string(path).map_err(|err| {
+        AppError::Message(format!(
+            "failed to read configuration file {}: {err}",
+            path.display()
+        ))
+    })?;
     parse_config_str(path, &content)
 }
 

@@ -325,7 +325,8 @@ fn assert_generated_book_matches_expected(book: &str) {
 
     assert!(
         output.status.success(),
-        "wikipedia-to-epub failed\nstdout:\n{}\nstderr:\n{}",
+        "{:?}wikipedia-to-epub failed\nstdout:\n{}\nstderr:\n{}",
+        command,
         String::from_utf8_lossy(&output.stdout),
         String::from_utf8_lossy(&output.stderr)
     );
@@ -469,7 +470,7 @@ fn assert_cli_stdout(stdout: &[u8], output_file_name: &str) {
     let stdout = String::from_utf8_lossy(stdout);
     assert!(
         stdout.contains(&format!("Created {output_file_name}\n")),
-        "stdout is missing created message:\n{stdout}"
+        "stdout is missing created message '{output_file_name}' in: \n{stdout}"
     );
     assert!(
         Regex::new(r"(?m)^Skipped templates: recognized=\d+, unknown=\d+$")
