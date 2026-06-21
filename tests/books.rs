@@ -13,131 +13,6 @@ use similar::{DiffTag, TextDiff};
 use zip::ZipArchive;
 
 #[test]
-fn generate_macchini_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("macchini");
-}
-
-#[test]
-fn generate_macchini_deep_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("macchini-deep");
-}
-
-#[test]
-fn generate_administrative_divisions_of_south_korea_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("administrative-divisions-of-south-korea");
-}
-
-#[test]
-fn generate_goguryeo_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("goguryeo");
-}
-
-#[test]
-fn generate_japan_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("japan");
-}
-
-#[test]
-fn generate_osaka_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("osaka");
-}
-
-#[test]
-fn generate_buddhist_temples_in_japan_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("buddhist-temples-in-japan");
-}
-
-#[test]
-fn generate_kyoto_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("kyoto");
-}
-
-#[test]
-fn generate_korea_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("korea");
-}
-
-#[test]
-fn generate_korean_language_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("korean-language");
-}
-
-#[test]
-fn generate_busan_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("busan");
-}
-
-#[test]
-fn generate_history_of_korea_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("history-of-korea");
-}
-
-#[test]
-fn generate_seoul_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("seoul");
-}
-
-#[test]
-fn generate_joseon_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("joseon");
-}
-
-#[test]
-fn generate_sejong_the_great_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("sejong-the-great");
-}
-
-#[test]
-fn generate_south_korea_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("South_Korea");
-}
-
-#[test]
-fn generate_north_korea_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("North_Korea");
-}
-
-#[test]
-fn generate_hangul_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("hangul");
-}
-
-#[test]
-fn generate_korean_war_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("korean-war");
-}
-
-#[test]
-fn generate_han_dynasty_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("han-dynasty");
-}
-
-#[test]
-fn generate_parhae_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("parhae");
-}
-
-#[test]
-fn generate_planets_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("planets");
-}
-
-#[test]
-fn generate_spanish_corea_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("es-corea");
-}
-
-#[test]
-fn generate_korea_in_hebrew_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("korea-in-hebrew");
-}
-
-#[test]
-fn generate_busan_images_book_from_local_page_dumps() {
-    assert_generated_book_matches_expected("busan-images");
-}
-
-#[test]
 #[ignore = "hits the real Wikipedia API"]
 fn generate_example_books_from_real_wikipedia_api() {
     assert_real_api_generates_book("korea", &["Korea"]);
@@ -667,6 +542,131 @@ fn sanitize_chapter_filename(title: &str) -> String {
         })
         .collect();
     format!("{}.xhtml", sanitized)
+}
+
+#[test]
+fn generate_macchini_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("macchini");
+}
+
+#[test]
+fn generate_macchini_deep_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("macchini-deep");
+}
+
+#[test]
+fn generate_administrative_divisions_of_south_korea_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("administrative-divisions-of-south-korea");
+}
+
+#[test]
+fn generate_goguryeo_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("goguryeo");
+}
+
+#[test]
+fn generate_japan_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("japan");
+}
+
+#[test]
+fn generate_osaka_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("osaka");
+}
+
+#[test]
+fn generate_buddhist_temples_in_japan_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("buddhist-temples-in-japan");
+}
+
+#[test]
+fn generate_kyoto_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("kyoto");
+}
+
+#[test]
+fn generate_korea_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("korea");
+}
+
+#[test]
+fn generate_korean_language_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("korean-language");
+}
+
+#[test]
+fn generate_busan_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("busan");
+}
+
+#[test]
+fn generate_history_of_korea_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("history-of-korea");
+}
+
+#[test]
+fn generate_seoul_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("seoul");
+}
+
+#[test]
+fn generate_joseon_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("joseon");
+}
+
+#[test]
+fn generate_sejong_the_great_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("sejong-the-great");
+}
+
+#[test]
+fn generate_south_korea_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("South_Korea");
+}
+
+#[test]
+fn generate_north_korea_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("North_Korea");
+}
+
+#[test]
+fn generate_hangul_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("hangul");
+}
+
+#[test]
+fn generate_korean_war_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("korean-war");
+}
+
+#[test]
+fn generate_han_dynasty_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("han-dynasty");
+}
+
+#[test]
+fn generate_parhae_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("parhae");
+}
+
+#[test]
+fn generate_planets_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("planets");
+}
+
+#[test]
+fn generate_spanish_corea_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("es-corea");
+}
+
+#[test]
+fn generate_korea_in_hebrew_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("korea-in-hebrew");
+}
+
+#[test]
+fn generate_busan_images_book_from_local_page_dumps() {
+    assert_generated_book_matches_expected("busan-images");
 }
 
 #[test]
