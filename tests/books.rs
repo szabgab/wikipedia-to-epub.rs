@@ -1,12 +1,11 @@
 mod common;
 
-use common::repo_root;
+use common::{repo_root, unique_test_dir};
 use std::{
     fs::{self, File},
     io::Read,
-    path::{Path, PathBuf},
+    path::Path,
     process::Command,
-    time::{SystemTime, UNIX_EPOCH},
 };
 
 use regex::Regex;
@@ -628,16 +627,6 @@ fn collect_expected_epub_entries(root: &Path, dir: &Path, entries: &mut Vec<Stri
             entries.push(relative);
         }
     }
-}
-
-fn unique_test_dir(repo: &Path, test_name: &str) -> PathBuf {
-    let nanos = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap_or_else(|err| panic!("system time is before unix epoch: {:?}", err))
-        .as_nanos();
-    repo.join("target")
-        .join("test-output")
-        .join(format!("{test_name}-{}-{nanos}", std::process::id()))
 }
 
 #[test]
