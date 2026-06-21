@@ -13,22 +13,22 @@ use similar::{DiffTag, TextDiff};
 use zip::ZipArchive;
 
 #[test]
-fn generate_macchini_book_from_local_page_dump() {
+fn generate_macchini_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("macchini");
 }
 
 #[test]
-fn generate_macchini_deep_book_from_local_page_dump() {
+fn generate_macchini_deep_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("macchini-deep");
 }
 
 #[test]
-fn generate_administrative_divisions_of_south_korea_book_from_local_page_dump() {
+fn generate_administrative_divisions_of_south_korea_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("administrative-divisions-of-south-korea");
 }
 
 #[test]
-fn generate_goguryeo_book_from_local_page_dump() {
+fn generate_goguryeo_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("goguryeo");
 }
 
@@ -133,7 +133,7 @@ fn generate_korea_in_hebrew_book_from_local_page_dumps() {
 }
 
 #[test]
-fn generate_busan_images_book_from_local_page_dump() {
+fn generate_busan_images_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("busan-images");
 }
 
@@ -467,7 +467,7 @@ fn collect_expected_epub_entries(root: &Path, dir: &Path, entries: &mut Vec<Stri
 }
 
 #[test]
-fn generate_hierarchical_book_from_local_page_dump() {
+fn generate_hierarchical_book_from_local_page_dumps() {
     let repo = repo_root();
     let work_dir = unique_test_dir(&repo, "hierarchical-book");
     fs::create_dir_all(&work_dir).unwrap();
@@ -554,7 +554,7 @@ articles:
 }
 
 #[test]
-fn generate_numbered_chapters_book_from_local_page_dump() {
+fn generate_numbered_chapters_book_from_local_page_dumps() {
     let repo = repo_root();
     let work_dir = unique_test_dir(&repo, "numbered-book");
     fs::create_dir_all(&work_dir).unwrap();
@@ -725,41 +725,41 @@ fn sanitize_chapter_filename(title: &str) -> String {
 }
 
 #[test]
-fn generate_kiso_mountains_book_from_local_page_dump() {
+fn generate_kiso_mountains_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("Kiso_Mountains");
 }
 
 #[test]
-fn generate_battle_of_sekigahara_book_from_local_page_dump() {
+fn generate_battle_of_sekigahara_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("Battle_of_Sekigahara");
 }
 
 #[test]
-fn generate_statistical_model_book_from_local_page_dump() {
+fn generate_statistical_model_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("Statistical_model");
 }
 
 #[test]
-fn generate_variance_book_from_local_page_dump() {
+fn generate_variance_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("Variance");
 }
 
 #[test]
-fn generate_statistics_book_from_local_page_dump() {
+fn generate_statistics_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("Statistics");
 }
 
 #[test]
-fn generate_normal_distribution_book_from_local_page_dump() {
+fn generate_normal_distribution_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("Normal_distribution");
 }
 
 #[test]
-fn generate_standard_deviation_book_from_local_page_dump() {
+fn generate_standard_deviation_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("Standard_deviation");
 }
 
 #[test]
-fn generate_matsumoto_airport_book_from_local_page_dump() {
+fn generate_matsumoto_airport_book_from_local_page_dumps() {
     assert_generated_book_matches_expected("Matsumoto_Airport");
 }
