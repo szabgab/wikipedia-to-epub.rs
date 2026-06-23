@@ -1,3 +1,4 @@
+
 '
 -
 0
@@ -6,6 +7,7 @@ additional citations needed, Asks for help.,                                    
 Advert,                      This article contains promotional content.,                 https://en.wikipedia.org/wiki/Template:Advert
 ahnentafel
 AI-generated section,       Needs review.,           https://en.wikipedia.org/wiki/Template:AI-generated_section
+AI-generated,                Suspected AI content banner.,                                https://en.wikipedia.org/wiki/Template:AI-generated
 ambiguous
 Americana Poster
 anchor,                      Used for inbound links. Not relevant in epub.,              https://en.wikipedia.org/wiki/Template:Anchor
@@ -36,22 +38,25 @@ clear right
 Closed access
 clr
 cn
-col-begin
 colbegin
+col-begin
 col-break
 colend
 col-end
+cols,                        Multi-column list wrapper.,                                 https://en.wikipedia.org/wiki/Template:cols
 columns-list
 Commons
 Commons and category
 Commons category
 Commons category-inline
 Commons category inline
+Commonscatinline,            Inline link to Commons category.,                           https://en.wikipedia.org/wiki/Template:Commonscatinline
 commonscat,                  Link to category in Wikimedia Commons.,                     https://en.wikipedia.org/wiki/Template:Commons_category
 Commons-inline
 Confusing section
 Contains special characters
 coord missing
+Copy edit,                   Cleanup banner.,                                            https://en.wikipedia.org/wiki/Template:Copy_edit
 CS1 config
 Dead link
 Dead link,                  Dead link,               https://en.wikipedia.org/wiki/Template:Dead_link
@@ -112,6 +117,7 @@ j-railservice start
 j-route
 j-rserv
 kml
+lead rewrite,                Cleanup banner for lead section.,                           https://en.wikipedia.org/wiki/Template:Lead_rewrite
 Library resources box
 Librivox author
 Listen
@@ -119,11 +125,15 @@ location map+
 long
 look from
 lower,                       Visual change.,                                             https://en.wikipedia.org/wiki/Template:Lower
+main cat,                    Navigation hatnote.,                                        https://en.wikipedia.org/wiki/Template:Main_cat
 Meitetsu Group,              A hidden list.,                                             https://en.wikipedia.org/wiki/Template:Meitetsu_Group
+Merging from,                Merge proposed banner.,                                     https://en.wikipedia.org/wiki/Template:Merging_from
+Merging to,                  Merge proposed banner.,                                     https://en.wikipedia.org/wiki/Template:Merging_to
 missing long citation
 More citations needed
 more citations needed section
 more cn section
+More footnotes,              Cleanup banner.,                                            https://en.wikipedia.org/wiki/Template:More_footnotes
 More footnotes needed,       need to improve,                                            https://en.wikipedia.org/wiki/Template:More_footnotes_needed
 multiple image
 Multiple issues,             Using too many individual article message boxes can distract from the article., https://en.wikipedia.org/wiki/Template:Multiple_issues
@@ -131,10 +141,13 @@ Navboxes bottom
 Navboxes top
 Needs update
 New archival link needed
+NIST-PD,                     Public domain attribution banner.,                          https://en.wikipedia.org/wiki/Template:NIST-PD
 NoteFoot
 notelist
 notelist-ua
 NoteTag
+nowrap begin,                Formatting wrapper.,                                        https://en.wikipedia.org/wiki/Template:Nowrap_begin
+nowrap end,                  Formatting wrapper.,                                        https://en.wikipedia.org/wiki/Template:Nowrap_end
 One source,                  Content that relies on a single source.m,                   https://en.wikipedia.org/wiki/Template:One_source
 openhistory
 Original research,           One needs to reference sources.,                            https://en.wikipedia.org/wiki/Template:Original_research
@@ -196,6 +209,8 @@ Subject bar
 subscription
 Subscription required
 surname
+technical,                   Cleanup banner.,                                            https://en.wikipedia.org/wiki/Template:Technical
+Technical inline,            Jargon inline cleanup tag.,                                 https://en.wikipedia.org/wiki/Template:Technical_inline
 TOClimit
 TOC limit
 tocright
@@ -237,4 +252,5 @@ Wikiquote-inline
 wikisource category
 Wikisource-inline
 wikispecies-inline
+Wikiversity,                 Sister project link.,                                       https://en.wikipedia.org/wiki/Template:Wikiversity
 YouTube

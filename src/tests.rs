@@ -7922,3 +7922,129 @@ fn render_wikitext_formats_silent_templates_new() {
     assert_eq!(render_templates("{{family name hatnote}}"), "");
     assert_eq!(render_templates("{{Bare URL inline}}"), "");
 }
+
+#[test]
+fn test_template_more_footnotes() {
+    assert_eq!(render_templates("{{More footnotes}}"), "");
+}
+
+#[test]
+fn test_template_technical() {
+    assert_eq!(render_templates("{{technical}}"), "");
+}
+
+#[test]
+fn test_template_erratum() {
+    assert_eq!(
+        render_templates("{{erratum|doi=10.1234/0123456789}}"),
+        "(Erratum: doi:10.1234/0123456789)"
+    );
+    assert_eq!(
+        render_templates("{{erratum|pmid=12345}}"),
+        "(Erratum: PMID 12345)"
+    );
+    assert_eq!(
+        render_templates("{{erratum|pmc=67890}}"),
+        "(Erratum: PMC 67890)"
+    );
+    assert_eq!(
+        render_templates("{{erratum|bibcode=abcde}}"),
+        "(Erratum: Bibcode:abcde)"
+    );
+    assert_eq!(
+        render_templates("{{erratum|https://example.com/corr}}"),
+        "(Erratum: https://example.com/corr)"
+    );
+}
+
+#[test]
+fn test_template_merging_from() {
+    assert_eq!(render_templates("{{Merging from}}"), "");
+}
+
+#[test]
+fn test_template_merging_to() {
+    assert_eq!(render_templates("{{Merging to}}"), "");
+}
+
+#[test]
+fn test_template_main_cat() {
+    assert_eq!(render_templates("{{main cat}}"), "");
+}
+
+#[test]
+fn test_template_copy_edit() {
+    assert_eq!(render_templates("{{Copy edit}}"), "");
+}
+
+#[test]
+fn test_template_cols() {
+    assert_eq!(render_templates("{{cols}}"), "");
+}
+
+#[test]
+fn test_template_wikiversity() {
+    assert_eq!(render_templates("{{Wikiversity}}"), "");
+}
+
+#[test]
+fn test_template_springereom() {
+    assert_eq!(
+        render_templates("{{SpringerEOM|g/g044670|Group}}"),
+        "[[official-url:https://encyclopediaofmath.org/index.php?title=g/g044670|\\\"Group\\\"]]. ''Encyclopaedia of Mathematics''. EMS Press"
+    );
+    assert_eq!(
+        render_templates("{{SpringerEOM|id=g/g044670|title=Group|publisher=Springer}}"),
+        "[[official-url:https://encyclopediaofmath.org/index.php?title=g/g044670|\\\"Group\\\"]]. ''Encyclopaedia of Mathematics''. Springer"
+    );
+}
+
+#[test]
+fn test_template_nowrap_begin() {
+    assert_eq!(render_templates("{{nowrap begin}}"), "");
+}
+
+#[test]
+fn test_template_nowrap_end() {
+    assert_eq!(render_templates("{{nowrap end}}"), "");
+}
+
+#[test]
+fn test_template_commonscatinline() {
+    assert_eq!(render_templates("{{Commonscatinline}}"), "");
+}
+
+#[test]
+fn test_template_technical_inline() {
+    assert_eq!(render_templates("{{Technical inline}}"), "");
+}
+
+#[test]
+fn test_template_technical_analysis() {
+    assert_eq!(render_templates("{{technical analysis}}"), "");
+}
+
+#[test]
+fn test_template_experimental_design() {
+    assert_eq!(render_templates("{{Experimental design}}"), "");
+}
+
+#[test]
+fn test_template_six_sigma_tools() {
+    assert_eq!(render_templates("{{Six Sigma Tools}}"), "");
+}
+
+#[test]
+fn test_template_nist_pd() {
+    assert_eq!(render_templates("{{NIST-PD}}"), "");
+}
+
+#[test]
+fn test_template_lead_rewrite() {
+    assert_eq!(render_templates("{{lead rewrite}}"), "");
+}
+
+#[test]
+fn test_template_ai_generated() {
+    assert_eq!(render_templates("{{AI-generated}}"), "");
+}

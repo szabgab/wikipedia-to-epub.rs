@@ -1,5 +1,41 @@
 # Codex Session Notes
 
+## 2026-06-23 Handle Additional Wikipedia Templates
+
+### Summary
+Added support for 20 new Wikipedia templates by registering them in template databases (silent/navigations) or adding rendering logic: "More footnotes", "technical", "erratum", "Merging from", "Merging to", "main cat", "Copy edit", "cols", "Wikiversity", "SpringerEOM", "nowrap begin", "nowrap end", "Commonscatinline", "Technical inline", "technical analysis", "Experimental design", "Six Sigma Tools", "NIST-PD", "lead rewrite", "AI-generated".
+
+### Decisions Made
+- **Created Renderers**:
+  - Implemented `render_springereom_template` in [src/templates/citation.rs](file:///opt/src/templates/citation.rs) to format citations of the EMS Encyclopaedia of Mathematics.
+  - Implemented `render_erratum_template` in [src/templates/citation.rs](file:///opt/src/templates/citation.rs) to format erratum metadata.
+  - Registered both templates in the dispatch table in `src/templates/citation.rs`.
+- **Classified Skipped Templates**:
+  - Appended 15 templates to [src/silent.csv](file:///opt/src/silent.csv): "AI-generated", "cols", "Commonscatinline", "Copy edit", "lead rewrite", "main cat", "Merging from", "Merging to", "More footnotes", "NIST-PD", "nowrap begin", "nowrap end", "technical", "Technical inline", "Wikiversity".
+  - Appended 3 templates to [src/navigations.csv](file:///opt/src/navigations.csv): "technical analysis", "Experimental design", "Six Sigma Tools".
+  - Sorted both CSV files using `./tools/sort.sh`.
+- **Added Unit Tests**:
+  - Wrote 20 separate unit tests in [src/tests.rs](file:///opt/src/tests.rs) (one for each template) to verify exact behavior.
+- **Updated Documentation**:
+  - Documented `SpringerEOM` and `erratum` conversion rules in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt`, and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
+
 ## 2026-06-23 Map -v Short Flag to Version
 
 ### Summary

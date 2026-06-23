@@ -114,6 +114,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{mono|text}}` wraps text in code (monospace) tags: `<code>text</code>`
 * `{{pi}}` renders the Greek letter pi: `π`
 * `{{Springer|title=...}}` renders a Springer Encyclopedia of Mathematics article citation
+* `{{SpringerEOM|id=g/g044670|title=Group}}` renders a citation to the EMS Encyclopaedia of Mathematics
+* `{{erratum|doi=10.1234/0123456789}}` renders an associated erratum identifier as `(Erratum: doi:10.1234/0123456789)`
 * `{{Probability fundamentals}}` and `{{ProbDistributions}}` are silent templates and are omitted from the output
 * `{{divcol}}` and `{{divcol end}}` are silent templates and are omitted from the output
 * `{{cite paper|title=...}}` is handled as an alias of `{{cite journal}}`

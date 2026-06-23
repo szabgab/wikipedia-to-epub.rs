@@ -52,6 +52,11 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("cite arxiv", render_cite_arxiv_template as TemplateHandler),
         ("cite q", render_cite_q_template as TemplateHandler),
         (
+            "springereom",
+            render_springereom_template as TemplateHandler,
+        ),
+        ("erratum", render_erratum_template as TemplateHandler),
+        (
             "cite journal",
             render_cite_journal_template as TemplateHandler,
         ),
@@ -2079,4 +2084,78 @@ fn render_free_content_attribution_template(params: &str) -> String {
         license,
         parts.join(", ")
     )
+}
+
+/// [SpringerEOM](https://en.wikipedia.org/wiki/Template:SpringerEOM)
+fn render_springereom_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let id = template_param(&named, &["id"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.first().cloned());
+
+    let title = template_param(&named, &["title"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.get(1).cloned());
+
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(title_val) = title {
+        let title_link = match id {
+            Some(ref id_val) => format!(
+                "[[official-url:https://encyclopediaofmath.org/index.php?title={}|\\\"{}\\\"]]",
+                id_val,
+                render_templates(&title_val)
+            ),
+            None => format!("\"{}\"", render_templates(&title_val)),
+        };
+        parts.push(title_link);
+    } else if let Some(ref id_val) = id {
+        parts.push(format!(
+            "[[official-url:https://encyclopediaofmath.org/index.php?title={}|\\\"{}\\\"]]",
+            id_val, id_val
+        ));
+    }
+
+    parts.push("''Encyclopaedia of Mathematics''".to_string());
+
+    if let Some(publisher) = template_param(&named, &["publisher"]) {
+        parts.push(render_templates(publisher));
+    } else {
+        parts.push("EMS Press".to_string());
+    }
+
+    parts.join(". ")
+}
+
+/// [Erratum](https://en.wikipedia.org/wiki/Template:Erratum)
+fn render_erratum_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let identifier = if let Some(doi) = template_param(&named, &["doi"]) {
+        format!("doi:{}", doi)
+    } else if let Some(pmid) = template_param(&named, &["pmid"]) {
+        format!("PMID {}", pmid)
+    } else if let Some(pmc) = template_param(&named, &["pmc"]) {
+        format!("PMC {}", pmc)
+    } else if let Some(bibcode) = template_param(&named, &["bibcode"]) {
+        format!("Bibcode:{}", bibcode)
+    } else if let Some(first_pos) = positional.first() {
+        first_pos.to_string()
+    } else {
+        String::new()
+    };
+
+    if identifier.is_empty() {
+        String::new()
+    } else {
+        format!("(Erratum: {})", identifier)
+    }
 }
