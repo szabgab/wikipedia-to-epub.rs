@@ -87,7 +87,11 @@ pub(crate) struct Metadata {
 }
 
 #[derive(Debug, Parser)]
-#[command(name = "wikipedia-to-epub", version = concat!(env!("CARGO_PKG_VERSION"), " (SHA: ", env!("GIT_SHA"), ")"))]
+#[command(
+    name = "wikipedia-to-epub",
+    version = concat!(env!("CARGO_PKG_VERSION"), " (SHA: ", env!("GIT_SHA"), ")"),
+    disable_version_flag = true
+)]
 pub(crate) struct CliArgs {
     #[arg(value_name = "config.yaml")]
     pub config_path: PathBuf,
@@ -107,6 +111,8 @@ pub(crate) struct CliArgs {
     pub caching: Option<CachingMode>,
     #[arg(short = 'o', long = "output", value_name = "output.epub")]
     pub output: Option<PathBuf>,
+    #[arg(short = 'v', long = "version", action = clap::ArgAction::Version)]
+    pub version: Option<bool>,
 }
 
 pub(crate) fn parse_args() -> AppResult<CliArgs> {

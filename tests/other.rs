@@ -254,3 +254,35 @@ articles:
 
     fs::remove_dir_all(&work_dir).unwrap();
 }
+
+#[test]
+fn cli_version_flag_is_accepted_by_binary() {
+    let mut command = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"));
+    command.arg("-v");
+    let output = command.output().unwrap();
+
+    assert!(output.status.success(), "run failed: {:?}", output);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(
+        stdout.contains("wikipedia-to-epub"),
+        "version output missing program name: {}",
+        stdout
+    );
+    assert!(
+        stdout.contains("SHA:"),
+        "version output missing SHA info: {}",
+        stdout
+    );
+
+    let mut command_long = Command::new(env!("CARGO_BIN_EXE_wikipedia-to-epub"));
+    command_long.arg("--version");
+    let output_long = command_long.output().unwrap();
+
+    assert!(
+        output_long.status.success(),
+        "run failed: {:?}",
+        output_long
+    );
+    let stdout_long = String::from_utf8_lossy(&output_long.stdout);
+    assert_eq!(stdout, stdout_long);
+}

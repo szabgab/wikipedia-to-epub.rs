@@ -1,5 +1,31 @@
 # Codex Session Notes
 
+## 2026-06-23 Map -v Short Flag to Version
+
+### Summary
+Configured the command line interface to accept `-v` as a short flag alias for `--version`.
+
+### Decisions Made
+- **Overrode Default Version Flag in clap**:
+  - Disabled the default auto-generated version flag by adding `disable_version_flag = true` to the `#[command(...)]` attribute of [CliArgs](file:///opt/src/config.rs#L91).
+  - Explicitly added a `version` field of type `Option<bool>` to `CliArgs` with the `#[arg(short = 'v', long = "version", action = clap::ArgAction::Version)]` attribute. Using `Option<bool>` prevents clap from throwing a required-argument-missing error when the flag is not provided.
+- **Added Integration Test**:
+  - Added [cli_version_flag_is_accepted_by_binary](file:///opt/tests/other.rs#L258) to [tests/other.rs](file:///opt/tests/other.rs) to verify that both `-v` and `--version` function correctly and output identical version info containing the program name and git SHA.
+
+### Files Changed
+- [src/config.rs](file:///opt/src/config.rs) [MODIFY]
+- [tests/other.rs](file:///opt/tests/other.rs) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt`, and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
+
 ## 2026-06-21 Refactor Tables into a Separate Module
 
 ### Summary
