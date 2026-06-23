@@ -95,6 +95,13 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{math|''y'' {{=}} 2}}` formats mathematical expressions inline (`<em>y</em> = 2`), supporting the nested `{{=}}` template which resolves to `=`
 * `{{tmath|E = mc^2}}` renders the mathematical formula as plain text
 * `{{closed-open|a|b}}` (or `{{closed-open|a, b}}`) renders the mathematical interval notation: `[a, b)`
+* `{{closed-closed|a|b}}` (or `{{closed-closed|a, b}}`) renders the mathematical interval notation: `[a, b]`
+* `{{brace|1|2|3}}` renders curly braces around arguments: `{1|2|3}`
+* `{{Equation box 1|title=My Eq|equation=E = mc^2}}` renders the equation in a bold title followed by the equation: `'''My Eq''': E = mc^2`
+* `{{EquationNote|1|Eq. 1}}` renders an equation reference identifier: `Eq. 1`
+* `{{font color|red|blue|text}}` renders the text argument (ignoring ad-hoc color styling): `text`
+* `{{broader|Article|topic=topic}}` renders a hatnote pointing to a broader coverage article: `For broader coverage of topic, see [[Article]].`
+* `{{cite SEP|url-id=plato|title=Plato}}` renders a citation to the Stanford Encyclopedia of Philosophy
 * `{{sqrt|x}}` renders the square root symbol with the content: `√x`
 * `{{Section link|Page|Section}}` (or `{{section link}}` / `{{slink}}`) renders the section link in internal format with a section sign: `[[Page#Section|Page § Section]]`
 * `{{mset|1|2|3}}` renders mathematical set curly braces notation: `{1, 2, 3}`

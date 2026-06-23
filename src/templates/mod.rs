@@ -70,6 +70,7 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
         ("dash", " – "),
         ("snds", " – "),
         ("mdash", "—"),
+        ("em dash", "—"),
         ("ndash", "–"),
         ("endash", "–"),
         ("nbndash", "–"),
@@ -83,6 +84,7 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
         ("okina", "ʻ"),
         ("'s", "__WIKIPEDIA_TO_EPUB_LITERAL_QUOTE__s"),
         ("=", "="),
+        ("1/2", "1/2"),
         ("hidden end", ""),
         ("collapse bottom", ""),
     ])

@@ -1,5 +1,45 @@
 # Codex Session Notes
 
+## 2026-06-23 Handle Second Batch of Wikipedia Templates
+
+### Summary
+Added support for 34 additional Wikipedia templates by registering them in template databases (silent/navigations), adding aliases, or implementing rendering logic: "1/2", "Abramowitz Stegun ref", "Artificial intelligence navbox", "Biases", "big", "brace", "broader", "Cite interview", "cite SEP", "closed-closed", "cmn", "col div", "confused", "Confusing", "control theory", "date missing", "EB1911", "efn-lr", "em dash", "Equation box 1", "EquationNote", "Essay", "Explanatory footnote", "Fallacies", "font color", "ghat", "Globalize", "Incidence structures", "i sup", "italics correction", "least squares and regression analysis", "Least_squares_and_regression_analysis", "Machine learning", "Machine learning bar".
+
+### Decisions Made
+- **Created Renderers & Aliases in Rust**:
+  - Registered fixed template string replacements for `"1/2"` and `"em dash"` in [src/templates/mod.rs](file:///opt/src/templates/mod.rs).
+  - Implemented `render_brace_template`, `render_broader_template`, `render_closed_closed_template`, `render_equation_box_1_template`, `render_equation_note_template`, and `render_font_color_template` in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+  - Registered `"abramowitz stegun ref"` (alias of `render_as_ref_template`), `"big"` (alias of `render_passthrough_template`), `"ghat"` (alias of `render_passthrough_template`), `"i sup"` (alias of `render_isup_template`), and `"italics correction"` (alias of `render_passthrough_template`) in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+  - Implemented `render_cite_sep_template` in [src/templates/citation.rs](file:///opt/src/templates/citation.rs) to format citations of the Stanford Encyclopedia of Philosophy.
+  - Registered `"cite interview"` (alias of `render_citation_template`) and `"cite sep"` in [src/templates/citation.rs](file:///opt/src/templates/citation.rs).
+- **Classified Skipped Templates**:
+  - Appended 10 templates to [src/silent.csv](file:///opt/src/silent.csv): "cmn", "col div", "confused", "Confusing", "date missing", "EB1911", "efn-lr", "Essay", "Explanatory footnote", "Globalize".
+  - Appended 9 templates to [src/navigations.csv](file:///opt/src/navigations.csv): "Artificial intelligence navbox", "Biases", "control theory", "Fallacies", "Incidence structures", "least squares and regression analysis", "Least_squares_and_regression_analysis", "Machine learning", "Machine learning bar".
+  - Sorted both CSV files using `./tools/sort.sh`.
+- **Added Unit Tests**:
+  - Wrote 34 separate unit tests in [src/tests.rs](file:///opt/src/tests.rs) (one for each template) to verify exact behavior.
+- **Updated Documentation**:
+  - Documented new template conversion rules in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt`, and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
+
 ## 2026-06-23 Handle Additional Wikipedia Templates
 
 ### Summary

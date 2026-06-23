@@ -57,6 +57,11 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ),
         ("erratum", render_erratum_template as TemplateHandler),
         (
+            "cite interview",
+            render_citation_template as TemplateHandler,
+        ),
+        ("cite sep", render_cite_sep_template as TemplateHandler),
+        (
             "cite journal",
             render_cite_journal_template as TemplateHandler,
         ),
@@ -2158,4 +2163,50 @@ fn render_erratum_template(params: &str) -> String {
     } else {
         format!("(Erratum: {})", identifier)
     }
+}
+
+/// [Cite SEP](https://en.wikipedia.org/wiki/Template:Cite_SEP)
+fn render_cite_sep_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let url_id = template_param(&named, &["url-id"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.first().cloned());
+
+    let title = template_param(&named, &["title"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.get(1).cloned());
+
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    }
+
+    if let Some(title_val) = title {
+        let title_link = match url_id {
+            Some(ref id_val) => format!(
+                "[[official-url:https://plato.stanford.edu/entries/{}/|\\\"{}\\\"]]",
+                id_val,
+                render_templates(&title_val)
+            ),
+            None => format!("\"{}\"", render_templates(&title_val)),
+        };
+        parts.push(title_link);
+    } else if let Some(ref id_val) = url_id {
+        parts.push(format!(
+            "[[official-url:https://plato.stanford.edu/entries/{}/|\\\"{}\\\"]]",
+            id_val, id_val
+        ));
+    }
+
+    parts.push("''Stanford Encyclopedia of Philosophy''".to_string());
+
+    if let Some(publisher) = template_param(&named, &["publisher"]) {
+        parts.push(render_templates(publisher));
+    }
+
+    parts.join(". ")
 }

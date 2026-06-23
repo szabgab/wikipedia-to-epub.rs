@@ -8048,3 +8048,207 @@ fn test_template_lead_rewrite() {
 fn test_template_ai_generated() {
     assert_eq!(render_templates("{{AI-generated}}"), "");
 }
+
+#[test]
+fn test_template_one_half() {
+    assert_eq!(render_templates("{{1/2}}"), "1/2");
+}
+
+#[test]
+fn test_template_abramowitz_stegun_ref() {
+    assert_eq!(
+        render_templates("{{Abramowitz Stegun ref|26, eqn 26.2.12|932}}"),
+        "[[Abramowitz and Stegun]], p. 932, § 26, eqn 26.2.12"
+    );
+}
+
+#[test]
+fn test_template_artificial_intelligence_navbox() {
+    assert_eq!(render_templates("{{Artificial intelligence navbox}}"), "");
+}
+
+#[test]
+fn test_template_biases() {
+    assert_eq!(render_templates("{{Biases}}"), "");
+}
+
+#[test]
+fn test_template_big() {
+    assert_eq!(render_templates("{{big|hello}}"), "hello");
+}
+
+#[test]
+fn test_template_brace() {
+    assert_eq!(render_templates("{{brace|1|2|3}}"), "{1|2|3}");
+}
+
+#[test]
+fn test_template_broader() {
+    assert_eq!(
+        render_templates("{{broader|History of the Internet|topic=web early development}}"),
+        "For broader coverage of web early development, see [[History of the Internet]]."
+    );
+}
+
+#[test]
+fn test_template_cite_interview() {
+    assert_eq!(
+        render_templates("{{Cite interview|last=Interviewee|first=First|title=Some Interview}}"),
+        "First Interviewee. ''Some Interview''"
+    );
+}
+
+#[test]
+fn test_template_cite_sep() {
+    assert_eq!(
+        render_templates("{{cite SEP|url-id=plato|title=Plato}}"),
+        "[[official-url:https://plato.stanford.edu/entries/plato/|\\\"Plato\\\"]]. ''Stanford Encyclopedia of Philosophy''"
+    );
+}
+
+#[test]
+fn test_template_closed_closed() {
+    assert_eq!(render_templates("{{closed-closed|0, 1}}"), "[0, 1]");
+    assert_eq!(render_templates("{{closed-closed|0|1}}"), "[0, 1]");
+}
+
+#[test]
+fn test_template_cmn() {
+    assert_eq!(render_templates("{{cmn}}"), "");
+}
+
+#[test]
+fn test_template_col_div() {
+    assert_eq!(render_templates("{{col div}}"), "");
+}
+
+#[test]
+fn test_template_confused() {
+    assert_eq!(render_templates("{{confused}}"), "");
+}
+
+#[test]
+fn test_template_confusing() {
+    assert_eq!(render_templates("{{Confusing}}"), "");
+}
+
+#[test]
+fn test_template_control_theory() {
+    assert_eq!(render_templates("{{control theory}}"), "");
+}
+
+#[test]
+fn test_template_date_missing() {
+    assert_eq!(render_templates("{{date missing}}"), "");
+}
+
+#[test]
+fn test_template_eb1911() {
+    assert_eq!(render_templates("{{EB1911}}"), "");
+}
+
+#[test]
+fn test_template_efn_lr() {
+    assert_eq!(render_templates("{{efn-lr}}"), "");
+}
+
+#[test]
+fn test_template_em_dash() {
+    assert_eq!(render_templates("{{em dash}}"), "—");
+}
+
+#[test]
+fn test_template_equation_box_1() {
+    assert_eq!(
+        render_templates("{{Equation box 1|title=My Eq|equation=E = mc^2}}"),
+        "'''My Eq''': E = mc^2"
+    );
+}
+
+#[test]
+fn test_template_equation_note() {
+    assert_eq!(render_templates("{{EquationNote|1|Eq. 1}}"), "Eq. 1");
+    assert_eq!(render_templates("{{EquationNote|1}}"), "(1)");
+}
+
+#[test]
+fn test_template_essay() {
+    assert_eq!(render_templates("{{Essay}}"), "");
+}
+
+#[test]
+fn test_template_explanatory_footnote() {
+    assert_eq!(render_templates("{{Explanatory footnote}}"), "");
+}
+
+#[test]
+fn test_template_fallacies() {
+    assert_eq!(render_templates("{{Fallacies}}"), "");
+}
+
+#[test]
+fn test_template_font_color() {
+    assert_eq!(render_templates("{{font color|red|blue|hello}}"), "hello");
+    assert_eq!(
+        render_templates("{{font color|fg=red|bg=blue|text=world}}"),
+        "world"
+    );
+}
+
+#[test]
+fn test_template_ghat() {
+    assert_eq!(render_templates("{{ghat|hello}}"), "hello");
+}
+
+#[test]
+fn test_template_globalize() {
+    assert_eq!(render_templates("{{Globalize}}"), "");
+}
+
+#[test]
+fn test_template_incidence_structures() {
+    assert_eq!(render_templates("{{Incidence structures}}"), "");
+}
+
+#[test]
+fn test_template_i_sup() {
+    assert_eq!(
+        render_templates("{{i_sup|123}}"),
+        "__WIKIPEDIA_TO_EPUB_SUP_START__123__WIKIPEDIA_TO_EPUB_SUP_END__"
+    );
+    assert_eq!(
+        render_templates("{{i sup|123}}"),
+        "__WIKIPEDIA_TO_EPUB_SUP_START__123__WIKIPEDIA_TO_EPUB_SUP_END__"
+    );
+}
+
+#[test]
+fn test_template_italics_correction() {
+    assert_eq!(render_templates("{{italics correction|hello}}"), "hello");
+}
+
+#[test]
+fn test_template_least_squares_and_regression_analysis() {
+    assert_eq!(
+        render_templates("{{least squares and regression analysis}}"),
+        ""
+    );
+}
+
+#[test]
+fn test_template_least_squares_and_regression_analysis_underscore() {
+    assert_eq!(
+        render_templates("{{Least_squares_and_regression_analysis}}"),
+        ""
+    );
+}
+
+#[test]
+fn test_template_machine_learning() {
+    assert_eq!(render_templates("{{Machine learning}}"), "");
+}
+
+#[test]
+fn test_template_machine_learning_bar() {
+    assert_eq!(render_templates("{{Machine learning bar}}"), "");
+}

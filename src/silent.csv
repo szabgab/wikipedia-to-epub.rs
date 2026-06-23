@@ -1,6 +1,7 @@
 
 '
 -
+
 0
 About,                       Linking the reader to other meaning of the same word.,      https://en.wikipedia.org/wiki/Template:About
 additional citations needed, Asks for help.,                                             https://en.wikipedia.org/wiki/Template:Additional_citation_needed
@@ -38,10 +39,12 @@ Clear left
 clear right
 Closed access
 clr
+cmn,                         Mandarin Chinese columns-list alias.,                       https://en.wikipedia.org/wiki/Template:cmn
 cn
 colbegin
 col-begin
 col-break
+col div,                     Columns-list div col alias.,                                https://en.wikipedia.org/wiki/Template:Col_div
 colend
 col-end
 cols,                        Multi-column list wrapper.,                                 https://en.wikipedia.org/wiki/Template:cols
@@ -49,16 +52,19 @@ columns-list
 Commons
 Commons and category
 Commons category
-Commons category-inline
 Commons category inline
+Commons category-inline
 Commonscatinline,            Inline link to Commons category.,                           https://en.wikipedia.org/wiki/Template:Commonscatinline
 commonscat,                  Link to category in Wikimedia Commons.,                     https://en.wikipedia.org/wiki/Template:Commons_category
 Commons-inline
+confused,                    Redirect hatnote.,                                          https://en.wikipedia.org/wiki/Template:confused
+Confusing,                   Cleanup tag.,                                               https://en.wikipedia.org/wiki/Template:Confusing
 Confusing section
 Contains special characters
 coord missing
 Copy edit,                   Cleanup banner.,                                            https://en.wikipedia.org/wiki/Template:Copy_edit
 CS1 config
+date missing,                Inline cleanup tag.,                                        https://en.wikipedia.org/wiki/Template:Date_missing
 Dead link
 Dead link,                  Dead link,               https://en.wikipedia.org/wiki/Template:Dead_link
 disambiguation
@@ -68,18 +74,21 @@ Distinguish
 div
 div col
 divcol
-divcol end
 div col end
+divcol end
 Div end
 dubious
 dynamic list
+EB1911,                      Public domain attribution banner.,                          https://en.wikipedia.org/wiki/Template:EB1911
 efn
+efn-lr,                      Footnote marker.,                                           https://en.wikipedia.org/wiki/Template:efn-lr
 efn-ua
 empty section
 end box
 end,                        ?,                       https://en.wikipedia.org/wiki/Template:S-end
 end plainlist
 EngvarB
+Essay,                       Cleanup tag.,                                               https://en.wikipedia.org/wiki/Template:Essay
 example needed
 Excessive citations inline
 Expand German
@@ -87,6 +96,7 @@ Expand Japanese
 Expand language
 Expand section
 Explain
+Explanatory footnote,        Footnote efn alias.,                                        https://en.wikipedia.org/wiki/Template:Explanatory_footnote
 external media
 FACT
 failed verification
@@ -101,6 +111,7 @@ full,                        Full citation needed.,                             
 fv
 Gallery
 GeoGroup
+Globalize,                   Cleanup tag.,                                               https://en.wikipedia.org/wiki/Template:Globalize
 Hatnote
 Hatnote group
 how-to

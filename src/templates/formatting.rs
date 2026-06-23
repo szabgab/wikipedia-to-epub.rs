@@ -87,6 +87,12 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("earthquake magnitude", render_m_template as TemplateHandler),
         ("nowrap", render_passthrough_template as TemplateHandler),
         ("nobr", render_passthrough_template as TemplateHandler),
+        ("big", render_passthrough_template as TemplateHandler),
+        ("ghat", render_passthrough_template as TemplateHandler),
+        (
+            "italics correction",
+            render_passthrough_template as TemplateHandler,
+        ),
         (
             "collapse top",
             render_collapse_top_template as TemplateHandler,
@@ -189,6 +195,26 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("em", render_em_template as TemplateHandler),
         ("mathworld", render_mathworld_template as TemplateHandler),
         ("as ref", render_as_ref_template as TemplateHandler),
+        (
+            "abramowitz stegun ref",
+            render_as_ref_template as TemplateHandler,
+        ),
+        ("brace", render_brace_template as TemplateHandler),
+        ("broader", render_broader_template as TemplateHandler),
+        (
+            "closed-closed",
+            render_closed_closed_template as TemplateHandler,
+        ),
+        (
+            "equation box 1",
+            render_equation_box_1_template as TemplateHandler,
+        ),
+        (
+            "equationnote",
+            render_equation_note_template as TemplateHandler,
+        ),
+        ("font color", render_font_color_template as TemplateHandler),
+        ("i sup", render_isup_template as TemplateHandler),
         ("oeis2c", render_oeis2c_template as TemplateHandler),
         ("thinsp", render_thinsp_template as TemplateHandler),
         ("dfn", render_dfn_template as TemplateHandler),
@@ -6216,4 +6242,108 @@ fn render_sronly_template(params: &str) -> String {
         .or_else(|| positional.first().map(String::as_str))
         .unwrap_or("");
     render_templates(text)
+}
+
+/// [brace](https://en.wikipedia.org/wiki/Template:Brace)
+fn render_brace_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let inner = positional
+        .iter()
+        .map(|param| render_templates(param))
+        .collect::<Vec<_>>()
+        .join("|");
+    format!("{{{inner}}}")
+}
+
+/// [broader](https://en.wikipedia.org/wiki/Template:Broader)
+fn render_broader_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let articles = template_article_params(params);
+
+    if articles.is_empty() {
+        String::new()
+    } else {
+        let topic = template_param(&named, &["topic"])
+            .map(render_templates)
+            .unwrap_or_else(|| "this topic".to_string());
+        format!(
+            "For broader coverage of {}, see {}.",
+            topic,
+            join_template_articles(&articles)
+        )
+    }
+}
+
+/// [closed-closed](https://en.wikipedia.org/wiki/Template:Closed-closed)
+fn render_closed_closed_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    match positional.as_slice() {
+        [] => String::new(),
+        [single] => {
+            if let Some((a, b)) = single.split_once(',') {
+                format!("[{}, {}]", a.trim(), b.trim())
+            } else {
+                format!("[{}, ]", single.trim())
+            }
+        }
+        [a, b, ..] => {
+            format!("[{}, {}]", a.trim(), b.trim())
+        }
+    }
+}
+
+/// [Equation box 1](https://en.wikipedia.org/wiki/Template:Equation_box_1)
+fn render_equation_box_1_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let title = template_param(&named, &["title"]);
+    let equation = template_param(&named, &["equation"]);
+
+    match (title, equation) {
+        (Some(t), Some(eq)) => format!("'''{}''': {}", render_templates(t), render_templates(eq)),
+        (None, Some(eq)) => render_templates(eq),
+        (Some(t), None) => render_templates(t),
+        (None, None) => String::new(),
+    }
+}
+
+/// [EquationNote](https://en.wikipedia.org/wiki/Template:EquationNote)
+fn render_equation_note_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let label = positional.first().map(String::as_str).unwrap_or("");
+    let display = positional.get(1).map(String::as_str);
+
+    match display {
+        Some(d) => render_templates(d),
+        None => {
+            if label.is_empty() {
+                String::new()
+            } else {
+                format!("({})", render_templates(label))
+            }
+        }
+    }
+}
+
+/// [font color](https://en.wikipedia.org/wiki/Template:Font_color)
+fn render_font_color_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let text = template_param(&named, &["text"])
+        .map(|v| v.to_string())
+        .or_else(|| {
+            if positional.len() >= 3 {
+                positional.get(2).cloned()
+            } else if positional.len() == 2 {
+                positional.get(1).cloned()
+            } else {
+                positional.first().cloned()
+            }
+        });
+
+    if let Some(t) = text {
+        render_templates(&t)
+    } else {
+        String::new()
+    }
 }
