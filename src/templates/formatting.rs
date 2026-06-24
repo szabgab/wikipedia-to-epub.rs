@@ -143,6 +143,13 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_vertical_header_template as TemplateHandler,
         ),
         ("jrksn", render_jrksn_template as TemplateHandler),
+        ("jrssn", render_jrksn_template as TemplateHandler),
+        ("co2", render_co2_template as TemplateHandler),
+        (
+            "fukuoka stock exchange",
+            render_fukuoka_stock_exchange_template as TemplateHandler,
+        ),
+        ("round", render_round_template as TemplateHandler),
         ("glossary", render_glossary_template as TemplateHandler),
         ("glossary end", render_glossary_template as TemplateHandler),
         ("sronly", render_sronly_template as TemplateHandler),
@@ -6531,5 +6538,56 @@ fn render_start_date_and_age_template(params: &str) -> String {
         }
     } else {
         String::new()
+    }
+}
+
+/// [co2](https://en.wikipedia.org/wiki/Template:CO2)
+fn render_co2_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let link = template_param(&named, &["link"]);
+    if link.is_some_and(|val| val.eq_ignore_ascii_case("yes")) {
+        "[[Carbon dioxide|CO__WIKIPEDIA_TO_EPUB_SUB_START__2__WIKIPEDIA_TO_EPUB_SUB_END__]]"
+            .to_string()
+    } else {
+        "CO__WIKIPEDIA_TO_EPUB_SUB_START__2__WIKIPEDIA_TO_EPUB_SUB_END__".to_string()
+    }
+}
+
+/// [Fukuoka Stock Exchange](https://en.wikipedia.org/wiki/Template:Fukuoka_Stock_Exchange)
+fn render_fukuoka_stock_exchange_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let ticker = positional.first().map(String::as_str).unwrap_or("");
+    if ticker.is_empty() {
+        "FSE".to_string()
+    } else {
+        format!("FSE: {ticker}")
+    }
+}
+
+/// [round](https://en.wikipedia.org/wiki/Template:Round)
+fn render_round_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.is_empty() {
+        return String::new();
+    }
+    let value_str = positional[0].replace(',', "");
+    let value: f64 = match value_str.trim().parse() {
+        Ok(v) => v,
+        Err(_) => return positional[0].clone(),
+    };
+
+    let decimals: i32 = if positional.len() > 1 {
+        positional[1].trim().parse().unwrap_or(0)
+    } else {
+        0
+    };
+
+    if decimals >= 0 {
+        let dec = decimals as usize;
+        format_number_with_commas(&format!("{value:.dec$}"))
+    } else {
+        let scale = 10f64.powi(decimals.unsigned_abs() as i32);
+        let rounded = (value / scale).round() * scale;
+        format_number_with_commas(&format!("{rounded:.0}"))
     }
 }

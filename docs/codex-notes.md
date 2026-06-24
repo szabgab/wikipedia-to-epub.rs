@@ -1,5 +1,43 @@
 # Codex Session Notes
 
+## 2026-06-24 Handle Fourth Batch of Wikipedia Templates
+
+### Summary
+Added support for 22 additional Wikipedia templates: "cite periodical", "co2", "East Japan Railway Company Lines", "Fukuoka Stock Exchange", "Fukuoka transit", "Hair space", "HakoneFujiIzuTransit", "Hokuriku Main Line RDT", "Hokuriku_Main_Line_(undivided)", "JRSSN", "Kyushu Railway Company Lines", "Nagoya transit", "Okayama transit", "Osaka transit", "Primary sources", "Rapid transit OSM map", "Round", "Shikoku transit", "Tohoku Shinkansen graphical timeline", "TOPIX 100", "Update", "West Japan Railway Company Lines".
+
+### Decisions Made
+- **Created Renderers & Aliases in Rust**:
+  - Implemented `render_co2_template`, `render_fukuoka_stock_exchange_template`, and `render_round_template` in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+  - Registered `"co2"`, `"fukuoka stock exchange"`, `"round"`, and `"jrssn"` (aliasing `render_jrksn_template`) in `get_dispatch_table()` in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+  - Registered `"cite periodical"` (aliasing `render_cite_journal_template`) in [src/templates/citation.rs](file:///opt/src/templates/citation.rs).
+  - Registered `"hair space"` (mapping to `\u{200a}`) in `get_fixed()` in [src/templates/mod.rs](file:///opt/src/templates/mod.rs).
+- **Classified Skipped Templates**:
+  - Appended 3 templates to [src/silent.csv](file:///opt/src/silent.csv): "Primary sources", "Rapid transit OSM map", "Update".
+  - Appended 14 templates to [src/navigations.csv](file:///opt/src/navigations.csv): "East Japan Railway Company Lines", "Fukuoka transit", "HakoneFujiIzuTransit", "Hokuriku Main Line RDT", "Hokuriku Main Line (undivided)", "Hokuriku_Main_Line_(undivided)", "Kyushu Railway Company Lines", "Nagoya transit", "Okayama transit", "Osaka transit", "Shikoku transit", "Tohoku Shinkansen graphical timeline", "TOPIX 100", "West Japan Railway Company Lines".
+  - Sorted both CSV files using `./tools/sort.sh`.
+- **Added Unit Tests**:
+  - Wrote 22 separate unit tests in [src/tests.rs](file:///opt/src/tests.rs) (one for each template) to verify exact behavior.
+- **Updated Documentation**:
+  - Documented new template conversion rules in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo fmt`, `cargo check`, and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-23 Handle Third Batch of Wikipedia Templates
 
 ### Summary

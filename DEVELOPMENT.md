@@ -81,7 +81,13 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{ISBN|0-8248-0673-5}}` becomes `ISBN 0-8248-0673-5`
 * `{{ASIN|B00086U61Y}}` becomes `ASIN B00086U61Y`
 * `{{tyo|6758}}` and `{{nag|6758}}` format stock ticker links/codes for Tokyo (`TYO: 6758`) and Nagoya (`Nagoya: 6758`) exchanges
+* `{{Fukuoka Stock Exchange|9999}}` formats stock ticker codes for the Fukuoka Stock Exchange (`FSE: 9999`)
 * `{{tba}}` and `{{dagger}}` display standard fixed abbreviation and symbol text ("TBA" and "†")
+* `{{co2}}` (and its link-enabled version `{{co2|link=yes}}`) renders chemical formulas for carbon dioxide (e.g. `CO<sub>2</sub>` or `[[Carbon dioxide|CO<sub>2</sub>]]`)
+* `{{round|123.456|2}}` rounds a number to a specified number of decimal places and formats with commas
+* `{{JRSSN|Y|12}}` formats a JR station numbering identifier (`Y12`)
+* `{{Hair space}}` inserts a Unicode U+200A hair space character
+* `{{cite periodical|title=Hello}}` formats a periodical-style bibliographic citation
 * `{{Script|Hani|神}}` becomes `神`
 * `{{oclc|58053128}}` becomes `OCLC 58053128`
 * `{{doi|10.1080/02757206.2013.726990}}` becomes `doi:10.1080/02757206.2013.726990`

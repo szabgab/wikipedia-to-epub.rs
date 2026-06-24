@@ -8434,3 +8434,130 @@ fn test_template_why() {
 fn test_template_wikifunctions() {
     assert_eq!(render_templates("{{Wikifunctions}}"), "");
 }
+
+#[test]
+fn test_template_cite_periodical() {
+    assert!(render_templates("{{cite periodical|title=Hello}}").contains("Hello"));
+}
+
+#[test]
+fn test_template_co2() {
+    assert_eq!(
+        render_templates("{{co2}}"),
+        "CO__WIKIPEDIA_TO_EPUB_SUB_START__2__WIKIPEDIA_TO_EPUB_SUB_END__"
+    );
+    assert_eq!(
+        render_templates("{{co2|link=yes}}"),
+        "[[Carbon dioxide|CO__WIKIPEDIA_TO_EPUB_SUB_START__2__WIKIPEDIA_TO_EPUB_SUB_END__]]"
+    );
+}
+
+#[test]
+fn test_template_east_japan_railway_company_lines() {
+    assert_eq!(render_templates("{{East Japan Railway Company Lines}}"), "");
+}
+
+#[test]
+fn test_template_fukuoka_stock_exchange() {
+    assert_eq!(render_templates("{{Fukuoka Stock Exchange}}"), "FSE");
+    assert_eq!(
+        render_templates("{{Fukuoka Stock Exchange|9999}}"),
+        "FSE: 9999"
+    );
+}
+
+#[test]
+fn test_template_fukuoka_transit() {
+    assert_eq!(render_templates("{{Fukuoka transit}}"), "");
+}
+
+#[test]
+fn test_template_hair_space() {
+    assert_eq!(render_templates("{{Hair space}}"), "\u{200a}");
+}
+
+#[test]
+fn test_template_hakone_fuji_izu_transit() {
+    assert_eq!(render_templates("{{HakoneFujiIzuTransit}}"), "");
+}
+
+#[test]
+fn test_template_hokuriku_main_line_rdt() {
+    assert_eq!(render_templates("{{Hokuriku Main Line RDT}}"), "");
+}
+
+#[test]
+fn test_template_hokuriku_main_line_undivided() {
+    assert_eq!(render_templates("{{Hokuriku Main Line (undivided)}}"), "");
+    assert_eq!(render_templates("{{Hokuriku_Main_Line_(undivided)}}"), "");
+}
+
+#[test]
+fn test_template_jrssn() {
+    assert_eq!(render_templates("{{JRSSN|Y|12}}"), "Y12");
+}
+
+#[test]
+fn test_template_kyushu_railway_company_lines() {
+    assert_eq!(render_templates("{{Kyushu Railway Company Lines}}"), "");
+}
+
+#[test]
+fn test_template_nagoya_transit() {
+    assert_eq!(render_templates("{{Nagoya transit}}"), "");
+}
+
+#[test]
+fn test_template_okayama_transit() {
+    assert_eq!(render_templates("{{Okayama transit}}"), "");
+}
+
+#[test]
+fn test_template_osaka_transit() {
+    assert_eq!(render_templates("{{Osaka transit}}"), "");
+}
+
+#[test]
+fn test_template_primary_sources() {
+    assert_eq!(render_templates("{{Primary sources}}"), "");
+}
+
+#[test]
+fn test_template_rapid_transit_osm_map() {
+    assert_eq!(render_templates("{{Rapid transit OSM map}}"), "");
+}
+
+#[test]
+fn test_template_round() {
+    assert_eq!(render_templates("{{round|123.456|2}}"), "123.46");
+    assert_eq!(render_templates("{{round|123.456}}"), "123");
+    assert_eq!(render_templates("{{round|1234|-2}}"), "1,200");
+}
+
+#[test]
+fn test_template_shikoku_transit() {
+    assert_eq!(render_templates("{{Shikoku transit}}"), "");
+}
+
+#[test]
+fn test_template_tohoku_shinkansen_graphical_timeline() {
+    assert_eq!(
+        render_templates("{{Tohoku Shinkansen graphical timeline}}"),
+        ""
+    );
+}
+
+#[test]
+fn test_template_topix_100() {
+    assert_eq!(render_templates("{{TOPIX 100}}"), "");
+}
+
+#[test]
+fn test_template_update() {
+    assert_eq!(render_templates("{{Update}}"), "");
+}
+
+#[test]
+fn test_template_west_japan_railway_company_lines() {
+    assert_eq!(render_templates("{{West Japan Railway Company Lines}}"), "");
+}

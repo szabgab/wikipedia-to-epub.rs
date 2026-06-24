@@ -68,6 +68,10 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_cite_journal_template as TemplateHandler,
         ),
         (
+            "cite periodical",
+            render_cite_journal_template as TemplateHandler,
+        ),
+        (
             "cite magazine",
             render_cite_journal_template as TemplateHandler,
         ),
