@@ -145,6 +145,14 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("jrksn", render_jrksn_template as TemplateHandler),
         ("jrssn", render_jrksn_template as TemplateHandler),
         ("co2", render_co2_template as TemplateHandler),
+        ("abw", render_abw_template as TemplateHandler),
+        ("afg", render_afg_template as TemplateHandler),
+        ("ago", render_ago_template as TemplateHandler),
+        ("aia", render_aia_template as TemplateHandler),
+        ("align", render_align_template as TemplateHandler),
+        ("yes", render_yes_template as TemplateHandler),
+        ("yes2", render_yes2_template as TemplateHandler),
+        ("age in years", render_age_template as TemplateHandler),
         (
             "fukuoka stock exchange",
             render_fukuoka_stock_exchange_template as TemplateHandler,
@@ -6590,4 +6598,85 @@ fn render_round_template(params: &str) -> String {
         let rounded = (value / scale).round() * scale;
         format_number_with_commas(&format!("{rounded:.0}"))
     }
+}
+
+fn render_country_flag_template(country_name: &str, params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let display_name = template_param(&named, &["name"])
+        .or_else(|| {
+            positional
+                .first()
+                .map(String::as_str)
+                .filter(|val| !val.chars().all(|c| c.is_ascii_digit()) && !val.is_empty())
+        })
+        .unwrap_or(country_name);
+
+    format!("[[{country_name}|{display_name}]]")
+}
+
+/// [ABW](https://en.wikipedia.org/wiki/Template:ABW)
+fn render_abw_template(params: &str) -> String {
+    render_country_flag_template("Aruba", params)
+}
+
+/// [AFG](https://en.wikipedia.org/wiki/Template:AFG)
+fn render_afg_template(params: &str) -> String {
+    render_country_flag_template("Afghanistan", params)
+}
+
+/// [AGO](https://en.wikipedia.org/wiki/Template:AGO)
+fn render_ago_template(params: &str) -> String {
+    render_country_flag_template("Angola", params)
+}
+
+/// [AIA](https://en.wikipedia.org/wiki/Template:AIA)
+fn render_aia_template(params: &str) -> String {
+    render_country_flag_template("Anguilla", params)
+}
+
+/// [align](https://en.wikipedia.org/wiki/Template:Align)
+fn render_align_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let has_direction = positional.first().is_some_and(|val| {
+        let val_lower = val.to_lowercase();
+        val_lower == "left" || val_lower == "center" || val_lower == "right"
+    });
+
+    let (align, content) = if has_direction {
+        let align = positional[0].trim().to_lowercase();
+        let content = template_param(&named, &["1"])
+            .or_else(|| positional.get(1).map(String::as_str))
+            .unwrap_or("");
+        (align, content.to_string())
+    } else {
+        let content = template_param(&named, &["1"])
+            .or_else(|| positional.first().map(String::as_str))
+            .unwrap_or("");
+        ("right".to_string(), content.to_string())
+    };
+
+    let rendered_content = render_templates(&content);
+    format!("<div style=\"text-align: {align};\">{rendered_content}</div>")
+}
+
+/// [yes](https://en.wikipedia.org/wiki/Template:Yes)
+fn render_yes_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let text = positional.first().map(String::as_str).unwrap_or("Yes");
+    format!(
+        "style=\"background: #9f9; color: black; vertical-align: middle; text-align: center;\" class=\"yes table-yes2\"|{text}"
+    )
+}
+
+/// [yes2](https://en.wikipedia.org/wiki/Template:Yes2)
+fn render_yes2_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let text = positional.first().map(String::as_str).unwrap_or("Yes");
+    format!(
+        "style=\"background: #b2ffb2; color: black; vertical-align: middle; text-align: center;\" class=\"yes table-yes2\"|{text}"
+    )
 }

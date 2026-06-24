@@ -17,6 +17,7 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_citation_needed_span_template as TemplateHandler,
         ),
         ("cite web", render_cite_web_template as TemplateHandler),
+        ("allmusic", render_allmusic_template as TemplateHandler),
         ("cite book", render_cite_book_template as TemplateHandler),
         (
             "cite dictionary",
@@ -2298,4 +2299,35 @@ fn render_planetmath_template(params: &str) -> String {
     parts.push("''PlanetMath''".to_string());
 
     parts.join(" at ")
+}
+
+/// [AllMusic](https://en.wikipedia.org/wiki/Template:AllMusic)
+fn render_allmusic_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let class = template_param(&named, &["class"])
+        .or_else(|| positional.first().map(String::as_str))
+        .unwrap_or("artist");
+
+    let id = template_param(&named, &["id"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .unwrap_or("");
+
+    let title = template_param(&named, &["title", "3"])
+        .or_else(|| positional.get(2).map(String::as_str))
+        .unwrap_or("");
+
+    let display_title = if title.is_empty() {
+        "AllMusic".to_string()
+    } else {
+        format!("{title} at AllMusic")
+    };
+
+    if id.is_empty() {
+        display_title
+    } else {
+        let url = format!("https://www.allmusic.com/{class}/{id}");
+        format!("[{url} {display_title}]")
+    }
 }

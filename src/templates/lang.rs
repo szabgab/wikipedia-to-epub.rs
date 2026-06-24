@@ -1316,5 +1316,18 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ),
         ("jarc", render_ja_rail_color_template as TemplateHandler),
         ("inlang", render_in_lang_template as TemplateHandler),
+        ("ae", render_ae_template as TemplateHandler),
     ])
+}
+
+fn render_ae_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let text = positional.first().map(String::as_str).unwrap_or("");
+    if text.is_empty() {
+        return String::new();
+    }
+    let rendered_text = render_templates(text);
+    format!(
+        "__WIKIPEDIA_TO_EPUB_LANG_START__ae__WIKIPEDIA_TO_EPUB_LANG_VALUE__{rendered_text}__WIKIPEDIA_TO_EPUB_LANG_END__"
+    )
 }

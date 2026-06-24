@@ -8561,3 +8561,110 @@ fn test_template_update() {
 fn test_template_west_japan_railway_company_lines() {
     assert_eq!(render_templates("{{West Japan Railway Company Lines}}"), "");
 }
+
+#[test]
+fn test_template_about_other_people() {
+    assert_eq!(render_templates("{{about other people}}"), "");
+}
+
+#[test]
+fn test_template_about_year() {
+    assert_eq!(render_templates("{{About year}}"), "");
+}
+
+#[test]
+fn test_template_abw() {
+    assert_eq!(render_templates("{{ABW}}"), "[[Aruba|Aruba]]");
+    assert_eq!(render_templates("{{ABW|1984}}"), "[[Aruba|Aruba]]");
+    assert_eq!(render_templates("{{ABW|name=Aruba!}}"), "[[Aruba|Aruba!]]");
+    assert_eq!(render_templates("{{ABW|Aruba!}}"), "[[Aruba|Aruba!]]");
+}
+
+#[test]
+fn test_template_according_to_whom() {
+    assert_eq!(render_templates("{{according to whom}}"), "");
+}
+
+#[test]
+fn test_template_additional_citation_needed() {
+    assert_eq!(render_templates("{{Additional citation needed}}"), "");
+}
+
+#[test]
+fn test_template_ae() {
+    assert_eq!(
+        render_templates("{{ae|AvestanWord}}"),
+        "__WIKIPEDIA_TO_EPUB_LANG_START__ae__WIKIPEDIA_TO_EPUB_LANG_VALUE__AvestanWord__WIKIPEDIA_TO_EPUB_LANG_END__"
+    );
+}
+
+#[test]
+fn test_template_afg() {
+    assert_eq!(render_templates("{{AFG}}"), "[[Afghanistan|Afghanistan]]");
+}
+
+#[test]
+fn test_template_age_in_years() {
+    assert_eq!(
+        render_templates("{{age in years|2001|1|10|2012|2|20}}"),
+        "11"
+    );
+}
+
+#[test]
+fn test_template_yes() {
+    assert_eq!(
+        render_templates("{{yes}}"),
+        "style=\"background: #9f9; color: black; vertical-align: middle; text-align: center;\" class=\"yes table-yes2\"|Yes"
+    );
+    assert_eq!(
+        render_templates("{{yes|Sure}}"),
+        "style=\"background: #9f9; color: black; vertical-align: middle; text-align: center;\" class=\"yes table-yes2\"|Sure"
+    );
+}
+
+#[test]
+fn test_template_yes2() {
+    assert_eq!(
+        render_templates("{{yes2}}"),
+        "style=\"background: #b2ffb2; color: black; vertical-align: middle; text-align: center;\" class=\"yes table-yes2\"|Yes"
+    );
+    assert_eq!(
+        render_templates("{{yes2|Sure}}"),
+        "style=\"background: #b2ffb2; color: black; vertical-align: middle; text-align: center;\" class=\"yes table-yes2\"|Sure"
+    );
+}
+
+#[test]
+fn test_template_ago() {
+    assert_eq!(render_templates("{{AGO}}"), "[[Angola|Angola]]");
+}
+
+#[test]
+fn test_template_aia() {
+    assert_eq!(render_templates("{{AIA}}"), "[[Anguilla|Anguilla]]");
+}
+
+#[test]
+fn test_template_align() {
+    assert_eq!(
+        render_templates("{{align|center|centered text}}"),
+        "<div style=\"text-align: center;\">centered text</div>"
+    );
+    assert_eq!(
+        render_templates("{{align|right text}}"),
+        "<div style=\"text-align: right;\">right text</div>"
+    );
+}
+
+#[test]
+fn test_template_allmusic() {
+    assert_eq!(
+        render_templates("{{AllMusic|artist|led-zeppelin-mn0000139026|Led Zeppelin}}"),
+        "[https://www.allmusic.com/artist/led-zeppelin-mn0000139026 Led Zeppelin at AllMusic]"
+    );
+    assert_eq!(
+        render_templates("{{AllMusic|id=led-zeppelin-mn0000139026|title=Led Zeppelin}}"),
+        "[https://www.allmusic.com/artist/led-zeppelin-mn0000139026 Led Zeppelin at AllMusic]"
+    );
+}

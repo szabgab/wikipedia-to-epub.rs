@@ -1,5 +1,45 @@
 # Codex Session Notes
 
+## 2026-06-24 Handle Fifth Batch of Wikipedia Templates
+
+### Summary
+Added support for 14 additional Wikipedia templates: "about other people", "About year", "ABW", "according to whom", "Additional citation needed", "AE", "AFG", "age in years", "yes", "yes2", "AGO", "AIA", "align", "AllMusic".
+
+### Decisions Made
+- **Created Renderers & Aliases in Rust**:
+  - Implemented `render_country_flag_template` (supporting name overrides and historical flag variants) and helper methods `render_abw_template`, `render_afg_template`, `render_ago_template`, and `render_aia_template` in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+  - Implemented `render_align_template` (handling alignment and custom content) in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+  - Implemented `render_yes_template` and `render_yes2_template` (formatting table cell approval tags with background color styling) in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+  - Implemented `render_ae_template` (Avestan language wrapper) in [src/templates/lang.rs](file:///opt/src/templates/lang.rs).
+  - Implemented `render_allmusic_template` (formatting artist/album links to AllMusic database) in [src/templates/citation.rs](file:///opt/src/templates/citation.rs).
+  - Registered `"abw"`, `"afg"`, `"ago"`, `"aia"`, `"align"`, `"yes"`, `"yes2"`, and `"age in years"` (aliasing `render_age_template`) in `get_dispatch_table()` in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+  - Registered `"ae"` in `get_dispatch_table()` in [src/templates/lang.rs](file:///opt/src/templates/lang.rs).
+  - Registered `"allmusic"` in `get_dispatch_table()` in [src/templates/citation.rs](file:///opt/src/templates/citation.rs).
+- **Classified Skipped Templates**:
+  - Appended 4 templates to [src/silent.csv](file:///opt/src/silent.csv): "about other people", "About year", "according to whom", "Additional citation needed".
+  - Sorted CSV databases using `./tools/sort.sh`.
+- **Added Unit Tests**:
+  - Wrote 14 separate unit test cases in [src/tests.rs](file:///opt/src/tests.rs) (one for each template) to verify exact behavior.
+- **Updated Documentation**:
+  - Documented new template conversion rules in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/templates/lang.rs](file:///opt/src/templates/lang.rs) [MODIFY]
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo fmt`, `cargo check`, and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-24 Upgrade reqwest Crate
 
 ### Summary

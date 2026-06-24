@@ -86,6 +86,12 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{co2}}` (and its link-enabled version `{{co2|link=yes}}`) renders chemical formulas for carbon dioxide (e.g. `CO<sub>2</sub>` or `[[Carbon dioxide|CO<sub>2</sub>]]`)
 * `{{round|123.456|2}}` rounds a number to a specified number of decimal places and formats with commas
 * `{{JRSSN|Y|12}}` formats a JR station numbering identifier (`Y12`)
+* `{{ABW}}` (along with `{{AFG}}`, `{{AGO}}`, `{{AIA}}`) formats country links with flag styling (e.g. `[[Aruba|Aruba]]`)
+* `{{ae|word}}` formats an Avestan language wrapper
+* `{{align|center|text}}` aligns a text block (e.g. `<div style="text-align: center;">text</div>`)
+* `{{yes}}` (and `{{yes2}}`) formats table cells representing approval/affirmation with background color styling
+* `{{AllMusic|id=mn0000139026|title=Led Zeppelin}}` formats external links to AllMusic
+* `{{age in years|2001|1|10|2012|2|20}}` formats calculated age in years
 * `{{Hair space}}` inserts a Unicode U+200A hair space character
 * `{{cite periodical|title=Hello}}` formats a periodical-style bibliographic citation
 * `{{Script|Hani|神}}` becomes `神`
