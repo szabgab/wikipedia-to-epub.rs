@@ -8252,3 +8252,185 @@ fn test_template_machine_learning() {
 fn test_template_machine_learning_bar() {
     assert_eq!(render_templates("{{Machine learning bar}}"), "");
 }
+
+#[test]
+fn test_template_mactutor() {
+    assert_eq!(
+        render_templates("{{MacTutor|id=Kepler|title=Johannes Kepler}}"),
+        "O'Connor, John J.; Robertson, Edmund F., [[official-url:https://mathshistory.st-andrews.ac.uk/Biographies/Kepler/|\\\"Johannes Kepler\\\"]], ''MacTutor History of Mathematics Archive'', University of St Andrews"
+    );
+}
+
+#[test]
+fn test_template_main_category() {
+    assert_eq!(render_templates("{{main category|Some Cat}}"), "");
+}
+
+#[test]
+fn test_template_math_proof() {
+    assert_eq!(
+        render_templates("{{Math proof|title=Proof of Theorem 1|proof=Proof content}}"),
+        "''Proof of Theorem 1''. Proof content"
+    );
+}
+
+#[test]
+fn test_template_math_theorem() {
+    assert_eq!(
+        render_templates(
+            "{{Math theorem|name=Theorem|note=Euler|math_statement=Statement content}}"
+        ),
+        "'''Theorem (Euler)''': Statement content"
+    );
+}
+
+#[test]
+fn test_template_misuse_of_statistics() {
+    assert_eq!(render_templates("{{Misuse of statistics}}"), "");
+}
+
+#[test]
+fn test_template_no_footnotes() {
+    assert_eq!(render_templates("{{no footnotes|date=July 2023}}"), "");
+}
+
+#[test]
+fn test_template_notelist_lr() {
+    assert_eq!(render_templates("{{notelist-lr}}"), "");
+}
+
+#[test]
+fn test_template_numblk() {
+    assert_eq!(
+        render_templates("{{NumBlk|:|2=<math>E=mc^2</math>|3=(1)}}"),
+        "<math>E=mc^2</math> (1)"
+    );
+    assert_eq!(
+        render_templates("{{NumBlk|:|content=some content|number=10}}"),
+        "some content 10"
+    );
+    assert_eq!(
+        render_templates("{{NumBlk|:|some content|10}}"),
+        "some content 10"
+    );
+}
+
+#[test]
+fn test_template_open_closed() {
+    assert_eq!(render_templates("{{open-closed|a|b}}"), "(a, b]");
+    assert_eq!(render_templates("{{open-closed|a, b}}"), "(a, b]");
+}
+
+#[test]
+fn test_template_open_open() {
+    assert_eq!(render_templates("{{open-open|a|b}}"), "(a, b)");
+    assert_eq!(render_templates("{{open-open|a, b}}"), "(a, b)");
+}
+
+#[test]
+fn test_template_overline() {
+    assert_eq!(render_templates("{{overline|x}}"), "x");
+}
+
+#[test]
+fn test_template_peter_gustav_lejeune_dirichlet() {
+    assert_eq!(render_templates("{{Peter Gustav Lejeune Dirichlet}}"), "");
+}
+
+#[test]
+fn test_template_planetmath() {
+    assert_eq!(
+        render_templates("{{PlanetMath|urlname=GammaFunction|title=Gamma Function}}"),
+        "[[official-url:https://planetmath.org/GammaFunction|\\\"Gamma Function\\\"]] at ''PlanetMath''"
+    );
+}
+
+#[test]
+fn test_template_probability_distribution() {
+    assert_eq!(render_templates("{{Probability distribution}}"), "");
+}
+
+#[test]
+fn test_template_public_health() {
+    assert_eq!(render_templates("{{Public health}}"), "");
+}
+
+#[test]
+fn test_template_qualitative_forecasting_methods() {
+    assert_eq!(render_templates("{{Qualitative forecasting methods}}"), "");
+}
+
+#[test]
+fn test_template_quantitative_forecasting_methods() {
+    assert_eq!(render_templates("{{Quantitative forecasting methods}}"), "");
+}
+
+#[test]
+fn test_template_request_quotation() {
+    assert_eq!(render_templates("{{request quotation|date=June 2026}}"), "");
+}
+
+#[test]
+fn test_template_satellite_navigation_systems() {
+    assert_eq!(render_templates("{{satellite navigation systems}}"), "");
+}
+
+#[test]
+fn test_template_sfnmp() {
+    assert_eq!(render_templates("{{sfnmp|1p1=10|1p2=20}}"), "");
+}
+
+#[test]
+fn test_template_social_surveys() {
+    assert_eq!(render_templates("{{Social surveys}}"), "");
+}
+
+#[test]
+fn test_template_social_surveys_capitalization() {
+    assert_eq!(render_templates("{{social surveys}}"), "");
+}
+
+#[test]
+fn test_template_sql_sidebar() {
+    assert_eq!(render_templates("{{SQL sidebar}}"), "");
+}
+
+#[test]
+fn test_template_start_date_and_age() {
+    let r1 = render_templates("{{Start date and age|2023|06|23}}");
+    assert!(r1.contains("June 23, 2023; age "), "Actual: {}", r1);
+
+    let r2 = render_templates("{{Start date and age|2023|06|23|paren=yes}}");
+    assert!(r2.contains("June 23, 2023 (age "), "Actual: {}", r2);
+
+    let r3 = render_templates("{{Start date and age|2023|06|23|br=yes}}");
+    assert!(r3.contains("June 23, 2023<br />age "), "Actual: {}", r3);
+
+    let r4 = render_templates("{{Start date and age|2023|06|23|df=yes}}");
+    assert!(r4.contains("23 June 2023; age "), "Actual: {}", r4);
+}
+
+#[test]
+fn test_template_statistics_topics_sidebar() {
+    assert_eq!(render_templates("{{Statistics topics sidebar}}"), "");
+}
+
+#[test]
+fn test_template_unfocused() {
+    assert_eq!(render_templates("{{Unfocused}}"), "");
+}
+
+#[test]
+fn test_template_verification_needed() {
+    assert_eq!(render_templates("{{verification needed}}"), "");
+}
+
+#[test]
+fn test_template_why() {
+    assert_eq!(render_templates("{{Why?}}"), "");
+}
+
+#[test]
+fn test_template_wikifunctions() {
+    assert_eq!(render_templates("{{Wikifunctions}}"), "");
+}

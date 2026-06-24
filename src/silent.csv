@@ -1,7 +1,7 @@
 
+
 '
 -
-
 0
 About,                       Linking the reader to other meaning of the same word.,      https://en.wikipedia.org/wiki/Template:About
 additional citations needed, Asks for help.,                                             https://en.wikipedia.org/wiki/Template:Additional_citation_needed
@@ -137,6 +137,7 @@ location map+
 long
 look from
 lower,                       Visual change.,                                             https://en.wikipedia.org/wiki/Template:Lower
+main category
 main cat,                    Navigation hatnote.,                                        https://en.wikipedia.org/wiki/Template:Main_cat
 Meitetsu Group,              A hidden list.,                                             https://en.wikipedia.org/wiki/Template:Meitetsu_Group
 Merging from,                Merge proposed banner.,                                     https://en.wikipedia.org/wiki/Template:Merging_from
@@ -154,8 +155,10 @@ Navboxes top
 Needs update
 New archival link needed
 NIST-PD,                     Public domain attribution banner.,                          https://en.wikipedia.org/wiki/Template:NIST-PD
+no footnotes
 NoteFoot
 notelist
+notelist-lr
 notelist-ua
 NoteTag
 nowrap begin,                Formatting wrapper.,                                        https://en.wikipedia.org/wiki/Template:Nowrap_begin
@@ -202,9 +205,11 @@ Refend
 Refimprove
 reflist
 refn
+request quotation
 service rail start,          Rail transport.,                                            https://en.wikipedia.org/wiki/Template:Service_rail_start
 Sfn
 sfnm
+sfnmp
 sfnp
 SfnRef
 Short description,           TODO we might want to display this on some kind of an index page or TOC., https://en.wikipedia.org/wiki/Template:Short_description
@@ -238,6 +243,7 @@ tree list/end
 tree list/final branch
 tree list/final branching
 unbalanced opinion
+Unfocused
 Unreferenced
 Unreferencedsect
 unreferenced section
@@ -248,6 +254,7 @@ unsourced,                   Citation needed.,                                  
 unsourced section
 Update inline
 update section
+verification needed
 verify source,              Need to verify source,   https://en.wikipedia.org/wiki/Template:Verify_source
 very long
 vs,                         Need to verify source,   https://en.wikipedia.org/wiki/Template:Verify_source
@@ -255,9 +262,11 @@ Weather box
 when
 which?
 who
+Why?
 Wide image
 Wikiatlas
 Wikidata fallback link
+Wikifunctions
 Wikinews
 wikiquote
 Wikiquote-inline

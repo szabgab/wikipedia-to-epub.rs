@@ -205,6 +205,22 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             "closed-closed",
             render_closed_closed_template as TemplateHandler,
         ),
+        ("math proof", render_math_proof_template as TemplateHandler),
+        (
+            "math theorem",
+            render_math_theorem_template as TemplateHandler,
+        ),
+        ("numblk", render_numblk_template as TemplateHandler),
+        (
+            "open-closed",
+            render_open_closed_template as TemplateHandler,
+        ),
+        ("open-open", render_open_open_template as TemplateHandler),
+        ("overline", render_passthrough_template as TemplateHandler),
+        (
+            "start date and age",
+            render_start_date_and_age_template as TemplateHandler,
+        ),
         (
             "equation box 1",
             render_equation_box_1_template as TemplateHandler,
@@ -6343,6 +6359,176 @@ fn render_font_color_template(params: &str) -> String {
 
     if let Some(t) = text {
         render_templates(&t)
+    } else {
+        String::new()
+    }
+}
+
+/// [Math proof](https://en.wikipedia.org/wiki/Template:Math_proof)
+fn render_math_proof_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let proof = template_param(&named, &["proof"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+
+    let title = template_param(&named, &["title"])
+        .map(|v| v.to_string())
+        .unwrap_or_else(|| "Proof".to_string());
+
+    format!("''{}''. {}", title, render_templates(&proof))
+}
+
+/// [Math theorem](https://en.wikipedia.org/wiki/Template:Math_theorem)
+fn render_math_theorem_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let statement = template_param(&named, &["math_statement"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.first().cloned())
+        .unwrap_or_default();
+
+    let name = template_param(&named, &["name"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.get(1).cloned())
+        .unwrap_or_else(|| "Theorem".to_string());
+
+    let note = template_param(&named, &["note"])
+        .map(|v| format!(" ({})", v))
+        .unwrap_or_default();
+
+    format!(
+        "'''{}{}{}''': {}",
+        name,
+        note,
+        "",
+        render_templates(&statement)
+    )
+}
+
+/// [NumBlk](https://en.wikipedia.org/wiki/Template:NumBlk)
+fn render_numblk_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let content = template_param(&named, &["content", "2"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.get(1).cloned())
+        .unwrap_or_default();
+
+    let number = template_param(&named, &["number", "3"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.get(2).cloned())
+        .unwrap_or_default();
+
+    let rendered_content = render_templates(&content);
+    let rendered_number = render_templates(&number);
+
+    if rendered_number.is_empty() {
+        rendered_content
+    } else {
+        format!("{} {}", rendered_content, rendered_number)
+    }
+}
+
+/// [open-closed](https://en.wikipedia.org/wiki/Template:Open-closed)
+fn render_open_closed_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    match positional.as_slice() {
+        [] => String::new(),
+        [single] => {
+            if let Some((a, b)) = single.split_once(',') {
+                format!("({}, {}]", a.trim(), b.trim())
+            } else {
+                format!("({}, ]", single.trim())
+            }
+        }
+        [a, b, ..] => {
+            format!("({}, {}]", a.trim(), b.trim())
+        }
+    }
+}
+
+/// [open-open](https://en.wikipedia.org/wiki/Template:Open-open)
+fn render_open_open_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    match positional.as_slice() {
+        [] => String::new(),
+        [single] => {
+            if let Some((a, b)) = single.split_once(',') {
+                format!("({}, {})", a.trim(), b.trim())
+            } else {
+                format!("({}, )", single.trim())
+            }
+        }
+        [a, b, ..] => {
+            format!("({}, {})", a.trim(), b.trim())
+        }
+    }
+}
+
+/// [Start date and age](https://en.wikipedia.org/wiki/Template:Start_date_and_age)
+fn render_start_date_and_age_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let nums: Vec<i32> = positional
+        .iter()
+        .map(|s| s.parse::<i32>().unwrap_or(0))
+        .collect();
+
+    if nums.len() >= 3 {
+        let y = nums[0];
+        let m = nums[1];
+        let d = nums[2];
+
+        let month_names = [
+            "",
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+        ];
+
+        let month_name = if (1..=12).contains(&m) {
+            month_names[m as usize]
+        } else {
+            ""
+        };
+
+        let (cy, cm, cd) = current_utc_date();
+        let age = calculate_age(y, m, d, cy, cm, cd);
+
+        let named = template_named_params(params);
+        let df_dmy = template_param(&named, &["df"])
+            .is_some_and(|v| v.eq_ignore_ascii_case("yes") || v.eq_ignore_ascii_case("dmy"));
+        let paren =
+            template_param(&named, &["paren"]).is_some_and(|v| v.eq_ignore_ascii_case("yes"));
+        let br = template_param(&named, &["br"]).is_some_and(|v| v.eq_ignore_ascii_case("yes"));
+
+        let date_str = if df_dmy {
+            format!("{} {} {}", d, month_name, y)
+        } else {
+            format!("{} {}, {}", month_name, d, y)
+        };
+        let age_str = format!("age {}", age);
+
+        if paren {
+            format!("{} ({})", date_str, age_str)
+        } else if br {
+            format!("{}<br />{}", date_str, age_str)
+        } else {
+            format!("{}; {}", date_str, age_str)
+        }
     } else {
         String::new()
     }

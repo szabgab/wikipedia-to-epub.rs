@@ -1,5 +1,43 @@
 # Codex Session Notes
 
+## 2026-06-23 Handle Third Batch of Wikipedia Templates
+
+### Summary
+Added support for 28 additional Wikipedia templates: "MacTutor", "main category", "Math proof", "Math theorem", "Misuse of statistics", "no footnotes", "notelist-lr", "NumBlk", "open-closed", "open-open", "overline", "Peter Gustav Lejeune Dirichlet", "PlanetMath", "Probability distribution", "Public health", "Qualitative forecasting methods", "Quantitative forecasting methods", "request quotation", "satellite navigation systems", "sfnmp", "Social surveys", "SQL sidebar", "Start date and age", "Statistics topics sidebar", "Unfocused", "verification needed", "Why?", "Wikifunctions".
+
+### Decisions Made
+- **Created Renderers & Aliases in Rust**:
+  - Implemented `render_mactutor_template` and `render_planetmath_template` in [src/templates/citation.rs](file:///opt/src/templates/citation.rs).
+  - Registered `"mactutor"` and `"planetmath"` in the dispatch table in `src/templates/citation.rs`.
+  - Implemented `render_math_proof_template`, `render_math_theorem_template`, `render_numblk_template`, `render_open_closed_template`, `render_open_open_template`, and `render_start_date_and_age_template` in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+  - Registered `"math proof"`, `"math theorem"`, `"numblk"`, `"open-closed"`, `"open-open"`, `"overline"` (as `render_passthrough_template` alias), and `"start date and age"` in the dispatch table in `src/templates/formatting.rs`.
+- **Classified Skipped Templates**:
+  - Appended 9 templates to [src/silent.csv](file:///opt/src/silent.csv): "main category", "no footnotes", "notelist-lr", "request quotation", "sfnmp", "Unfocused", "verification needed", "Why?", "Wikifunctions".
+  - Appended 10 templates to [src/navigations.csv](file:///opt/src/navigations.csv): "Misuse of statistics", "Peter Gustav Lejeune Dirichlet", "Probability distribution", "Public health", "Qualitative forecasting methods", "Quantitative forecasting methods", "satellite navigation systems", "Social surveys", "SQL sidebar", "Statistics topics sidebar".
+  - Sorted both CSV files using `./tools/sort.sh`.
+- **Added Unit Tests**:
+  - Wrote 28 separate unit tests in [src/tests.rs](file:///opt/src/tests.rs) (one for each template) to verify exact behavior.
+- **Updated Documentation**:
+  - Documented new template conversion rules in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo check`, `cargo fmt`, and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
+
 ## 2026-06-23 Handle Second Batch of Wikipedia Templates
 
 ### Summary

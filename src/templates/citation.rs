@@ -61,6 +61,8 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_citation_template as TemplateHandler,
         ),
         ("cite sep", render_cite_sep_template as TemplateHandler),
+        ("mactutor", render_mactutor_template as TemplateHandler),
+        ("planetmath", render_planetmath_template as TemplateHandler),
         (
             "cite journal",
             render_cite_journal_template as TemplateHandler,
@@ -2209,4 +2211,87 @@ fn render_cite_sep_template(params: &str) -> String {
     }
 
     parts.join(". ")
+}
+
+/// [MacTutor](https://en.wikipedia.org/wiki/Template:MacTutor)
+fn render_mactutor_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let id = template_param(&named, &["id"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.first().cloned());
+
+    let title = template_param(&named, &["title"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.get(1).cloned());
+
+    let class = template_param(&named, &["class"]).unwrap_or("Biographies");
+
+    let mut parts = Vec::new();
+
+    let authors = citation_people(&named, PersonRole::Author);
+    if !authors.is_empty() {
+        parts.push(authors);
+    } else {
+        parts.push("O'Connor, John J.; Robertson, Edmund F.".to_string());
+    }
+
+    if let Some(id_val) = id {
+        let title_val = title.unwrap_or_else(|| id_val.clone());
+        parts.push(format!(
+            "[[official-url:https://mathshistory.st-andrews.ac.uk/{}/{}/|\\\"{}\\\"]]",
+            class,
+            id_val,
+            render_templates(&title_val)
+        ));
+    } else if let Some(title_val) = title {
+        parts.push(format!("\"{}\"", render_templates(&title_val)));
+    }
+
+    parts.push("''MacTutor History of Mathematics Archive''".to_string());
+    parts.push("University of St Andrews".to_string());
+
+    if let Some(date) = template_param(&named, &["date"]) {
+        parts.push(render_templates(date));
+    }
+
+    parts.join(", ")
+}
+
+/// [PlanetMath](https://en.wikipedia.org/wiki/Template:PlanetMath)
+fn render_planetmath_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let urlname = template_param(&named, &["urlname"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.first().cloned());
+
+    let title = template_param(&named, &["title"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.get(1).cloned());
+
+    let mut parts = Vec::new();
+
+    if let Some(title_val) = title {
+        if let Some(ref url_val) = urlname {
+            parts.push(format!(
+                "[[official-url:https://planetmath.org/{}|\\\"{}\\\"]]",
+                url_val,
+                render_templates(&title_val)
+            ));
+        } else {
+            parts.push(format!("\"{}\"", render_templates(&title_val)));
+        }
+    } else if let Some(ref url_val) = urlname {
+        parts.push(format!(
+            "[[official-url:https://planetmath.org/{}|\\\"{}\\\"]]",
+            url_val, url_val
+        ));
+    }
+
+    parts.push("''PlanetMath''".to_string());
+
+    parts.join(" at ")
 }

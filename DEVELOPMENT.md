@@ -94,14 +94,22 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{mvar|k}}` formats variables in italic text (`<em>k</em>`)
 * `{{math|''y'' {{=}} 2}}` formats mathematical expressions inline (`<em>y</em> = 2`), supporting the nested `{{=}}` template which resolves to `=`
 * `{{tmath|E = mc^2}}` renders the mathematical formula as plain text
+* `{{Math proof|title=Proof of Theorem 1|proof=Proof content}}` formats a proof block with an italic heading: `''Proof of Theorem 1''. Proof content`
+* `{{Math theorem|name=Theorem|note=Euler|math_statement=Statement content}}` formats mathematical statements: `'''Theorem (Euler)''': Statement content`
+* `{{NumBlk|:|content|number}}` formats a numbered equation block: `content number`
+* `{{overline|text}}` formats a text style as a passthrough: `text`
 * `{{closed-open|a|b}}` (or `{{closed-open|a, b}}`) renders the mathematical interval notation: `[a, b)`
 * `{{closed-closed|a|b}}` (or `{{closed-closed|a, b}}`) renders the mathematical interval notation: `[a, b]`
+* `{{open-closed|a|b}}` (or `{{open-closed|a, b}}`) renders the mathematical interval notation: `(a, b]`
+* `{{open-open|a|b}}` (or `{{open-open|a, b}}`) renders the mathematical interval notation: `(a, b)`
 * `{{brace|1|2|3}}` renders curly braces around arguments: `{1|2|3}`
 * `{{Equation box 1|title=My Eq|equation=E = mc^2}}` renders the equation in a bold title followed by the equation: `'''My Eq''': E = mc^2`
 * `{{EquationNote|1|Eq. 1}}` renders an equation reference identifier: `Eq. 1`
 * `{{font color|red|blue|text}}` renders the text argument (ignoring ad-hoc color styling): `text`
 * `{{broader|Article|topic=topic}}` renders a hatnote pointing to a broader coverage article: `For broader coverage of topic, see [[Article]].`
 * `{{cite SEP|url-id=plato|title=Plato}}` renders a citation to the Stanford Encyclopedia of Philosophy
+* `{{MacTutor|id=Kepler|title=Johannes Kepler}}` renders a citation reference to the MacTutor History of Mathematics Archive
+* `{{PlanetMath|urlname=GammaFunction|title=Gamma Function}}` renders a citation reference to PlanetMath
 * `{{sqrt|x}}` renders the square root symbol with the content: `√x`
 * `{{Section link|Page|Section}}` (or `{{section link}}` / `{{slink}}`) renders the section link in internal format with a section sign: `[[Page#Section|Page § Section]]`
 * `{{mset|1|2|3}}` renders mathematical set curly braces notation: `{1, 2, 3}`
@@ -140,6 +148,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{which?}}`, `{{Redirect-distinguish}}`, and `{{example needed}}` are silent templates and are omitted from the output
 * `{{formatnum:5324}}` formats the number using thousands separators: `5,324`
 * `{{Birth date and age|1931|3|7}}` and `{{birth date and age|1931|3|7|df=yes}}` render the birth date and current age: `March 7, 1931 (age X)` and `7 March 1931 (age X)`
+* `{{Start date and age|2023|06|23}}` (or with `df=yes`, `paren=yes`, or `br=yes`) renders the start date and current age: `June 23, 2023; age X`
 * `{{dts|1947-5-20}}` (or `{{dts|1947|May|20}}`) formats the date for table sorting, displaying it in a human-readable form: `May 20, 1947`; also supports the `format=dmy` parameter (e.g. `20 May 1947`) and the `bc` flag
 * `{{unbulleted list|item1|item2}}` (or its aliases `{{ubl}}`, `{{ubli}}`, `{{ublist}}`, and `{{unbulleted indent list}}`) renders standard XHTML list items wrapped in unordered list tags: `<ul><li>item1</li><li>item2</li></ul>`
 * `{{hlist|item1|item2}}` (and `{{flatlist}}`) renders standard XHTML list items joined by commas: `item1, item2`
