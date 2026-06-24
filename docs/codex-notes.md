@@ -1,5 +1,29 @@
 # Codex Session Notes
 
+## 2026-06-24 Upgrade reqwest Crate
+
+### Summary
+Upgraded `reqwest` crate dependency to version `0.13.4`.
+
+### Decisions Made
+- **Updated Cargo.toml**:
+  - Upgraded `reqwest` dependency version to `"0.13.4"`.
+  - Replaced the deprecated `rustls-tls` feature with `rustls` (new naming in `reqwest` v0.13).
+  - Explicitly enabled the `"query"` feature on `reqwest` since the `.query(...)` method on `RequestBuilder` has been split out into a separate feature flag.
+
+### Files Changed
+- [Cargo.toml](file:///opt/Cargo.toml) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation: `cargo check` (passed cleanly).
+- Ran standard formatting, warnings check, and lints: `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored/live API tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-24 Handle Fourth Batch of Wikipedia Templates
 
 ### Summary
