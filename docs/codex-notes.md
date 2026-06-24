@@ -1,5 +1,46 @@
 # Codex Session Notes
 
+## 2026-06-24 Handle Sixth Batch of Wikipedia Templates
+
+### Summary
+Added support for 67 Wikipedia templates listed in `x.txt` (Country Flags, Active Renderers, Active Aliases, Silent/Maintenance, and Navigation/Sidebar boxes).
+
+### Decisions Made
+- **Created Renderers & Aliases in Rust**:
+  - Registered Country Flag templates (`ALB`, `ALG`, `AND`, `ARE`, `ARG`, `ARM`, `ATG`, `AUS`, `AUT`, `AZE`) mapping to `render_country_flag_template` in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+  - Implemented `render_army_template` (supporting national adjective matching and custom name overriding), `render_aud_template` (Australian Dollar currency formatting), `render_anli_template` (annotated link wrapper), and `render_annotated_image_template` (resolving to standard wikitext file markup) in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+  - Registered `"asof"` (aliased to `render_as_of_template`) and `"awrap"` (aliased to `render_passthrough_template`) in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+  - Registered `"angle bracket"` (aliased to `render_angbr_template`) in [src/templates/lang.rs](file:///opt/src/templates/lang.rs).
+  - Registered `"arxiv"` (implementing `render_arxiv_link_template`) and `"asn accident"` (implementing `render_asn_accident_template`) in [src/templates/citation.rs](file:///opt/src/templates/citation.rs).
+  - Added `"asterisk"` mapping (resolving to literal `*`) in `get_fixed()` in [src/templates/mod.rs](file:///opt/src/templates/mod.rs).
+- **Classified Skipped Templates**:
+  - Classified 5 templates as silent/maintenance in [src/silent.csv](file:///opt/src/silent.csv): "AN chess", "As of?", "Authority control (arts)", "Automatic taxobox", "Automotive engine".
+  - Classified 42 templates as navigations/sidebars in [src/navigations.csv](file:///opt/src/navigations.csv): "Albanian bread", "Alcoholic beverages", "alcoholic drinks", "AMS Presidents", "Anabaptist vertical", "Ancient Egypt dynasties sidebar", "Ancient Egypt graphical timeline", "Ancient Egypt topics", "Ancient Roman Wars", "Ancient Rome military sidebar", "Ancient Rome topics", "Ancient seafaring", "Anglicanism", "Anti-communism", "Antique Kings of Italy", "Antisemitism", "Antisemitism topics", "Application of wind energy", "Archhistory", "Architecture in the United States", "Archival records", "Areas of London", "Armenian language", "Armenians", "Armenia topics", "Armies in Europe", "Army Group Rear Area (Wehrmacht)", "Articles on first-level administrative divisions of European countries", "Articles on second-level administrative divisions of European countries", "Art of Europe", "Aspects of capitalism", "Association football tactics and skills", "Association football terminology", "Atatürk sidebar", "Augustus", "Austrian archdukes", "Austria topics", "Austro-Hungarian claimants", "authoritarian", "authoritarian types of rule", "Autonomous types of first-tier administration", "Avant-garde".
+  - Sorted both CSV databases alphabetically using `./tools/sort.sh`.
+- **Added Unit Tests**:
+  - Wrote 67 separate unit test cases in [src/tests.rs](file:///opt/src/tests.rs) (one for each template) to verify exact behavior.
+- **Updated Documentation**:
+  - Documented new template conversion rules in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/templates/lang.rs](file:///opt/src/templates/lang.rs) [MODIFY]
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked compilation and formatting: `cargo fmt`, `cargo check`, and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-24 Handle Fifth Batch of Wikipedia Templates
 
 ### Summary

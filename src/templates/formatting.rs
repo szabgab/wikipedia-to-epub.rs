@@ -149,6 +149,25 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("afg", render_afg_template as TemplateHandler),
         ("ago", render_ago_template as TemplateHandler),
         ("aia", render_aia_template as TemplateHandler),
+        ("alb", render_alb_template as TemplateHandler),
+        ("alg", render_alg_template as TemplateHandler),
+        ("and", render_and_template as TemplateHandler),
+        ("are", render_are_template as TemplateHandler),
+        ("arg", render_arg_template as TemplateHandler),
+        ("arm", render_arm_template as TemplateHandler),
+        ("atg", render_atg_template as TemplateHandler),
+        ("aus", render_aus_template as TemplateHandler),
+        ("aut", render_aut_template as TemplateHandler),
+        ("aze", render_aze_template as TemplateHandler),
+        ("army", render_army_template as TemplateHandler),
+        ("aud", render_aud_template as TemplateHandler),
+        ("anli", render_anli_template as TemplateHandler),
+        (
+            "annotated image",
+            render_annotated_image_template as TemplateHandler,
+        ),
+        ("asof", render_as_of_template as TemplateHandler),
+        ("awrap", render_passthrough_template as TemplateHandler),
         ("align", render_align_template as TemplateHandler),
         ("yes", render_yes_template as TemplateHandler),
         ("yes2", render_yes2_template as TemplateHandler),
@@ -6679,4 +6698,186 @@ fn render_yes2_template(params: &str) -> String {
     format!(
         "style=\"background: #b2ffb2; color: black; vertical-align: middle; text-align: center;\" class=\"yes table-yes2\"|{text}"
     )
+}
+
+/// [ALB](https://en.wikipedia.org/wiki/Template:ALB)
+fn render_alb_template(params: &str) -> String {
+    render_country_flag_template("Albania", params)
+}
+
+/// [ALG](https://en.wikipedia.org/wiki/Template:ALG)
+fn render_alg_template(params: &str) -> String {
+    render_country_flag_template("Algeria", params)
+}
+
+/// [AND](https://en.wikipedia.org/wiki/Template:AND)
+fn render_and_template(params: &str) -> String {
+    render_country_flag_template("Andorra", params)
+}
+
+/// [ARE](https://en.wikipedia.org/wiki/Template:ARE)
+fn render_are_template(params: &str) -> String {
+    render_country_flag_template("United Arab Emirates", params)
+}
+
+/// [ARG](https://en.wikipedia.org/wiki/Template:ARG)
+fn render_arg_template(params: &str) -> String {
+    render_country_flag_template("Argentina", params)
+}
+
+/// [ARM](https://en.wikipedia.org/wiki/Template:ARM)
+fn render_arm_template(params: &str) -> String {
+    render_country_flag_template("Armenia", params)
+}
+
+/// [ATG](https://en.wikipedia.org/wiki/Template:ATG)
+fn render_atg_template(params: &str) -> String {
+    render_country_flag_template("Antigua and Barbuda", params)
+}
+
+/// [AUS](https://en.wikipedia.org/wiki/Template:AUS)
+fn render_aus_template(params: &str) -> String {
+    render_country_flag_template("Australia", params)
+}
+
+/// [AUT](https://en.wikipedia.org/wiki/Template:AUT)
+fn render_aut_template(params: &str) -> String {
+    render_country_flag_template("Austria", params)
+}
+
+/// [AZE](https://en.wikipedia.org/wiki/Template:AZE)
+fn render_aze_template(params: &str) -> String {
+    render_country_flag_template("Azerbaijan", params)
+}
+
+/// [army](https://en.wikipedia.org/wiki/Template:Army)
+fn render_army_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let nation = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .unwrap_or("")
+        .trim();
+
+    if nation.is_empty() {
+        return "".to_string();
+    }
+
+    let nation_lower = nation.to_lowercase();
+    let (army_article, default_display) = match nation_lower.as_str() {
+        "united kingdom" | "uk" => ("British Army".to_string(), "British Army".to_string()),
+        "united states" | "us" | "usa" => (
+            "United States Army".to_string(),
+            "United States Army".to_string(),
+        ),
+        "china" | "prc" | "chn" => (
+            "People's Liberation Army Ground Force".to_string(),
+            "People's Liberation Army Ground Force".to_string(),
+        ),
+        "empire of japan" => (
+            "Imperial Japanese Army".to_string(),
+            "Imperial Japanese Army".to_string(),
+        ),
+        "japan" => (
+            "Japan Ground Self-Defense Force".to_string(),
+            "Japan Ground Self-Defense Force".to_string(),
+        ),
+        "spain" => ("Spanish Army".to_string(), "Spanish Army".to_string()),
+        "france" => ("French Army".to_string(), "French Army".to_string()),
+        "germany" => ("German Army".to_string(), "German Army".to_string()),
+        "italy" => ("Italian Army".to_string(), "Italian Army".to_string()),
+        "switzerland" => ("Swiss Army".to_string(), "Swiss Army".to_string()),
+        "india" => ("Indian Army".to_string(), "Indian Army".to_string()),
+        "pakistan" => ("Pakistan Army".to_string(), "Pakistan Army".to_string()),
+        "bangladesh" => ("Bangladesh Army".to_string(), "Bangladesh Army".to_string()),
+        "canada" => ("Canadian Army".to_string(), "Canadian Army".to_string()),
+        "australia" => ("Australian Army".to_string(), "Australian Army".to_string()),
+        "new zealand" => (
+            "New Zealand Army".to_string(),
+            "New Zealand Army".to_string(),
+        ),
+        "sweden" => ("Swedish Army".to_string(), "Swedish Army".to_string()),
+        "russia" => (
+            "Russian Ground Forces".to_string(),
+            "Russian Ground Forces".to_string(),
+        ),
+        "soviet union" | "ussr" => ("Soviet Army".to_string(), "Soviet Army".to_string()),
+        _ => {
+            let mut chars = nation.chars();
+            let capitalized = match chars.next() {
+                None => String::new(),
+                Some(f) => f.to_uppercase().collect::<String>() + chars.as_str(),
+            };
+            let target = format!("{} Army", capitalized);
+            (target.clone(), target)
+        }
+    };
+
+    let display = template_param(&named, &["name"])
+        .map(str::to_string)
+        .unwrap_or(default_display);
+    format!("[[{army_article}|{display}]]")
+}
+
+/// [AUD](https://en.wikipedia.org/wiki/Template:AUD)
+fn render_aud_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let amount = template_param(&named, &["1"])
+        .map(str::to_string)
+        .or_else(|| positional.first().cloned())
+        .map(|v| v.trim().to_string())
+        .unwrap_or_default();
+
+    if amount.is_empty() {
+        "A$".to_string()
+    } else {
+        format!("A${}", render_templates(&amount))
+    }
+}
+
+/// [anli](https://en.wikipedia.org/wiki/Template:Anli)
+fn render_anli_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let target = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .unwrap_or("")
+        .trim();
+
+    if target.is_empty() {
+        "".to_string()
+    } else {
+        format!("[[{}]]", target)
+    }
+}
+
+/// [Annotated image](https://en.wikipedia.org/wiki/Template:Annotated_image)
+fn render_annotated_image_template(params: &str) -> String {
+    let named = template_named_params(params);
+
+    let image = template_param(&named, &["image", "imagemap"])
+        .unwrap_or("")
+        .trim();
+
+    if image.is_empty() {
+        return "".to_string();
+    }
+
+    let alt = template_param(&named, &["alt"]).unwrap_or("").trim();
+
+    let caption = template_param(&named, &["caption"]).unwrap_or("").trim();
+
+    let mut parts = vec![format!("File:{}", image), "thumb".to_string()];
+    if !alt.is_empty() {
+        parts.push(format!("alt={}", alt));
+    }
+    if !caption.is_empty() {
+        parts.push(caption.to_string());
+    }
+
+    format!("[[{}]]", parts.join("|"))
 }

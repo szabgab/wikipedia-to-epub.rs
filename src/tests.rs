@@ -8668,3 +8668,392 @@ fn test_template_allmusic() {
         "[https://www.allmusic.com/artist/led-zeppelin-mn0000139026 Led Zeppelin at AllMusic]"
     );
 }
+
+#[test]
+fn test_template_alb() {
+    assert_eq!(render_templates("{{ALB}}"), "[[Albania|Albania]]");
+    assert_eq!(render_templates("{{ALB|name=Alb}}"), "[[Albania|Alb]]");
+}
+
+#[test]
+fn test_template_alg() {
+    assert_eq!(render_templates("{{ALG}}"), "[[Algeria|Algeria]]");
+}
+
+#[test]
+fn test_template_and() {
+    assert_eq!(render_templates("{{AND}}"), "[[Andorra|Andorra]]");
+}
+
+#[test]
+fn test_template_are() {
+    assert_eq!(
+        render_templates("{{ARE}}"),
+        "[[United Arab Emirates|United Arab Emirates]]"
+    );
+}
+
+#[test]
+fn test_template_arg() {
+    assert_eq!(render_templates("{{ARG}}"), "[[Argentina|Argentina]]");
+}
+
+#[test]
+fn test_template_arm() {
+    assert_eq!(render_templates("{{ARM}}"), "[[Armenia|Armenia]]");
+}
+
+#[test]
+fn test_template_atg() {
+    assert_eq!(
+        render_templates("{{ATG}}"),
+        "[[Antigua and Barbuda|Antigua and Barbuda]]"
+    );
+}
+
+#[test]
+fn test_template_aus() {
+    assert_eq!(render_templates("{{AUS}}"), "[[Australia|Australia]]");
+}
+
+#[test]
+fn test_template_aut() {
+    assert_eq!(render_templates("{{AUT}}"), "[[Austria|Austria]]");
+}
+
+#[test]
+fn test_template_aze() {
+    assert_eq!(render_templates("{{AZE}}"), "[[Azerbaijan|Azerbaijan]]");
+}
+
+#[test]
+fn test_template_army() {
+    assert_eq!(
+        render_templates("{{army|Spain}}"),
+        "[[Spanish Army|Spanish Army]]"
+    );
+    assert_eq!(
+        render_templates("{{army|US|name=US Army}}"),
+        "[[United States Army|US Army]]"
+    );
+}
+
+#[test]
+fn test_template_arxiv() {
+    assert_eq!(
+        render_templates("{{arXiv|1202.0001}}"),
+        "arXiv:[https://arxiv.org/abs/1202.0001 1202.0001]"
+    );
+    assert_eq!(
+        render_templates("{{arXiv|hep-th/0201001|quant-ph/0301002}}"),
+        "arXiv:[https://arxiv.org/abs/hep-th/0201001 hep-th/0201001], [https://arxiv.org/abs/quant-ph/0301002 quant-ph/0301002]"
+    );
+}
+
+#[test]
+fn test_template_asn_accident() {
+    assert_eq!(
+        render_templates("{{ASN accident|id=220473|type=Incident|title=ET-ATV|wikibase=yes}}"),
+        "[https://aviation-safety.net/wikibase/wiki.php?id=220473 Incident description for ET-ATV]"
+    );
+    assert_eq!(
+        render_templates("{{ASN accident|id=20080820-0}}"),
+        "[https://aviation-safety.net/database/record.php?id=20080820-0 Accident description]"
+    );
+}
+
+#[test]
+fn test_template_aud() {
+    assert_eq!(render_templates("{{AUD}}"), "A$");
+    assert_eq!(render_templates("{{AUD|123}}"), "A$123");
+}
+
+#[test]
+fn test_template_anli() {
+    assert_eq!(render_templates("{{anli|Target Page}}"), "[[Target Page]]");
+}
+
+#[test]
+fn test_template_annotated_image() {
+    assert_eq!(
+        render_templates("{{Annotated image|image=Example.png|alt=alt text|caption=some caption}}"),
+        "[[File:Example.png|thumb|alt=alt text|some caption]]"
+    );
+}
+
+#[test]
+fn test_template_asof() {
+    assert_eq!(
+        render_templates("{{asof|2020|1|2}}"),
+        "As of January 2, 2020"
+    );
+}
+
+#[test]
+fn test_template_awrap() {
+    assert_eq!(render_templates("{{awrap|wrapped text}}"), "wrapped text");
+}
+
+#[test]
+fn test_template_angle_bracket() {
+    assert_eq!(render_templates("{{angle bracket|a}}"), "⟨a⟩");
+}
+
+#[test]
+fn test_template_asterisk() {
+    assert_eq!(render_templates("{{asterisk}}"), "*");
+}
+
+#[test]
+fn test_template_an_chess() {
+    assert_eq!(render_templates("{{AN chess}}"), "");
+}
+
+#[test]
+fn test_template_as_of_question() {
+    assert_eq!(render_templates("{{As of?}}"), "");
+}
+
+#[test]
+fn test_template_authority_control_arts() {
+    assert_eq!(render_templates("{{Authority control (arts)}}"), "");
+}
+
+#[test]
+fn test_template_automatic_taxobox() {
+    assert_eq!(render_templates("{{Automatic taxobox}}"), "");
+}
+
+#[test]
+fn test_template_automotive_engine() {
+    assert_eq!(render_templates("{{Automotive engine}}"), "");
+}
+
+#[test]
+fn test_template_albanian_bread() {
+    assert_eq!(render_templates("{{Albanian bread}}"), "");
+}
+
+#[test]
+fn test_template_alcoholic_beverages() {
+    assert_eq!(render_templates("{{Alcoholic beverages}}"), "");
+}
+
+#[test]
+fn test_template_alcoholic_drinks() {
+    assert_eq!(render_templates("{{alcoholic drinks}}"), "");
+}
+
+#[test]
+fn test_template_ams_presidents() {
+    assert_eq!(render_templates("{{AMS Presidents}}"), "");
+}
+
+#[test]
+fn test_template_anabaptist_vertical() {
+    assert_eq!(render_templates("{{Anabaptist vertical}}"), "");
+}
+
+#[test]
+fn test_template_ancient_egypt_dynasties_sidebar() {
+    assert_eq!(render_templates("{{Ancient Egypt dynasties sidebar}}"), "");
+}
+
+#[test]
+fn test_template_ancient_egypt_graphical_timeline() {
+    assert_eq!(render_templates("{{Ancient Egypt graphical timeline}}"), "");
+}
+
+#[test]
+fn test_template_ancient_egypt_topics() {
+    assert_eq!(render_templates("{{Ancient Egypt topics}}"), "");
+}
+
+#[test]
+fn test_template_ancient_roman_wars() {
+    assert_eq!(render_templates("{{Ancient Roman Wars}}"), "");
+}
+
+#[test]
+fn test_template_ancient_rome_military_sidebar() {
+    assert_eq!(render_templates("{{Ancient Rome military sidebar}}"), "");
+}
+
+#[test]
+fn test_template_ancient_rome_topics() {
+    assert_eq!(render_templates("{{Ancient Rome topics}}"), "");
+}
+
+#[test]
+fn test_template_ancient_seafaring() {
+    assert_eq!(render_templates("{{Ancient seafaring}}"), "");
+}
+
+#[test]
+fn test_template_anglicanism() {
+    assert_eq!(render_templates("{{Anglicanism}}"), "");
+}
+
+#[test]
+fn test_template_anti_communism() {
+    assert_eq!(render_templates("{{Anti-communism}}"), "");
+}
+
+#[test]
+fn test_template_antique_kings_of_italy() {
+    assert_eq!(render_templates("{{Antique Kings of Italy}}"), "");
+}
+
+#[test]
+fn test_template_antisemitism() {
+    assert_eq!(render_templates("{{Antisemitism}}"), "");
+}
+
+#[test]
+fn test_template_antisemitism_topics() {
+    assert_eq!(render_templates("{{Antisemitism topics}}"), "");
+}
+
+#[test]
+fn test_template_application_of_wind_energy() {
+    assert_eq!(render_templates("{{Application of wind energy}}"), "");
+}
+
+#[test]
+fn test_template_archhistory() {
+    assert_eq!(render_templates("{{Archhistory}}"), "");
+}
+
+#[test]
+fn test_template_architecture_in_the_united_states() {
+    assert_eq!(
+        render_templates("{{Architecture in the United States}}"),
+        ""
+    );
+}
+
+#[test]
+fn test_template_archival_records() {
+    assert_eq!(render_templates("{{Archival records}}"), "");
+}
+
+#[test]
+fn test_template_areas_of_london() {
+    assert_eq!(render_templates("{{Areas of London}}"), "");
+}
+
+#[test]
+fn test_template_armenian_language() {
+    assert_eq!(render_templates("{{Armenian language}}"), "");
+}
+
+#[test]
+fn test_template_armenians() {
+    assert_eq!(render_templates("{{Armenians}}"), "");
+}
+
+#[test]
+fn test_template_armenia_topics() {
+    assert_eq!(render_templates("{{Armenia topics}}"), "");
+}
+
+#[test]
+fn test_template_armies_in_europe() {
+    assert_eq!(render_templates("{{Armies in Europe}}"), "");
+}
+
+#[test]
+fn test_template_army_group_rear_area_wehrmacht() {
+    assert_eq!(render_templates("{{Army Group Rear Area (Wehrmacht)}}"), "");
+}
+
+#[test]
+fn test_template_articles_on_first_level_admin_divisions_of_european_countries() {
+    assert_eq!(
+        render_templates(
+            "{{Articles on first-level administrative divisions of European countries}}"
+        ),
+        ""
+    );
+}
+
+#[test]
+fn test_template_articles_on_second_level_admin_divisions_of_european_countries() {
+    assert_eq!(
+        render_templates(
+            "{{Articles on second-level administrative divisions of European countries}}"
+        ),
+        ""
+    );
+}
+
+#[test]
+fn test_template_art_of_europe() {
+    assert_eq!(render_templates("{{Art of Europe}}"), "");
+}
+
+#[test]
+fn test_template_aspects_of_capitalism() {
+    assert_eq!(render_templates("{{Aspects of capitalism}}"), "");
+}
+
+#[test]
+fn test_template_association_football_tactics_and_skills() {
+    assert_eq!(
+        render_templates("{{Association football tactics and skills}}"),
+        ""
+    );
+}
+
+#[test]
+fn test_template_association_football_terminology() {
+    assert_eq!(render_templates("{{Association football terminology}}"), "");
+}
+
+#[test]
+fn test_template_ataturk_sidebar() {
+    assert_eq!(render_templates("{{Atatürk sidebar}}"), "");
+}
+
+#[test]
+fn test_template_augustus() {
+    assert_eq!(render_templates("{{Augustus}}"), "");
+}
+
+#[test]
+fn test_template_austrian_archdukes() {
+    assert_eq!(render_templates("{{Austrian archdukes}}"), "");
+}
+
+#[test]
+fn test_template_austria_topics() {
+    assert_eq!(render_templates("{{Austria topics}}"), "");
+}
+
+#[test]
+fn test_template_austro_hungarian_claimants() {
+    assert_eq!(render_templates("{{Austro-Hungarian claimants}}"), "");
+}
+
+#[test]
+fn test_template_authoritarian() {
+    assert_eq!(render_templates("{{authoritarian}}"), "");
+}
+
+#[test]
+fn test_template_authoritarian_types_of_rule() {
+    assert_eq!(render_templates("{{authoritarian types of rule}}"), "");
+}
+
+#[test]
+fn test_template_autonomous_types_of_first_tier_administration() {
+    assert_eq!(
+        render_templates("{{Autonomous types of first-tier administration}}"),
+        ""
+    );
+}
+
+#[test]
+fn test_template_avant_garde() {
+    assert_eq!(render_templates("{{Avant-garde}}"), "");
+}

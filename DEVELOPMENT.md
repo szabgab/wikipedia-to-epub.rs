@@ -86,7 +86,13 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{co2}}` (and its link-enabled version `{{co2|link=yes}}`) renders chemical formulas for carbon dioxide (e.g. `CO<sub>2</sub>` or `[[Carbon dioxide|CO<sub>2</sub>]]`)
 * `{{round|123.456|2}}` rounds a number to a specified number of decimal places and formats with commas
 * `{{JRSSN|Y|12}}` formats a JR station numbering identifier (`Y12`)
-* `{{ABW}}` (along with `{{AFG}}`, `{{AGO}}`, `{{AIA}}`) formats country links with flag styling (e.g. `[[Aruba|Aruba]]`)
+* `{{ABW}}` (along with `{{AFG}}`, `{{AGO}}`, `{{AIA}}`, `{{ALB}}`, `{{ALG}}`, `{{AND}}`, `{{ARE}}`, `{{ARG}}`, `{{ARM}}`, `{{ATG}}`, `{{AUS}}`, `{{AUT}}`, `{{AZE}}`) formats country links with flag styling (e.g. `[[Aruba|Aruba]]` or `[[Albania|Albania]]`)
+* `{{army|Spain}}` formats national army article links (e.g. `[[Spanish Army|Spanish Army]]`)
+* `{{arXiv|1202.0001}}` formats arXiv external links (e.g. `arXiv:[https://arxiv.org/abs/1202.0001 1202.0001]`)
+* `{{ASN accident|id=20080820-0}}` formats external aviation safety database record links (e.g. `[https://aviation-safety.net/database/record.php?id=20080820-0 Accident description]`)
+* `{{AUD|123}}` formats Australian Dollar currency values prefixed with A$ (e.g. `A$123`)
+* `{{anli|Page}}` formats annotated link templates as a simple wikilink (`[[Page]]`)
+* `{{Annotated image|image=Example.png}}` formats annotated image blocks to standard wikitext file markup (e.g. `[[File:Example.png|thumb]]`)
 * `{{ae|word}}` formats an Avestan language wrapper
 * `{{align|center|text}}` aligns a text block (e.g. `<div style="text-align: center;">text</div>`)
 * `{{yes}}` (and `{{yes2}}`) formats table cells representing approval/affirmation with background color styling

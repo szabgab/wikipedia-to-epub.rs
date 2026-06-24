@@ -1286,6 +1286,7 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("ipaslink", render_ipa_link_template as TemplateHandler),
         ("angbr", render_angbr_template as TemplateHandler),
         ("angbr ipa", render_angbr_ipa_template as TemplateHandler),
+        ("angle bracket", render_angbr_template as TemplateHandler),
         ("unichar", render_unichar_template as TemplateHandler),
         ("xlit", render_transliteration_template as TemplateHandler),
         (

@@ -51,6 +51,11 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_cite_letter_template as TemplateHandler,
         ),
         ("cite arxiv", render_cite_arxiv_template as TemplateHandler),
+        ("arxiv", render_arxiv_link_template as TemplateHandler),
+        (
+            "asn accident",
+            render_asn_accident_template as TemplateHandler,
+        ),
         ("cite q", render_cite_q_template as TemplateHandler),
         (
             "springereom",
@@ -2330,4 +2335,73 @@ fn render_allmusic_template(params: &str) -> String {
         let url = format!("https://www.allmusic.com/{class}/{id}");
         format!("[{url} {display_title}]")
     }
+}
+
+/// [arXiv](https://en.wikipedia.org/wiki/Template:ArXiv)
+fn render_arxiv_link_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    if let Some(id) = template_param(&named, &["id", "1"]) {
+        let id = id.trim();
+        if id.is_empty() {
+            return "".to_string();
+        }
+        return format!("arXiv:[https://arxiv.org/abs/{} {}]", id, id);
+    }
+
+    let formatted: Vec<String> = positional
+        .iter()
+        .map(|p| p.trim())
+        .filter(|p| !p.is_empty())
+        .map(|p| format!("[https://arxiv.org/abs/{p} {p}]"))
+        .collect();
+
+    if formatted.is_empty() {
+        "".to_string()
+    } else {
+        format!("arXiv:{}", formatted.join(", "))
+    }
+}
+
+/// [ASN accident](https://en.wikipedia.org/wiki/Template:ASN_accident)
+fn render_asn_accident_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let id = template_param(&named, &["id", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .unwrap_or("")
+        .trim();
+
+    if id.is_empty() {
+        return "".to_string();
+    }
+
+    let wikibase = template_param(&named, &["wikibase"])
+        .map(|v| !v.trim().is_empty())
+        .unwrap_or(false);
+
+    let url = if wikibase {
+        format!("https://aviation-safety.net/wikibase/wiki.php?id={}", id)
+    } else {
+        format!("https://aviation-safety.net/database/record.php?id={}", id)
+    };
+
+    let title_val = template_param(&named, &["title", "2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .unwrap_or("")
+        .trim();
+
+    let type_val = template_param(&named, &["type"])
+        .unwrap_or("Accident")
+        .trim();
+
+    let display_title = if title_val.is_empty() {
+        format!("{} description", type_val)
+    } else {
+        format!("{} description for {}", type_val, title_val)
+    };
+
+    format!("[{} {}]", url, display_title)
 }
