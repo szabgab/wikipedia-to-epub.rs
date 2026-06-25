@@ -1,0 +1,3420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <title>
+      Binomial distribution
+    </title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <h1>
+      Binomial distribution
+    </h1>
+    <p>
+      In
+      <a href="https://en.wikipedia.org/wiki/probability_theory">
+        probability theory
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      and
+      <a href="https://en.wikipedia.org/wiki/statistics">
+        statistics
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , the
+      <strong>
+        binomial distribution
+      </strong>
+      with parameters
+      <em>
+        n
+      </em>
+      and
+      <em>
+        p
+      </em>
+      is the
+      <a href="https://en.wikipedia.org/wiki/discrete_probability_distribution">
+        discrete probability distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of the number of successes in a sequence of
+      <em>
+        n
+      </em>
+      <a href="https://en.wikipedia.org/wiki/statistical_independence">
+        independent
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      <a href="https://en.wikipedia.org/wiki/experiment_(probability_theory)">
+        experiment
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      s, each asking a
+      <a href="https://en.wikipedia.org/wiki/yes–no_question">
+        yes–no question
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , and each with its own
+      <a href="https://en.wikipedia.org/wiki/Boolean-valued_function">
+        Boolean
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      -valued
+      <a href="https://en.wikipedia.org/wiki/outcome_(probability)">
+        outcome
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      :
+      <em>
+        success
+      </em>
+      (with probability
+      <em>
+        p
+      </em>
+      ) or
+      <em>
+        failure
+      </em>
+      (with probability
+      <em>
+        q
+      </em>
+      = 1 −
+      <em>
+        p
+      </em>
+      ). A single success/failure experiment is also called a
+      <a href="https://en.wikipedia.org/wiki/Bernoulli_trial">
+        Bernoulli trial
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      or Bernoulli experiment, and a sequence of outcomes is called a
+      <a href="https://en.wikipedia.org/wiki/Bernoulli_process">
+        Bernoulli process
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . For a single trial, that is, when
+      <em>
+        n
+      </em>
+      = 1, the binomial distribution is a
+      <a href="https://en.wikipedia.org/wiki/Bernoulli_distribution">
+        Bernoulli distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . The binomial distribution is the basis for the
+      <a href="https://en.wikipedia.org/wiki/binomial_test">
+        binomial test
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of
+      <a href="https://en.wikipedia.org/wiki/statistical_significance">
+        statistical significance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <p>
+      The binomial distribution is frequently used to model the number of successes in a sample of size
+      <em>
+        n
+      </em>
+      drawn
+      <a href="https://en.wikipedia.org/wiki/with_replacement">
+        with replacement
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      from a
+      <a href="https://en.wikipedia.org/wiki/Statistical_population">
+        population
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of size
+      <em>
+        N
+      </em>
+      . If the sampling is carried out without replacement, the draws are not independent and so the resulting distribution is a
+      <a href="https://en.wikipedia.org/wiki/hypergeometric_distribution">
+        hypergeometric distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , not a binomial one. However, for
+      <em>
+        N
+      </em>
+      much larger than
+      <em>
+        n
+      </em>
+      , the binomial distribution remains a good approximation, and is widely used.
+    </p>
+    <h2>
+      Definitions
+    </h2>
+    <h3>
+      Probability mass function
+    </h3>
+    <p>
+      If the
+      <a href="https://en.wikipedia.org/wiki/random_variable">
+        random variable
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      <em>
+        X
+      </em>
+      follows the binomial distribution with parameters (a
+      <a href="https://en.wikipedia.org/wiki/natural_number">
+        natural number
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ) and
+      <em>
+        p
+      </em>
+      ∈ [0, 1], we write
+      <em>
+        X
+      </em>
+      ~ B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ). The probability of getting exactly
+      <em>
+        k
+      </em>
+      successes in
+      <em>
+        n
+      </em>
+      independent Bernoulli trials (with the same rate
+      <em>
+        p
+      </em>
+      ) is given by the
+      <a href="https://en.wikipedia.org/wiki/probability_mass_function">
+        probability mass function
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      :
+    </p>
+    <p>
+      for
+      <em>
+        k
+      </em>
+      = 0, 1, 2, ...,
+      <em>
+        n
+      </em>
+      , where
+    </p>
+    <p>
+      is the
+      <a href="https://en.wikipedia.org/wiki/binomial_coefficient">
+        binomial coefficient
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . The formula can be understood as follows:
+      <em>
+        p
+      </em>
+      <sup>
+        <em>
+          k
+        </em>
+      </sup>
+      <em>
+        q
+      </em>
+      <sup>
+        <em>
+          n
+        </em>
+        −
+        <em>
+          k
+        </em>
+      </sup>
+      is the probability of obtaining the sequence of
+      <em>
+        n
+      </em>
+      independent Bernoulli trials in which
+      <em>
+        k
+      </em>
+      trials are "successes" and the remaining
+      <em>
+        n
+      </em>
+      −
+      <em>
+        k
+      </em>
+      trials are "failures". Since the trials are independent with probabilities remaining constant between them, any sequence of
+      <em>
+        n
+      </em>
+      trials with
+      <em>
+        k
+      </em>
+      successes (and
+      <em>
+        n
+      </em>
+      −
+      <em>
+        k
+      </em>
+      failures) has the same probability of being achieved (regardless of positions of successes within the sequence). There are such sequences, since the binomial coefficient counts the number of ways to choose the positions of the
+      <em>
+        k
+      </em>
+      successes among the
+      <em>
+        n
+      </em>
+      trials. The binomial distribution is concerned with the probability of obtaining
+      <em>
+        any
+      </em>
+      of these sequences, meaning the probability of obtaining one of them (
+      <em>
+        p
+      </em>
+      <sup>
+        <em>
+          k
+        </em>
+      </sup>
+      <em>
+        q
+      </em>
+      <sup>
+        <em>
+          n
+        </em>
+        −
+        <em>
+          k
+        </em>
+      </sup>
+      ) must be added times, hence \textstyle \Pr(X = k) = \binom{n}{k} p^k (1-p)^{n-k}.
+    </p>
+    <p>
+      In creating reference tables for binomial distribution probability, usually, the table is filled in up to \textstyle \tfrac{n}{2} values. This is because for \textstyle k &gt; \tfrac{n}{2}, the probability can be calculated by its complement as
+    </p>
+    <p>
+      Looking at the expression
+      <em>
+        f
+      </em>
+      (
+      <em>
+        k
+      </em>
+      ,
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ) as a function of
+      <em>
+        k
+      </em>
+      , there is a
+      <em>
+        k
+      </em>
+      value that maximizes it. This
+      <em>
+        k
+      </em>
+      value can be found by calculating
+    </p>
+    <p>
+      and comparing it to 1. There is always an integer
+      <em>
+        M
+      </em>
+      that satisfies
+    </p>
+    <p>
+      <em>
+        f
+      </em>
+      (
+      <em>
+        k
+      </em>
+      ,
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ) is monotone increasing for
+      <em>
+        k
+      </em>
+      &lt;
+      <em>
+        M
+      </em>
+      and monotone decreasing for
+      <em>
+        k
+      </em>
+      &gt;
+      <em>
+        M
+      </em>
+      , with the exception of the case where (
+      <em>
+        n
+      </em>
+      + 1)
+      <em>
+        p
+      </em>
+      is an integer. In this case, there are two values for which
+      <em>
+        f
+      </em>
+      is maximal: (
+      <em>
+        n
+      </em>
+      + 1)
+      <em>
+        p
+      </em>
+      and (
+      <em>
+        n
+      </em>
+      + 1)
+      <em>
+        p
+      </em>
+      − 1.
+      <em>
+        M
+      </em>
+      is the
+      <em>
+        most probable
+      </em>
+      outcome (that is, the most likely, although this can still be unlikely overall) of the Bernoulli trials and is called the
+      <a href="https://en.wikipedia.org/wiki/Mode_(statistics)">
+        mode
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <h3>
+      Example
+    </h3>
+    <p>
+      Suppose a
+      <a href="https://en.wikipedia.org/wiki/fair_coin">
+        biased coin
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      comes up heads with probability 0.3 when tossed. The probability of seeing exactly 4 heads in 6 tosses is
+    </p>
+    <h3>
+      Cumulative distribution function
+    </h3>
+    <p>
+      The
+      <a href="https://en.wikipedia.org/wiki/cumulative_distribution_function">
+        cumulative distribution function
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      can be expressed as:
+    </p>
+    <p>
+      where is the "floor" under
+      <em>
+        k
+      </em>
+      ; that is, the
+      <a href="https://en.wikipedia.org/wiki/floor_and_ceiling_functions">
+        greatest integer
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      less than or equal to
+      <em>
+        k
+      </em>
+      .
+    </p>
+    <p>
+      It can also be represented in terms of the
+      <a href="https://en.wikipedia.org/wiki/regularized_incomplete_beta_function">
+        regularized incomplete beta function
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , as follows:
+    </p>
+    <p>
+      which is equivalent to the
+      <a href="https://en.wikipedia.org/wiki/cumulative_distribution_function">
+        cumulative distribution function
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      s of the
+      <a href="https://en.wikipedia.org/wiki/beta_distribution">
+        beta distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      and of the
+      <a href="https://en.wikipedia.org/wiki/F-distribution">
+        <em>
+          F
+        </em>
+        -distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      :
+    </p>
+    <p>
+      Some closed-form bounds for the cumulative distribution function are given
+      <a href="https://en.wikipedia.org/wiki/#Tail_bounds">
+        below
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <h2>
+      Properties
+    </h2>
+    <h3>
+      Expected value and variance
+    </h3>
+    <p>
+      If
+      <em>
+        X
+      </em>
+      ~ B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ), that is,
+      <em>
+        X
+      </em>
+      is a binomially distributed random variable,
+      <em>
+        n
+      </em>
+      being the total number of experiments and
+      <em>
+        p
+      </em>
+      the probability of each experiment yielding a successful result, then the
+      <a href="https://en.wikipedia.org/wiki/expected_value">
+        expected value
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of
+      <em>
+        X
+      </em>
+      is:
+    </p>
+    <p>
+      This follows from the linearity of the expected value along with the fact that
+      <em>
+        X
+      </em>
+      is the sum of
+      <em>
+        n
+      </em>
+      identical Bernoulli random variables, each with expected value
+      <em>
+        p
+      </em>
+      . In other words, if are identical (and independent) Bernoulli random variables with parameter
+      <em>
+        p
+      </em>
+      , then
+      <em>
+        X
+      </em>
+      =
+      <em>
+        X
+      </em>
+      <sub>
+        1
+      </sub>
+      + ... +
+      <em>
+        X
+      </em>
+      <sub>
+        <em>
+          n
+        </em>
+      </sub>
+      and
+    </p>
+    <p>
+      The
+      <a href="https://en.wikipedia.org/wiki/variance">
+        variance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      is:
+    </p>
+    <p>
+      This similarly follows from the fact that the variance of a sum of independent random variables is the sum of the variances.
+    </p>
+    <h3>
+      Higher moments
+    </h3>
+    <p>
+      The first 6
+      <a href="https://en.wikipedia.org/wiki/central_moment">
+        central moment
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      s, defined as , are given by
+    </p>
+    <p>
+      The non-central moments satisfy
+    </p>
+    <p>
+      and in general
+    </p>
+    <p>
+      where are the
+      <a href="https://en.wikipedia.org/wiki/Stirling_numbers_of_the_second_kind">
+        Stirling numbers of the second kind
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , and is the -th
+      <a href="https://en.wikipedia.org/wiki/Falling_and_rising_factorials">
+        falling power
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of . A simple bound follows by bounding the Binomial moments via the
+      <a href="https://en.wikipedia.org/wiki/Poisson_distribution#Higher_moments">
+        higher Poisson moments
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      :
+    </p>
+    <p>
+      This shows that if , then is at most a constant factor away from .
+    </p>
+    <p>
+      The
+      <a href="https://en.wikipedia.org/wiki/moment-generating_function">
+        moment-generating function
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      is .
+    </p>
+    <h3>
+      Mode
+    </h3>
+    <p>
+      Usually the
+      <a href="https://en.wikipedia.org/wiki/mode_(statistics)">
+        mode
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of a binomial B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ) distribution is equal to , where is the
+      <a href="https://en.wikipedia.org/wiki/floor_function">
+        floor function
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . However, when (
+      <em>
+        n
+      </em>
+      + 1)
+      <em>
+        p
+      </em>
+      is an integer and
+      <em>
+        p
+      </em>
+      is neither 0 nor 1, then the distribution has two modes: (
+      <em>
+        n
+      </em>
+      + 1)
+      <em>
+        p
+      </em>
+      and (
+      <em>
+        n
+      </em>
+      + 1)
+      <em>
+        p
+      </em>
+      − 1. When
+      <em>
+        p
+      </em>
+      is equal to 0 or 1, the mode will be 0 and
+      <em>
+        n
+      </em>
+      correspondingly. These cases can be summarized as follows:
+    </p>
+    <p>
+      <strong>
+        Proof:
+      </strong>
+      Let
+    </p>
+    <p>
+      For only has a nonzero value with . For we find and for . This proves that the mode is 0 for and for .
+    </p>
+    <p>
+      Let . We find
+    </p>
+    <p>
+      From this follows
+    </p>
+    <p>
+      So when is an integer, then and is a mode. In the case that , then only is a mode.
+    </p>
+    <h3>
+      Median
+    </h3>
+    <p>
+      In general, there is no single formula to find the
+      <a href="https://en.wikipedia.org/wiki/median">
+        median
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      for a binomial distribution, and it may even be non-unique. However, several special results have been established:
+    </p>
+    <ul>
+      <li>
+        If
+        <em>
+          np
+        </em>
+        is an integer, then the mean, median, and mode coincide and equal
+        <em>
+          np
+        </em>
+        .
+      </li>
+      <li>
+        Any median
+        <em>
+          m
+        </em>
+        must lie within the interval .
+      </li>
+      <li>
+        A median
+        <em>
+          m
+        </em>
+        cannot lie too far away from the mean:.
+      </li>
+      <li>
+        The median is unique and equal to
+        <em>
+          m
+        </em>
+        =
+        <a href="https://en.wikipedia.org/wiki/Rounding">
+          round
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        (
+        <em>
+          np
+        </em>
+        ) when |
+        <em>
+          m
+        </em>
+        −
+        <em>
+          np
+        </em>
+        | ≤ min{
+        <em>
+          p
+        </em>
+        , 1 −
+        <em>
+          p
+        </em>
+        } (except for the case when
+        <em>
+          p
+        </em>
+        = 1/2 and
+        <em>
+          n
+        </em>
+        is odd).
+      </li>
+      <li>
+        When
+        <em>
+          p
+        </em>
+        is a rational number (with the exception of
+        <em>
+          p
+        </em>
+        = 1/2 and
+        <em>
+          n
+        </em>
+        odd), the median is unique.
+      </li>
+      <li>
+        When and
+        <em>
+          n
+        </em>
+        is odd, any number
+        <em>
+          m
+        </em>
+        in the interval is a median of the binomial distribution. If and
+        <em>
+          n
+        </em>
+        is even, then is the unique median.
+      </li>
+    </ul>
+    <h3>
+      Tail bounds
+    </h3>
+    <p>
+      For
+      <em>
+        k
+      </em>
+      ≤
+      <em>
+        np
+      </em>
+      , upper bounds can be derived for the lower tail of the cumulative distribution function , the probability that there are at most
+      <em>
+        k
+      </em>
+      successes. Since , these bounds can also be seen as bounds for the upper tail of the cumulative distribution function for
+      <em>
+        k
+      </em>
+      ≥
+      <em>
+        np
+      </em>
+      .
+    </p>
+    <p>
+      <a href="https://en.wikipedia.org/wiki/Hoeffding&apos;s_inequality">
+        Hoeffding's inequality
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      yields the simple bound
+    </p>
+    <p>
+      which is however not very tight. In particular, for
+      <em>
+        p
+      </em>
+      = 1, we have that
+      <em>
+        F
+      </em>
+      (
+      <em>
+        k
+      </em>
+      ;
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ) = 0 (for fixed
+      <em>
+        k
+      </em>
+      ,
+      <em>
+        n
+      </em>
+      with
+      <em>
+        k
+      </em>
+      &lt;
+      <em>
+        n
+      </em>
+      ), but Hoeffding's bound evaluates to a positive constant.
+    </p>
+    <p>
+      A sharper bound can be obtained from the
+      <a href="https://en.wikipedia.org/wiki/Chernoff_bound">
+        Chernoff bound
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      :
+    </p>
+    <p>
+      where
+      <em>
+        D
+      </em>
+      (
+      <em>
+        a
+      </em>
+      ∥
+      <em>
+        p
+      </em>
+      ) is the
+      <a href="https://en.wikipedia.org/wiki/Kullback–Leibler_divergence">
+        relative entropy (or Kullback-Leibler divergence)
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      between an
+      <em>
+        a
+      </em>
+      -coin and a
+      <em>
+        p
+      </em>
+      -coin (that is, between the Bernoulli(
+      <em>
+        a
+      </em>
+      ) and Bernoulli(
+      <em>
+        p
+      </em>
+      ) distribution):
+    </p>
+    <p>
+      Asymptotically, this bound is reasonably tight; see for details.
+    </p>
+    <p>
+      One can also obtain
+      <em>
+        lower
+      </em>
+      bounds on the tail
+      <em>
+        F
+      </em>
+      (
+      <em>
+        k
+      </em>
+      ;
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ), known as anti-concentration bounds. By approximating the binomial coefficient with
+      <a href="https://en.wikipedia.org/wiki/Stirling&apos;s_approximation">
+        Stirling's formula
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      it can be shown that
+    </p>
+    <p>
+      which implies the simpler but looser bound
+    </p>
+    <p>
+      For
+      <em>
+        p
+      </em>
+      = 1/2 and
+      <em>
+        k
+      </em>
+      ≥ 3
+      <em>
+        n
+      </em>
+      /8 for even
+      <em>
+        n
+      </em>
+      , it is possible to make the denominator constant:
+    </p>
+    <h2>
+      Statistical inference
+    </h2>
+    <h3>
+      Estimation of parameters
+    </h3>
+    <p>
+      See also:
+      <a href="https://en.wikipedia.org/wiki/Beta_distribution#Bayesian_inference">
+        Beta distribution#Bayesian inference
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+    </p>
+    <p>
+      When
+      <em>
+        n
+      </em>
+      is known, the parameter
+      <em>
+        p
+      </em>
+      can be estimated using the proportion of successes:
+    </p>
+    <p>
+      This estimator is found using
+      <a href="https://en.wikipedia.org/wiki/maximum_likelihood_estimator">
+        maximum likelihood estimator
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      and also the
+      <a href="https://en.wikipedia.org/wiki/method_of_moments_(statistics)">
+        method of moments
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . This estimator is
+      <a href="https://en.wikipedia.org/wiki/Bias_of_an_estimator">
+        unbiased
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      and uniformly with
+      <a href="https://en.wikipedia.org/wiki/Minimum-variance_unbiased_estimator">
+        minimum variance
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , proven using
+      <a href="https://en.wikipedia.org/wiki/Lehmann–Scheffé_theorem">
+        Lehmann–Scheffé theorem
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , since it is based on a
+      <a href="https://en.wikipedia.org/wiki/minimal_sufficient">
+        minimal sufficient
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      and
+      <a href="https://en.wikipedia.org/wiki/Completeness_(statistics)">
+        complete
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      statistic (that is,
+      <em>
+        x
+      </em>
+      ). It is also
+      <a href="https://en.wikipedia.org/wiki/Consistent_estimator">
+        consistent
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      both in probability and in
+      <a href="https://en.wikipedia.org/wiki/Mean_squared_error">
+        MSE
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . This statistic is
+      <a href="https://en.wikipedia.org/wiki/Asymptotic_distribution">
+        asymptotically
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      <a href="https://en.wikipedia.org/wiki/normal_distribution">
+        normal
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      thanks to the
+      <a href="https://en.wikipedia.org/wiki/central_limit_theorem">
+        central limit theorem
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , because it is the same as taking the
+      <a href="https://en.wikipedia.org/wiki/arithmetic_mean">
+        mean
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      over Bernoulli samples. It has a variance of , a property which is used in various ways, such as in
+      <a href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wald_interval">
+        Wald's confidence intervals
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <p>
+      A closed form
+      <a href="https://en.wikipedia.org/wiki/Bayes_estimator">
+        Bayes estimator
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      for
+      <em>
+        p
+      </em>
+      also exists when using the
+      <a href="https://en.wikipedia.org/wiki/Beta_distribution">
+        Beta distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      as a
+      <a href="https://en.wikipedia.org/wiki/Conjugate_prior">
+        conjugate
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      <a href="https://en.wikipedia.org/wiki/prior_distribution">
+        prior distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . When using a general as a prior, the
+      <a href="https://en.wikipedia.org/wiki/Bayes_estimator#Posterior_mean">
+        posterior mean
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      estimator is:
+    </p>
+    <p>
+      The Bayes estimator is
+      <a href="https://en.wikipedia.org/wiki/Asymptotic_efficiency_(Bayes)">
+        asymptotically efficient
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      and as the sample size approaches infinity (
+      <em>
+        n
+      </em>
+      → ∞), it approaches the
+      <a href="https://en.wikipedia.org/wiki/Maximum_likelihood_estimation">
+        MLE
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      solution. The Bayes estimator is
+      <a href="https://en.wikipedia.org/wiki/Bias_of_an_estimator">
+        biased
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      (how much depends on the priors),
+      <a href="https://en.wikipedia.org/wiki/Bayes_estimator#Admissibility">
+        admissible
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      and
+      <a href="https://en.wikipedia.org/wiki/Consistent_estimator">
+        consistent
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      in probability. Using the Bayesian estimator with the Beta distribution can be used with
+      <a href="https://en.wikipedia.org/wiki/Thompson_sampling">
+        Thompson sampling
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <p>
+      For the special case of using the
+      <a href="https://en.wikipedia.org/wiki/standard_uniform_distribution">
+        standard uniform distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      as a
+      <a href="https://en.wikipedia.org/wiki/non-informative_prior">
+        non-informative prior
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , , the posterior mean estimator becomes:
+    </p>
+    <p>
+      (A
+      <a href="https://en.wikipedia.org/wiki/Bayes_estimator#Posterior_mode">
+        posterior mode
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      should just lead to the standard estimator.) This method is called the
+      <a href="https://en.wikipedia.org/wiki/rule_of_succession">
+        rule of succession
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , which was introduced in the 18th century by
+      <a href="https://en.wikipedia.org/wiki/Pierre-Simon_Laplace">
+        Pierre-Simon Laplace
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <p>
+      When relying on
+      <a href="https://en.wikipedia.org/wiki/Jeffreys_prior">
+        Jeffreys prior
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , the prior is , which leads to the estimator:
+    </p>
+    <p>
+      When estimating
+      <em>
+        p
+      </em>
+      with very rare events and a small
+      <em>
+        n
+      </em>
+      (for example, if
+      <em>
+        x
+      </em>
+      = 0), then using the standard estimator leads to which sometimes is unrealistic and undesirable. In such cases there are various alternative estimators. One way is to use the Bayes estimator , leading to:
+    </p>
+    <p>
+      Another method is to use the upper bound of the
+      <a href="https://en.wikipedia.org/wiki/confidence_interval">
+        confidence interval
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      obtained using the
+      <a href="https://en.wikipedia.org/wiki/Rule_of_three_(statistics)">
+        rule of three
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      :
+    </p>
+    <h3>
+      Confidence intervals for the parameter p
+    </h3>
+    <p>
+      Main article:
+      <a href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval">
+        Binomial proportion confidence interval
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+    </p>
+    <p>
+      See also:
+      <a href="https://en.wikipedia.org/wiki/Z-test#Comparing_the_Proportions_of_Two_Binomials">
+        Z-test#Comparing the Proportions of Two Binomials
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+    </p>
+    <p>
+      Even for quite large values of
+      <em>
+        n
+      </em>
+      , the actual distribution of the mean is significantly nonnormal. Because of this problem several methods to estimate confidence intervals have been proposed.
+    </p>
+    <p>
+      In the equations for confidence intervals below, the variables have the following meaning:
+    </p>
+    <ul>
+      <li>
+        <em>
+          n
+        </em>
+        <sub>
+          1
+        </sub>
+        is the number of successes out of
+        <em>
+          n
+        </em>
+        , the total number of trials
+      </li>
+      <li>
+        is the proportion of successes
+      </li>
+      <li>
+        is the
+        <a href="https://en.wikipedia.org/wiki/quantile">
+          quantile
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        of a
+        <a href="https://en.wikipedia.org/wiki/standard_normal_distribution">
+          standard normal distribution
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        (that is,
+        <a href="https://en.wikipedia.org/wiki/probit">
+          probit
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        ) corresponding to the target error rate . For example, for a 95%
+        <a href="https://en.wikipedia.org/wiki/confidence_level">
+          confidence level
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        the error , so and .
+      </li>
+    </ul>
+    <h4>
+      Wald method
+    </h4>
+    <p>
+      Main article:
+      <a href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wald_interval">
+        Binomial proportion confidence interval#Wald interval
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+    </p>
+    <p>
+      A
+      <a href="https://en.wikipedia.org/wiki/continuity_correction">
+        continuity correction
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of 0.5 /
+      <em>
+        n
+      </em>
+      may be added.
+    </p>
+    <h4>
+      Agresti–Coull method
+    </h4>
+    <p>
+      Main article:
+      <a href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Agresti–Coull_interval">
+        Binomial proportion confidence interval#Agresti–Coull interval
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+    </p>
+    <p>
+      Here the estimate of
+      <em>
+        p
+      </em>
+      is modified to
+    </p>
+    <p>
+      This method works well for
+      <em>
+        n
+      </em>
+      &gt; 10 and
+      <em>
+        n
+      </em>
+      <sub>
+        1
+      </sub>
+      ≠ 0,
+      <em>
+        n
+      </em>
+      . See here for . For
+      <em>
+        n
+      </em>
+      <sub>
+        1
+      </sub>
+      = 0,
+      <em>
+        n
+      </em>
+      use the Wilson (score) method below.
+    </p>
+    <h4>
+      Arcsine method
+    </h4>
+    <p>
+      Main article:
+      <a href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Arcsine_transformation">
+        Binomial proportion confidence interval#Arcsine transformation
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+    </p>
+    <h4>
+      Wilson (score) method
+    </h4>
+    <p>
+      Main article:
+      <a href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wilson_score_interval">
+        Binomial proportion confidence interval#Wilson score interval
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+    </p>
+    <p>
+      The notation in the formula below differs from the previous formulas in two respects:
+    </p>
+    <ul>
+      <li>
+        Firstly,
+        <em>
+          z
+        </em>
+        <sub>
+          <em>
+            x
+          </em>
+        </sub>
+        has a slightly different interpretation in the formula below: it has its ordinary meaning of 'the
+        <em>
+          x
+        </em>
+        th quantile of the standard normal distribution', rather than being a shorthand for 'the (1 −
+        <em>
+          x
+        </em>
+        )th quantile'.
+      </li>
+      <li>
+        Secondly, this formula does not use a plus-minus to define the two bounds. Instead, one may use to get the lower bound, or use to get the upper bound. For example: for a 95% confidence level the error , so one gets the lower bound by using , and one gets the upper bound by using .
+      </li>
+    </ul>
+    <h4>
+      Comparison
+    </h4>
+    <p>
+      The so-called "exact" (
+      <a href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Clopper–Pearson_interval">
+        Clopper–Pearson
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ) method is the most conservative. (
+      <em>
+        Exact
+      </em>
+      does not mean perfectly accurate; rather, it indicates that the estimates will not be less conservative than the true value.)
+    </p>
+    <p>
+      The Wald method, although commonly recommended in textbooks, is the most biased.
+    </p>
+    <h2>
+      Related distributions
+    </h2>
+    <h3>
+      Sums of binomials
+    </h3>
+    <p>
+      If
+      <em>
+        X
+      </em>
+      ~ B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ) and
+      <em>
+        Y
+      </em>
+      ~ B(
+      <em>
+        m
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ) are independent binomial variables with the same probability
+      <em>
+        p
+      </em>
+      , then
+      <em>
+        X
+      </em>
+      +
+      <em>
+        Y
+      </em>
+      is again a binomial variable; its distribution is
+      <em>
+        Z
+      </em>
+      =
+      <em>
+        X
+      </em>
+      +
+      <em>
+        Y
+      </em>
+      ~ B(
+      <em>
+        n
+      </em>
+      +
+      <em>
+        m
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ):
+    </p>
+    <p>
+      A Binomial distributed random variable
+      <em>
+        X
+      </em>
+      ~ B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ) can be considered as the sum of
+      <em>
+        n
+      </em>
+      Bernoulli distributed random variables. So the sum of two Binomial distributed random variables
+      <em>
+        X
+      </em>
+      ~ B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ) and
+      <em>
+        Y
+      </em>
+      ~ B(
+      <em>
+        m
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ) is equivalent to the sum of
+      <em>
+        n
+      </em>
+      +
+      <em>
+        m
+      </em>
+      Bernoulli distributed random variables, which means
+      <em>
+        Z
+      </em>
+      =
+      <em>
+        X
+      </em>
+      +
+      <em>
+        Y
+      </em>
+      ~ B(
+      <em>
+        n
+      </em>
+      +
+      <em>
+        m
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ). This can also be proven directly using the addition rule.
+    </p>
+    <p>
+      However, if
+      <em>
+        X
+      </em>
+      and
+      <em>
+        Y
+      </em>
+      do not have the same probability
+      <em>
+        p
+      </em>
+      , then the variance of the sum will be
+      <a href="https://en.wikipedia.org/wiki/Binomial_sum_variance_inequality">
+        smaller than the variance of a binomial variable
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      distributed as B(
+      <em>
+        n
+      </em>
+      +
+      <em>
+        m
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ).
+    </p>
+    <h3>
+      Poisson binomial distribution
+    </h3>
+    <p>
+      The binomial distribution is a special case of the
+      <a href="https://en.wikipedia.org/wiki/Poisson_binomial_distribution">
+        Poisson binomial distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , which is the distribution of a sum of
+      <em>
+        n
+      </em>
+      independent non-identical
+      <a href="https://en.wikipedia.org/wiki/Bernoulli_trials">
+        Bernoulli trials
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      B(
+      <em>
+        p
+      </em>
+      <sub>
+        <em>
+          i
+        </em>
+      </sub>
+      ).
+    </p>
+    <h3>
+      Ratio of two binomial distributions
+    </h3>
+    <p>
+      This result was first derived by Katz and coauthors in 1978.
+    </p>
+    <p>
+      Let
+      <em>
+        X
+      </em>
+      ~ B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      <sub>
+        1
+      </sub>
+      ) and
+      <em>
+        Y
+      </em>
+      ~ B(
+      <em>
+        m
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      <sub>
+        2
+      </sub>
+      ) be independent. Let
+      <em>
+        T
+      </em>
+      = (
+      <em>
+        X
+      </em>
+      /
+      <em>
+        n
+      </em>
+      ) / (
+      <em>
+        Y
+      </em>
+      /
+      <em>
+        m
+      </em>
+      ).
+    </p>
+    <p>
+      Then log(
+      <em>
+        T
+      </em>
+      ) is approximately normally distributed with mean log(
+      <em>
+        p
+      </em>
+      <sub>
+        1
+      </sub>
+      /
+      <em>
+        p
+      </em>
+      <sub>
+        2
+      </sub>
+      ) and variance ((1/
+      <em>
+        p
+      </em>
+      <sub>
+        1
+      </sub>
+      ) − 1)/
+      <em>
+        n
+      </em>
+      + ((1/
+      <em>
+        p
+      </em>
+      <sub>
+        2
+      </sub>
+      ) − 1)/
+      <em>
+        m
+      </em>
+      .
+    </p>
+    <h3>
+      Conditional binomials
+    </h3>
+    <p>
+      If
+      <em>
+        X
+      </em>
+      ~ B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ) and
+      <em>
+        Y
+      </em>
+      |
+      <em>
+        X
+      </em>
+      ~ B(
+      <em>
+        X
+      </em>
+      ,
+      <em>
+        q
+      </em>
+      ) (the conditional distribution of
+      <em>
+        Y
+      </em>
+      , given
+      <em>
+        X
+      </em>
+      ), then
+      <em>
+        Y
+      </em>
+      is a simple binomial random variable with distribution
+      <em>
+        Y
+      </em>
+      ~ B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        pq
+      </em>
+      ).
+    </p>
+    <p>
+      For example, imagine throwing
+      <em>
+        n
+      </em>
+      balls to a basket
+      <em>
+        U
+      </em>
+      <sub>
+        <em>
+          X
+        </em>
+      </sub>
+      and taking the balls that hit and throwing them to another basket
+      <em>
+        U
+      </em>
+      <sub>
+        <em>
+          Y
+        </em>
+      </sub>
+      . If
+      <em>
+        p
+      </em>
+      is the probability to hit
+      <em>
+        U
+      </em>
+      <sub>
+        <em>
+          X
+        </em>
+      </sub>
+      then
+      <em>
+        X
+      </em>
+      ~ B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ) is the number of balls that hit
+      <em>
+        U
+      </em>
+      <sub>
+        <em>
+          X
+        </em>
+      </sub>
+      . If
+      <em>
+        q
+      </em>
+      is the probability to hit
+      <em>
+        U
+      </em>
+      <sub>
+        <em>
+          Y
+        </em>
+      </sub>
+      then the number of balls that hit
+      <em>
+        U
+      </em>
+      <sub>
+        <em>
+          Y
+        </em>
+      </sub>
+      is
+      <em>
+        Y
+      </em>
+      ~ B(
+      <em>
+        X
+      </em>
+      ,
+      <em>
+        q
+      </em>
+      ) and therefore
+      <em>
+        Y
+      </em>
+      ~ B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        pq
+      </em>
+      ).
+    </p>
+    <p>
+      <strong>
+        [Proof]
+      </strong>
+    </p>
+    <p>
+      Since and , by the
+      <a href="https://en.wikipedia.org/wiki/law_of_total_probability">
+        law of total probability
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      ,
+    </p>
+    <p>
+      Since the equation above can be expressed as
+    </p>
+    <p>
+      Factoring and pulling all the terms that don't depend on out of the sum now yields
+    </p>
+    <p>
+      After substituting in the expression above, we get
+    </p>
+    <p>
+      Notice that the sum (in the parentheses) above equals by the
+      <a href="https://en.wikipedia.org/wiki/binomial_theorem">
+        binomial theorem
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . Substituting this in finally yields
+    </p>
+    <p>
+      and thus as desired.
+    </p>
+    <h3>
+      Bernoulli distribution
+    </h3>
+    <p>
+      The
+      <a href="https://en.wikipedia.org/wiki/Bernoulli_distribution">
+        Bernoulli distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      is a special case of the binomial distribution, where
+      <em>
+        n
+      </em>
+      = 1. Symbolically,
+      <em>
+        X
+      </em>
+      ~ B(1,
+      <em>
+        p
+      </em>
+      ) has the same meaning as
+      <em>
+        X
+      </em>
+      ~ Bernoulli(
+      <em>
+        p
+      </em>
+      ). Conversely, any binomial distribution, B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ), is the distribution of the sum of
+      <em>
+        n
+      </em>
+      independent
+      <a href="https://en.wikipedia.org/wiki/Bernoulli_trials">
+        Bernoulli trials
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , Bernoulli(
+      <em>
+        p
+      </em>
+      ), each with the same probability
+      <em>
+        p
+      </em>
+      .
+    </p>
+    <h3>
+      Normal approximation
+    </h3>
+    <p>
+      See also:
+      <a href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Normal_approximation_interval">
+        Binomial proportion confidence interval#Normal approximation interval
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+    </p>
+    <p>
+      If
+      <em>
+        n
+      </em>
+      is large enough, then the skew of the distribution is not too great. In this case a reasonable approximation to B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ) is given by the
+      <a href="https://en.wikipedia.org/wiki/normal_distribution">
+        normal distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+    </p>
+    <p>
+      and this basic approximation can be improved in a simple way by using a suitable
+      <a href="https://en.wikipedia.org/wiki/continuity_correction">
+        continuity correction
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . The basic approximation generally improves as
+      <em>
+        n
+      </em>
+      increases (at least 20) and is better when
+      <em>
+        p
+      </em>
+      is not near to 0 or 1. Various
+      <a href="https://en.wikipedia.org/wiki/Rule_of_thumb">
+        rules of thumb
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      may be used to decide whether
+      <em>
+        n
+      </em>
+      is large enough, and
+      <em>
+        p
+      </em>
+      is far enough from the extremes of zero or one:
+    </p>
+    <ul>
+      <li>
+        One rule is that for
+        <em>
+          n
+        </em>
+        &gt; 5 the normal approximation is adequate if the absolute value of the skewness is strictly less than 0.3; that is, if
+      </li>
+    </ul>
+    <p>
+      This can be made precise using the
+      <a href="https://en.wikipedia.org/wiki/Berry–Esseen_theorem">
+        Berry–Esseen theorem
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <ul>
+      <li>
+        A stronger rule states that the normal approximation is appropriate only if everything within 3 standard deviations of its mean is within the range of possible values; that is, only if
+      </li>
+    </ul>
+    <p>
+      : This 3-standard-deviation rule is equivalent to the following conditions, which also imply the first rule above.
+    </p>
+    <p>
+      <strong>
+        [Proof]
+      </strong>
+    </p>
+    <p>
+      The rule is totally equivalent to request that
+    </p>
+    <p>
+      Moving terms around yields:
+    </p>
+    <p>
+      Since , we can apply the square power and divide by the respective factors and , to obtain the desired conditions:
+    </p>
+    <p>
+      Notice that these conditions automatically imply that . On the other hand, apply again the square root and divide by 3,
+    </p>
+    <p>
+      Subtracting the second set of inequalities from the first one yields:
+    </p>
+    <p>
+      and so, the desired first rule is satisfied,
+    </p>
+    <ul>
+      <li>
+        Another commonly used rule is that both values
+        <em>
+          np
+        </em>
+        and
+        <em>
+          n
+        </em>
+        (1 −
+        <em>
+          p
+        </em>
+        ) must be greater than or equal to 5. However, the specific number varies from source to source, and depends on how good an approximation one wants. In particular, if one uses 9 instead of 5, the rule implies the results stated in the previous paragraphs.
+      </li>
+    </ul>
+    <p>
+      <strong>
+        [Proof]
+      </strong>
+    </p>
+    <p>
+      Assume that both values and are greater than 9. Since , we easily have that
+    </p>
+    <p>
+      We only have to divide now by the respective factors and , to deduce the alternative form of the 3-standard-deviation rule:
+    </p>
+    <p>
+      The following is an example of applying a
+      <a href="https://en.wikipedia.org/wiki/continuity_correction">
+        continuity correction
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . Suppose one wishes to calculate Pr(
+      <em>
+        X
+      </em>
+      ≤ 8) for a binomial random variable
+      <em>
+        X
+      </em>
+      . If
+      <em>
+        Y
+      </em>
+      has a distribution given by the normal approximation, then Pr(
+      <em>
+        X
+      </em>
+      ≤ 8) is approximated by Pr(
+      <em>
+        Y
+      </em>
+      ≤ 8.5). The addition of 0.5 is the continuity correction; the uncorrected normal approximation gives considerably less accurate results.
+    </p>
+    <p>
+      This approximation, known as
+      <a href="https://en.wikipedia.org/wiki/de_Moivre–Laplace_theorem">
+        de Moivre–Laplace theorem
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , is a huge time-saver when undertaking calculations by hand (exact calculations with large
+      <em>
+        n
+      </em>
+      are very onerous); historically, it was the first use of the normal distribution, introduced in
+      <a href="https://en.wikipedia.org/wiki/Abraham_de_Moivre">
+        Abraham de Moivre
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      's book
+      <em>
+        <a href="https://en.wikipedia.org/wiki/The_Doctrine_of_Chances">
+          The Doctrine of Chances
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </em>
+      in 1738. Nowadays, it can be seen as a consequence of the
+      <a href="https://en.wikipedia.org/wiki/central_limit_theorem">
+        central limit theorem
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      since B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ) is a sum of
+      <em>
+        n
+      </em>
+      independent, identically distributed
+      <a href="https://en.wikipedia.org/wiki/Bernoulli_distribution">
+        Bernoulli variables
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      with parameter
+      <em>
+        p
+      </em>
+      . This fact is the basis of a
+      <a href="https://en.wikipedia.org/wiki/hypothesis_test">
+        hypothesis test
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      , a "proportion z-test", for the value of
+      <em>
+        p
+      </em>
+      using
+      <em>
+        x
+      </em>
+      /
+      <em>
+        n
+      </em>
+      , the sample proportion and estimator of
+      <em>
+        p
+      </em>
+      , in a
+      <a href="https://en.wikipedia.org/wiki/common_test_statistics">
+        common test statistic
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <p>
+      For example, suppose one randomly samples
+      <em>
+        n
+      </em>
+      people out of a large population and ask them whether they agree with a certain statement. The proportion of people who agree will of course depend on the sample. If groups of
+      <em>
+        n
+      </em>
+      people were sampled repeatedly and truly randomly, the proportions would follow an approximate normal distribution with mean equal to the true proportion
+      <em>
+        p
+      </em>
+      of agreement in the population and with standard deviation
+    </p>
+    <h3>
+      Poisson approximation
+    </h3>
+    <p>
+      The binomial distribution converges towards the
+      <a href="https://en.wikipedia.org/wiki/Poisson_distribution">
+        Poisson distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      as the number of trials goes to infinity while the product
+      <em>
+        np
+      </em>
+      converges to a finite limit. Therefore, the Poisson distribution with parameter
+      <em>
+        λ
+      </em>
+      =
+      <em>
+        np
+      </em>
+      can be used as an approximation to B(
+      <em>
+        n
+      </em>
+      ,
+      <em>
+        p
+      </em>
+      ) of the binomial distribution if
+      <em>
+        n
+      </em>
+      is sufficiently large and
+      <em>
+        p
+      </em>
+      is sufficiently small. According to rules of thumb, this approximation is good if
+      <em>
+        n
+      </em>
+      ≥ 20 and
+      <em>
+        p
+      </em>
+      ≤ 0.05 such that
+      <em>
+        np
+      </em>
+      ≤ 1, or if
+      <em>
+        n
+      </em>
+      &gt; 50 and
+      <em>
+        p
+      </em>
+      &lt; 0.1 such that
+      <em>
+        np
+      </em>
+      &lt; 5, or if
+      <em>
+        n
+      </em>
+      ≥ 100 and
+      <em>
+        np
+      </em>
+      ≤ 10.
+    </p>
+    <p>
+      Concerning the accuracy of Poisson approximation, see Novak, ch. 4, and references therein.
+    </p>
+    <h3>
+      Limiting distributions
+    </h3>
+    <ul>
+      <li>
+        <em>
+          <a href="https://en.wikipedia.org/wiki/Poisson_limit_theorem">
+            Poisson limit theorem
+          </a>
+          <span class="external-link">
+            ↗
+          </span>
+        </em>
+        : As
+        <em>
+          n
+        </em>
+        approaches ∞ and
+        <em>
+          p
+        </em>
+        approaches 0 with the product
+        <em>
+          np
+        </em>
+        held fixed, the Binomial(
+        <em>
+          n
+        </em>
+        ,
+        <em>
+          p
+        </em>
+        ) distribution approaches the
+        <a href="https://en.wikipedia.org/wiki/Poisson_distribution">
+          Poisson distribution
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        with
+        <a href="https://en.wikipedia.org/wiki/expected_value">
+          expected value
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        <em>
+          λ
+        </em>
+        =
+        <em>
+          np
+        </em>
+        .
+      </li>
+      <li>
+        <em>
+          <a href="https://en.wikipedia.org/wiki/de_Moivre–Laplace_theorem">
+            de Moivre–Laplace theorem
+          </a>
+          <span class="external-link">
+            ↗
+          </span>
+        </em>
+        : As
+        <em>
+          n
+        </em>
+        approaches ∞ while
+        <em>
+          p
+        </em>
+        remains fixed, the distribution of approaches the
+        <a href="https://en.wikipedia.org/wiki/normal_distribution">
+          normal distribution
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        with expected value 0 and
+        <a href="https://en.wikipedia.org/wiki/variance">
+          variance
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        1. This result is sometimes loosely stated by saying that the distribution of
+        <em>
+          X
+        </em>
+        is
+        <a href="https://en.wikipedia.org/wiki/Asymptotic_normality">
+          asymptotically normal
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        with expected value 0 and
+        <a href="https://en.wikipedia.org/wiki/variance">
+          variance
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        1. This result is a specific case of the
+        <a href="https://en.wikipedia.org/wiki/central_limit_theorem">
+          central limit theorem
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+      </li>
+    </ul>
+    <h3>
+      Beta distribution
+    </h3>
+    <p>
+      The binomial distribution and beta distribution are different views of the same model of repeated Bernoulli trials. The binomial distribution is the
+      <a href="https://en.wikipedia.org/wiki/Probability_mass_function">
+        PMF
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      of
+      <em>
+        k
+      </em>
+      successes given
+      <em>
+        n
+      </em>
+      independent events each with a probability
+      <em>
+        p
+      </em>
+      of success. Mathematically, when
+      <em>
+        α
+      </em>
+      =
+      <em>
+        k
+      </em>
+      + 1 and
+      <em>
+        β
+      </em>
+      =
+      <em>
+        n
+      </em>
+      −
+      <em>
+        k
+      </em>
+      + 1, the beta distribution and the binomial distribution are related by a factor of
+      <em>
+        n
+      </em>
+      + 1:
+    </p>
+    <p>
+      <a href="https://en.wikipedia.org/wiki/Beta_distribution">
+        Beta distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      s also provide a family of
+      <a href="https://en.wikipedia.org/wiki/prior_distribution">
+        prior probability distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      s for binomial distributions in
+      <a href="https://en.wikipedia.org/wiki/Bayesian_inference">
+        Bayesian inference
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      :
+    </p>
+    <p>
+      Given a uniform prior, the posterior distribution for the probability of success
+      <em>
+        p
+      </em>
+      given
+      <em>
+        n
+      </em>
+      independent events with
+      <em>
+        k
+      </em>
+      observed successes is a beta distribution.
+    </p>
+    <h2>
+      Computational methods
+    </h2>
+    <h3>
+      Random number generation
+    </h3>
+    <p>
+      Further information:
+      <a href="https://en.wikipedia.org/wiki/Pseudo-random_number_sampling">
+        Pseudo-random number sampling
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      Methods for
+      <a href="https://en.wikipedia.org/wiki/random_number_generation">
+        random number generation
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      where the
+      <a href="https://en.wikipedia.org/wiki/marginal_distribution">
+        marginal distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      is a binomial distribution are well-established. One way to generate
+      <a href="https://en.wikipedia.org/wiki/random_variate">
+        random variate
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      s samples from a binomial distribution is to use an inversion algorithm. To do so, one must calculate the probability that Pr(
+      <em>
+        X
+      </em>
+      =
+      <em>
+        k
+      </em>
+      ) for all values
+      <em>
+        k
+      </em>
+      from 0 through
+      <em>
+        n
+      </em>
+      . (These probabilities should sum to a value close to one, in order to encompass the entire sample space.) Then by using a
+      <a href="https://en.wikipedia.org/wiki/pseudorandom_number_generator">
+        pseudorandom number generator
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      to generate samples uniformly between 0 and 1, one can transform the calculated samples into discrete numbers by using the probabilities calculated in the first step.
+    </p>
+    <h2>
+      History
+    </h2>
+    <p>
+      This distribution was derived by
+      <a href="https://en.wikipedia.org/wiki/Jacob_Bernoulli">
+        Jacob Bernoulli
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . He considered the case where
+      <em>
+        p
+      </em>
+      =
+      <em>
+        r
+      </em>
+      /(
+      <em>
+        r
+      </em>
+      +
+      <em>
+        s
+      </em>
+      ) where
+      <em>
+        p
+      </em>
+      is the probability of success and
+      <em>
+        r
+      </em>
+      and
+      <em>
+        s
+      </em>
+      are positive integers.
+      <a href="https://en.wikipedia.org/wiki/Blaise_Pascal">
+        Blaise Pascal
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      had earlier considered the case where
+      <em>
+        p
+      </em>
+      = 1/2, tabulating the corresponding binomial coefficients in what is now recognized as
+      <a href="https://en.wikipedia.org/wiki/Pascal&apos;s_triangle">
+        Pascal's triangle
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <h2>
+      See also
+    </h2>
+    <ul>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Logistic_regression">
+          Logistic regression
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Multinomial_distribution">
+          Multinomial distribution
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Negative_binomial_distribution">
+          Negative binomial distribution
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Beta-binomial_distribution">
+          Beta-binomial distribution
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        Binomial measure, an example of a
+        <a href="https://en.wikipedia.org/wiki/Multifractal_system">
+          multifractal
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        <a href="https://en.wikipedia.org/wiki/measure_(mathematics)">
+          measure
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Statistical_mechanics">
+          Statistical mechanics
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Piling-up_lemma">
+          Piling-up lemma
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        , the resulting probability when
+        <a href="https://en.wikipedia.org/wiki/XOR">
+          XOR
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        -ing independent Boolean variables
+      </li>
+    </ul>
+    <h2>
+      Notes
+    </h2>
+    <h2>
+      References
+    </h2>
+    <ol class="references">
+      <li>
+        J. Christopher Westland.
+        <em>
+          Audit Analytics: Data Science for the Accounting Profession
+        </em>
+        . Chicago:
+        <a href="https://en.wikipedia.org/wiki/Springer_Publishing">
+          Springer Publishing
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        , 2020. p. 53. ISBN 978-3-030-49091-1
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/William_Feller">
+          William Feller
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          An Introduction to Probability Theory and Its Applications
+        </em>
+        . New York: Wiley, 1968. Third ed. p. 151 (theorem in section VI.3)
+      </li>
+      <li>
+        G. P. Wadsworth.
+        <em>
+          Introduction to Probability and Random Variables
+        </em>
+        . New York: McGraw-Hill, 1960. p. 52
+      </li>
+      <li>
+        G. H. Jowett. "The Relationship Between the Binomial and F Distributions".
+        <em>
+          Journal of the Royal Statistical Society, Series D
+        </em>
+        . 1963, vol. 13, no. 1, pp. 55–57. doi:10.2307/2986663. JSTOR 2986663
+      </li>
+      <li>
+        See Proof Wiki
+      </li>
+      <li>
+        Andreas Knoblauch.
+        <em>
+          Closed-Form Expressions for the Moments of the Binomial Probability Distribution
+        </em>
+        . 2008. p. 197–204
+      </li>
+      <li>
+        Duy Nguyen.
+        <em>
+          A probabilistic approach to the moments of binomial random variables and application
+        </em>
+        . 2021. p. 101–103
+      </li>
+      <li>
+        Thomas D. Ahle.
+        <em>
+          Sharp and Simple Bounds for the raw Moments of the Binomial and Poisson Distributions
+        </em>
+        . 2022
+      </li>
+      <li>
+        See also André Nicolas.
+        <a href="https://math.stackexchange.com/q/117940">
+          "Finding mode in Binomial distribution"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          <a href="https://en.wikipedia.org/wiki/Stack_Exchange">
+            Stack Exchange
+          </a>
+          <span class="external-link">
+            ↗
+          </span>
+        </em>
+        . January 7, 2019
+      </li>
+      <li>
+        P. Neumann. "Über den Median der Binomial- and Poissonverteilung".
+        <em>
+          Wissenschaftliche Zeitschrift der Technischen Universität Dresden
+        </em>
+        . 1966, vol. 19, pp. 29–33
+      </li>
+      <li>
+        Lord, Nick. (July 2010). "Binomial averages when the mean is an integer",
+        <a href="https://en.wikipedia.org/wiki/The_Mathematical_Gazette">
+          The Mathematical Gazette
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        94, 331-332.
+      </li>
+      <li>
+        R. Kaas and J.M. Buhrman. "Mean, Median and Mode in Binomial Distributions".
+        <em>
+          Statistica Neerlandica
+        </em>
+        . 1980, vol. 34, no. 1, pp. 13–18. doi:10.1111/j.1467-9574.1980.tb00681.x
+      </li>
+      <li>
+        K. Hamza. "The smallest uniform upper bound on the distance between the mean and the median of the binomial and Poisson distributions".
+        <em>
+          Statistics &amp; Probability Letters
+        </em>
+        . 1995, vol. 23, pp. 21–25. doi:10.1016/0167-7152(94)00090-U
+      </li>
+      <li>
+        Sz. Nowakowski. "Uniqueness of a Median of a Binomial Distribution with Rational Probability".
+        <em>
+          Advances in Mathematics: Scientific Journal
+        </em>
+        . 2021, vol. 10, no. 4, pp. 1951–1958. doi:10.37418/amsj.10.4.9. ISSN 1857-8365
+      </li>
+      <li>
+        R. Arratia and L. Gordon. "Tutorial on large deviations for the binomial distribution".
+        <em>
+          Bulletin of Mathematical Biology
+        </em>
+        . 1989, vol. 51, no. 1, pp. 125–131. doi:10.1007/BF02458840
+      </li>
+      <li>
+        <em>
+          Information Theory
+        </em>
+        . Dover Publications, 1990. p. 115. ISBN 978-0-486-66521-4
+      </li>
+      <li>
+        J. Matoušek and J. Vondrak.
+        <a href="https://www.cs.cmu.edu/afs/cs.cmu.edu/academic/class/15859-f09/www/handouts/matousek-vondrak-prob-ln.pdf">
+          "The Probabilistic Method"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          lecture notes
+        </em>
+      </li>
+      <li>
+        Rand R. Wilcox. "Estimating the Parameters of the Beta-Binomial Distribution".
+        <em>
+          Educational and Psychological Measurement
+        </em>
+        . 1979, vol. 39, no. 3, pp. 527–535. doi:10.1177/001316447903900302. ISSN 0013-1644
+      </li>
+      <li>
+        Marko Lalovic (https://stats.stackexchange.com/users/105848/marko-lalovic), Jeffreys prior for binomial likelihood, URL (version: 2019-03-04): https://stats.stackexchange.com/q/275608
+      </li>
+      <li>
+        Mehdi Razzaghi. "On the estimation of binomial success probability with zero occurrence in sample".
+        <em>
+          Journal of Modern Applied Statistical Methods
+        </em>
+        . 2002, vol. 1, no. 2, pp. 326–332. doi:10.22237/jmasm/1036110000
+      </li>
+      <li>
+        Lawrence D. Brown, T. Tony Cai, and Anirban DasGupta.
+        <em>
+          Interval Estimation for a Binomial Proportion
+        </em>
+        . 2001. p. 101–133
+      </li>
+      <li>
+        Alan Agresti and Brent A. Coull.
+        <em>
+          Approximate is better than 'exact' for interval estimation of binomial proportions
+        </em>
+        . May 1998. p. 119–126
+      </li>
+      <li>
+        Joseph Gulotta.
+        <a
+          href="https://pellucid.atlassian.net/wiki/spaces/PEL/pages/25722894/Agresti-Coull+Interval+Method#:~:text=The%20Agresti%2DCoull%20Interval%20Method,%2C%20or%20per%20100%2C000%2C%20etc">
+          "Agresti-Coull Interval Method"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          pellucid.atlassian.net
+        </em>
+      </li>
+      <li>
+        <a href="https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm">
+          "Confidence intervals"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          itl.nist.gov
+        </em>
+      </li>
+      <li>
+        M. A. Pires and Short Communications and Posters. Confidence intervals for a binomial proportion: comparison of methods and software evaluation.
+        <em>
+          Proceedings of the Conference CompStat 2002
+        </em>
+        . 2002
+      </li>
+      <li>
+        Edwin B. Wilson.
+        <em>
+          Probable inference, the law of succession, and statistical inference
+        </em>
+        . June 1927. p. 209–212
+      </li>
+      <li>
+        Confidence intervals.
+        <em>
+          Engineering Statistics Handbook
+        </em>
+        . NIST/Sematech, 2012
+      </li>
+      <li>
+        F.M. Dekking, C. Kraaikamp, H.P. Lopohaa, and L.E. Meester.
+        <em>
+          A Modern Introduction of Probability and Statistics
+        </em>
+        . Springer-Verlag London, 2005. 1 ed. ISBN 978-1-84628-168-6
+      </li>
+      <li>
+        Y. H. Wang. "On the number of successes in independent trials".
+        <em>
+          Statistica Sinica
+        </em>
+        . 1993, vol. 3, no. 2, pp. 295–312
+      </li>
+      <li>
+        D. Katz, J. Baptista, S. P. Azen, and M. C. Pike. "Obtaining confidence intervals for the risk ratio in cohort studies".
+        <em>
+          Biometrics
+        </em>
+        . 1978, vol. 34, no. 3, pp. 469–474. doi:10.2307/2530610. JSTOR 2530610
+      </li>
+      <li>
+        Marco Taboga.
+        <a href="https://www.statlect.com/probability-distributions/binomial-distribution#hid3">
+          "Lectures on Probability Theory and Mathematical Statistics"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          statlect.com
+        </em>
+      </li>
+      <li>
+        Box,
+        <a href="https://en.wikipedia.org/wiki/George_E._P._Box">
+          George E.P.
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        ,
+        <a href="https://en.wikipedia.org/wiki/William_Hunter_(statistician)">
+          William Gordon Hunter
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        , and J. Stuart Hunter.
+        <em>
+          Statistics for Experimenters: Design, Innovation, and Discovery
+        </em>
+        . Wiley, 1978. p. 130. ISBN 978-0-471-09315-2
+      </li>
+      <li>
+        Zac Chen.
+        <em>
+          H2 Mathematics Handbook
+        </em>
+        . Singapore: Educational Publishing House, 2011. 1 ed. p. 350. ISBN 978-981-4288-48-4
+      </li>
+      <li>
+        <a
+          href="https://stats.libretexts.org/Courses/Las_Positas_College/Math_40:_Statistics_and_Probability/06:_Continuous_Random_Variables_and_the_Normal_Distribution/6.04:_Normal_Approximation_to_the_Binomial_Distribution">
+          "6.4: Normal Approximation to the Binomial Distribution - Statistics LibreTexts"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        . 2023-05-29
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/NIST">
+          NIST
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        /
+        <a href="https://en.wikipedia.org/wiki/SEMATECH">
+          SEMATECH
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        , "7.2.4. Does the proportion of defectives meet requirements?"
+        <em>
+          e-Handbook of Statistical Methods.
+        </em>
+      </li>
+      <li>
+        "12.4 – Approximating the Binomial Distribution | STAT 414".
+        <em>
+          Pennstate: Statistics Online Courses
+        </em>
+        . 2023-03-28
+      </li>
+      <li>
+        Zac Chen.
+        <em>
+          H2 mathematics handbook
+        </em>
+        . Singapore: Educational publishing house, 2011. 1 ed. p. 348. ISBN 978-981-4288-48-4
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/NIST">
+          NIST
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        /
+        <a href="https://en.wikipedia.org/wiki/SEMATECH">
+          SEMATECH
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        , "6.3.3.1. Counts Control Charts",
+        <em>
+          e-Handbook of Statistical Methods.
+        </em>
+      </li>
+      <li>
+        <a href="https://mathcenter.oxford.emory.edu/site/math117/connectingPoissonAndBinomial/">
+          "The Connection Between the Poisson and Binomial Distributions"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        . 2023-03-13
+      </li>
+      <li>
+        Novak S.Y. (2011) Extreme value methods with applications to finance. London: CRC/ Chapman &amp; Hall/Taylor &amp; Francis. ISBN 9781-43983-5746.
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/David_J._C._MacKay">
+          David J. C. MacKay
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        .
+        <em>
+          Information Theory, Inference and Learning Algorithms
+        </em>
+        .
+        <a href="https://en.wikipedia.org/wiki/Cambridge_University_Press">
+          Cambridge University Press
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        , 2003. 1st ed. ISBN 978-0-521-64298-9
+      </li>
+      <li>
+        <a href="https://www.statlect.com/probability-distributions/beta-distribution">
+          "Beta distribution"
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Luc_Devroye">
+          Devroye, Luc
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        (1986)
+        <em>
+          Non-Uniform Random Variate Generation
+        </em>
+        , New York: Springer-Verlag. (See especially Chapter X, Discrete Univariate Distributions)
+      </li>
+      <li>
+        V. Kachitvichyanukul and B. W. Schmeiser. "Binomial random variate generation".
+        <em>
+          Communications of the ACM
+        </em>
+        . 1988, vol. 31, no. 2, pp. 216–222. doi:10.1145/42372.42381
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Victor_J._Katz">
+          Victor Katz
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        . 14.3: Elementary Probability.
+        <em>
+          A History of Mathematics: An Introduction
+        </em>
+        . Addison-Wesley, 2009. p. 491. ISBN 978-0-321-38700-4
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/Benoit_Mandelbrot">
+          Mandelbrot, B. B.
+        </a>
+        <span class="external-link">
+          ↗
+        </span>
+        , Fisher, A. J., &amp; Calvet, L. E. (1997). A multifractal model of asset returns.
+        <em>
+          3.2 The Binomial Measure is the Simplest Example of a Multifractal
+        </em>
+      </li>
+    </ol>
+    <h2>
+      Further reading
+    </h2>
+    <ul>
+      <li>
+        Werner Z. Hirsch. Binomial Distribution—Success or Failure, How Likely Are They?.
+        <em>
+          Introduction to Modern Statistics
+        </em>
+        . New York: MacMillan, 1957. p. 140–153
+      </li>
+      <li>
+        John Neter, William Wasserman, and G. A. Whitmore.
+        <em>
+          Applied Statistics
+        </em>
+        . Boston: Allyn &amp; Bacon, 1988. Third ed. p. 185–192. ISBN 0-205-10328-6
+      </li>
+    </ul>
+    <h2>
+      External links
+    </h2>
+    <ul>
+      <li>
+        Interactive graphic: Univariate Distribution Relationships
+      </li>
+      <li>
+        Difference of two binomial variables: X-Y or |X-Y|
+      </li>
+      <li>
+        Querying the binomial probability distribution in WolframAlpha
+      </li>
+      <li>
+        Confidence (credible) intervals for binomial probability, p: online calculator available at causaScientia.org
+      </li>
+    </ul>
+  </body>
+</html>
