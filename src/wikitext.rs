@@ -17,6 +17,7 @@ pub(crate) fn remove_some_html_tags(text: &str) -> String {
             .into_owned();
     }
 
+    // https://en.wikipedia.org/wiki/Help:Displaying_a_formula
     let math_re = Regex::new(r"(?is)<math\b[^>]*>(.*?)</math>").unwrap();
     text = math_re
         .replace_all(&text, |caps: &regex::Captures| {
