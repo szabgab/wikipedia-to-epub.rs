@@ -585,6 +585,31 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ),
         ("mp", render_mp_template as TemplateHandler),
         ("minor planet", render_mp_template as TemplateHandler),
+        (
+            "age in years and days",
+            render_ayd_template as TemplateHandler,
+        ),
+        (
+            "age in years, months and days",
+            render_age_in_years_months_days_template as TemplateHandler,
+        ),
+        ("aircontent", render_aircontent_template as TemplateHandler),
+        (
+            "aircraft specs",
+            render_aircraft_specs_template as TemplateHandler,
+        ),
+        (
+            "aljazeera topic",
+            render_aljazeera_topic_template as TemplateHandler,
+        ),
+        ("a or an", render_a_or_an_template as TemplateHandler),
+        ("bar box", render_bar_box_template as TemplateHandler),
+        ("bar chart", render_bar_chart_template as TemplateHandler),
+        ("bartable", render_bartable_template as TemplateHandler),
+        ("bce", render_bce_template as TemplateHandler),
+        ("ban", render_ban_template as TemplateHandler),
+        ("bel", render_bel_template as TemplateHandler),
+        ("bdi", render_bdi_template as TemplateHandler),
     ])
 }
 
@@ -6881,4 +6906,490 @@ fn render_annotated_image_template(params: &str) -> String {
     }
 
     format!("[[{}]]", parts.join("|"))
+}
+
+fn render_age_in_years_months_days_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let mut y1 = named.get("year1").and_then(|s| s.parse::<i32>().ok());
+    let mut m1 = named.get("month1").and_then(|s| s.parse::<i32>().ok());
+    let mut d1 = named.get("day1").and_then(|s| s.parse::<i32>().ok());
+
+    let mut y2 = named.get("year2").and_then(|s| s.parse::<i32>().ok());
+    let mut m2 = named.get("month2").and_then(|s| s.parse::<i32>().ok());
+    let mut d2 = named.get("day2").and_then(|s| s.parse::<i32>().ok());
+
+    if y1.is_none() || m1.is_none() || d1.is_none() {
+        if positional.len() >= 6 {
+            y1 = positional[0].parse::<i32>().ok();
+            m1 = positional[1].parse::<i32>().ok();
+            d1 = positional[2].parse::<i32>().ok();
+            y2 = positional[3].parse::<i32>().ok();
+            m2 = positional[4].parse::<i32>().ok();
+            d2 = positional[5].parse::<i32>().ok();
+        } else if positional.len() >= 3 {
+            y1 = positional[0].parse::<i32>().ok();
+            m1 = positional[1].parse::<i32>().ok();
+            d1 = positional[2].parse::<i32>().ok();
+        }
+    }
+
+    let Some(y1) = y1 else {
+        return String::new();
+    };
+    let Some(m1) = m1 else {
+        return String::new();
+    };
+    let Some(d1) = d1 else {
+        return String::new();
+    };
+
+    let (y2, m2, d2) = if let (Some(y), Some(m), Some(d)) = (y2, m2, d2) {
+        (y, m, d)
+    } else {
+        current_utc_date()
+    };
+
+    let days1 = days_from_year_zero(y1, m1, d1);
+    let days2 = days_from_year_zero(y2, m2, d2);
+    if days1 > days2 {
+        return String::new();
+    }
+
+    let mut years = y2 - y1;
+    let mut months = m2 - m1;
+    let mut days = d2 - d1;
+
+    if days < 0 {
+        months -= 1;
+        let prev_m = if m2 == 1 { 12 } else { m2 - 1 };
+        let prev_y = if m2 == 1 { y2 - 1 } else { y2 };
+        let is_leap = (prev_y % 4 == 0 && prev_y % 100 != 0) || (prev_y % 400 == 0);
+        let month_lengths = if is_leap {
+            [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        } else {
+            [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        };
+        days += month_lengths[prev_m as usize - 1];
+    }
+
+    if months < 0 {
+        years -= 1;
+        months += 12;
+    }
+
+    let mut parts = Vec::new();
+    if years > 0 {
+        parts.push(if years == 1 {
+            "1 year".to_string()
+        } else {
+            format!("{} years", years)
+        });
+    }
+    if months > 0 {
+        parts.push(if months == 1 {
+            "1 month".to_string()
+        } else {
+            format!("{} months", months)
+        });
+    }
+    if days > 0 {
+        parts.push(if days == 1 {
+            "1 day".to_string()
+        } else {
+            format!("{} days", days)
+        });
+    }
+
+    if parts.is_empty() {
+        return "0 days".to_string();
+    }
+
+    if parts.len() == 1 {
+        parts[0].clone()
+    } else {
+        let last = parts.pop().unwrap();
+        format!("{} and {}", parts.join(", "), last)
+    }
+}
+
+fn render_aircontent_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut out = String::new();
+
+    if let Some(see_also) = named.get("see also").filter(|s| !s.trim().is_empty()) {
+        out.push_str("<strong>See also</strong>\n");
+        out.push_str(see_also);
+        out.push('\n');
+    }
+    if let Some(related) = named.get("related").filter(|s| !s.trim().is_empty()) {
+        out.push_str("<strong>Related development</strong>\n");
+        out.push_str(related);
+        out.push('\n');
+    }
+    if let Some(similar) = named.get("similar aircraft").filter(|s| !s.trim().is_empty()) {
+        out.push_str("<strong>Aircraft of comparable role, configuration, and era</strong>\n");
+        out.push_str(similar);
+        out.push('\n');
+    }
+    if let Some(lists) = named.get("lists").filter(|s| !s.trim().is_empty()) {
+        out.push_str("<strong>Related lists</strong>\n");
+        out.push_str(lists);
+        out.push('\n');
+    }
+    out
+}
+
+fn render_aircraft_specs_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut out = String::new();
+    out.push_str("<div class=\"aircraft-specs\">\n");
+    if let Some(r) = named.get("ref") {
+        out.push_str(&format!("<p><em>Data from</em> {}</p>\n", r));
+    }
+
+    // General characteristics
+    out.push_str("<p><strong>General characteristics</strong></p>\n<ul>\n");
+    if let Some(crew) = named.get("crew") {
+        out.push_str(&format!("<li><strong>Crew:</strong> {}</li>\n", crew));
+    }
+    if let Some(cap) = named.get("capacity") {
+        out.push_str(&format!("<li><strong>Capacity:</strong> {}</li>\n", cap));
+    }
+
+    // Length
+    if let Some(m) = named.get("length m") {
+        out.push_str(&format!("<li><strong>Length:</strong> {} m</li>\n", m));
+    } else if let (Some(ft), Some(inch)) = (named.get("length ft"), named.get("length in")) {
+        out.push_str(&format!(
+            "<li><strong>Length:</strong> {} ft {} in</li>\n",
+            ft, inch
+        ));
+    } else if let Some(ft) = named.get("length ft") {
+        out.push_str(&format!("<li><strong>Length:</strong> {} ft</li>\n", ft));
+    }
+
+    // Wingspan
+    if let Some(m) = named.get("span m") {
+        out.push_str(&format!("<li><strong>Wingspan:</strong> {} m</li>\n", m));
+    } else if let (Some(ft), Some(inch)) = (named.get("span ft"), named.get("span in")) {
+        out.push_str(&format!(
+            "<li><strong>Wingspan:</strong> {} ft {} in</li>\n",
+            ft, inch
+        ));
+    } else if let Some(ft) = named.get("span ft") {
+        out.push_str(&format!("<li><strong>Wingspan:</strong> {} ft</li>\n", ft));
+    }
+
+    // Height
+    if let Some(m) = named.get("height m") {
+        out.push_str(&format!("<li><strong>Height:</strong> {} m</li>\n", m));
+    } else if let (Some(ft), Some(inch)) = (named.get("height ft"), named.get("height in")) {
+        out.push_str(&format!(
+            "<li><strong>Height:</strong> {} ft {} in</li>\n",
+            ft, inch
+        ));
+    } else if let Some(ft) = named.get("height ft") {
+        out.push_str(&format!("<li><strong>Height:</strong> {} ft</li>\n", ft));
+    }
+
+    // Wing area
+    if let Some(sqm) = named.get("wing area sqm") {
+        out.push_str(&format!(
+            "<li><strong>Wing area:</strong> {} m²</li>\n",
+            sqm
+        ));
+    } else if let Some(sqft) = named.get("wing area sqft") {
+        out.push_str(&format!(
+            "<li><strong>Wing area:</strong> {} sq ft</li>\n",
+            sqft
+        ));
+    }
+
+    // Empty weight
+    if let Some(kg) = named.get("empty weight kg") {
+        out.push_str(&format!(
+            "<li><strong>Empty weight:</strong> {} kg</li>\n",
+            kg
+        ));
+    } else if let Some(lb) = named.get("empty weight lb") {
+        out.push_str(&format!(
+            "<li><strong>Empty weight:</strong> {} lb</li>\n",
+            lb
+        ));
+    }
+
+    // Gross weight
+    if let Some(kg) = named.get("gross weight kg") {
+        out.push_str(&format!(
+            "<li><strong>Gross weight:</strong> {} kg</li>\n",
+            kg
+        ));
+    } else if let Some(lb) = named.get("gross weight lb") {
+        out.push_str(&format!(
+            "<li><strong>Gross weight:</strong> {} lb</li>\n",
+            lb
+        ));
+    }
+
+    // Fuel capacity
+    if let Some(fuel) = named.get("fuel capacity") {
+        out.push_str(&format!(
+            "<li><strong>Fuel capacity:</strong> {}</li>\n",
+            fuel
+        ));
+    }
+
+    // Powerplant
+    if let Some(pp) = named.get("powerplant") {
+        let num = named
+            .get("number of engines")
+            .map(|s| s.as_str())
+            .unwrap_or("");
+        out.push_str(&format!(
+            "<li><strong>Powerplant:</strong> {} {}</li>\n",
+            num, pp
+        ));
+    }
+    out.push_str("</ul>\n");
+
+    // Performance
+    out.push_str("<p><strong>Performance</strong></p>\n<ul>\n");
+    if let Some(speed) = named
+        .get("max speed kmh")
+        .or_else(|| named.get("max speed mph"))
+        .or_else(|| named.get("max speed kts"))
+    {
+        out.push_str(&format!(
+            "<li><strong>Maximum speed:</strong> {}</li>\n",
+            speed
+        ));
+    }
+    if let Some(speed) = named
+        .get("cruise speed kmh")
+        .or_else(|| named.get("cruise speed mph"))
+        .or_else(|| named.get("cruise speed kts"))
+    {
+        out.push_str(&format!(
+            "<li><strong>Cruise speed:</strong> {}</li>\n",
+            speed
+        ));
+    }
+    if let Some(r) = named
+        .get("range km")
+        .or_else(|| named.get("range miles"))
+        .or_else(|| named.get("range nmi"))
+    {
+        out.push_str(&format!("<li><strong>Range:</strong> {}</li>\n", r));
+    }
+    if let Some(ceil) = named
+        .get("service ceiling m")
+        .or_else(|| named.get("service ceiling ft"))
+    {
+        out.push_str(&format!(
+            "<li><strong>Service ceiling:</strong> {}</li>\n",
+            ceil
+        ));
+    }
+    out.push_str("</ul>\n");
+
+    // Armament
+    let armament = named.get("armament");
+    let guns = named.get("guns");
+    let bombs = named.get("bombs");
+    let rockets = named.get("rockets");
+    let missiles = named.get("missiles");
+
+    if armament.is_some()
+        || guns.is_some()
+        || bombs.is_some()
+        || rockets.is_some()
+        || missiles.is_some()
+    {
+        out.push_str("<p><strong>Armament</strong></p>\n<ul>\n");
+        if let Some(arm) = armament {
+            out.push_str(&format!("<li>{}</li>\n", arm));
+        }
+        if let Some(g) = guns {
+            out.push_str(&format!("<li><strong>Guns:</strong> {}</li>\n", g));
+        }
+        if let Some(b) = bombs {
+            out.push_str(&format!("<li><strong>Bombs:</strong> {}</li>\n", b));
+        }
+        if let Some(r) = rockets {
+            out.push_str(&format!("<li><strong>Rockets:</strong> {}</li>\n", r));
+        }
+        if let Some(m) = missiles {
+            out.push_str(&format!("<li><strong>Missiles:</strong> {}</li>\n", m));
+        }
+        out.push_str("</ul>\n");
+    }
+
+    out.push_str("</div>");
+    out
+}
+
+fn render_aljazeera_topic_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.is_empty() {
+        return String::new();
+    }
+    let id = &positional[0];
+    let name = if positional.len() >= 2 {
+        positional[1].as_ref()
+    } else {
+        id.split('/').next_back().unwrap_or(id)
+    };
+    format!(
+        "[https://www.aljazeera.com/{id} {name}] collected news and commentary at Al Jazeera English"
+    )
+}
+
+fn render_a_or_an_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.is_empty() {
+        return "a".to_string();
+    }
+    let word = positional[0].trim().to_lowercase();
+    if word.is_empty() {
+        return "a".to_string();
+    }
+
+    let first_char = word.chars().next().unwrap();
+    let is_silent_h = word.starts_with("hour")
+        || word.starts_with("honest")
+        || word.starts_with("honor")
+        || word.starts_with("heir");
+    let is_consonant_u = (word.starts_with("uni")
+        && word != "unimportant"
+        && word != "uninhabited"
+        && word != "unidentified")
+        || word.starts_with("use")
+        || word.starts_with("uten");
+
+    if is_silent_h {
+        "an".to_string()
+    } else if is_consonant_u {
+        "a".to_string()
+    } else if "aeiou".contains(first_char) {
+        "an".to_string()
+    } else {
+        "a".to_string()
+    }
+}
+
+fn render_bar_box_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut out = String::new();
+    if let Some(title) = named.get("title") {
+        out.push_str(&format!("<p><strong>{}</strong></p>\n", title));
+    }
+    if let Some(bars) = named.get("bars") {
+        out.push_str("<ul>\n");
+        out.push_str(bars);
+        out.push_str("</ul>\n");
+    } else {
+        let positional = template_positional_params(params);
+        if !positional.is_empty() {
+            out.push_str("<ul>\n");
+            for p in positional {
+                out.push_str(&format!("<li>{}</li>\n", p));
+            }
+            out.push_str("</ul>\n");
+        }
+    }
+    out
+}
+
+fn render_bar_chart_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut out = String::new();
+    if let Some(title) = named.get("title") {
+        out.push_str(&format!("<p><strong>{}</strong></p>\n", title));
+    }
+    out.push_str("<ul>\n");
+    let mut i = 1;
+    while let Some(label) = named.get(&format!("label{i}")) {
+        let mut line = label.to_string();
+        let mut vals = Vec::new();
+        if let Some(d1) = named.get(&format!("data{i}")) {
+            let mut val_str = d1.to_string();
+            if let Some(c1) = named.get(&format!("comment{i}")) {
+                val_str = format!("{} ({})", val_str, c1);
+            }
+            vals.push(val_str);
+        }
+        if let Some(d2) = named.get(&format!("col2_data{i}")) {
+            let mut val_str = d2.to_string();
+            if let Some(c2) = named.get(&format!("col2_comment{i}")) {
+                val_str = format!("{} ({})", val_str, c2);
+            }
+            vals.push(val_str);
+        }
+        for col in 3..=5 {
+            if let Some(dc) = named.get(&format!("col{col}_data{i}")) {
+                let mut val_str = dc.to_string();
+                if let Some(cc) = named.get(&format!("col{col}_comment{i}")) {
+                    val_str = format!("{} ({})", val_str, cc);
+                }
+                vals.push(val_str);
+            }
+        }
+        if !vals.is_empty() {
+            line = format!("{}: {}", line, vals.join(" / "));
+        }
+        out.push_str(&format!("<li>{}</li>\n", line));
+        i += 1;
+    }
+    out.push_str("</ul>\n");
+    out
+}
+
+fn render_bartable_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.is_empty() {
+        return String::new();
+    }
+    let value = &positional[0];
+    let unit = if positional.len() >= 2 {
+        let u = positional[1].trim();
+        if u.starts_with('/') {
+            u.trim_start_matches('/').to_string()
+        } else {
+            u.to_string()
+        }
+    } else {
+        String::new()
+    };
+    if unit.is_empty() {
+        value.to_string()
+    } else {
+        format!("{} {}", value, unit)
+    }
+}
+
+fn render_bce_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.is_empty() {
+        return "BCE".to_string();
+    }
+    let val = positional[0].trim();
+    if val.is_empty() {
+        "BCE".to_string()
+    } else {
+        format!("{} BCE", val)
+    }
+}
+
+fn render_ban_template(params: &str) -> String {
+    render_country_flag_template("Bangladesh", params)
+}
+
+fn render_bel_template(params: &str) -> String {
+    render_country_flag_template("Belgium", params)
+}
+
+fn render_bdi_template(params: &str) -> String {
+    render_country_flag_template("Burundi", params)
 }

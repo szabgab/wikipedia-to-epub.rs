@@ -1,5 +1,41 @@
 # Codex Session Notes
 
+## 2026-06-26 Handle Seventh Batch of Wikipedia Templates
+
+### Summary
+Added support for 42 Wikipedia templates listed in `a.txt` by registering them in template databases (silent/navigations), implementing custom rendering logic, adding country flag aliases, writing unit tests, and updating documentation rules.
+
+### Decisions Made
+- **Created Renderers & Aliases in Rust**:
+  - Implemented `render_age_in_years_months_days_template` (date duration formatting as "X years, Y months and Z days"), `render_aircontent_template` (standardized see-also/related aircraft sections formatting), `render_aircraft_specs_template` (formatted characteristics/engine/performance/armament specs), `render_aljazeera_topic_template` (formatted external link), `render_a_or_an_template` (evaluating correct indefinite article choice), `render_bar_box_template` (bar graph container list layout), `render_bar_chart_template` (multi-column bar graph values list layout), `render_bartable_template` (inline bar value and unit string), and `render_bce_template` (date BC suffix formatting).
+  - Implemented flag template helpers `render_ban_template` (Bangladesh), `render_bel_template` (Belgium), and `render_bdi_template` (Burundi) calling `render_country_flag_template`.
+  - Registered all new templates in `get_dispatch_table()` in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+- **Classified Skipped Templates**:
+  - Appended 3 templates to [src/silent.csv](file:///opt/src/silent.csv): "Airport-Statistics", "Airport statistics", "Being merged from".
+  - Appended 27 templates to [src/navigations.csv](file:///opt/src/navigations.csv): "AARC", "Air forces", "Air forces in Europe", "Airports in Hungary", "Allied Air Command", "Allied Land Command", "anti-war", "Bács-Kiskun", "Baja District", "Balkan Wars", "Banks of Hungary", "Banska Stiavnica District", "Baptist", "Baranya", "Barbarian kingdoms", "Bard college", "basic forms of government", "Battle of Stalingrad", "BBC", "BBC Local TV", "BBC News", "BBC Online", "BBC sidebar", "BBC World Service", "Bekes", "Békés", "Békéscsaba District".
+  - Sorted both CSV databases using `./tools/sort.sh`.
+- **Added Unit Tests**:
+  - Added 15 new unit test cases in [src/tests.rs](file:///opt/src/tests.rs) to cover each newly implemented template.
+- **Updated Documentation**:
+  - Added conversion rules for the new templates in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked formatting: `cargo fmt -- --check` (passed cleanly).
+- Checked compilation and warning lints: `cargo check` and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-25 Clean and Format Math Tags and Templates
 
 ### Summary

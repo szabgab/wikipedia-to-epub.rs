@@ -9057,3 +9057,102 @@ fn test_template_autonomous_types_of_first_tier_administration() {
 fn test_template_avant_garde() {
     assert_eq!(render_templates("{{Avant-garde}}"), "");
 }
+
+#[test]
+fn test_template_aarc() {
+    assert_eq!(render_templates("{{AARC}}"), "");
+}
+
+#[test]
+fn test_template_age_in_years_and_days() {
+    assert_eq!(
+        render_templates("{{age in years and days|2001|1|10|2012|2|20}}"),
+        "11 years, 41 days"
+    );
+}
+
+#[test]
+fn test_template_age_in_years_months_and_days() {
+    assert_eq!(
+        render_templates("{{age in years, months and days|2001|1|10|2012|2|20}}"),
+        "11 years, 1 month and 10 days"
+    );
+}
+
+#[test]
+fn test_template_aircontent() {
+    assert_eq!(
+        render_templates("{{aircontent|related=* [[Boeing 737]]}}"),
+        "<strong>Related development</strong>\n* [[Boeing 737]]\n"
+    );
+}
+
+#[test]
+fn test_template_aircraft_specs() {
+    assert_eq!(
+        render_templates("{{aircraft specs|crew=2|empty weight kg=5000}}"),
+        "<div class=\"aircraft-specs\">\n<p><strong>General characteristics</strong></p>\n<ul>\n<li><strong>Crew:</strong> 2</li>\n<li><strong>Empty weight:</strong> 5000 kg</li>\n</ul>\n<p><strong>Performance</strong></p>\n<ul>\n</ul>\n</div>"
+    );
+}
+
+#[test]
+fn test_template_aljazeera_topic() {
+    assert_eq!(
+        render_templates("{{Aljazeera topic|people/hosni-mubarak|Hosni Mubarak}}"),
+        "[https://www.aljazeera.com/people/hosni-mubarak Hosni Mubarak] collected news and commentary at Al Jazeera English"
+    );
+}
+
+#[test]
+fn test_template_a_or_an() {
+    assert_eq!(render_templates("{{a or an|elephant}}"), "an");
+    assert_eq!(render_templates("{{a or an|word}}"), "a");
+    assert_eq!(render_templates("{{a or an|hour}}"), "an");
+}
+
+#[test]
+fn test_template_bar_box() {
+    assert_eq!(
+        render_templates("{{bar box|title=My Chart|bars=<li>Item</li>}}"),
+        "<p><strong>My Chart</strong></p>\n<ul>\n<li>Item</li></ul>\n"
+    );
+}
+
+#[test]
+fn test_template_bar_chart() {
+    assert_eq!(
+        render_templates("{{Bar chart|title=My Chart|label1=Foo|data1=10|comment1=10%}}"),
+        "<p><strong>My Chart</strong></p>\n<ul>\n<li>Foo: 10 (10%)</li>\n</ul>\n"
+    );
+}
+
+#[test]
+fn test_template_bartable() {
+    assert_eq!(render_templates("{{bartable|25|%}}"), "25 %");
+}
+
+#[test]
+fn test_template_bce() {
+    assert_eq!(render_templates("{{BCE|598}}"), "598 BCE");
+    assert_eq!(render_templates("{{BCE}}"), "BCE");
+}
+
+#[test]
+fn test_template_ban() {
+    assert_eq!(render_templates("{{BAN}}"), "[[Bangladesh|Bangladesh]]");
+}
+
+#[test]
+fn test_template_bel() {
+    assert_eq!(render_templates("{{BEL}}"), "[[Belgium|Belgium]]");
+}
+
+#[test]
+fn test_template_bdi() {
+    assert_eq!(render_templates("{{BDI}}"), "[[Burundi|Burundi]]");
+}
+
+#[test]
+fn test_template_being_merged_from() {
+    assert_eq!(render_templates("{{Being merged from}}"), "");
+}

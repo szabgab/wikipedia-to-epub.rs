@@ -286,12 +286,17 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{died-in|202 BC}}` becomes `d. 202 BC`
 * `{{age|1989|11|9|2019|11|9}}` calculates and displays age between two dates: `30`; if only birth date is provided, calculates age relative to the current date
 * `{{Age in years, months, weeks and days|2020|1|15|2021|3|20}}` renders date duration difference in years, months, weeks, and days: `1 year, 2 months and 5 days`
+* `{{age in years, months and days|2001|1|10|2012|2|20}}` renders date duration difference in years, months, and days: `11 years, 1 month and 10 days`
+* `{{age in years and days|2001|1|10|2012|2|20}}` calculates and displays duration in years and days: `11 years, 41 days`
 * `{{ayd|April 26, 2001|September 26, 2006}}` calculates and displays duration in years and days: `5 years, 153 days`; also supports numeric parameters and single-date relative calculations
 * `{{Blockquote|text=Quoted text|source=Source}}` (or `{{Quote|text=Quoted text|author=Source}}`) becomes `<blockquote><p>Quoted text</p><p class="blockquote-source">Source</p></blockquote>`
 * `{{Poem quote|text=old pond\nfrog leaps in|source=Basho}}` (or its alias `{{poemquote}}`) renders as a blockquote, preserving line breaks and an optional source: `<blockquote><p>old pond</p><p>frog leaps in</p><p class="blockquote-source">Basho</p></blockquote>`
 * `{{Verse translation|L'autunno giovane|The young autumn}}` renders the original verse (italicized by default) and its translation sequentially inside a blockquote: `<blockquote><em>L'autunno giovane</em><p>The young autumn</p></blockquote>`
 * `{{Verse transliteration-translation|稲妻の|inazuma no|the flash}}` renders the original verse, transliterated verse (italicized by default), and its translation sequentially inside a blockquote: `<blockquote><p>稲妻の</p><em>inazuma no</em><p>the flash</p></blockquote>`
 * `{{Percentage|1|4}}` becomes `25%`
+* `{{a or an|elephant}}` evaluates the correct indefinite article: `an`
+* `{{BCE|598}}` formats years with BCE suffix: `598 BCE`
+* `{{BAN}}` (along with `{{BEL}}`, `{{BDI}}`) formats country links with flag styling
 * `{{UN_Population|Dem. People's Republic of Korea}}` becomes `26,100,000`; `{{UN_Population|ref}}` is omitted
 * `{{convert|1100|km|abbr=on}}` and `{{cvt|314|km|0}}` become `1,100 km (684 mi)` and `314 km (195 mi)`; large numeric values are grouped with commas every three digits, and range forms such as `{{convert|10|to|47|km2}}` become `10 to 47 km² (3.86 to 18.1 mi²)`. When `convert` supplies multiple alternate units, they are rendered together inside the parentheses, e.g. `{{convert|737|K|C F|abbr=on}}` becomes `737 K (464 °C, 867 °F)`.
 * `{{ill|Ch'ilchŏngsan|ko}}` (along with its aliases `{{illm}}`, `{{Interlanguage link}}`, and `{{Interlanguage link multi}}`) becomes a link to `Ch'ilchŏngsan` followed by `[ko]`
@@ -313,6 +318,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Wikibooks|1=Book title|2=Chapter title|3=label}}` becomes `Wikibooks:` followed by a link to the Wikibooks chapter
 * `{{Britannica|322222}}` becomes `Britannica:` followed by a link to the Britannica article id
 * `{{Britannica URL|url=https://www.britannica.com/topic/test|title=Test Topic}}` renders Britannica citation format: `"[[official-url:https://www.britannica.com/topic/test|Test Topic]]" at ''Encyclopædia Britannica''`
+* `{{Aljazeera topic|people/hosni-mubarak|Hosni Mubarak}}` formats external links to Al Jazeera English topic pages
 * `{{Jaanus|w/washi|Washi}}` renders as an external link to the JAANUS database: `<a href="http://www.aisf.or.jp/~jaanus/deta/w/washi.htm">Washi</a> at JAANUS`
 * `{{Official website|https://example.com|name=Example}}` (and its alias `{{official|...}}`) becomes an external link to `https://example.com` with `Example` as the visible text
 * `{{URL|1=https://english.seoul.go.kr/|2=Official website}}` becomes an external link to `https://english.seoul.go.kr/` with `Official website` as the visible text
@@ -324,6 +330,11 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Largest cities|country=Korea|city_1=Seoul|div_1=Seoul|pop_1=9,904,312}}` becomes `Largest cities in Korea:` followed by a list of linked cities with division and population details
 * `{{Historical populations|5=1949|6=1437670|7=1960|8=2445402}}` becomes `Historical populations:` followed by a list of year/population entries such as `1949: 1,437,670`
 * `{{climate chart|Busan|−0.1|8.2|34.5|...}}` becomes `Climate chart for Busan:` followed by monthly low/high temperature and precipitation entries
+* `{{Bar chart|title=My Chart|label1=Foo|data1=10}}` renders horizontal bar charts as a structured XHTML unordered list
+* `{{bar box|title=My Chart|bars=...}}` renders bar chart container as a structured XHTML unordered list
+* `{{bartable|25|%}}` renders horizontal bar chart row values: `25 %`
+* `{{aircraft specs|crew=2|empty weight kg=5000}}` renders aircraft technical specifications as structured sections and lists
+* `{{aircontent|related=...}}` formats related aircraft aviation links as a list
 * `{{sclass|Valiant|harbor tug}}` becomes links to the ship-class article and ship type: `[[Valiant-class harbor tug|''Valiant''-class]] [[harbor tug]]`
 * `{{ROKS|Sejong the Great||2}}` becomes a link to `ROKS Sejong the Great` with the visible label `ROKS Sejong the Great`
 * `{{STN|Ginza}}` and `{{STN|Hamaōtsu|x}}` create railway station links such as `[[Ginza Station|Ginza]]` and `[[Hamaōtsu Station|Hamaōtsu]]`
