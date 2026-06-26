@@ -1,5 +1,38 @@
 # Codex Session Notes
 
+## 2026-06-26 Handle M-Series Wikipedia Templates
+
+### Summary
+Handled all templates listed in `m.txt` by checking their definitions on English Wikipedia, adding active renderers for visible templates, registering navigation/header templates as recognized skips, adding separate unit tests for each listed template, and updating conversion documentation.
+
+### Decisions Made
+- Used the `handle-template` and `add-missing-templates-handle` skills.
+- Treated M-series navboxes, sidebars, district templates, and maintenance/header templates as recognized silent/ignored or navigation templates.
+- Added simplified renderers for flag shorthand country-code templates (MAC, MAD, MAR, MAS, MCO, MDA, MDG, MDV, MEX, MGL, MHL, MKD, MLD, MLI, MLT, MMR, MNE, MNG, MOZ, MRI, MRT, MUS, MWI, MYS).
+- Added simplified renderers for other visible templates: marines, main articles, main category/maincat, MacTutor Biography, MathGenealogy, MaybeCheck, MedalistTable, MEK, mlby, MOB profile, MoMP/minor planet meaning link, music, MR.
+- Mapped `mi2` to `mi²` as a fixed replacement string.
+- Kept all new helper functions private.
+
+### Files Changed
+- `DEVELOPMENT.md`
+- `src/silent.csv`
+- `src/navigations.csv`
+- `src/templates/mod.rs`
+- `src/templates/formatting.rs`
+- `src/templates/citation.rs`
+- `src/tests.rs`
+- `docs/codex-notes.md`
+
+### Tests Run
+- Checked formatting: `cargo fmt` (passed cleanly).
+- Checked compilation: `cargo check` (passed cleanly).
+- Checked warnings/lints: `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-26 Handle W-Z Wikipedia Templates
 
 ### Summary

@@ -2,6 +2,7 @@
 
 
 
+
 '
 -
 
@@ -59,8 +60,8 @@ Closed access
 clr
 cmn,                         Mandarin Chinese columns-list alias.,                       https://en.wikipedia.org/wiki/Template:cmn
 cn
-colbegin
 col-begin
+colbegin
 col-break
 col div,                     Columns-list div col alias.,                                https://en.wikipedia.org/wiki/Template:Col_div
 colend
@@ -98,8 +99,8 @@ Disputed map
 disputed section
 Distinguish
 div
-divcol
 div col
+divcol
 divcolend
 divcol end
 div col end
@@ -130,8 +131,8 @@ end div col
 endflatlist
 end,                        ?,                       https://en.wikipedia.org/wiki/Template:S-end
 Endorsements box
-endplainlist
 end plainlist
+endplainlist
 EngvarB
 Essay,                       Cleanup tag.,                                               https://en.wikipedia.org/wiki/Template:Essay
 etymonline
@@ -168,8 +169,8 @@ flag
 flagcountry
 flagd
 Flag decoration
-flag icon
 flagicon
+flag icon
 Flag icon
 flagicon image
 Flora Europaea
@@ -198,8 +199,8 @@ HESA student population
 how
 How
 how-to
-huh?
 huh
+huh?
 hungarian name
 Hungarian name
 Ice Hockey World Championships, Navigation template., https://en.wikipedia.org/wiki/Template:Ice_Hockey_World_Championships
@@ -290,17 +291,31 @@ look from
 lower,                       Visual change.,                                             https://en.wikipedia.org/wiki/Template:Lower
 main category
 main cat,                    Navigation hatnote.,                                        https://en.wikipedia.org/wiki/Template:Main_cat
+maplink, Interactive map link, https://en.wikipedia.org/wiki/Template:Maplink
+Medals table country, Medals table country row, https://en.wikipedia.org/wiki/Template:Medals_table_country
+Medals table, Medals standings table, https://en.wikipedia.org/wiki/Template:Medals_table
+MedalTableTop, Medal list table top, https://en.wikipedia.org/wiki/Template:MedalTableTop
 Meitetsu Group,              A hidden list.,                                             https://en.wikipedia.org/wiki/Template:Meitetsu_Group
+Merge portions from, Maintenance tag, https://en.wikipedia.org/wiki/Template:Merge_portions_from
 Merging from,                Merge proposed banner.,                                     https://en.wikipedia.org/wiki/Template:Merging_from
 Merging to,                  Merge proposed banner.,                                     https://en.wikipedia.org/wiki/Template:Merging_to
+Missing information, Maintenance tag, https://en.wikipedia.org/wiki/Template:Missing_information
 missing long citation
 More citations needed
 more citations needed section
 more cn section
 More footnotes,              Cleanup banner.,                                            https://en.wikipedia.org/wiki/Template:More_footnotes
 More footnotes needed,       need to improve,                                            https://en.wikipedia.org/wiki/Template:More_footnotes_needed
+morerefs, Maintenance tag, https://en.wikipedia.org/wiki/Template:Morerefs
+More sources, Maintenance tag, https://en.wikipedia.org/wiki/Template:More_sources
+more sources needed section, Maintenance tag, https://en.wikipedia.org/wiki/Template:More_sources_needed_section
+more sources section, Maintenance tag, https://en.wikipedia.org/wiki/Template:More_sources_section
+MOS, Manual of Style cleanup tag, https://en.wikipedia.org/wiki/Template:Cleanup_MOS
+Multi, Maintenance tag shell, https://en.wikipedia.org/wiki/Template:Multiple_issues
 multiple image
 Multiple issues,             Using too many individual article message boxes can distract from the article., https://en.wikipedia.org/wiki/Template:Multiple_issues
+multiple, Maintenance tag shell, https://en.wikipedia.org/wiki/Template:Multiple_issues
+mw-datatable, Row hover highlight styling template, https://en.wikipedia.org/wiki/Template:Row_hover_highlight
 Navboxes bottom
 Navboxes top
 Needs update
@@ -367,8 +382,8 @@ sfnp
 SfnRef
 Short description,           TODO we might want to display this on some kind of an index page or TOC., https://en.wikipedia.org/wiki/Template:Short_description
 Sister bar
-sister links
 sisterlinks
+sister links
 Sister project links
 solar system delta v map.svg
 source-attribution

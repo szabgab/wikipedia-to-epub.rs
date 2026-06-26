@@ -519,7 +519,55 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("excerpt", render_excerpt_template as TemplateHandler),
         ("main", render_main_template as TemplateHandler),
         ("main article", render_main_template as TemplateHandler),
+        ("main articles", render_main_template as TemplateHandler),
+        (
+            "main category",
+            render_main_category_template as TemplateHandler,
+        ),
+        ("maincat", render_main_category_template as TemplateHandler),
         ("main list", render_main_list_template as TemplateHandler),
+        ("mac", render_mac_template as TemplateHandler),
+        ("mad", render_mad_template as TemplateHandler),
+        ("mar", render_mar_template as TemplateHandler),
+        ("mas", render_mas_template as TemplateHandler),
+        ("mco", render_mco_template as TemplateHandler),
+        ("mda", render_mda_template as TemplateHandler),
+        ("mdg", render_mdg_template as TemplateHandler),
+        ("mdv", render_mdv_template as TemplateHandler),
+        ("mex", render_mex_template as TemplateHandler),
+        ("mgl", render_mgl_template as TemplateHandler),
+        ("mhl", render_mhl_template as TemplateHandler),
+        ("mkd", render_mkd_template as TemplateHandler),
+        ("mld", render_mld_template as TemplateHandler),
+        ("mli", render_mli_template as TemplateHandler),
+        ("mlt", render_mlt_template as TemplateHandler),
+        ("mmr", render_mmr_template as TemplateHandler),
+        ("mne", render_mne_template as TemplateHandler),
+        ("mng", render_mng_template as TemplateHandler),
+        ("moz", render_moz_template as TemplateHandler),
+        ("mri", render_mri_template as TemplateHandler),
+        ("mrt", render_mrt_template as TemplateHandler),
+        ("mus", render_mus_template as TemplateHandler),
+        ("mwi", render_mwi_template as TemplateHandler),
+        ("mys", render_mys_template as TemplateHandler),
+        ("marines", render_marines_template as TemplateHandler),
+        ("maybecheck", render_maybe_check_template as TemplateHandler),
+        (
+            "medalisttable",
+            render_medalist_table_template as TemplateHandler,
+        ),
+        ("mlby", render_mlby_template as TemplateHandler),
+        ("momp", render_momp_template as TemplateHandler),
+        (
+            "minor planet meaning link",
+            render_momp_template as TemplateHandler,
+        ),
+        (
+            "mormonverse",
+            render_mormonverse_template as TemplateHandler,
+        ),
+        ("music", render_music_template as TemplateHandler),
+        ("mr", render_mr_template as TemplateHandler),
         ("see also", render_see_also_template as TemplateHandler),
         ("also", render_see_also_template as TemplateHandler),
         ("further", render_further_template as TemplateHandler),
@@ -7611,6 +7659,126 @@ fn render_aia_template(params: &str) -> String {
     render_country_flag_template("Anguilla", params)
 }
 
+/// [MAC](https://en.wikipedia.org/wiki/Template:MAC)
+fn render_mac_template(params: &str) -> String {
+    render_country_flag_template("Macau", params)
+}
+
+/// [MAD](https://en.wikipedia.org/wiki/Template:MAD)
+fn render_mad_template(params: &str) -> String {
+    render_country_flag_template("Madagascar", params)
+}
+
+/// [MAR](https://en.wikipedia.org/wiki/Template:MAR)
+fn render_mar_template(params: &str) -> String {
+    render_country_flag_template("Morocco", params)
+}
+
+/// [MAS](https://en.wikipedia.org/wiki/Template:MAS)
+fn render_mas_template(params: &str) -> String {
+    render_country_flag_template("Malaysia", params)
+}
+
+/// [MCO](https://en.wikipedia.org/wiki/Template:MCO)
+fn render_mco_template(params: &str) -> String {
+    render_country_flag_template("Monaco", params)
+}
+
+/// [MDA](https://en.wikipedia.org/wiki/Template:MDA)
+fn render_mda_template(params: &str) -> String {
+    render_country_flag_template("Moldova", params)
+}
+
+/// [MDG](https://en.wikipedia.org/wiki/Template:MDG)
+fn render_mdg_template(params: &str) -> String {
+    render_country_flag_template("Madagascar", params)
+}
+
+/// [MDV](https://en.wikipedia.org/wiki/Template:MDV)
+fn render_mdv_template(params: &str) -> String {
+    render_country_flag_template("Maldives", params)
+}
+
+/// [MEX](https://en.wikipedia.org/wiki/Template:MEX)
+fn render_mex_template(params: &str) -> String {
+    render_country_flag_template("Mexico", params)
+}
+
+/// [MGL](https://en.wikipedia.org/wiki/Template:MGL)
+fn render_mgl_template(params: &str) -> String {
+    render_country_flag_template("Mongolia", params)
+}
+
+/// [MHL](https://en.wikipedia.org/wiki/Template:MHL)
+fn render_mhl_template(params: &str) -> String {
+    render_country_flag_template("Marshall Islands", params)
+}
+
+/// [MKD](https://en.wikipedia.org/wiki/Template:MKD)
+fn render_mkd_template(params: &str) -> String {
+    render_country_flag_template("North Macedonia", params)
+}
+
+/// [MLD](https://en.wikipedia.org/wiki/Template:MLD)
+fn render_mld_template(params: &str) -> String {
+    render_country_flag_template("Moldova", params)
+}
+
+/// [MLI](https://en.wikipedia.org/wiki/Template:MLI)
+fn render_mli_template(params: &str) -> String {
+    render_country_flag_template("Mali", params)
+}
+
+/// [MLT](https://en.wikipedia.org/wiki/Template:MLT)
+fn render_mlt_template(params: &str) -> String {
+    render_country_flag_template("Malta", params)
+}
+
+/// [MMR](https://en.wikipedia.org/wiki/Template:MMR)
+fn render_mmr_template(params: &str) -> String {
+    render_country_flag_template("Myanmar", params)
+}
+
+/// [MNE](https://en.wikipedia.org/wiki/Template:MNE)
+fn render_mne_template(params: &str) -> String {
+    render_country_flag_template("Montenegro", params)
+}
+
+/// [MNG](https://en.wikipedia.org/wiki/Template:MNG)
+fn render_mng_template(params: &str) -> String {
+    render_country_flag_template("Mongolia", params)
+}
+
+/// [MOZ](https://en.wikipedia.org/wiki/Template:MOZ)
+fn render_moz_template(params: &str) -> String {
+    render_country_flag_template("Mozambique", params)
+}
+
+/// [MRI](https://en.wikipedia.org/wiki/Template:MRI)
+fn render_mri_template(params: &str) -> String {
+    render_country_flag_template("Mauritius", params)
+}
+
+/// [MRT](https://en.wikipedia.org/wiki/Template:MRT)
+fn render_mrt_template(params: &str) -> String {
+    render_country_flag_template("Mauritania", params)
+}
+
+/// [MUS](https://en.wikipedia.org/wiki/Template:MUS)
+fn render_mus_template(params: &str) -> String {
+    render_country_flag_template("Mauritius", params)
+}
+
+/// [MWI](https://en.wikipedia.org/wiki/Template:MWI)
+fn render_mwi_template(params: &str) -> String {
+    render_country_flag_template("Malawi", params)
+}
+
+/// [MYS](https://en.wikipedia.org/wiki/Template:MYS)
+fn render_mys_template(params: &str) -> String {
+    render_country_flag_template("Malaysia", params)
+}
+
 /// [align](https://en.wikipedia.org/wiki/Template:Align)
 fn render_align_template(params: &str) -> String {
     let positional = template_positional_params(params);
@@ -9143,6 +9311,25 @@ fn resolve_ioc_code_to_name(code: &str) -> String {
         "CHN" => "China".to_string(),
         "CAN" => "Canada".to_string(),
         "AUS" => "Australia".to_string(),
+        "MAC" => "Macau".to_string(),
+        "MAD" | "MDG" => "Madagascar".to_string(),
+        "MAR" => "Morocco".to_string(),
+        "MAS" | "MYS" => "Malaysia".to_string(),
+        "MCO" => "Monaco".to_string(),
+        "MDA" | "MLD" => "Moldova".to_string(),
+        "MDV" => "Maldives".to_string(),
+        "MEX" => "Mexico".to_string(),
+        "MGL" | "MNG" => "Mongolia".to_string(),
+        "MHL" => "Marshall Islands".to_string(),
+        "MKD" => "North Macedonia".to_string(),
+        "MLI" => "Mali".to_string(),
+        "MLT" => "Malta".to_string(),
+        "MMR" => "Myanmar".to_string(),
+        "MNE" => "Montenegro".to_string(),
+        "MOZ" => "Mozambique".to_string(),
+        "MRI" | "MUS" => "Mauritius".to_string(),
+        "MRT" => "Mauritania".to_string(),
+        "MWI" => "Malawi".to_string(),
         _ => code.to_string(),
     }
 }
@@ -9993,4 +10180,144 @@ fn render_hungarian_county_link_template(params: &str) -> String {
             .trim();
         format!("[[{name}|{}]]", render_templates(label))
     }
+}
+
+fn render_main_category_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let category = positional
+        .first()
+        .map(String::as_str)
+        .or_else(|| template_param(&named, &["1"]))
+        .unwrap_or("")
+        .trim();
+    if category.is_empty() {
+        return String::new();
+    }
+    let label = positional
+        .get(1)
+        .map(String::as_str)
+        .or_else(|| template_param(&named, &["2"]))
+        .unwrap_or(category)
+        .trim();
+    format!("\n\nMain category: [[Category:{category}|{label}]]\n\n")
+}
+
+fn render_marines_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let nation = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .unwrap_or("")
+        .trim();
+
+    if nation.is_empty() {
+        return "".to_string();
+    }
+
+    let nation_lower = nation.to_lowercase();
+    let (marines_article, default_display) = match nation_lower.as_str() {
+        "united kingdom" | "uk" => ("Royal Marines".to_string(), "Royal Marines".to_string()),
+        "united states" | "us" | "usa" => (
+            "United States Marine Corps".to_string(),
+            "United States Marine Corps".to_string(),
+        ),
+        "russia" => (
+            "Russian Naval Infantry".to_string(),
+            "Russian Naval Infantry".to_string(),
+        ),
+        _ => {
+            let mut chars = nation.chars();
+            let capitalized = match chars.next() {
+                None => String::new(),
+                Some(f) => f.to_uppercase().collect::<String>() + chars.as_str(),
+            };
+            let target = format!("{} Marines", capitalized);
+            (target.clone(), target)
+        }
+    };
+
+    let display = template_param(&named, &["name"])
+        .map(str::to_string)
+        .unwrap_or(default_display);
+    format!("[[{marines_article}|{display}]]")
+}
+
+fn render_maybe_check_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let text = positional.first().map(String::as_str).unwrap_or("Maybe");
+    format!(
+        "style=\"background: #ded; color: black; vertical-align: middle; text-align: center;\" class=\"maybe table-maybe\"|{text}"
+    )
+}
+
+fn render_medalist_table_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let class = template_param(&named, &["class"]).unwrap_or("wikitable");
+    let mut header = format!("{{| class=\"{class}\"\n");
+    if let Some(caption) = template_param(&named, &["caption"]) {
+        header.push_str(&format!("|+ {caption}\n"));
+    }
+    header.push_str("|- \n! Event !! Gold !! Silver !! Bronze\n");
+    header
+}
+
+fn render_mlby_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let year = positional.first().map(String::as_str).unwrap_or("").trim();
+    if year.is_empty() {
+        return String::new();
+    }
+    format!("[[{year} Major League Baseball season|{year}]]")
+}
+
+fn render_momp_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let label = positional
+        .get(1)
+        .or_else(|| positional.first())
+        .map(String::as_str)
+        .unwrap_or("")
+        .trim();
+    if label.is_empty() {
+        return String::new();
+    }
+    format!("[[Meanings of minor-planet names|{label}]]")
+}
+
+fn render_mormonverse_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.is_empty() {
+        return String::new();
+    }
+    let book = positional[0].trim();
+    if positional.len() >= 2 {
+        let passage = positional[1].trim();
+        format!("{book} {passage}")
+    } else {
+        book.to_string()
+    }
+}
+
+fn render_music_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let symbol = positional.first().map(String::as_str).unwrap_or("").trim();
+    match symbol {
+        "flat" | "b" | "♭" => "♭".to_string(),
+        "sharp" | "#" | "♯" => "♯".to_string(),
+        "natural" | "n" | "♮" => "♮".to_string(),
+        "doubleflat" | "double flat" | "bb" => "𝄫".to_string(),
+        "doublesharp" | "double sharp" | "x" => "𝄪".to_string(),
+        _ => symbol.to_string(),
+    }
+}
+
+fn render_mr_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let mr_id = positional.first().map(String::as_str).unwrap_or("").trim();
+    if mr_id.is_empty() {
+        return String::new();
+    }
+    format!("MR [[official-url:https://mathscinet.ams.org/mathscinet-getitem?mr={mr_id}|{mr_id}]]")
 }

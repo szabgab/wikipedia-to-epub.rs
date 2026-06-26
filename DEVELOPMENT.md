@@ -88,6 +88,22 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{JRSSN|Y|12}}` formats a JR station numbering identifier (`Y12`)
 * `{{ABW}}` (along with `{{AFG}}`, `{{AGO}}`, `{{AIA}}`, `{{ALB}}`, `{{ALG}}`, `{{AND}}`, `{{ARE}}`, `{{ARG}}`, `{{ARM}}`, `{{ATG}}`, `{{AUS}}`, `{{AUT}}`, `{{AZE}}`) formats country links with flag styling (e.g. `[[Aruba|Aruba]]` or `[[Albania|Albania]]`)
 * `{{army|Spain}}` formats national army article links (e.g. `[[Spanish Army|Spanish Army]]`)
+* `{{marines|United States}}` formats national marine corps article links (e.g. `[[United States Marine Corps|United States Marine Corps]]`)
+* `{{MAC}}` (along with other IOC/ISO templates `{{MAD}}`, `{{MAR}}`, `{{MAS}}`, `{{MCO}}`, `{{MDA}}`, `{{MDG}}`, `{{MDV}}`, `{{MEX}}`, `{{MGL}}`, `{{MHL}}`, `{{MKD}}`, `{{MLD}}`, `{{MLI}}`, `{{MLT}}`, `{{MMR}}`, `{{MNE}}`, `{{MNG}}`, `{{MOZ}}`, `{{MRI}}`, `{{MRT}}`, `{{MUS}}`, `{{MWI}}`, `{{MYS}}`) formats country links with flag styling
+* `{{mactutor biography|id=Kepler|title=Johannes Kepler}}` formats external links to the MacTutor Biography archive
+* `{{main articles|Page1}}` renders main article hatnotes
+* `{{main category|Some Cat}}` and `{{maincat|Some Cat}}` render main category links
+* `{{MathGenealogy|id=38586|name=Leonhard Euler}}` formats external links to the Mathematics Genealogy Project
+* `{{MaybeCheck}}` formats table cells indicating a "maybe" status
+* `{{MedalistTable}}` starts a medalist table with standard column headers
+* `{{MEK|07400/07452}}` formats raw URLs pointing to the Hungarian Electronic Library
+* `{{mlby|2000}}` links a year to its corresponding Major League Baseball season article
+* `{{MOB profile|id=77|name=Albert}}` formats external links to the Hungarian Olympic Committee athlete profiles
+* `{{Mormonverse|1 Nephi|1:1}}` formats Latter Day Saint scripture citations (e.g. `1 Nephi 1:1`)
+* `{{MoMP|22|22 Kalliope}}` and `{{minor planet meaning link}}` format links to the meanings of minor planet names
+* `{{music|flat}}` renders musical symbols (e.g. `♭`, `♯`, `♮`)
+* `{{MR|12345}}` formats external links to Mathematical Reviews (MR) entries
+* `{{mi2}}` displays the symbol for square miles (`mi²`)
 * `{{arXiv|1202.0001}}` formats arXiv external links (e.g. `arXiv:[https://arxiv.org/abs/1202.0001 1202.0001]`)
 * `{{ASN accident|id=20080820-0}}` formats external aviation safety database record links (e.g. `[https://aviation-safety.net/database/record.php?id=20080820-0 Accident description]`)
 * `{{AUD|123}}` formats Australian Dollar currency values prefixed with A$ (e.g. `A$123`)

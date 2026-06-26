@@ -94,6 +94,7 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
         ("hsp", "\u{200a}"),
         ("asterisk", "*"),
         ("km2", "km²"),
+        ("mi2", "mi²"),
     ])
 }
 

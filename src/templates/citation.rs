@@ -68,6 +68,24 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ),
         ("cite sep", render_cite_sep_template as TemplateHandler),
         ("mactutor", render_mactutor_template as TemplateHandler),
+        (
+            "mactutor biography",
+            render_mactutor_template as TemplateHandler,
+        ),
+        (
+            "mathgenealogy",
+            render_mathgenealogy_template as TemplateHandler,
+        ),
+        ("mek", render_mek_template as TemplateHandler),
+        (
+            "magyar elektronikus könyvtár link",
+            render_mek_template as TemplateHandler,
+        ),
+        (
+            "mob profile",
+            render_mob_profile_template as TemplateHandler,
+        ),
+        ("musopen", render_musopen_template as TemplateHandler),
         ("planetmath", render_planetmath_template as TemplateHandler),
         (
             "cite journal",
@@ -2596,5 +2614,98 @@ fn render_ei3_template(params: &str) -> String {
             "\"{}\" in ''Encyclopaedia of Islam'' (3rd ed.)",
             render_templates(title)
         )
+    }
+}
+
+fn render_mathgenealogy_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let id = template_param(&named, &["id"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.first().cloned());
+
+    let title = template_param(&named, &["name", "title"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.get(1).cloned());
+
+    if let Some(id_val) = id {
+        let title_val = title.unwrap_or_else(|| id_val.clone());
+        format!(
+            "[[official-url:https://www.mathgenealogy.org/id.php?id={}|{}]] at the Mathematics Genealogy Project",
+            id_val,
+            render_templates(&title_val)
+        )
+    } else if let Some(title_val) = title {
+        format!(
+            "{} at the Mathematics Genealogy Project",
+            render_templates(&title_val)
+        )
+    } else {
+        "Mathematics Genealogy Project".to_string()
+    }
+}
+
+fn render_mek_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let id = positional.first().map(String::as_str).unwrap_or("").trim();
+    if id.is_empty() {
+        return String::new();
+    }
+    format!("http://mek.niif.hu/{id}")
+}
+
+fn render_mob_profile_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let id = template_param(&named, &["id"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.first().cloned());
+
+    let name = template_param(&named, &["name", "title"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.get(1).cloned());
+
+    if let Some(id_val) = id {
+        let name_val = name.unwrap_or_else(|| id_val.clone());
+        format!(
+            "[[official-url:https://olimpia.hu/champdata/details/id/{}|{}]] at the Hungarian Olympic Committee",
+            id_val,
+            render_templates(&name_val)
+        )
+    } else if let Some(name_val) = name {
+        format!(
+            "{} at the Hungarian Olympic Committee",
+            render_templates(&name_val)
+        )
+    } else {
+        "Hungarian Olympic Committee profile".to_string()
+    }
+}
+
+fn render_musopen_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let id = template_param(&named, &["id"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.first().cloned());
+
+    let title = template_param(&named, &["name", "title"])
+        .map(|v| v.to_string())
+        .or_else(|| positional.get(1).cloned());
+
+    if let Some(id_val) = id {
+        let title_val = title.unwrap_or_else(|| id_val.clone());
+        format!(
+            "[[official-url:https://musopen.org/composer/{}/|{}]] at Musopen",
+            id_val,
+            render_templates(&title_val)
+        )
+    } else if let Some(title_val) = title {
+        format!("{} at Musopen", render_templates(&title_val))
+    } else {
+        "Musopen".to_string()
     }
 }

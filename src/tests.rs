@@ -8263,7 +8263,139 @@ fn test_template_mactutor() {
 
 #[test]
 fn test_template_main_category() {
-    assert_eq!(render_templates("{{main category|Some Cat}}"), "");
+    assert_eq!(
+        render_templates("{{main category|Some Cat}}"),
+        "\n\nMain category: [[Category:Some Cat|Some Cat]]\n\n"
+    );
+}
+
+#[test]
+fn test_template_mac() {
+    assert_eq!(render_templates("{{MAC}}"), "[[Macau|Macau]]");
+    assert_eq!(
+        render_templates("{{MAC|name=Macau (CN)}}"),
+        "[[Macau|Macau (CN)]]"
+    );
+}
+
+#[test]
+fn test_template_mad() {
+    assert_eq!(render_templates("{{MAD}}"), "[[Madagascar|Madagascar]]");
+}
+
+#[test]
+fn test_template_mactutor_biography() {
+    assert_eq!(
+        render_templates("{{MacTutor Biography|id=Kepler|title=Johannes Kepler}}"),
+        "O'Connor, John J.; Robertson, Edmund F., [[official-url:https://mathshistory.st-andrews.ac.uk/Biographies/Kepler/|\\\"Johannes Kepler\\\"]], ''MacTutor History of Mathematics Archive'', University of St Andrews"
+    );
+}
+
+#[test]
+fn test_template_main_articles() {
+    assert_eq!(
+        render_templates("{{main articles|Article 1|Article 2}}"),
+        "\n\nMain articles: [[Article 1]] and [[Article 2]]\n\n"
+    );
+}
+
+#[test]
+fn test_template_maincat() {
+    assert_eq!(
+        render_templates("{{maincat|Some Cat|Some Label}}"),
+        "\n\nMain category: [[Category:Some Cat|Some Label]]\n\n"
+    );
+}
+
+#[test]
+fn test_template_marines() {
+    assert_eq!(
+        render_templates("{{marines|United States}}"),
+        "[[United States Marine Corps|United States Marine Corps]]"
+    );
+}
+
+#[test]
+fn test_template_mathgenealogy() {
+    assert_eq!(
+        render_templates("{{MathGenealogy|id=38586|name=Leonhard Euler}}"),
+        "[[official-url:https://www.mathgenealogy.org/id.php?id=38586|Leonhard Euler]] at the Mathematics Genealogy Project"
+    );
+}
+
+#[test]
+fn test_template_maybecheck() {
+    assert_eq!(
+        render_templates("{{MaybeCheck|Possibly}}"),
+        "style=\"background: #ded; color: black; vertical-align: middle; text-align: center;\" class=\"maybe table-maybe\"|Possibly"
+    );
+}
+
+#[test]
+fn test_template_medalisttable() {
+    assert_eq!(
+        render_templates("{{MedalistTable|caption=Results}}"),
+        "{| class=\"wikitable\"\n|+ Results\n|- \n! Event !! Gold !! Silver !! Bronze\n"
+    );
+}
+
+#[test]
+fn test_template_mek() {
+    assert_eq!(
+        render_templates("{{MEK|07400/07452}}"),
+        "http://mek.niif.hu/07400/07452"
+    );
+}
+
+#[test]
+fn test_template_mlby() {
+    assert_eq!(
+        render_templates("{{mlby|2000}}"),
+        "[[2000 Major League Baseball season|2000]]"
+    );
+}
+
+#[test]
+fn test_template_mob_profile() {
+    assert_eq!(
+        render_templates("{{MOB profile|id=77|name=Albert}}"),
+        "[[official-url:https://olimpia.hu/champdata/details/id/77|Albert]] at the Hungarian Olympic Committee"
+    );
+}
+
+#[test]
+fn test_template_momp() {
+    assert_eq!(
+        render_templates("{{MoMP|22|22 Kalliope}}"),
+        "[[Meanings of minor-planet names|22 Kalliope]]"
+    );
+}
+
+#[test]
+fn test_template_mormonverse() {
+    assert_eq!(
+        render_templates("{{Mormonverse|1 Nephi|1:1}}"),
+        "1 Nephi 1:1"
+    );
+}
+
+#[test]
+fn test_template_music() {
+    assert_eq!(render_templates("{{music|flat}}"), "♭");
+    assert_eq!(render_templates("{{music|#}}"), "♯");
+}
+
+#[test]
+fn test_template_mr() {
+    assert_eq!(
+        render_templates("{{MR|12345}}"),
+        "MR [[official-url:https://mathscinet.ams.org/mathscinet-getitem?mr=12345|12345]]"
+    );
+}
+
+#[test]
+fn test_template_mi2() {
+    assert_eq!(render_templates("{{mi2}}"), "mi²");
 }
 
 #[test]
