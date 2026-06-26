@@ -168,8 +168,8 @@ flag
 flagcountry
 flagd
 Flag decoration
-flagicon
 flag icon
+flagicon
 Flag icon
 flagicon image
 Flora Europaea
@@ -367,8 +367,8 @@ sfnp
 SfnRef
 Short description,           TODO we might want to display this on some kind of an index page or TOC., https://en.wikipedia.org/wiki/Template:Short_description
 Sister bar
-sisterlinks
 sister links
+sisterlinks
 Sister project links
 solar system delta v map.svg
 source-attribution
@@ -428,4 +428,6 @@ wikisource category
 Wikisource-inline
 wikispecies-inline
 Wikiversity,                 Sister project link.,                                       https://en.wikipedia.org/wiki/Template:Wikiversity
+Year article header
+year needed
 YouTube

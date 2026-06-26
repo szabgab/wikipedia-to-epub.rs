@@ -870,6 +870,35 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_wiktionary_inline_template as TemplateHandler,
         ),
         ("wti", render_wiktionary_inline_template as TemplateHandler),
+        ("won", render_won_template as TemplateHandler),
+        ("winners", render_winners_template as TemplateHandler),
+        ("wp", render_water_polo_team_template as TemplateHandler),
+        ("wp-big", render_water_polo_team_template as TemplateHandler),
+        (
+            "wpw",
+            render_womens_water_polo_team_template as TemplateHandler,
+        ),
+        (
+            "wpw-big",
+            render_womens_water_polo_team_template as TemplateHandler,
+        ),
+        ("wrap", render_passthrough_template as TemplateHandler),
+        ("ws", render_ws_template as TemplateHandler),
+        ("wsm", render_wsm_template as TemplateHandler),
+        (
+            "wwf ecoregion",
+            render_wwf_ecoregion_template as TemplateHandler,
+        ),
+        ("wwfn", render_wwfn_template as TemplateHandler),
+        ("xkx", render_xkx_template as TemplateHandler),
+        ("xmark", render_xmark_template as TemplateHandler),
+        ("y&", render_y_ampersand_template as TemplateHandler),
+        ("ya", render_ya_template as TemplateHandler),
+        ("yel", render_yel_template as TemplateHandler),
+        ("yem", render_yem_template as TemplateHandler),
+        ("zaf", render_zaf_template as TemplateHandler),
+        ("zmb", render_zmb_template as TemplateHandler),
+        ("zwe", render_zwe_template as TemplateHandler),
         ("colorbull", render_colorbull_template as TemplateHandler),
         (
             "portal-inline",
@@ -6176,6 +6205,196 @@ fn render_wiktionary_inline_template(params: &str) -> String {
     }
 }
 
+/// [won](https://en.wikipedia.org/wiki/Template:Won)
+fn render_won_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    if let Some(text) = template_param(&named, &["text"]) {
+        return render_templates(text);
+    }
+
+    if let Some(place) = template_param(&named, &["place"]) {
+        return render_templates(place);
+    }
+
+    positional
+        .first()
+        .map(|text| render_templates(text))
+        .unwrap_or_else(|| "Won".to_string())
+}
+
+/// [winners](https://en.wikipedia.org/wiki/Template:Winners)
+fn render_winners_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    if positional.is_empty() {
+        return String::new();
+    }
+
+    let mut title_index = 1;
+    if positional.get(1).is_some_and(|value| {
+        !value.trim().is_empty() && value.trim().chars().all(|ch| ch.is_ascii_digit())
+    }) {
+        title_index = 2;
+    }
+
+    let title = positional
+        .get(title_index)
+        .map(String::as_str)
+        .unwrap_or("")
+        .trim();
+    let nation = positional
+        .get(title_index + 1)
+        .map(String::as_str)
+        .unwrap_or("")
+        .trim();
+    let title_count = positional
+        .get(title_index + 2)
+        .map(String::as_str)
+        .unwrap_or("")
+        .trim();
+
+    let country = resolve_ioc_code_to_name(nation);
+    let display_name = template_param(&named, &["name"])
+        .filter(|name| !name.trim().is_empty())
+        .unwrap_or(&country)
+        .trim();
+
+    let mut parts = Vec::new();
+    if !title.is_empty() {
+        parts.push(render_templates(title));
+    }
+    if !country.is_empty() {
+        parts.push(format!("[[{country}|{display_name}]]"));
+    }
+    if !title_count.is_empty() {
+        parts.push(format!("{} title", render_templates(title_count)));
+    }
+
+    parts.join("; ")
+}
+
+fn render_water_polo_team_template(params: &str) -> String {
+    render_gendered_water_polo_team_template(params, "men's")
+}
+
+fn render_womens_water_polo_team_template(params: &str) -> String {
+    render_gendered_water_polo_team_template(params, "women's")
+}
+
+fn render_gendered_water_polo_team_template(params: &str, gender: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let country = positional.first().map(String::as_str).unwrap_or("").trim();
+    if country.is_empty() {
+        return String::new();
+    }
+
+    let country = resolve_ioc_code_to_name(country);
+    let display_name = template_param(&named, &["name"]).unwrap_or(&country).trim();
+
+    format!("[[{country} {gender} national water polo team|{display_name}]]")
+}
+
+/// [ws](https://en.wikipedia.org/wiki/Template:Ws)
+fn render_ws_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let text = template_param(&named, &["1"])
+        .map(str::to_string)
+        .or_else(|| template_positional_params(params).first().cloned())
+        .unwrap_or_default();
+
+    if text.trim().is_empty() {
+        return String::new();
+    }
+
+    let mut rendered = render_templates(text.trim());
+    if !template_param(&named, &["ps"]).is_some_and(|value| value.eq_ignore_ascii_case("no")) {
+        rendered.push('.');
+    }
+    rendered
+}
+
+/// [WSM](https://en.wikipedia.org/wiki/Template:WSM)
+fn render_wsm_template(params: &str) -> String {
+    render_country_flag_template("Samoa", params)
+}
+
+/// [WWF ecoregion](https://en.wikipedia.org/wiki/Template:WWF_ecoregion)
+fn render_wwf_ecoregion_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let name = template_param(&named, &["name", "title", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .unwrap_or("WWF ecoregion");
+    format!("World Wildlife Fund ecoregion: {}", render_templates(name))
+}
+
+/// [WWFN](https://en.wikipedia.org/wiki/Template:WWFN)
+fn render_wwfn_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let title = template_param(&named, &["title", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .unwrap_or("World Wide Fund for Nature");
+    render_templates(title)
+}
+
+/// [XKX](https://en.wikipedia.org/wiki/Template:XKX)
+fn render_xkx_template(params: &str) -> String {
+    render_country_flag_template("Kosovo", params)
+}
+
+/// [Xmark](https://en.wikipedia.org/wiki/Template:Xmark)
+fn render_xmark_template(_params: &str) -> String {
+    "✗".to_string()
+}
+
+/// [Y&](https://en.wikipedia.org/wiki/Template:Y%26)
+fn render_y_ampersand_template(_params: &str) -> String {
+    "✓".to_string()
+}
+
+/// [ya](https://en.wikipedia.org/wiki/Template:Ya)
+fn render_ya_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    template_param(&named, &["text"])
+        .map(render_templates)
+        .or_else(|| positional.first().map(|text| render_templates(text)))
+        .unwrap_or_else(|| "Yes".to_string())
+}
+
+/// [yel](https://en.wikipedia.org/wiki/Template:Yel)
+fn render_yel_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    match positional.first().map(String::as_str).map(str::trim) {
+        Some(minute) if !minute.is_empty() => format!("{minute}' yellow card"),
+        _ => "yellow card".to_string(),
+    }
+}
+
+/// [YEM](https://en.wikipedia.org/wiki/Template:YEM)
+fn render_yem_template(params: &str) -> String {
+    render_country_flag_template("Yemen", params)
+}
+
+/// [ZAF](https://en.wikipedia.org/wiki/Template:ZAF)
+fn render_zaf_template(params: &str) -> String {
+    render_country_flag_template("South Africa", params)
+}
+
+/// [ZMB](https://en.wikipedia.org/wiki/Template:ZMB)
+fn render_zmb_template(params: &str) -> String {
+    render_country_flag_template("Zambia", params)
+}
+
+/// [ZWE](https://en.wikipedia.org/wiki/Template:ZWE)
+fn render_zwe_template(params: &str) -> String {
+    render_country_flag_template("Zimbabwe", params)
+}
+
 fn render_colorbull_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let named = template_named_params(params);
@@ -8901,6 +9120,12 @@ fn resolve_ioc_code_to_name(code: &str) -> String {
         "HUN" => "Hungary".to_string(),
         "POL" => "Poland".to_string(),
         "ROU" | "ROM" => "Romania".to_string(),
+        "SAM" | "WSM" => "Samoa".to_string(),
+        "XKX" => "Kosovo".to_string(),
+        "YEM" => "Yemen".to_string(),
+        "ZAF" => "South Africa".to_string(),
+        "ZMB" => "Zambia".to_string(),
+        "ZWE" => "Zimbabwe".to_string(),
         "YUG" => "Yugoslavia".to_string(),
         "URS" => "Soviet Union".to_string(),
         "EGY" => "Egypt".to_string(),

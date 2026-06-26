@@ -1,5 +1,38 @@
 # Codex Session Notes
 
+## 2026-06-26 Handle W-Z Wikipedia Templates
+
+### Summary
+Handled all templates listed in `w.txt` by checking English Wikipedia template definitions where needed, adding active renderers for visible W-Z templates, registering navigation/header templates as recognized skips, adding separate unit tests for each listed template, and updating conversion documentation.
+
+### Decisions Made
+- Used the `handle-template` skill.
+- Treated W-Z navboxes, sidebars, year/topic templates, and maintenance/header templates as recognized silent templates.
+- Added simplified renderers for sports winner/status markers, national water polo team helpers, country-code flag shorthands, Wikisource inline wrappers, and World Wildlife Fund source helpers.
+- Used existing private template helpers and kept all new definitions private.
+
+### Files Changed
+- `DEVELOPMENT.md`
+- `src/navigations.csv`
+- `src/silent.csv`
+- `src/templates/formatting.rs`
+- `src/tests.rs`
+- `docs/codex-notes.md`
+
+### Tests Run
+- `cargo test test_template_w`
+- `cargo test test_template_y`
+- `cargo test test_template_z`
+- `./tools/sort.sh`
+- `cargo fmt`
+- `cargo test`
+- `cargo check`
+- `cargo clippy --all-targets -- -D warnings`
+- `cargo test --locked -- --ignored`
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-26 Handle I-Series Wikipedia Templates
 
 ### Summary

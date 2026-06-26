@@ -11348,3 +11348,362 @@ fn test_template_kuw() {
 fn test_template_kwt() {
     assert_eq!(render_templates("{{KWT}}"), "[[Kuwait|Kuwait]]");
 }
+
+#[test]
+fn test_template_wind_power() {
+    assert_template_is_recognized_skip!("Wind power");
+}
+
+#[test]
+fn test_template_wind_power_by_country() {
+    assert_template_is_recognized_skip!("Wind power by country");
+}
+
+#[test]
+fn test_template_wine_by_country() {
+    assert_template_is_recognized_skip!("Wine by country");
+}
+
+#[test]
+fn test_template_wine_regions_of_hungary() {
+    assert_template_is_recognized_skip!("Wine regions of Hungary");
+}
+
+#[test]
+fn test_template_wines_lowercase() {
+    assert_template_is_recognized_skip!("wines");
+}
+
+#[test]
+fn test_template_wines_titlecase() {
+    assert_template_is_recognized_skip!("Wines");
+}
+
+#[test]
+fn test_template_winners() {
+    assert_eq!(
+        render_templates("{{winners|fb|2004 AFC Asian Cup winners|JPN|Third}}"),
+        "2004 AFC Asian Cup winners; [[Japan|Japan]]; Third title"
+    );
+}
+
+#[test]
+fn test_template_wipo_director_general() {
+    assert_template_is_recognized_skip!("WIPODirectorGeneral");
+}
+
+#[test]
+fn test_template_wolf_prize_in_mathematics() {
+    assert_template_is_recognized_skip!("Wolf Prize in Mathematics");
+}
+
+#[test]
+fn test_template_womens_world_chess_championships() {
+    assert_template_is_recognized_skip!("Women's World Chess Championships");
+}
+
+#[test]
+fn test_template_won() {
+    assert_eq!(render_templates("{{won|winner}}"), "winner");
+}
+
+#[test]
+fn test_template_woodrow_wilson() {
+    assert_template_is_recognized_skip!("Woodrow Wilson");
+}
+
+#[test]
+fn test_template_woodrow_wilson_series() {
+    assert_template_is_recognized_skip!("Woodrow Wilson series");
+}
+
+#[test]
+fn test_template_woodworking() {
+    assert_template_is_recognized_skip!("Woodworking");
+}
+
+#[test]
+fn test_template_world_bank() {
+    assert_template_is_recognized_skip!("World Bank");
+}
+
+#[test]
+fn test_template_world_championships_in_2013() {
+    assert_template_is_recognized_skip!("World championships in 2013");
+}
+
+#[test]
+fn test_template_world_championships_in_2017() {
+    assert_template_is_recognized_skip!("World championships in 2017");
+}
+
+#[test]
+fn test_template_world_championships_in_fencing() {
+    assert_template_is_recognized_skip!("World Championships in Fencing");
+}
+
+#[test]
+fn test_template_world_chess_championships() {
+    assert_template_is_recognized_skip!("World Chess Championships");
+}
+
+#[test]
+fn test_template_world_federation_of_exchanges() {
+    assert_template_is_recognized_skip!("World Federation of Exchanges");
+}
+
+#[test]
+fn test_template_world_fencing_championships() {
+    assert_template_is_recognized_skip!("World Fencing Championships");
+}
+
+#[test]
+fn test_template_world_heritage_sites_in_poland() {
+    assert_template_is_recognized_skip!("World Heritage Sites in Poland");
+}
+
+#[test]
+fn test_template_world_heritage_sites_in_slovakia() {
+    assert_template_is_recognized_skip!("World Heritage Sites in Slovakia");
+}
+
+#[test]
+fn test_template_world_interuniversity_games() {
+    assert_template_is_recognized_skip!("World Interuniversity Games");
+}
+
+#[test]
+fn test_template_world_laws_on_foie_gras_production() {
+    assert_template_is_recognized_skip!("World laws on foie gras production");
+}
+
+#[test]
+fn test_template_world_masters_athletics_championships() {
+    assert_template_is_recognized_skip!("World Masters Athletics Championships");
+}
+
+#[test]
+fn test_template_world_speed_skating_championships() {
+    assert_template_is_recognized_skip!("World Speed Skating Championships");
+}
+
+#[test]
+fn test_template_world_topic() {
+    assert_template_is_recognized_skip!("World topic");
+}
+
+#[test]
+fn test_template_world_trade_organization() {
+    assert_template_is_recognized_skip!("World Trade Organization");
+}
+
+#[test]
+fn test_template_world_war_1() {
+    assert_template_is_recognized_skip!("World War 1");
+}
+
+#[test]
+fn test_template_world_war_i() {
+    assert_template_is_recognized_skip!("World War I");
+}
+
+#[test]
+fn test_template_world_wrestling_championships() {
+    assert_template_is_recognized_skip!("World Wrestling Championships");
+}
+
+#[test]
+fn test_template_wp() {
+    assert_eq!(
+        render_templates("{{wp|HUN}}"),
+        "[[Hungary men's national water polo team|Hungary]]"
+    );
+}
+
+#[test]
+fn test_template_wp_big() {
+    assert_eq!(
+        render_templates("{{wp-big|Hungary|name=HUN}}"),
+        "[[Hungary men's national water polo team|HUN]]"
+    );
+}
+
+#[test]
+fn test_template_wpw() {
+    assert_eq!(
+        render_templates("{{wpw|HUN}}"),
+        "[[Hungary women's national water polo team|Hungary]]"
+    );
+}
+
+#[test]
+fn test_template_wpw_big() {
+    assert_eq!(
+        render_templates("{{wpw-big|Hungary|name=HUN}}"),
+        "[[Hungary women's national water polo team|HUN]]"
+    );
+}
+
+#[test]
+fn test_template_wrap() {
+    assert_eq!(render_templates("{{wrap|sample text}}"), "sample text");
+}
+
+#[test]
+fn test_template_wroclaw() {
+    assert_template_is_recognized_skip!("Wrocław");
+}
+
+#[test]
+fn test_template_ws() {
+    assert_eq!(
+        render_templates("{{ws|''[[s:Book|Book]]''|ps=no}}"),
+        "''[[s:Book|Book]]''"
+    );
+}
+
+#[test]
+fn test_template_wsm() {
+    assert_eq!(render_templates("{{WSM}}"), "[[Samoa|Samoa]]");
+}
+
+#[test]
+fn test_template_wwf_ecoregion() {
+    assert_eq!(
+        render_templates("{{WWF ecoregion|name=Example forest}}"),
+        "World Wildlife Fund ecoregion: Example forest"
+    );
+}
+
+#[test]
+fn test_template_wwfn() {
+    assert_eq!(
+        render_templates("{{WWFN|title=World Wide Fund for Nature report}}"),
+        "World Wide Fund for Nature report"
+    );
+}
+
+#[test]
+fn test_template_wwii_fin_inf_weapons_nav() {
+    assert_template_is_recognized_skip!("WWIIFinInfWeaponsNav");
+}
+
+#[test]
+fn test_template_wwii_history_by_nation() {
+    assert_template_is_recognized_skip!("WWII history by nation");
+}
+
+#[test]
+fn test_template_wwii_timeline() {
+    assert_template_is_recognized_skip!("WWII timeline");
+}
+
+#[test]
+fn test_template_xkx() {
+    assert_eq!(render_templates("{{XKX}}"), "[[Kosovo|Kosovo]]");
+}
+
+#[test]
+fn test_template_xmark() {
+    assert_eq!(render_templates("{{Xmark}}"), "✗");
+}
+
+#[test]
+fn test_template_y_ampersand() {
+    assert_eq!(render_templates("{{Y&}}"), "✓");
+}
+
+#[test]
+fn test_template_ya() {
+    assert_eq!(render_templates("{{ya|text=agreed}}"), "agreed");
+}
+
+#[test]
+fn test_template_year_article_header() {
+    assert_template_is_recognized_skip!("Year article header");
+}
+
+#[test]
+fn test_template_year_nav() {
+    assert_template_is_recognized_skip!("Year nav");
+}
+
+#[test]
+fn test_template_year_needed() {
+    assert_template_is_recognized_skip!("year needed");
+}
+
+#[test]
+fn test_template_years_in_hungary() {
+    assert_template_is_recognized_skip!("Years in Hungary");
+}
+
+#[test]
+fn test_template_yel() {
+    assert_eq!(render_templates("{{yel|45}}"), "45' yellow card");
+}
+
+#[test]
+fn test_template_yem() {
+    assert_eq!(render_templates("{{YEM}}"), "[[Yemen|Yemen]]");
+}
+
+#[test]
+fn test_template_young_bosnia() {
+    assert_template_is_recognized_skip!("Young Bosnia");
+}
+
+#[test]
+fn test_template_yugoslavia_timeline() {
+    assert_template_is_recognized_skip!("Yugoslavia timeline");
+}
+
+#[test]
+fn test_template_yugoslavia_topics() {
+    assert_template_is_recognized_skip!("Yugoslavia topics");
+}
+
+#[test]
+fn test_template_yugoslav_wars() {
+    assert_template_is_recognized_skip!("Yugoslav wars");
+}
+
+#[test]
+fn test_template_yug_timeline() {
+    assert_template_is_recognized_skip!("Yug-timeline");
+}
+
+#[test]
+fn test_template_zaf() {
+    assert_eq!(render_templates("{{ZAF}}"), "[[South Africa|South Africa]]");
+}
+
+#[test]
+fn test_template_zakarpattia_oblast() {
+    assert_template_is_recognized_skip!("Zakarpattia Oblast");
+}
+
+#[test]
+fn test_template_zala() {
+    assert_template_is_recognized_skip!("Zala");
+}
+
+#[test]
+fn test_template_zalaegerszeg_district() {
+    assert_template_is_recognized_skip!("Zalaegerszeg District");
+}
+
+#[test]
+fn test_template_zmb() {
+    assert_eq!(render_templates("{{ZMB}}"), "[[Zambia|Zambia]]");
+}
+
+#[test]
+fn test_template_zoltan_kodaly() {
+    assert_template_is_recognized_skip!("Zoltán Kodály");
+}
+
+#[test]
+fn test_template_zwe() {
+    assert_eq!(render_templates("{{ZWE}}"), "[[Zimbabwe|Zimbabwe]]");
+}
