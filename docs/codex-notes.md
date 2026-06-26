@@ -1,5 +1,44 @@
 # Codex Session Notes
 
+## 2026-06-26 Handle Eighth Batch of Wikipedia Templates
+
+### Summary
+Added support for 59 Wikipedia templates listed in `c.txt` by registering them in template databases (silent/navigations), implementing custom rendering logic, writing separate unit tests, and updating documentation rules.
+
+### Decisions Made
+- **Created Renderers & Aliases in Rust**:
+  - Implemented `render_ce_template` (formats CE/BCE suffix), flag template helpers `render_caf_template` (Central African Republic), `render_cam_template` (Cambodia), `render_can_template` (Canada), `render_cha_template` (Chad), and `render_che_template` (Switzerland).
+  - Implemented `render_celex_template` (formats EUR-Lex query string links) and `render_census_2021_aus_template` (citation QuickStats / community profiles URL formatting for Census 2021 Australia).
+  - Registered `"centre"` to `render_passthrough_template` alias.
+  - Implemented `render_cath_ency_template` to format Wikisource public-domain citations of the 1913 Catholic Encyclopedia, and registered `"cathency"`, `"catholic encyclopedia"`, and `"ce1913"` mapping to it.
+  - Registered all new active template handlers in `get_dispatch_table()` in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) and [src/templates/citation.rs](file:///opt/src/templates/citation.rs).
+- **Classified Skipped Templates**:
+  - Appended 3 templates to [src/silent.csv](file:///opt/src/silent.csv): "Chart", "CCBYSASource", "CC-notice".
+  - Appended 43 navigation and sidebar templates to [src/navigations.csv](file:///opt/src/navigations.csv) (covering Calvinism, Capitalism, Catholic hierarchy, Central banks, Central Intelligence Agency, etc.).
+  - Sorted both CSV databases using `./tools/sort.sh`.
+- **Added Unit Tests**:
+  - Added 15 new unit test cases in [src/tests.rs](file:///opt/src/tests.rs) (covering each newly active/silent template batch).
+- **Updated Documentation**:
+  - Documented conversion rules for the new active templates in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked formatting: `cargo fmt -- --check` (passed cleanly).
+- Checked compilation and warning lints: `cargo check` and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-26 Handle Seventh Batch of Wikipedia Templates
 
 ### Summary

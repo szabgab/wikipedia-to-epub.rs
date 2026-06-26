@@ -9156,3 +9156,92 @@ fn test_template_bdi() {
 fn test_template_being_merged_from() {
     assert_eq!(render_templates("{{Being merged from}}"), "");
 }
+
+#[test]
+fn test_template_ce() {
+    assert_eq!(render_templates("{{CE|2023}}"), "2023 CE");
+    assert_eq!(render_templates("{{CE}}"), "CE");
+}
+
+#[test]
+fn test_template_caf() {
+    assert_eq!(
+        render_templates("{{CAF}}"),
+        "[[Central African Republic|Central African Republic]]"
+    );
+}
+
+#[test]
+fn test_template_cam() {
+    assert_eq!(render_templates("{{CAM}}"), "[[Cambodia|Cambodia]]");
+}
+
+#[test]
+fn test_template_can() {
+    assert_eq!(render_templates("{{CAN}}"), "[[Canada|Canada]]");
+}
+
+#[test]
+fn test_template_cha() {
+    assert_eq!(render_templates("{{CHA}}"), "[[Chad|Chad]]");
+}
+
+#[test]
+fn test_template_che() {
+    assert_eq!(render_templates("{{CHE}}"), "[[Switzerland|Switzerland]]");
+}
+
+#[test]
+fn test_template_celex() {
+    assert_eq!(
+        render_templates("{{CELEX|32016R0679}}"),
+        "[https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679 32016R0679]"
+    );
+}
+
+#[test]
+fn test_template_census_2021_aus() {
+    assert_eq!(
+        render_templates("{{Census 2021 AUS|id=SAL13340|name=Raymond Terrace|quick=on}}"),
+        "Australian Bureau of Statistics (28 June 2022). [https://abs.gov.au/census/find-census-data/quickstats/2021/SAL13340 \"Raymond Terrace\"]. 2021 Census QuickStats."
+    );
+}
+
+#[test]
+fn test_template_centre() {
+    assert_eq!(
+        render_templates("{{centre|centered text}}"),
+        "centered text"
+    );
+}
+
+#[test]
+fn test_template_cath_ency() {
+    assert_eq!(
+        render_templates("{{CathEncy|Solar System}}"),
+        "Herbermann, Charles, ed. (1913). \"Solar System\". ''[[src:Catholic Encyclopedia (1913)/Solar System|Catholic Encyclopedia]]''. New York: Robert Appleton Company."
+    );
+    assert_eq!(
+        render_templates("{{Catholic Encyclopedia|Solar System}}"),
+        "Herbermann, Charles, ed. (1913). \"Solar System\". ''[[src:Catholic Encyclopedia (1913)/Solar System|Catholic Encyclopedia]]''. New York: Robert Appleton Company."
+    );
+    assert_eq!(
+        render_templates("{{ce1913|Solar System}}"),
+        "Herbermann, Charles, ed. (1913). \"Solar System\". ''[[src:Catholic Encyclopedia (1913)/Solar System|Catholic Encyclopedia]]''. New York: Robert Appleton Company."
+    );
+}
+
+#[test]
+fn test_template_chart() {
+    assert_eq!(render_templates("{{Chart}}"), "");
+}
+
+#[test]
+fn test_template_cc_by_sa_source() {
+    assert_eq!(render_templates("{{CCBYSASource}}"), "");
+}
+
+#[test]
+fn test_template_cc_notice() {
+    assert_eq!(render_templates("{{CC-notice}}"), "");
+}

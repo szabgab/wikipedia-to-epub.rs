@@ -110,6 +110,12 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             "cite eb1911",
             render_cite_eb1911_template as TemplateHandler,
         ),
+        (
+            "catholic encyclopedia",
+            render_cath_ency_template as TemplateHandler,
+        ),
+        ("cathency", render_cath_ency_template as TemplateHandler),
+        ("ce1913", render_cath_ency_template as TemplateHandler),
         ("harvp", render_harvp_template as TemplateHandler),
         ("harv", render_harvp_template as TemplateHandler),
         ("harvnb", render_harvnb_template as TemplateHandler),
@@ -2404,4 +2410,23 @@ fn render_asn_accident_template(params: &str) -> String {
     };
 
     format!("[{} {}]", url, display_title)
+}
+
+fn render_cath_ency_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let title = template_param(&named, &["wstitle", "title"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    if title.is_empty() {
+        return "Herbermann, Charles, ed. (1913). ''Catholic Encyclopedia''. New York: Robert Appleton Company.".to_string();
+    }
+
+    format!(
+        "Herbermann, Charles, ed. (1913). \"{}\". ''[[src:Catholic Encyclopedia (1913)/{}|Catholic Encyclopedia]]''. New York: Robert Appleton Company.",
+        render_templates(title),
+        title
+    )
 }

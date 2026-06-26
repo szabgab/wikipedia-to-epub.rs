@@ -296,7 +296,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Percentage|1|4}}` becomes `25%`
 * `{{a or an|elephant}}` evaluates the correct indefinite article: `an`
 * `{{BCE|598}}` formats years with BCE suffix: `598 BCE`
-* `{{BAN}}` (along with `{{BEL}}`, `{{BDI}}`) formats country links with flag styling
+* `{{CE|2023}}` formats years with CE suffix: `2023 CE`
+* `{{BAN}}` (along with `{{BEL}}`, `{{BDI}}`, `{{CAF}}`, `{{CAM}}`, `{{CAN}}`, `{{CHA}}`, `{{CHE}}`) formats country links with flag styling
 * `{{UN_Population|Dem. People's Republic of Korea}}` becomes `26,100,000`; `{{UN_Population|ref}}` is omitted
 * `{{convert|1100|km|abbr=on}}` and `{{cvt|314|km|0}}` become `1,100 km (684 mi)` and `314 km (195 mi)`; large numeric values are grouped with commas every three digits, and range forms such as `{{convert|10|to|47|km2}}` become `10 to 47 km² (3.86 to 18.1 mi²)`. When `convert` supplies multiple alternate units, they are rendered together inside the parentheses, e.g. `{{convert|737|K|C F|abbr=on}}` becomes `737 K (464 °C, 867 °F)`.
 * `{{ill|Ch'ilchŏngsan|ko}}` (along with its aliases `{{illm}}`, `{{Interlanguage link}}`, and `{{Interlanguage link multi}}`) becomes a link to `Ch'ilchŏngsan` followed by `[ko]`
@@ -318,6 +319,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Wikibooks|1=Book title|2=Chapter title|3=label}}` becomes `Wikibooks:` followed by a link to the Wikibooks chapter
 * `{{Britannica|322222}}` becomes `Britannica:` followed by a link to the Britannica article id
 * `{{Britannica URL|url=https://www.britannica.com/topic/test|title=Test Topic}}` renders Britannica citation format: `"[[official-url:https://www.britannica.com/topic/test|Test Topic]]" at ''Encyclopædia Britannica''`
+* `{{CELEX|32016R0679}}` formats EUR-Lex document URL query strings: `[https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679 32016R0679]`
+* `{{Census 2021 AUS|id=SAL13340|name=Raymond Terrace|quick=on}}` formats Australian Bureau of Statistics (ABS) citations or links: `Australian Bureau of Statistics (28 June 2022). [https://abs.gov.au/census/find-census-data/quickstats/2021/SAL13340 "Raymond Terrace"]. 2021 Census QuickStats.`
 * `{{Aljazeera topic|people/hosni-mubarak|Hosni Mubarak}}` formats external links to Al Jazeera English topic pages
 * `{{Jaanus|w/washi|Washi}}` renders as an external link to the JAANUS database: `<a href="http://www.aisf.or.jp/~jaanus/deta/w/washi.htm">Washi</a> at JAANUS`
 * `{{Official website|https://example.com|name=Example}}` (and its alias `{{official|...}}`) becomes an external link to `https://example.com` with `Example` as the visible text
@@ -389,6 +392,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Visible anchor|Mercury|text=[[Mercury]]}}` and `{{visible anchor|Earth}}` render their visible text: `[[Mercury]]` and `Earth`
 * `{{L4}}` and `{{L5}}` render Lagrange points using subscript formatting: `L<sub>4</sub>` and `L<sub>5</sub>`
 * `{{Cite EB1911|wstitle=Solar System}}` renders Encyclopaedia Britannica 1911 Wikisource citations: `"Solar System" in ''[[src:1911 Encyclopædia Britannica/Solar System|Encyclopædia Britannica]]'' (11th ed., 1911)`
+* `{{CathEncy|Solar System}}` (and its aliases `{{Catholic Encyclopedia}}` and `{{ce1913}}`) renders Catholic Encyclopedia Wikisource citations: `Herbermann, Charles, ed. (1913). "Solar System". ''[[src:Catholic Encyclopedia (1913)/Solar System|Catholic Encyclopedia]]''. New York: Robert Appleton Company.`
 * `{{spaces|3}}` and `{{spaces}}` render non-breaking spaces (which are collapsed to a standard space)
 * `{{mpl-|322756|2001 CK|32}}` renders parenthesized numbered designation for minor planets linked to their Wikipedia article: `[[(322756) 2001 CK32]]`
 * `{{chem|H|2|O}}` and `{{chem|CO|3|2-}}` render chemical formulas using subscripts for numbers and superscripts for charges: `H<sub>2</sub>O` and `CO<sub>3</sub><sup>2-</sup>`

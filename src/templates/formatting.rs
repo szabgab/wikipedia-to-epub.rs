@@ -610,6 +610,18 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("ban", render_ban_template as TemplateHandler),
         ("bel", render_bel_template as TemplateHandler),
         ("bdi", render_bdi_template as TemplateHandler),
+        ("ce", render_ce_template as TemplateHandler),
+        ("caf", render_caf_template as TemplateHandler),
+        ("cam", render_cam_template as TemplateHandler),
+        ("can", render_can_template as TemplateHandler),
+        ("cha", render_cha_template as TemplateHandler),
+        ("che", render_che_template as TemplateHandler),
+        ("celex", render_celex_template as TemplateHandler),
+        (
+            "census 2021 aus",
+            render_census_2021_aus_template as TemplateHandler,
+        ),
+        ("centre", render_passthrough_template as TemplateHandler),
     ])
 }
 
@@ -7028,7 +7040,10 @@ fn render_aircontent_template(params: &str) -> String {
         out.push_str(related);
         out.push('\n');
     }
-    if let Some(similar) = named.get("similar aircraft").filter(|s| !s.trim().is_empty()) {
+    if let Some(similar) = named
+        .get("similar aircraft")
+        .filter(|s| !s.trim().is_empty())
+    {
         out.push_str("<strong>Aircraft of comparable role, configuration, and era</strong>\n");
         out.push_str(similar);
         out.push('\n');
@@ -7392,4 +7407,105 @@ fn render_bel_template(params: &str) -> String {
 
 fn render_bdi_template(params: &str) -> String {
     render_country_flag_template("Burundi", params)
+}
+
+fn render_ce_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.is_empty() {
+        return "CE".to_string();
+    }
+    let val = positional[0].trim();
+    if val.is_empty() {
+        "CE".to_string()
+    } else {
+        format!("{} CE", val)
+    }
+}
+
+fn render_caf_template(params: &str) -> String {
+    render_country_flag_template("Central African Republic", params)
+}
+
+fn render_cam_template(params: &str) -> String {
+    render_country_flag_template("Cambodia", params)
+}
+
+fn render_can_template(params: &str) -> String {
+    render_country_flag_template("Canada", params)
+}
+
+fn render_cha_template(params: &str) -> String {
+    render_country_flag_template("Chad", params)
+}
+
+fn render_che_template(params: &str) -> String {
+    render_country_flag_template("Switzerland", params)
+}
+
+fn render_celex_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let id = named
+        .get("id")
+        .map(|s| s.as_str())
+        .or_else(|| positional.first().map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+    if id.is_empty() {
+        return String::new();
+    }
+    let text = named
+        .get("text")
+        .map(|s| s.as_str())
+        .map(|s| s.trim())
+        .unwrap_or(id);
+    let lang = named.get("language").map(|s| s.as_str()).unwrap_or("EN");
+    let tab = named.get("tab").map(|s| s.as_str()).unwrap_or("TXT");
+    format!("[https://eur-lex.europa.eu/legal-content/{lang}/{tab}/?uri=CELEX:{id} {text}]")
+}
+
+fn render_census_2021_aus_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let id = named.get("id").map(|s| s.as_str()).unwrap_or("").trim();
+    let name = named.get("name").map(|s| s.as_str()).unwrap_or("").trim();
+    let access_date = named
+        .get("access-date")
+        .map(|s| s.as_str())
+        .unwrap_or("")
+        .trim();
+    let quick = named.get("quick").map(|s| s.as_str()).unwrap_or("").trim();
+    let link = named.get("link").map(|s| s.as_str()).unwrap_or("").trim();
+
+    if link == "yes" {
+        return format!("[https://abs.gov.au/census/find-census-data/quickstats/2021/{id} {id}]");
+    }
+
+    let url = if quick == "on" {
+        format!("https://abs.gov.au/census/find-census-data/quickstats/2021/{id}")
+    } else {
+        format!("https://abs.gov.au/census/find-census-data/community-profiles/2021/{id}")
+    };
+
+    let title = if quick == "on" {
+        format!("\"{}\"", name)
+    } else {
+        format!("\"2021 Community Profiles: {}\"", name)
+    };
+
+    let source = if quick == "on" {
+        "2021 Census QuickStats"
+    } else {
+        "2021 Census of Population and Housing"
+    };
+
+    let ret = if !access_date.is_empty() {
+        format!(" Retrieved {}.", access_date)
+    } else {
+        String::new()
+    };
+
+    format!(
+        "Australian Bureau of Statistics (28 June 2022). [{} {}]. {}.{}",
+        url, title, source, ret
+    )
 }
