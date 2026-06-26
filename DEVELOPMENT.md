@@ -197,6 +197,26 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Euro|12.50}}` (or `{{Euro|link=yes}}`) formats currency values with the Euro sign (€)
 * `{{eastern name order}}`, `{{EB1911 poster}}`, `{{editorializing}}`, `{{effects of 1989 revolutions map}}`, `{{efn-lg}}`, `{{efn-ur}}`, `{{Emblem table}}`, `{{EMedicine}}`, `{{end div col}}`, `{{endflatlist}}`, `{{endplainlist}}`, `{{Endorsements box}}`, `{{etymonline}}`, `{{Exchange Rate}}`, and `{{Expand Hungarian}}` are silent templates and are omitted from the output
 * `{{Early Germanic Kingdoms}}`, `{{Early Modern Europe}}`, `{{Eastern Bloc}}`, `{{Eastern Orthodox Church footer}}`, `{{EC Judo}}`, `{{economics}}`, `{{Education}}`, and other regional/topic navigation blocks are silent navigational templates and are omitted from the output
+* `{{F1|1980}}` (along with `{{F2}}`) formats formula seasons with links (e.g. `[[1980 Formula One season|1980]]`)
+* `{{F1 GP|1991|Belgian}}` formats Formula One Grand Prix links: `[[1991 Belgian Grand Prix|Belgian Grand Prix]]`
+* `{{Facebook|markzuckerberg}}` (along with `{{FIFA player}}`) formats external profile links using `[[official-url:url|label]]`
+* `{{Failure|Failed}}` formats table cell status with failure styling and text
+* `{{Farbindex|#EF7979}}` formats color indicators
+* `{{fb|Germany}}` (along with `{{fb-rt}}`, `{{fbw}}`, `{{fbw-rt}}`, `{{fsw}}`, `{{fsw-rt}}`, `{{futsal}}`, `{{futsal-rt}}`) formats national sports teams with links: e.g., `[[Germany national football team|Germany]]`
+* `{{fbu|21|Germany}}` (along with `{{fbwu}}` and their right-aligned variants) formats national youth sports teams: e.g., `[[Germany national under-21 football team|Germany U-21]]`
+* `{{fba|Germany}}` formats national football associations: `[[Germany Football Association|Germany]]`
+* `{{FIN}}` (along with `{{FJI}}`, `{{FRA}}`, `{{FR}}`, `{{FRG}}`, `{{FSM}}`) formats country links with flag styling (e.g. `[[Finland|Finland]]`)
+* `{{flag+link|Agriculture in|India}}` formats prefix-based country links: `[[Agriculture in India|Agriculture in India]]`
+* `{{flagathlete|[[Michael Phelps]]|USA}}` formats athlete names with country codes: `[[Michael Phelps|Michael Phelps]] (USA)`
+* `{{flagg|t|Germany}}` (along with `{{flaglink}}`, `{{flaglist}}`) formats generalized country flag/link variations
+* `{{flagIOC|GER|1984 Summer}}` (along with `{{flagIOC2}}`) formats event-specific Olympic country links: `[[Germany at the 1984 Summer Olympics|Germany]]`
+* `{{flagIOCmedalist|[[Michael Phelps]]|USA}}` (along with `{{flagmedalist}}`) formats medalists with country names: `[[Michael Phelps|Michael Phelps]] (United States)`
+* `{{flagu|Germany}}` renders unlinked country names: `Germany`
+* `{{font|text}}` acts as a passthrough styling wrapper
+* `{{football box|date=...|team1=...|score=...|team2=...}}` (and its collapsible variants) formats football match summary details
+* `{{format price|1250}}` (and `{{formatprice}}`) formats numbers with multipliers: `1.25 thousand`
+* `{{Fs player|no=1|pos=GK|nat=GER|name=...}}` formats football squad player list items
+* `{{failed verification span}}`, `{{familytree/start}}`, `{{familytree/end}}`, `{{fbaicon}}`, `{{fbicon}}`, `{{Featured list}}`, `{{FishBase}}`, `{{Fix}}`, `{{flagd}}`, `{{Flag decoration}}`, `{{flag icon}}`, `{{Flag icon}}`, `{{Flora Europaea}}`, `{{football squad on pitch}}`, `{{For introduction}}`, `{{For LMST}}`, `{{For multi}}`, `{{For outline}}`, `{{Fs start}}`, `{{Fs mid}}`, `{{Fs end}}`, `{{full cn}}`, and `{{Further reading cleanup}}` are silent templates and are omitted from the output
 * `{{unbulleted list|item1|item2}}` (or its aliases `{{ubl}}`, `{{ubli}}`, `{{ublist}}`, and `{{unbulleted indent list}}`) renders standard XHTML list items wrapped in unordered list tags: `<ul><li>item1</li><li>item2</li></ul>`
 * `{{hlist|item1|item2}}` (and `{{flatlist}}`) renders standard XHTML list items joined by commas: `item1, item2`
 * `{{native name list|tag1=ja|name1=Name}}` renders native name list as a comma-separated list of names and their language tags: `Name (Japanese)`

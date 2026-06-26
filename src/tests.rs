@@ -9547,3 +9547,290 @@ fn test_template_euro() {
         "[[Euro|€]]12.50"
     );
 }
+
+#[test]
+fn test_template_f1() {
+    assert_eq!(
+        render_templates("{{F1|1980}}"),
+        "[[1980 Formula One season|1980]]"
+    );
+    assert_eq!(
+        render_templates("{{F1|1981}}"),
+        "[[1981 Formula One World Championship|1981]]"
+    );
+}
+
+#[test]
+fn test_template_f2() {
+    assert_eq!(
+        render_templates("{{F2|2016}}"),
+        "[[2016 European Formula Two Championship|2016]]"
+    );
+    assert_eq!(
+        render_templates("{{F2|2017}}"),
+        "[[2017 Formula 2 Championship|2017]]"
+    );
+}
+
+#[test]
+fn test_template_f1_gp() {
+    assert_eq!(
+        render_templates("{{F1 GP|1991|Belgian}}"),
+        "[[1991 Belgian Grand Prix|Belgian Grand Prix]]"
+    );
+    assert_eq!(
+        render_templates("{{F1 GP|1991}}"),
+        "[[1991 Grand Prix|1991 Grand Prix]]"
+    );
+}
+
+#[test]
+fn test_template_f1_race() {
+    let rendered = render_templates("{{F1 race|year=1991|race=Belgian}}");
+    assert!(rendered.contains("{| class=\"wikitable\""));
+    assert!(rendered.contains("|}"));
+}
+
+#[test]
+fn test_template_facebook() {
+    assert_eq!(
+        render_templates("{{Facebook|markzuckerberg|Mark Zuckerberg}}"),
+        "[[official-url:https://www.facebook.com/markzuckerberg|Mark Zuckerberg]]"
+    );
+}
+
+#[test]
+fn test_template_failure() {
+    assert_eq!(
+        render_templates("{{Failure|Failed}}"),
+        "style=\"background: #ffc7c7; color: black; vertical-align: middle; text-align: center;\" class=\"table-failure\"|Failed"
+    );
+}
+
+#[test]
+fn test_template_farbindex() {
+    assert_eq!(
+        render_templates("{{Farbindex|#EF7979}}"),
+        "__WIKIPEDIA_TO_EPUB_COLOR_BOX_START__#EF7979__WIKIPEDIA_TO_EPUB_COLOR_BOX_END__"
+    );
+}
+
+#[test]
+fn test_template_fb() {
+    assert_eq!(
+        render_templates("{{fb|Germany}}"),
+        "[[Germany national football team|Germany]]"
+    );
+    assert_eq!(
+        render_templates("{{fb-rt|Germany}}"),
+        "[[Germany national football team|Germany]]"
+    );
+}
+
+#[test]
+fn test_template_fbw() {
+    assert_eq!(
+        render_templates("{{fbw|Germany}}"),
+        "[[Germany women's national football team|Germany]]"
+    );
+    assert_eq!(
+        render_templates("{{fbw-rt|Germany}}"),
+        "[[Germany women's national football team|Germany]]"
+    );
+}
+
+#[test]
+fn test_template_fsw() {
+    assert_eq!(
+        render_templates("{{fsw|Spain}}"),
+        "[[Spain women's national futsal team|Spain]]"
+    );
+    assert_eq!(
+        render_templates("{{fsw-rt|Spain}}"),
+        "[[Spain women's national futsal team|Spain]]"
+    );
+}
+
+#[test]
+fn test_template_futsal() {
+    assert_eq!(
+        render_templates("{{futsal|Brazil}}"),
+        "[[Brazil national futsal team|Brazil]]"
+    );
+    assert_eq!(
+        render_templates("{{futsal-rt|Brazil}}"),
+        "[[Brazil national futsal team|Brazil]]"
+    );
+}
+
+#[test]
+fn test_template_fbu() {
+    assert_eq!(
+        render_templates("{{fbu|21|Germany}}"),
+        "[[Germany national under-21 football team|Germany U-21]]"
+    );
+    assert_eq!(
+        render_templates("{{fbu-rt|21|Germany}}"),
+        "[[Germany national under-21 football team|Germany U-21]]"
+    );
+}
+
+#[test]
+fn test_template_fbwu() {
+    assert_eq!(
+        render_templates("{{fbwu|19|Germany}}"),
+        "[[Germany women's national under-19 football team|Germany U-19]]"
+    );
+}
+
+#[test]
+fn test_template_fba() {
+    assert_eq!(
+        render_templates("{{fba|Germany}}"),
+        "[[Germany Football Association|Germany]]"
+    );
+}
+
+#[test]
+fn test_template_fifa_player() {
+    assert_eq!(
+        render_templates("{{FIFA player|123|Pele}}"),
+        "[[official-url:https://www.fifa.com/fifaplus/en/member-associations/players/123|Pele]]"
+    );
+}
+
+#[test]
+fn test_template_fin() {
+    assert_eq!(render_templates("{{FIN}}"), "[[Finland|Finland]]");
+}
+
+#[test]
+fn test_template_fji() {
+    assert_eq!(render_templates("{{FJI}}"), "[[Fiji|Fiji]]");
+}
+
+#[test]
+fn test_template_flag_plus_link() {
+    assert_eq!(
+        render_templates("{{flag+link|Agriculture in|India}}"),
+        "[[Agriculture in India|Agriculture in India]]"
+    );
+}
+
+#[test]
+fn test_template_flagathlete() {
+    assert_eq!(
+        render_templates("{{flagathlete|[[Michael Phelps]]|USA}}"),
+        "[[Michael Phelps]] (USA)"
+    );
+}
+
+#[test]
+fn test_template_flagg() {
+    assert_eq!(
+        render_templates("{{flagg|t|Germany}}"),
+        "[[Germany|Germany]]"
+    );
+}
+
+#[test]
+fn test_template_flagioc() {
+    assert_eq!(
+        render_templates("{{flagIOC|GER|1984 Summer}}"),
+        "[[Germany at the 1984 Summer Olympics|Germany]]"
+    );
+    assert_eq!(
+        render_templates("{{flagIOC2|USA}}"),
+        "[[United States at the Olympics|United States]]"
+    );
+}
+
+#[test]
+fn test_template_flag_ioc_medalist() {
+    assert_eq!(
+        render_templates("{{flagIOCmedalist|[[Michael Phelps]]|USA}}"),
+        "[[Michael Phelps]] (United States)"
+    );
+    assert_eq!(
+        render_templates("{{flagmedalist|[[Michael Phelps]]|USA}}"),
+        "[[Michael Phelps]] (United States)"
+    );
+}
+
+#[test]
+fn test_template_flaglink() {
+    assert_eq!(
+        render_templates("{{flaglink|Germany|at the Olympics}}"),
+        "[[Germany at the Olympics|Germany]]"
+    );
+}
+
+#[test]
+fn test_template_flaglist() {
+    assert_eq!(
+        render_templates("{{flaglist|Germany}}"),
+        "[[Germany|Germany]]"
+    );
+}
+
+#[test]
+fn test_template_flagu() {
+    assert_eq!(render_templates("{{flagu|Germany}}"), "Germany");
+}
+
+#[test]
+fn test_template_font() {
+    assert_eq!(render_templates("{{font|styled text}}"), "styled text");
+}
+
+#[test]
+fn test_template_football_box() {
+    let rendered =
+        render_templates("{{football box|date=2026-06-26|team1=Germany|team2=France|score=2–1}}");
+    assert!(rendered.contains("football-box"));
+    assert!(rendered.contains("Germany"));
+    assert!(rendered.contains("France"));
+    assert!(rendered.contains("2–1"));
+}
+
+#[test]
+fn test_template_format_price() {
+    assert_eq!(render_templates("{{format price|950}}"), "950.00");
+    assert_eq!(render_templates("{{format price|1250}}"), "1.25 thousand");
+    assert_eq!(render_templates("{{format price|1256000}}"), "1.26 million");
+}
+
+#[test]
+fn test_template_fra() {
+    assert_eq!(render_templates("{{FRA}}"), "[[France|France]]");
+    assert_eq!(render_templates("{{FR}}"), "[[France|France]]");
+}
+
+#[test]
+fn test_template_frg() {
+    assert_eq!(render_templates("{{FRG}}"), "[[West Germany|West Germany]]");
+}
+
+#[test]
+fn test_template_fsm() {
+    assert_eq!(
+        render_templates("{{FSM}}"),
+        "[[Federated States of Micronesia|Federated States of Micronesia]]"
+    );
+}
+
+#[test]
+fn test_template_fs_player() {
+    assert_eq!(
+        render_templates("{{Fs player|no=1|pos=GK|nat=GER|name=[[Manuel Neuer]]}}"),
+        "* **1** *GK* (GER) [[Manuel Neuer]]\n"
+    );
+}
+
+#[test]
+fn test_template_further_information() {
+    assert_eq!(
+        render_templates("{{Further information|Article 1|Article 2}}"),
+        "Further information: [[Article 1]] and [[Article 2]]"
+    );
+}

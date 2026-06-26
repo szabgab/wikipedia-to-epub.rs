@@ -1,5 +1,62 @@
 # Codex Session Notes
 
+## 2026-06-26 Handle Eleventh Batch of Wikipedia Templates
+
+### Summary
+Added support for 137 Wikipedia templates listed in `f.txt` by registering them in template databases (silent/navigations), implementing active handlers and aliases in Rust, writing separate unit tests for all active templates, and updating documentation rules.
+
+### Decisions Made
+- **Created Active Renderers & Aliases in Rust**:
+  - Implemented `render_f1_template` (Formula One season link based on year boundary > 1980).
+  - Implemented `render_f2_template` (Formula 2 Championship link based on year boundary > 2016).
+  - Implemented `render_f1_gp_template` (Formula One Grand Prix link formatter).
+  - Implemented `render_facebook_template` (Facebook profile link via official-url protocol).
+  - Implemented `render_fifa_player_template` (FIFA player profile link via official-url protocol).
+  - Implemented `render_failure_template` (table cell status template with red background styling).
+  - Implemented flag template helpers `render_fb_template`, `render_fbw_template`, `render_fsw_template`, `render_futsal_template` (national men's/women's football/futsal teams linking wrappers).
+  - Implemented `render_fbu_template`, `render_fbwu_template` (national youth under-NN football teams).
+  - Implemented `render_fba_template` (national football association link).
+  - Implemented `render_flag_plus_link_template` (prefix combined with country link helper).
+  - Implemented `render_flag_athlete_template` (sports competitor with country code annotation).
+  - Implemented `render_flagg_template` (general flag linker helper).
+  - Implemented `render_flag_ioc_template` (Olympic national country link using `resolve_ioc_code_to_name` helper).
+  - Implemented `render_flag_ioc_medalist_template` (Olympic medalist with country name).
+  - Implemented `render_flaglink_template` (country subpage suffix linker).
+  - Implemented `render_flaglist_template` (list aligned flag country linker).
+  - Implemented `render_flagu_template` (unlinked country flag helper).
+  - Implemented `render_fs_player_template` (football squad player bulleted list item formatter).
+  - Implemented `render_football_box_template` (football match summary details layout).
+  - Implemented `render_format_price_template` (formats numerical prices with digit multipliers: thousand/million/billion/etc.).
+  - Registered country flag shorthand wrappers: `render_fin_template` (Finland), `render_fji_template` (Fiji), `render_fr_template`/`render_fra_template` (France), `render_frg_template` (West Germany), `render_fsm_template` (Micronesia).
+  - Mapped `"f1 race"` to generic infobox renderer, `"font"` / `"font"` to passthrough renderer, and `"further information"` to further template.
+  - Registered all active templates and aliases in the dispatch table in `formatting.rs` (matching lowercase forms).
+- **Classified Skipped Templates**:
+  - Classified 23 templates as silent/maintenance in `silent.csv` (e.g. Featured list, Fix, Flora Europaea, Fs start/mid/end, etc.).
+  - Classified 64 templates as navigations/sidebars in `navigations.csv` (e.g. Fejér, Fencing, FIFA navbox, Formula One, FRG 1989, etc.).
+  - Sorted both CSV databases using `./tools/sort.sh`.
+- **Added Unit Tests**:
+  - Wrote 33 separate unit test cases in `src/tests.rs` covering all active templates and aliases. Corrected test expectations for link targets to ensure consistency with standard wikitext parsing.
+- **Updated Documentation**:
+  - Added conversion rules for all new templates in `DEVELOPMENT.md`.
+
+### Files Changed
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked formatting: `cargo fmt` (passed cleanly).
+- Checked compilation: `cargo check` (passed cleanly).
+- Checked warning lints: `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-26 Handle Tenth Batch of Wikipedia Templates
 
 ### Summary

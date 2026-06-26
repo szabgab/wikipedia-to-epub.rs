@@ -2,9 +2,9 @@
 
 
 
-
 '
 -
+
 0
 About,                       Linking the reader to other meaning of the same word.,      https://en.wikipedia.org/wiki/Template:About
 about other people
@@ -59,8 +59,8 @@ Closed access
 clr
 cmn,                         Mandarin Chinese columns-list alias.,                       https://en.wikipedia.org/wiki/Template:cmn
 cn
-colbegin
 col-begin
+colbegin
 col-break
 col div,                     Columns-list div col alias.,                                https://en.wikipedia.org/wiki/Template:Col_div
 colend
@@ -70,8 +70,8 @@ columns-list
 Commons
 Commons and category
 Commons category
-Commons category inline
 Commons category-inline
+Commons category inline
 Commonscatinline,            Inline link to Commons category.,                           https://en.wikipedia.org/wiki/Template:Commonscatinline
 commonscat,                  Link to category in Wikimedia Commons.,                     https://en.wikipedia.org/wiki/Template:Commons_category
 Commons-inline
@@ -100,8 +100,8 @@ Distinguish
 div
 div col
 divcol
-divcol end
 div col end
+divcol end
 divcolend
 Div end
 DNB
@@ -154,14 +154,37 @@ Explanatory footnote,        Footnote efn alias.,                               
 external media
 FACT
 failed verification
+failed verification span
 family name hatnote
+familytree/end
+familytree/start
+fbaicon
+fbicon
 fcn
+Featured list
+FishBase
+Fix
 flag
 flagcountry
+flagd
+Flag decoration
 flagicon
+flag icon
+Flag icon
 flagicon image
+Flora Europaea
+football squad on pitch
+For introduction
+For LMST
+For multi
+For outline
+Fs end
+Fs mid
+Fs start
 full citation needed
+full cn
 full,                        Full citation needed.,                                      https://en.wikipedia.org/wiki/Template:Full_citation_needed
+Further reading cleanup
 fv
 Gallery
 GeoGroup
@@ -270,8 +293,8 @@ sfnp
 SfnRef
 Short description,           TODO we might want to display this on some kind of an index page or TOC., https://en.wikipedia.org/wiki/Template:Short_description
 Sister bar
-sister links
 sisterlinks
+sister links
 Sister project links
 solar system delta v map.svg
 source-attribution

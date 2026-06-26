@@ -233,6 +233,88 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             "fukuoka stock exchange",
             render_fukuoka_stock_exchange_template as TemplateHandler,
         ),
+        ("f1", render_f1_template as TemplateHandler),
+        ("f1 gp", render_f1_gp_template as TemplateHandler),
+        (
+            "f1 race",
+            render_infobox_generic_template as TemplateHandler,
+        ),
+        ("f2", render_f2_template as TemplateHandler),
+        ("facebook", render_facebook_template as TemplateHandler),
+        ("failure", render_failure_template as TemplateHandler),
+        ("farbindex", render_color_box_template as TemplateHandler),
+        ("fb", render_fb_template as TemplateHandler),
+        ("fb-rt", render_fb_template as TemplateHandler),
+        ("fbw", render_fbw_template as TemplateHandler),
+        ("fbw-rt", render_fbw_template as TemplateHandler),
+        ("fsw", render_fsw_template as TemplateHandler),
+        ("fsw-rt", render_fsw_template as TemplateHandler),
+        ("futsal", render_futsal_template as TemplateHandler),
+        ("futsal-rt", render_futsal_template as TemplateHandler),
+        ("fbu", render_fbu_template as TemplateHandler),
+        ("fbu-rt", render_fbu_template as TemplateHandler),
+        ("fbwu", render_fbwu_template as TemplateHandler),
+        ("fbwu-rt", render_fbwu_template as TemplateHandler),
+        ("fba", render_fba_template as TemplateHandler),
+        (
+            "fifa player",
+            render_fifa_player_template as TemplateHandler,
+        ),
+        ("fin", render_fin_template as TemplateHandler),
+        ("fji", render_fji_template as TemplateHandler),
+        (
+            "flag+link",
+            render_flag_plus_link_template as TemplateHandler,
+        ),
+        (
+            "flagathlete",
+            render_flag_athlete_template as TemplateHandler,
+        ),
+        ("flagg", render_flagg_template as TemplateHandler),
+        ("flag ioc", render_flag_ioc_template as TemplateHandler),
+        ("flagioc", render_flag_ioc_template as TemplateHandler),
+        ("flagioc2", render_flag_ioc_template as TemplateHandler),
+        (
+            "flagiocmedalist",
+            render_flag_ioc_medalist_template as TemplateHandler,
+        ),
+        ("flaglink", render_flaglink_template as TemplateHandler),
+        ("flaglist", render_flaglist_template as TemplateHandler),
+        (
+            "flagmedalist",
+            render_flag_ioc_medalist_template as TemplateHandler,
+        ),
+        ("flagu", render_flagu_template as TemplateHandler),
+        ("font", render_passthrough_template as TemplateHandler),
+        (
+            "football box",
+            render_football_box_template as TemplateHandler,
+        ),
+        (
+            "footballbox collapsible",
+            render_football_box_template as TemplateHandler,
+        ),
+        (
+            "football box collapsible",
+            render_football_box_template as TemplateHandler,
+        ),
+        (
+            "format price",
+            render_format_price_template as TemplateHandler,
+        ),
+        (
+            "formatprice",
+            render_format_price_template as TemplateHandler,
+        ),
+        ("fr", render_fr_template as TemplateHandler),
+        ("fra", render_fra_template as TemplateHandler),
+        ("frg", render_frg_template as TemplateHandler),
+        ("fsm", render_fsm_template as TemplateHandler),
+        ("fs player", render_fs_player_template as TemplateHandler),
+        (
+            "further information",
+            render_further_template as TemplateHandler,
+        ),
         ("round", render_round_template as TemplateHandler),
         ("glossary", render_glossary_template as TemplateHandler),
         ("glossary end", render_glossary_template as TemplateHandler),
@@ -8023,4 +8105,573 @@ fn render_eu_template(params: &str) -> String {
 
 fn render_ecu_template(params: &str) -> String {
     render_country_flag_template("Ecuador", params)
+}
+
+fn render_f1_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let year_str = positional.first().map(String::as_str).unwrap_or("").trim();
+    if year_str.is_empty() {
+        return String::new();
+    }
+    let Ok(year) = year_str.parse::<i32>() else {
+        return year_str.to_string();
+    };
+    if year > 1980 {
+        format!("[[{year} Formula One World Championship|{year}]]")
+    } else {
+        format!("[[{year} Formula One season|{year}]]")
+    }
+}
+
+fn render_f2_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let year_str = positional.first().map(String::as_str).unwrap_or("").trim();
+    if year_str.is_empty() {
+        return String::new();
+    }
+    let Ok(year) = year_str.parse::<i32>() else {
+        return year_str.to_string();
+    };
+    if year > 2016 {
+        format!("[[{year} Formula 2 Championship|{year}]]")
+    } else {
+        format!("[[{year} European Formula Two Championship|{year}]]")
+    }
+}
+
+fn render_f1_gp_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let year = positional.first().map(String::as_str).unwrap_or("").trim();
+    let gp = positional.get(1).map(String::as_str).unwrap_or("").trim();
+
+    if gp.is_empty() {
+        if year.is_empty() {
+            String::new()
+        } else {
+            format!("[[{year} Grand Prix|{year} Grand Prix]]")
+        }
+    } else {
+        format!("[[{} {} Grand Prix|{} Grand Prix]]", year, gp, gp)
+    }
+}
+
+fn render_facebook_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let id = template_param(&named, &["1", "id"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(id) = id else {
+        return String::new();
+    };
+
+    let name = template_param(&named, &["2", "name", "title"])
+        .or_else(|| positional.get(1).map(String::as_str).map(str::trim))
+        .filter(|value| !value.is_empty())
+        .unwrap_or("Facebook");
+
+    let url = format!("https://www.facebook.com/{id}");
+    format!("[[official-url:{url}|{}]]", render_templates(name))
+}
+
+fn render_failure_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let text = positional.first().map(String::as_str).unwrap_or("Failure");
+    format!(
+        "style=\"background: #ffc7c7; color: black; vertical-align: middle; text-align: center;\" class=\"table-failure\"|{text}"
+    )
+}
+
+fn render_national_team_template(team_suffix: &str, params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let nation = positional.first().map(String::as_str).unwrap_or("").trim();
+    if nation.is_empty() {
+        return String::new();
+    }
+
+    let display_name = template_param(&named, &["name"]).unwrap_or(nation).trim();
+
+    format!("[[{}{}|{}]]", nation, team_suffix, display_name)
+}
+
+fn render_fb_template(params: &str) -> String {
+    render_national_team_template(" national football team", params)
+}
+
+fn render_fbw_template(params: &str) -> String {
+    render_national_team_template(" women's national football team", params)
+}
+
+fn render_fsw_template(params: &str) -> String {
+    render_national_team_template(" women's national futsal team", params)
+}
+
+fn render_futsal_template(params: &str) -> String {
+    render_national_team_template(" national futsal team", params)
+}
+
+fn render_fbu_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let age = positional.first().map(String::as_str).unwrap_or("").trim();
+    let nation = positional.get(1).map(String::as_str).unwrap_or("").trim();
+
+    if nation.is_empty() {
+        return String::new();
+    }
+
+    let display_name = template_param(&named, &["name"])
+        .map(|v| v.to_string())
+        .unwrap_or_else(|| format!("{nation} U-{age}"))
+        .trim()
+        .to_string();
+
+    format!(
+        "[[{nation} national under-{} football team|{}]]",
+        age, display_name
+    )
+}
+
+fn render_fbwu_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let age = positional.first().map(String::as_str).unwrap_or("").trim();
+    let nation = positional.get(1).map(String::as_str).unwrap_or("").trim();
+
+    if nation.is_empty() {
+        return String::new();
+    }
+
+    let display_name = template_param(&named, &["name"])
+        .map(|v| v.to_string())
+        .unwrap_or_else(|| format!("{nation} U-{age}"))
+        .trim()
+        .to_string();
+
+    format!(
+        "[[{nation} women's national under-{} football team|{}]]",
+        age, display_name
+    )
+}
+
+fn render_fba_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let nation = positional.first().map(String::as_str).unwrap_or("").trim();
+    if nation.is_empty() {
+        return String::new();
+    }
+
+    let display_name = template_param(&named, &["name"]).unwrap_or(nation).trim();
+
+    format!("[[{} Football Association|{}]]", nation, display_name)
+}
+
+fn render_fifa_player_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let id = template_param(&named, &["1", "id"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(id) = id else {
+        return String::new();
+    };
+
+    let name = template_param(&named, &["2", "name", "title"])
+        .or_else(|| positional.get(1).map(String::as_str).map(str::trim))
+        .filter(|value| !value.is_empty())
+        .unwrap_or("FIFA");
+
+    let url = format!("https://www.fifa.com/fifaplus/en/member-associations/players/{id}");
+    format!("[[official-url:{url}|{}]]", render_templates(name))
+}
+
+fn render_fin_template(params: &str) -> String {
+    render_country_flag_template("Finland", params)
+}
+
+fn render_fji_template(params: &str) -> String {
+    render_country_flag_template("Fiji", params)
+}
+
+fn render_flag_plus_link_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.len() >= 2 {
+        let prefix = positional[0].trim();
+        let country = positional[1].trim();
+        format!("[[{} {}|{} {}]]", prefix, country, prefix, country)
+    } else if let Some(country) = positional.first() {
+        format!("[[{0}|{0}]]", country.trim())
+    } else {
+        String::new()
+    }
+}
+
+fn render_flag_athlete_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+
+    let athlete = positional.first().map(String::as_str).unwrap_or("").trim();
+    let country = positional.get(1).map(String::as_str).unwrap_or("").trim();
+
+    if athlete.is_empty() {
+        return String::new();
+    }
+
+    if country.is_empty() {
+        render_templates(athlete)
+    } else {
+        format!(
+            "{} ({})",
+            render_templates(athlete),
+            render_templates(country)
+        )
+    }
+}
+
+fn render_flagg_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let country = positional
+        .get(1)
+        .or_else(|| positional.first())
+        .map(String::as_str)
+        .unwrap_or("")
+        .trim();
+    if country.is_empty() {
+        return String::new();
+    }
+
+    let display_name = template_param(&named, &["name"]).unwrap_or(country).trim();
+
+    format!("[[{country}|{display_name}]]")
+}
+
+fn resolve_ioc_code_to_name(code: &str) -> String {
+    match code.to_ascii_uppercase().as_str() {
+        "GER" | "FRG" | "GDR" => "Germany".to_string(),
+        "FRA" => "France".to_string(),
+        "USA" => "United States".to_string(),
+        "GBR" => "Great Britain".to_string(),
+        "ITA" => "Italy".to_string(),
+        "ESP" => "Spain".to_string(),
+        "FIN" => "Finland".to_string(),
+        "HUN" => "Hungary".to_string(),
+        "POL" => "Poland".to_string(),
+        "ROU" | "ROM" => "Romania".to_string(),
+        "YUG" => "Yugoslavia".to_string(),
+        "URS" => "Soviet Union".to_string(),
+        "EGY" => "Egypt".to_string(),
+        "EST" => "Estonia".to_string(),
+        "AUT" => "Austria".to_string(),
+        "SWE" => "Sweden".to_string(),
+        "NOR" => "Norway".to_string(),
+        "DEN" => "Denmark".to_string(),
+        "SUI" => "Switzerland".to_string(),
+        "NED" => "Netherlands".to_string(),
+        "BEL" => "Belgium".to_string(),
+        "KOR" => "South Korea".to_string(),
+        "PRK" => "North Korea".to_string(),
+        "JPN" => "Japan".to_string(),
+        "CHN" => "China".to_string(),
+        "CAN" => "Canada".to_string(),
+        "AUS" => "Australia".to_string(),
+        _ => code.to_string(),
+    }
+}
+
+fn render_flag_ioc_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let code = positional.first().map(String::as_str).unwrap_or("").trim();
+    if code.is_empty() {
+        return String::new();
+    }
+
+    let games = positional.get(1).map(String::as_str).unwrap_or("").trim();
+    let country_name = resolve_ioc_code_to_name(code);
+
+    let display_name = template_param(&named, &["name"])
+        .unwrap_or(&country_name)
+        .trim()
+        .to_string();
+
+    if games.is_empty() {
+        format!("[[{} at the Olympics|{}]]", country_name, display_name)
+    } else {
+        format!(
+            "[[{} at the {} Olympics|{}]]",
+            country_name, games, display_name
+        )
+    }
+}
+
+fn render_flag_ioc_medalist_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+
+    let athlete = positional.first().map(String::as_str).unwrap_or("").trim();
+    let code = positional.get(1).map(String::as_str).unwrap_or("").trim();
+
+    if athlete.is_empty() {
+        return String::new();
+    }
+
+    let resolved = resolve_ioc_code_to_name(code);
+    if resolved.is_empty() {
+        render_templates(athlete)
+    } else {
+        format!("{} ({})", render_templates(athlete), resolved)
+    }
+}
+
+fn render_flaglink_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let country = positional.first().map(String::as_str).unwrap_or("").trim();
+    let suffix = positional.get(1).map(String::as_str).unwrap_or("").trim();
+
+    if country.is_empty() {
+        return String::new();
+    }
+
+    let display_name = template_param(&named, &["name"]).unwrap_or(country).trim();
+
+    if suffix.is_empty() {
+        format!("[[{country}|{display_name}]]")
+    } else {
+        format!("[[{country} {suffix}|{display_name}]]")
+    }
+}
+
+fn render_flaglist_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let country = positional.first().map(String::as_str).unwrap_or("").trim();
+    if country.is_empty() {
+        return String::new();
+    }
+
+    let display_name = template_param(&named, &["name"]).unwrap_or(country).trim();
+
+    format!("[[{country}|{display_name}]]")
+}
+
+fn render_flagu_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let country = positional.first().map(String::as_str).unwrap_or("").trim();
+    if country.is_empty() {
+        return String::new();
+    }
+
+    let display_name = template_param(&named, &["name"]).unwrap_or(country).trim();
+
+    display_name.to_string()
+}
+
+fn render_football_box_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let date = template_param(&named, &["date"]).unwrap_or("").trim();
+    let time = template_param(&named, &["time"]).unwrap_or("").trim();
+    let team1 = template_param(&named, &["team1"]).unwrap_or("").trim();
+    let team2 = template_param(&named, &["team2"]).unwrap_or("").trim();
+    let score = template_param(&named, &["score"]).unwrap_or("").trim();
+    let goals1 = template_param(&named, &["goals1"]).unwrap_or("").trim();
+    let goals2 = template_param(&named, &["goals2"]).unwrap_or("").trim();
+    let stadium = template_param(&named, &["stadium"]).unwrap_or("").trim();
+    let attendance = template_param(&named, &["attendance"]).unwrap_or("").trim();
+    let referee = template_param(&named, &["referee"]).unwrap_or("").trim();
+
+    let mut parts = Vec::new();
+
+    let mut datetime = String::new();
+    if !date.is_empty() {
+        datetime.push_str(date);
+    }
+    if !time.is_empty() {
+        if !datetime.is_empty() {
+            datetime.push(' ');
+        }
+        datetime.push_str(time);
+    }
+    if !datetime.is_empty() {
+        parts.push(format!("**{}**", datetime));
+    }
+
+    let match_title = format!(
+        "{} {} {}",
+        team1,
+        if score.is_empty() { "vs" } else { score },
+        team2
+    );
+    parts.push(format!("'''{}'''", match_title));
+
+    if !goals1.is_empty() || !goals2.is_empty() {
+        let mut goals_str = String::new();
+        if !goals1.is_empty() {
+            goals_str.push_str(&format!("{}: {}", team1, goals1));
+        }
+        if !goals2.is_empty() {
+            if !goals_str.is_empty() {
+                goals_str.push_str(" — ");
+            }
+            goals_str.push_str(&format!("{}: {}", team2, goals2));
+        }
+        parts.push(goals_str);
+    }
+
+    let mut venue = String::new();
+    if !stadium.is_empty() {
+        venue.push_str(stadium);
+    }
+    if !attendance.is_empty() {
+        if !venue.is_empty() {
+            venue.push(' ');
+        }
+        venue.push_str(&format!("(Attendance: {})", attendance));
+    }
+    if !referee.is_empty() {
+        if !venue.is_empty() {
+            venue.push_str(", ");
+        }
+        venue.push_str(&format!("Referee: {}", referee));
+    }
+    if !venue.is_empty() {
+        parts.push(venue);
+    }
+
+    let rendered_parts: Vec<String> = parts.into_iter().map(|p| render_templates(&p)).collect();
+    format!(
+        "<div class=\"football-box\" style=\"border: 1px solid #ccc; padding: 8px; margin: 8px 0;\">{}</div>",
+        rendered_parts.join("<br />")
+    )
+}
+
+fn render_format_price_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let amount_str = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+
+    if amount_str.is_empty() {
+        return String::new();
+    }
+
+    let clean_str = amount_str.replace(',', "");
+    let Ok(amount) = clean_str.parse::<f64>() else {
+        return amount_str.to_string();
+    };
+
+    if amount <= 0.0 {
+        return format!("{amount:.2}");
+    }
+
+    fn round_to_sig_figs(val: f64, sig_figs: i32) -> String {
+        if val == 0.0 {
+            return "0".to_string();
+        }
+        let exp = val.log10().floor() as i32;
+        let scale = 10.0_f64.powi(sig_figs - 1 - exp);
+        let rounded = (val * scale).round() / scale;
+        if rounded.fract() == 0.0 {
+            format!("{rounded:.0}")
+        } else {
+            let s = format!("{rounded:.6}");
+            s.trim_end_matches('0').trim_end_matches('.').to_string()
+        }
+    }
+
+    if amount < 1000.0 {
+        format!("{amount:.2}")
+    } else if amount < 1_000_000.0 {
+        format!("{} thousand", round_to_sig_figs(amount / 1000.0, 3))
+    } else if amount < 1_000_000_000.0 {
+        format!("{} million", round_to_sig_figs(amount / 1_000_000.0, 3))
+    } else if amount < 1_000_000_000_000.0 {
+        format!("{} billion", round_to_sig_figs(amount / 1_000_000_000.0, 3))
+    } else if amount < 1_000_000_000_000_000.0 {
+        format!(
+            "{} trillion",
+            round_to_sig_figs(amount / 1_000_000_000_000.0, 3)
+        )
+    } else {
+        format!(
+            "{} quadrillion",
+            round_to_sig_figs(amount / 1_000_000_000_000_000.0, 3)
+        )
+    }
+}
+
+fn render_fr_template(params: &str) -> String {
+    render_country_flag_template("France", params)
+}
+
+fn render_fra_template(params: &str) -> String {
+    render_country_flag_template("France", params)
+}
+
+fn render_frg_template(params: &str) -> String {
+    render_country_flag_template("West Germany", params)
+}
+
+fn render_fsm_template(params: &str) -> String {
+    render_country_flag_template("Federated States of Micronesia", params)
+}
+
+fn render_fs_player_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let no = template_param(&named, &["no"])
+        .map(|v| v.trim())
+        .unwrap_or("");
+    let pos = template_param(&named, &["pos"])
+        .map(|v| v.trim())
+        .unwrap_or("");
+    let nat = template_param(&named, &["nat"])
+        .map(|v| v.trim())
+        .unwrap_or("");
+    let name = template_param(&named, &["name"])
+        .map(|v| v.trim())
+        .unwrap_or("");
+    let other = template_param(&named, &["other"])
+        .map(|v| v.trim())
+        .unwrap_or("");
+
+    let mut parts = Vec::new();
+    if !no.is_empty() {
+        parts.push(format!("**{}**", no));
+    }
+    if !pos.is_empty() {
+        parts.push(format!("*{}*", pos));
+    }
+    if !nat.is_empty() {
+        parts.push(format!("({})", nat));
+    }
+    if !name.is_empty() {
+        parts.push(name.to_string());
+    }
+    if !other.is_empty() {
+        parts.push(format!("({})", other));
+    }
+
+    if parts.is_empty() {
+        String::new()
+    } else {
+        format!("* {}\n", render_templates(&parts.join(" ")))
+    }
 }
