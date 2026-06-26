@@ -127,7 +127,22 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("ce1913", render_cath_ency_template as TemplateHandler),
         ("harvp", render_harvp_template as TemplateHandler),
         ("harv", render_harvp_template as TemplateHandler),
+        ("harvard citation", render_harvp_template as TemplateHandler),
+        (
+            "harvard citations",
+            render_harvp_template as TemplateHandler,
+        ),
+        (
+            "harvard citation year brackets",
+            render_harvp_template as TemplateHandler,
+        ),
         ("harvnb", render_harvnb_template as TemplateHandler),
+        ("harvardnb", render_harvnb_template as TemplateHandler),
+        (
+            "harvard citation no brackets",
+            render_harvnb_template as TemplateHandler,
+        ),
+        ("harvcoltxt", render_harvnb_template as TemplateHandler),
         ("harvtxt", render_harvtxt_template as TemplateHandler),
         ("cite nsrw", render_cite_nsrw_template as TemplateHandler),
         ("cite thesis", render_citation_template as TemplateHandler),

@@ -99,6 +99,17 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{AllMusic|id=mn0000139026|title=Led Zeppelin}}` formats external links to AllMusic
 * `{{age in years|2001|1|10|2012|2|20}}` formats calculated age in years
 * `{{Hair space}}` inserts a Unicode U+200A hair space character
+* `{{hairspace}}` and `{{hsp}}` are aliases for `{{Hair space}}`
+* `{{H2G2|book|1}}` formats Hitchhiker's Guide to the Galaxy work references as plain links/text
+* `{{HAI}}`, `{{HTI}}`, `{{HK}}`, `{{HKG}}`, `{{HKG-CHN}}`, `{{HND}}`, `{{HRV}}`, and `{{HUN}}` format country or territory links with flag styling
+* `{{hbf|Berlin}}` formats Hauptbahnhof station links
+* `{{hdl|20.1000/182}}` formats Handle System identifiers
+* `{{HDS|title=Geneva}}`, `{{Hl-Lex|b|...|...}}`, and `{{Hounshell1984}}` render concise external reference/citation text
+* `{{Hidden|Header|Body}}`, `{{hiero|Name|A1}}`, `{{highlight|text}}`, `{{hilite|text}}`, `{{historical population|1900|1234}}`, and `{{hr}}` render collapsible, hieroglyph, highlighting, historical-population, and horizontal-rule templates in simplified form
+* `{{Harvard citation|Smith|2020}}`, `{{Harvard citation no brackets|Smith|2020}}`, `{{harvard citations|Smith|2020}}`, `{{Harvard citation year brackets|Smith|2020}}`, `{{Harvardnb|Smith|2020}}`, and `{{harvcoltxt|Smith|2020}}` are handled as Harvard citation aliases
+* `{{Hungarian county name|Pest}}` and `{{Hungarian county link|Pest}}` format Hungarian county names and links
+* H-series topic/navigation templates such as `{{Habsburg family tree}}`, `{{History of Europe}}`, `{{Hungarian kings}}`, `{{Hungary topics}}`, and related history, Hungary, humanities, Holocaust, and hydrography navboxes are silent templates and are omitted from the output
+* `{{how}}`, `{{huh?}}`, `{{HESA student population}}`, and `{{Hungarian name}}` are silent cleanup/data/hatnote templates and are omitted from the output
 * `{{cite periodical|title=Hello}}` formats a periodical-style bibliographic citation
 * `{{Script|Hani|神}}` becomes `神`
 * `{{oclc|58053128}}` becomes `OCLC 58053128`

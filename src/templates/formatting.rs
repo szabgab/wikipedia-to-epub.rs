@@ -745,6 +745,40 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("flatlist", render_hlist_template as TemplateHandler),
         ("ublist", render_unbulleted_list_template as TemplateHandler),
         ("parabr", render_parabr_template as TemplateHandler),
+        ("h2g2", render_h2g2_template as TemplateHandler),
+        ("hai", render_hti_template as TemplateHandler),
+        ("hbf", render_hbf_template as TemplateHandler),
+        ("hdl", render_hdl_template as TemplateHandler),
+        ("hds", render_hds_template as TemplateHandler),
+        ("hidden", render_hidden_template as TemplateHandler),
+        ("hiero", render_hiero_template as TemplateHandler),
+        ("highlight", render_passthrough_template as TemplateHandler),
+        ("hilite", render_passthrough_template as TemplateHandler),
+        (
+            "historical population",
+            render_historical_populations_template as TemplateHandler,
+        ),
+        ("hk", render_hkg_template as TemplateHandler),
+        ("hkg", render_hkg_template as TemplateHandler),
+        ("hkg-chn", render_hkg_chn_template as TemplateHandler),
+        ("hl-lex", render_hl_lex_template as TemplateHandler),
+        ("hnd", render_hnd_template as TemplateHandler),
+        (
+            "hounshell1984",
+            render_hounshell_1984_template as TemplateHandler,
+        ),
+        ("hr", render_hr_template as TemplateHandler),
+        ("hrv", render_hrv_template as TemplateHandler),
+        ("hti", render_hti_template as TemplateHandler),
+        ("hun", render_hun_template as TemplateHandler),
+        (
+            "hungarian county link",
+            render_hungarian_county_link_template as TemplateHandler,
+        ),
+        (
+            "hungarian county name",
+            render_hungarian_county_name_template as TemplateHandler,
+        ),
         (
             "age in years, months, weeks and days",
             render_age_in_years_months_weeks_days_template as TemplateHandler,
@@ -9046,4 +9080,206 @@ fn render_gutenberg_author_template(params: &str) -> String {
 
 fn render_guy_template(params: &str) -> String {
     render_country_flag_template("Guyana", params)
+}
+
+fn render_h2g2_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let medium = positional.first().map(String::as_str).unwrap_or("").trim();
+    let number = positional.get(1).map(String::as_str).unwrap_or("").trim();
+    match (medium.to_ascii_lowercase().as_str(), number) {
+        ("book", "1") => "the novel [[The Hitchhiker's Guide to the Galaxy]]".to_string(),
+        ("book", "2") => "the novel [[The Restaurant at the End of the Universe]]".to_string(),
+        ("book", "3") => "the novel [[Life, the Universe and Everything]]".to_string(),
+        ("book", "4") => "the novel [[So Long, and Thanks for All the Fish]]".to_string(),
+        ("book", "5") => "the novel [[Mostly Harmless]]".to_string(),
+        ("book", "6") => "the novel [[And Another Thing...]]".to_string(),
+        ("radio", n) if !n.is_empty() => format!("Fit the {n} of the radio series"),
+        ("phase", n) if !n.is_empty() => format!("phase {n} of the radio series"),
+        ("tv", n) if !n.is_empty() => format!("episode {n} of the TV series"),
+        ("movie", _) => "the 2005 movie [[The Hitchhiker's Guide to the Galaxy]]".to_string(),
+        ("game", "1") => "the video game [[The Hitchhiker's Guide to the Galaxy]]".to_string(),
+        ("game", "2") => "the video game [[Starship Titanic]]".to_string(),
+        _ => positional
+            .iter()
+            .map(|value| render_templates(value.trim()))
+            .filter(|value| !value.is_empty())
+            .collect::<Vec<_>>()
+            .join(" "),
+    }
+}
+
+fn render_hti_template(params: &str) -> String {
+    render_country_flag_template("Haiti", params)
+}
+
+fn render_hbf_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let city = positional.first().map(String::as_str).unwrap_or("").trim();
+    if city.is_empty() {
+        String::new()
+    } else {
+        format!("[[{city} Hauptbahnhof|{}]]", render_templates(city))
+    }
+}
+
+fn render_hdl_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let ids = named
+        .iter()
+        .filter_map(|(key, value)| {
+            if key == "id" || key.starts_with("id") {
+                Some(value.trim())
+            } else {
+                None
+            }
+        })
+        .chain(positional.iter().map(String::as_str).map(str::trim))
+        .filter(|value| !value.is_empty())
+        .map(|id| format!("[https://hdl.handle.net/{id} hdl:{id}]"))
+        .collect::<Vec<_>>();
+
+    ids.join(", ")
+}
+
+fn render_hds_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let title = template_param(&named, &["title", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("Historical Dictionary of Switzerland");
+    format!(
+        "\"{}\" in the online ''Historical Dictionary of Switzerland''",
+        render_templates(title)
+    )
+}
+
+fn render_hidden_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let title = template_param(&named, &["header", "title", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let content = template_param(&named, &["content", "2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+
+    match (title, content) {
+        (Some(title), Some(content)) => {
+            format!(
+                "'''{}'''\n{}",
+                render_templates(title),
+                render_templates(content)
+            )
+        }
+        (Some(title), None) => format!("'''{}'''", render_templates(title)),
+        (None, Some(content)) => render_templates(content),
+        (None, None) => String::new(),
+    }
+}
+
+fn render_hiero_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let name = template_param(&named, &["name", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let glyphs = template_param(&named, &["2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+
+    match (name, glyphs) {
+        (Some(name), Some(glyphs)) => {
+            format!("{} ({})", render_templates(name), render_templates(glyphs))
+        }
+        (Some(name), None) => render_templates(name),
+        (None, Some(glyphs)) => render_templates(glyphs),
+        (None, None) => String::new(),
+    }
+}
+
+fn render_hkg_template(params: &str) -> String {
+    render_country_flag_template("Hong Kong", params)
+}
+
+fn render_hkg_chn_template(params: &str) -> String {
+    render_country_flag_template("Hong Kong, China", params)
+}
+
+fn render_hl_lex_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let section = positional.first().map(String::as_str).unwrap_or("").trim();
+    let page = positional.get(1).map(String::as_str).unwrap_or("").trim();
+    let label = positional
+        .get(2)
+        .map(String::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("Ecumenical Lexicon of Saints");
+    if page.is_empty() {
+        return String::new();
+    }
+
+    let directory = match section.to_ascii_lowercase().as_str() {
+        "b" => "Biographien",
+        "o" => "Orte",
+        _ => section,
+    };
+    format!(
+        "[[official-url:https://www.heiligenlexikon.de/{directory}/{page}|{}]] in the Ecumenical Lexicon of Saints",
+        render_templates(label)
+    )
+}
+
+fn render_hnd_template(params: &str) -> String {
+    render_country_flag_template("Honduras", params)
+}
+
+fn render_hounshell_1984_template(_params: &str) -> String {
+    "Hounshell, David A. (1984). ''From the American System to Mass Production, 1800-1932: The Development of Manufacturing Technology in the United States''. Baltimore, Maryland: Johns Hopkins University Press. ISBN 978-0-8018-2975-8. LCCN 83016269. OCLC 1104810110".to_string()
+}
+
+fn render_hr_template(_params: &str) -> String {
+    "<hr />".to_string()
+}
+
+fn render_hrv_template(params: &str) -> String {
+    render_country_flag_template("Croatia", params)
+}
+
+fn render_hun_template(params: &str) -> String {
+    render_country_flag_template("Hungary", params)
+}
+
+fn render_hungarian_county_name_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let county = positional.first().map(String::as_str).unwrap_or("").trim();
+    if county.is_empty() {
+        String::new()
+    } else if county.eq_ignore_ascii_case("Budapest") {
+        "Budapest".to_string()
+    } else {
+        format!("{} County", render_templates(county))
+    }
+}
+
+fn render_hungarian_county_link_template(params: &str) -> String {
+    let name = render_hungarian_county_name_template(params);
+    if name.is_empty() {
+        String::new()
+    } else {
+        let positional = template_positional_params(params);
+        let label = positional
+            .first()
+            .map(String::as_str)
+            .unwrap_or(name.as_str())
+            .trim();
+        format!("[[{name}|{}]]", render_templates(label))
+    }
 }

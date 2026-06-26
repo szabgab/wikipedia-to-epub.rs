@@ -90,6 +90,8 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
         ("emdash", "—"),
         ("eunum", "27"),
         ("hair space", "\u{200a}"),
+        ("hairspace", "\u{200a}"),
+        ("hsp", "\u{200a}"),
         ("asterisk", "*"),
     ])
 }

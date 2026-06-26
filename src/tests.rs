@@ -10379,3 +10379,730 @@ fn test_template_gyorgy_ligeti() {
 fn test_template_gyor_moson_sopron() {
     assert_template_is_recognized_skip!("Győr-Moson-Sopron");
 }
+
+#[test]
+fn test_template_h2g2() {
+    assert_eq!(
+        render_templates("{{H2G2|book|1}}"),
+        "the novel [[The Hitchhiker's Guide to the Galaxy]]"
+    );
+}
+
+#[test]
+fn test_template_habsburg_family_tree() {
+    assert_template_is_recognized_skip!("Habsburg family tree");
+}
+
+#[test]
+fn test_template_habsburg_monarchy_topics() {
+    assert_template_is_recognized_skip!("Habsburg Monarchy topics");
+}
+
+#[test]
+fn test_template_hai() {
+    assert_eq!(render_templates("{{HAI}}"), "[[Haiti|Haiti]]");
+}
+
+#[test]
+fn test_template_hairspace() {
+    assert_eq!(render_templates("{{hairspace}}"), "\u{200a}");
+}
+
+#[test]
+fn test_template_hajdu_bihar() {
+    assert_template_is_recognized_skip!("Hajdu-Bihar");
+}
+
+#[test]
+fn test_template_harvard_citation() {
+    assert_eq!(
+        render_templates("{{Harvard citation|Smith|2020}}"),
+        "(Smith 2020)"
+    );
+}
+
+#[test]
+fn test_template_harvard_citation_no_brackets() {
+    assert_eq!(
+        render_templates("{{Harvard citation no brackets|Smith|2020}}"),
+        "Smith 2020"
+    );
+}
+
+#[test]
+fn test_template_harvard_citations() {
+    assert_eq!(
+        render_templates("{{harvard citations|Smith|2020}}"),
+        "(Smith 2020)"
+    );
+}
+
+#[test]
+fn test_template_harvard_citation_year_brackets() {
+    assert_eq!(
+        render_templates("{{Harvard citation year brackets|Smith|2020}}"),
+        "(Smith 2020)"
+    );
+}
+
+#[test]
+fn test_template_harvardnb() {
+    assert_eq!(render_templates("{{Harvardnb|Smith|2020}}"), "Smith 2020");
+}
+
+#[test]
+fn test_template_harvcoltxt() {
+    assert_eq!(render_templates("{{harvcoltxt|Smith|2020}}"), "Smith 2020");
+}
+
+#[test]
+fn test_template_harvcoltxt_capitalized() {
+    assert_eq!(render_templates("{{Harvcoltxt|Smith|2020}}"), "Smith 2020");
+}
+
+#[test]
+fn test_template_hasbro() {
+    assert_template_is_recognized_skip!("Hasbro");
+}
+
+#[test]
+fn test_template_hbf() {
+    assert_eq!(
+        render_templates("{{hbf|Berlin}}"),
+        "[[Berlin Hauptbahnhof|Berlin]]"
+    );
+}
+
+#[test]
+fn test_template_hdl() {
+    assert_eq!(
+        render_templates("{{hdl|20.1000/182}}"),
+        "[https://hdl.handle.net/20.1000/182 hdl:20.1000/182]"
+    );
+}
+
+#[test]
+fn test_template_hds() {
+    assert_eq!(
+        render_templates("{{HDS|title=Geneva}}"),
+        "\"Geneva\" in the online ''Historical Dictionary of Switzerland''"
+    );
+}
+
+#[test]
+fn test_template_heads_of_state_and_government_of_europe() {
+    assert_template_is_recognized_skip!("Heads of state and government of Europe");
+}
+
+#[test]
+fn test_template_heads_of_state_of_hungary() {
+    assert_template_is_recognized_skip!("heads of state of Hungary");
+}
+
+#[test]
+fn test_template_heads_of_state_of_republics() {
+    assert_template_is_recognized_skip!("Heads of state of republics");
+}
+
+#[test]
+fn test_template_heads_of_state_of_the_european_union_member_states() {
+    assert_template_is_recognized_skip!("Heads of state of the European Union member states");
+}
+
+#[test]
+fn test_template_heraldic_map_of_slovakia() {
+    assert_template_is_recognized_skip!("Heraldic map of Slovakia");
+}
+
+#[test]
+fn test_template_herbs_and_spices() {
+    assert_template_is_recognized_skip!("Herbs & spices");
+}
+
+#[test]
+fn test_template_herder_prize() {
+    assert_template_is_recognized_skip!("Herder Prize");
+}
+
+#[test]
+fn test_template_heresies_condemned_by_the_catholic_church() {
+    assert_template_is_recognized_skip!("Heresies condemned by the Catholic Church");
+}
+
+#[test]
+fn test_template_hesa_student_population() {
+    assert_template_is_recognized_skip!("HESA student population");
+}
+
+#[test]
+fn test_template_heves() {
+    assert_template_is_recognized_skip!("Heves");
+}
+
+#[test]
+fn test_template_hidden() {
+    assert_eq!(
+        render_templates("{{Hidden|Header|Body}}"),
+        "'''Header'''\nBody"
+    );
+}
+
+#[test]
+fn test_template_hiero() {
+    assert_eq!(render_templates("{{hiero|Name|A1}}"), "Name (A1)");
+}
+
+#[test]
+fn test_template_hiero_capitalized() {
+    assert_eq!(render_templates("{{Hiero|Name|A1}}"), "Name (A1)");
+}
+
+#[test]
+fn test_template_highest_points_of_europe() {
+    assert_template_is_recognized_skip!("Highest points of Europe");
+}
+
+#[test]
+fn test_template_highlight() {
+    assert_eq!(render_templates("{{highlight|text}}"), "text");
+}
+
+#[test]
+fn test_template_high_renaissance() {
+    assert_template_is_recognized_skip!("High Renaissance");
+}
+
+#[test]
+fn test_template_hilite() {
+    assert_eq!(render_templates("{{hilite|text}}"), "text");
+}
+
+#[test]
+fn test_template_historical_capitals_of_hungary() {
+    assert_template_is_recognized_skip!("Historical capitals of Hungary");
+}
+
+#[test]
+fn test_template_historical_currencies_of_hungary() {
+    assert_template_is_recognized_skip!("Historical currencies of Hungary");
+}
+
+#[test]
+fn test_template_historical_population() {
+    assert_eq!(
+        render_templates("{{historical population|1900|1234}}"),
+        "\nHistorical populations:\n* 1900: 1,234\n"
+    );
+}
+
+#[test]
+fn test_template_historiography() {
+    assert_template_is_recognized_skip!("Historiography");
+}
+
+#[test]
+fn test_template_history_of_architecture() {
+    assert_template_is_recognized_skip!("History of architecture");
+}
+
+#[test]
+fn test_template_history_of_austria() {
+    assert_template_is_recognized_skip!("History of Austria");
+}
+
+#[test]
+fn test_template_history_of_bulgaria() {
+    assert_template_is_recognized_skip!("History of Bulgaria");
+}
+
+#[test]
+fn test_template_history_of_christianity() {
+    assert_template_is_recognized_skip!("History of Christianity");
+}
+
+#[test]
+fn test_template_history_of_crimea() {
+    assert_template_is_recognized_skip!("History of Crimea");
+}
+
+#[test]
+fn test_template_history_of_croatia() {
+    assert_template_is_recognized_skip!("History of Croatia");
+}
+
+#[test]
+fn test_template_history_of_czechoslovakia() {
+    assert_template_is_recognized_skip!("History of Czechoslovakia");
+}
+
+#[test]
+fn test_template_history_of_europe() {
+    assert_template_is_recognized_skip!("History of Europe");
+}
+
+#[test]
+fn test_template_history_of_germany() {
+    assert_template_is_recognized_skip!("History of Germany");
+}
+
+#[test]
+fn test_template_history_of_germany_sidebar() {
+    assert_template_is_recognized_skip!("History of Germany sidebar");
+}
+
+#[test]
+fn test_template_history_of_hungary() {
+    assert_template_is_recognized_skip!("History of Hungary");
+}
+
+#[test]
+fn test_template_history_of_infectious_disease() {
+    assert_template_is_recognized_skip!("History of infectious disease");
+}
+
+#[test]
+fn test_template_history_of_italy() {
+    assert_template_is_recognized_skip!("History of Italy");
+}
+
+#[test]
+fn test_template_history_of_poland() {
+    assert_template_is_recognized_skip!("History of Poland");
+}
+
+#[test]
+fn test_template_history_of_romania() {
+    assert_template_is_recognized_skip!("History of Romania");
+}
+
+#[test]
+fn test_template_history_of_russia() {
+    assert_template_is_recognized_skip!("History of Russia");
+}
+
+#[test]
+fn test_template_history_of_serbia() {
+    assert_template_is_recognized_skip!("History of Serbia");
+}
+
+#[test]
+fn test_template_history_of_slavonia() {
+    assert_template_is_recognized_skip!("History of Slavonia");
+}
+
+#[test]
+fn test_template_history_of_slavs() {
+    assert_template_is_recognized_skip!("History of Slavs");
+}
+
+#[test]
+fn test_template_history_of_slovakia() {
+    assert_template_is_recognized_skip!("History of Slovakia");
+}
+
+#[test]
+fn test_template_history_of_technology_sidebar() {
+    assert_template_is_recognized_skip!("History of technology sidebar");
+}
+
+#[test]
+fn test_template_history_of_the_armenian_language() {
+    assert_template_is_recognized_skip!("History of the Armenian language");
+}
+
+#[test]
+fn test_template_history_of_the_catholic_church() {
+    assert_template_is_recognized_skip!("History of the Catholic Church");
+}
+
+#[test]
+fn test_template_history_of_the_jews_in_europe() {
+    assert_template_is_recognized_skip!("History of the Jews in Europe");
+}
+
+#[test]
+fn test_template_history_of_the_soviet_union() {
+    assert_template_is_recognized_skip!("History of the Soviet Union");
+}
+
+#[test]
+fn test_template_history_of_the_turkic_peoples_pre_14th_century() {
+    assert_template_is_recognized_skip!("History of the Turkic peoples pre-14th century");
+}
+
+#[test]
+fn test_template_history_of_turkey() {
+    assert_template_is_recognized_skip!("History of Turkey");
+}
+
+#[test]
+fn test_template_history_of_turkey_topics() {
+    assert_template_is_recognized_skip!("History of Turkey topics");
+}
+
+#[test]
+fn test_template_history_of_ukraine() {
+    assert_template_is_recognized_skip!("History of Ukraine");
+}
+
+#[test]
+fn test_template_hk() {
+    assert_eq!(render_templates("{{HK}}"), "[[Hong Kong|Hong Kong]]");
+}
+
+#[test]
+fn test_template_hkg() {
+    assert_eq!(render_templates("{{HKG}}"), "[[Hong Kong|Hong Kong]]");
+}
+
+#[test]
+fn test_template_hkg_chn() {
+    assert_eq!(
+        render_templates("{{HKG-CHN}}"),
+        "[[Hong Kong, China|Hong Kong, China]]"
+    );
+}
+
+#[test]
+fn test_template_hl_lex() {
+    assert_eq!(
+        render_templates("{{Hl-Lex|b|Restituta_Kafka.html|Schwester Maria Restituta}}"),
+        "[[official-url:https://www.heiligenlexikon.de/Biographien/Restituta_Kafka.html|Schwester Maria Restituta]] in the Ecumenical Lexicon of Saints"
+    );
+}
+
+#[test]
+fn test_template_hnd() {
+    assert_eq!(render_templates("{{HND}}"), "[[Honduras|Honduras]]");
+}
+
+#[test]
+fn test_template_holocaust_by_country() {
+    assert_template_is_recognized_skip!("Holocaust by country");
+}
+
+#[test]
+fn test_template_holocaust_poland() {
+    assert_template_is_recognized_skip!("Holocaust Poland");
+}
+
+#[test]
+fn test_template_holy_roman_emperors() {
+    assert_template_is_recognized_skip!("Holy Roman Emperors");
+}
+
+#[test]
+fn test_template_holy_sites_in_judaism() {
+    assert_template_is_recognized_skip!("Holy sites in Judaism");
+}
+
+#[test]
+fn test_template_horizontal_timeline() {
+    assert_template_is_recognized_skip!("Horizontal timeline");
+}
+
+#[test]
+fn test_template_hounshell1984() {
+    assert!(render_templates("{{Hounshell1984}}").contains("Hounshell, David A. (1984)"));
+}
+
+#[test]
+fn test_template_house_of_bourbon_france() {
+    assert_template_is_recognized_skip!("House of Bourbon (France)");
+}
+
+#[test]
+fn test_template_house_of_trpimirovic() {
+    assert_template_is_recognized_skip!("House of Trpimirović");
+}
+
+#[test]
+fn test_template_how() {
+    assert_template_is_recognized_skip!("how");
+}
+
+#[test]
+fn test_template_how_capitalized() {
+    assert_template_is_recognized_skip!("How");
+}
+
+#[test]
+fn test_template_hr() {
+    assert_eq!(render_templates("{{hr}}"), "<hr />");
+}
+
+#[test]
+fn test_template_hrv() {
+    assert_eq!(render_templates("{{HRV}}"), "[[Croatia|Croatia]]");
+}
+
+#[test]
+fn test_template_hsp() {
+    assert_eq!(render_templates("{{hsp}}"), "\u{200a}");
+}
+
+#[test]
+fn test_template_hti() {
+    assert_eq!(render_templates("{{HTI}}"), "[[Haiti|Haiti]]");
+}
+
+#[test]
+fn test_template_hu_counties_to_1918() {
+    assert_template_is_recognized_skip!("HUCountiesto1918");
+}
+
+#[test]
+fn test_template_huh_question() {
+    assert_template_is_recognized_skip!("huh?");
+}
+
+#[test]
+fn test_template_human_development() {
+    assert_template_is_recognized_skip!("Human development");
+}
+
+#[test]
+fn test_template_humanitarian_aid() {
+    assert_template_is_recognized_skip!("Humanitarian Aid");
+}
+
+#[test]
+fn test_template_humanitarian_partners_of_the_european_commission() {
+    assert_template_is_recognized_skip!("Humanitarian partners of the European Commission");
+}
+
+#[test]
+fn test_template_humanities() {
+    assert_template_is_recognized_skip!("Humanities");
+}
+
+#[test]
+fn test_template_human_rights() {
+    assert_template_is_recognized_skip!("Human rights");
+}
+
+#[test]
+fn test_template_hun() {
+    assert_eq!(render_templates("{{HUN}}"), "[[Hungary|Hungary]]");
+}
+
+#[test]
+fn test_template_hungarian_agriculture_ministers() {
+    assert_template_is_recognized_skip!("HungarianAgricultureMinisters");
+}
+
+#[test]
+fn test_template_hungarian_chess_grandmasters() {
+    assert_template_is_recognized_skip!("Hungarian chess grandmasters");
+}
+
+#[test]
+fn test_template_hungarian_conflicts() {
+    assert_template_is_recognized_skip!("Hungarian conflicts");
+}
+
+#[test]
+fn test_template_hungarian_counties() {
+    assert_template_is_recognized_skip!("Hungarian counties");
+}
+
+#[test]
+fn test_template_hungarian_county_link() {
+    assert_eq!(
+        render_templates("{{Hungarian county link|Pest}}"),
+        "[[Pest County|Pest]]"
+    );
+}
+
+#[test]
+fn test_template_hungarian_county_name() {
+    assert_eq!(
+        render_templates("{{Hungarian county name|Pest}}"),
+        "Pest County"
+    );
+}
+
+#[test]
+fn test_template_hungarian_croatian_affairs_ministers() {
+    assert_template_is_recognized_skip!("HungarianCroatianAffairsMinisters");
+}
+
+#[test]
+fn test_template_hungarian_defence_ministers() {
+    assert_template_is_recognized_skip!("HungarianDefenceMinisters");
+}
+
+#[test]
+fn test_template_hungarian_diaspora() {
+    assert_template_is_recognized_skip!("Hungarian diaspora");
+}
+
+#[test]
+fn test_template_hungarian_education_ministers() {
+    assert_template_is_recognized_skip!("HungarianEducationMinisters");
+}
+
+#[test]
+fn test_template_hungarian_elections() {
+    assert_template_is_recognized_skip!("Hungarian elections");
+}
+
+#[test]
+fn test_template_hungarian_elections_capitalized() {
+    assert_template_is_recognized_skip!("Hungarian Elections");
+}
+
+#[test]
+fn test_template_hungarian_fascism() {
+    assert_template_is_recognized_skip!("Hungarian fascism");
+}
+
+#[test]
+fn test_template_hungarian_finance_ministers() {
+    assert_template_is_recognized_skip!("HungarianFinanceMinisters");
+}
+
+#[test]
+fn test_template_hungarian_folk_music() {
+    assert_template_is_recognized_skip!("Hungarian Folk Music");
+}
+
+#[test]
+fn test_template_hungarian_foreign_ministers() {
+    assert_template_is_recognized_skip!("HungarianForeignMinisters");
+}
+
+#[test]
+fn test_template_hungarian_governments() {
+    assert_template_is_recognized_skip!("Hungarian Governments");
+}
+
+#[test]
+fn test_template_hungarian_interior_ministers() {
+    assert_template_is_recognized_skip!("HungarianInteriorMinisters");
+}
+
+#[test]
+fn test_template_hungarian_kings() {
+    assert_template_is_recognized_skip!("Hungarian kings");
+}
+
+#[test]
+fn test_template_hungarian_language() {
+    assert_template_is_recognized_skip!("Hungarian language");
+}
+
+#[test]
+fn test_template_hungarian_legislative_speakers() {
+    assert_template_is_recognized_skip!("Hungarian legislative speakers");
+}
+
+#[test]
+fn test_template_hungarian_legislative_speakers_compact() {
+    assert_template_is_recognized_skip!("HungarianLegislativeSpeakers");
+}
+
+#[test]
+fn test_template_hungarian_literature() {
+    assert_template_is_recognized_skip!("Hungarian literature");
+}
+
+#[test]
+fn test_template_hungarian_mobile_phone_companies() {
+    assert_template_is_recognized_skip!("Hungarian mobile phone companies");
+}
+
+#[test]
+fn test_template_hungarian_name() {
+    assert_template_is_recognized_skip!("hungarian name");
+}
+
+#[test]
+fn test_template_hungarian_name_capitalized() {
+    assert_template_is_recognized_skip!("Hungarian name");
+}
+
+#[test]
+fn test_template_hungarian_nobel_laureates() {
+    assert_template_is_recognized_skip!("Hungarian Nobel Laureates");
+}
+
+#[test]
+fn test_template_hungarian_political_parties() {
+    assert_template_is_recognized_skip!("Hungarian political parties");
+}
+
+#[test]
+fn test_template_hungarian_presidents() {
+    assert_template_is_recognized_skip!("HungarianPresidents");
+}
+
+#[test]
+fn test_template_hungarian_prime_ministers() {
+    assert_template_is_recognized_skip!("HungarianPrimeMinisters");
+}
+
+#[test]
+fn test_template_hungarian_religions() {
+    assert_template_is_recognized_skip!("Hungarian religions");
+}
+
+#[test]
+fn test_template_hungarian_revolution_of_1848() {
+    assert_template_is_recognized_skip!("Hungarian Revolution of 1848");
+}
+
+#[test]
+fn test_template_hungarian_revolution_of_1848_participant() {
+    assert_template_is_recognized_skip!("Hungarian Revolution of 1848 participant");
+}
+
+#[test]
+fn test_template_hungary_counties_imagemep_450() {
+    assert_template_is_recognized_skip!("Hungary counties imagemep 450");
+}
+
+#[test]
+fn test_template_hungary_geographical_regions() {
+    assert_template_is_recognized_skip!("Hungary geographical regions");
+}
+
+#[test]
+fn test_template_hungary_national_football_team() {
+    assert_template_is_recognized_skip!("Hungary national football team");
+}
+
+#[test]
+fn test_template_hungary_regions_imagemap_550() {
+    assert_template_is_recognized_skip!("Hungary regions imagemap 550");
+}
+
+#[test]
+fn test_template_hungary_topics() {
+    assert_template_is_recognized_skip!("Hungary topics");
+}
+
+#[test]
+fn test_template_huns() {
+    assert_template_is_recognized_skip!("Huns");
+}
+
+#[test]
+fn test_template_hussites_sidebar() {
+    assert_template_is_recognized_skip!("Hussites sidebar");
+}
+
+#[test]
+fn test_template_hydrography_of_croatia() {
+    assert_template_is_recognized_skip!("Hydrography of Croatia");
+}
+
+#[test]
+fn test_template_hydrography_of_slovakia() {
+    assert_template_is_recognized_skip!("Hydrography of Slovakia");
+}
+
+#[test]
+fn test_template_hypothetical_indo_european_subfamilies() {
+    assert_template_is_recognized_skip!("Hypothetical Indo-European subfamilies");
+}

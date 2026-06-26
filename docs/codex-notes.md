@@ -1871,6 +1871,42 @@ Added support for the `official` template name by routing it through the existin
 * None.
 
 
+## Session Note: 2026-06-26 - Handle H-series templates from h.txt
+
+### Decisions Made
+
+* Used the `handle-template` skill for Wikipedia template support work.
+* Checked Wikipedia Template pages for H-series definitions, including renderable cases such as `H2G2`, `hbf`, `hdl`, `HDS`, `HESA student population`, `Hidden`, `Hiero`, `highlight`, `historical population`, `HKG`, `HKG-CHN`, `Hl-Lex`, `Hounshell1984`, `hr`, `Hungarian county link`, `Hungarian county name`, and `Hungarian name`.
+* Added renderer support for H-series country/territory code templates, Harvard citation aliases, station/identifier/reference helpers, hidden/highlight/hieroglyph wrappers, historical population aliasing, horizontal rules, and Hungarian county helpers.
+* Added H-series topic, history, Hungary, humanities, Holocaust, hydrography, cleanup, data, and map/sidebar templates to recognized skip lists where EPUB output should omit them.
+* Added one focused unit test per unique template name from `h.txt`.
+
+### Files Changed
+
+* `DEVELOPMENT.md` [MODIFY]
+* `src/navigations.csv` [MODIFY]
+* `src/silent.csv` [MODIFY]
+* `src/templates/citation.rs` [MODIFY]
+* `src/templates/formatting.rs` [MODIFY]
+* `src/templates/mod.rs` [MODIFY]
+* `src/tests.rs` [MODIFY]
+* `docs/codex-notes.md` [MODIFY]
+
+### Tests Run
+
+* `./tools/sort.sh`
+* `cargo fmt`
+* `cargo test test_template_h -- --nocapture`
+* `cargo check`
+* `cargo test`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test --locked -- --ignored`
+
+### Pending Follow-Ups
+
+* None.
+
+
 ## Session Note: 2026-06-26 - Handle G-series templates from g.txt
 
 ### Decisions Made
