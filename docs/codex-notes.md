@@ -1,5 +1,48 @@
 # Codex Session Notes
 
+## 2026-06-26 Handle Tenth Batch of Wikipedia Templates
+
+### Summary
+Added support for 149 Wikipedia templates listed in `e.txt` by registering them in template databases (silent/navigations), implementing custom rendering logic, writing separate unit tests, and updating documentation rules.
+
+### Decisions Made
+- **Created Renderers & Aliases in Rust**:
+  - Implemented `render_ethnologue_citation` helper to support language references and implemented specific wrappers for `render_e18_template`, `render_e19_template`, `render_e21_template`, `render_e25_template`, and `render_e27_template`.
+  - Implemented `render_efloras_template` (botanical taxon citation), `render_etymology_template` (formatted word origin listings), `render_estimate_template` (estimated values with confidence intervals), `render_estimation_template` (abbreviated estimated numbers), `render_equation_ref_template` (equation reference anchor labels), and `render_euro_template` (formats currency values with the Euro sign €, and optionally links to the Euro article).
+  - Implemented `render_encyclopaedia_iranica_template`, `render_encyclopaedia_of_islam_new_edition_template`, and `render_ei3_template` to format encyclopedia citations.
+  - Implemented flag template helpers `render_egy_template` (Egypt), `render_eri_template` (Eritrea), `render_esa_template` (El Salvador), `render_esp_template` (Spain), `render_estonia_flag_template` (Estonia), `render_eth_template` (Ethiopia), `render_eu_template` (European Union), and `render_ecu_template` (Ecuador).
+  - Registered all new active template handlers in `get_dispatch_table()` and `get_dispatch_template_params()` in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) and [src/templates/citation.rs](file:///opt/src/templates/citation.rs).
+  - Resolved name collision between Estonia (`EST` flag) and the estimate abbreviation (`est`/`est.`) by implementing a case-sensitive routing function `render_est_dispatch_template` registered in `get_dispatch_template_params()`.
+  - Appended fixed mappings for `"emdash"` and `"eunum"` in `get_fixed()` in [src/templates/mod.rs](file:///opt/src/templates/mod.rs).
+- **Classified Skipped Templates**:
+  - Appended 23 templates to [src/silent.csv](file:///opt/src/silent.csv) (e.g. eastern name order, EB1911 poster, editorializing, efn-lg, Emblem table, EMedicine, end Div col, Endorsements box, Exchange Rate, Expand list, etc.).
+  - Appended 99 navigation and sidebar templates to [src/navigations.csv](file:///opt/src/navigations.csv) (covering Early Modern Europe, Eastern Bloc sidebar, economics, education, etc.).
+  - Sorted both CSV databases using `./tools/sort.sh`.
+- **Added Unit Tests**:
+  - Added 25 separate unit test cases in [src/tests.rs](file:///opt/src/tests.rs) (covering each newly added template/alias).
+- **Updated Documentation**:
+  - Documented conversion rules for the new active templates in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/mod.rs](file:///opt/src/templates/mod.rs) [MODIFY]
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/templates/citation.rs](file:///opt/src/templates/citation.rs) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked formatting: `cargo fmt` (passed cleanly).
+- Checked compilation: `cargo check` (passed cleanly).
+- Checked warning lints: `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-26 Handle Ninth Batch of Wikipedia Templates
 
 ### Summary

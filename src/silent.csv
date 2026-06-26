@@ -1,8 +1,10 @@
 
 
+
+
+
 '
 -
-
 0
 About,                       Linking the reader to other meaning of the same word.,      https://en.wikipedia.org/wiki/Template:About
 about other people
@@ -61,15 +63,15 @@ colbegin
 col-begin
 col-break
 col div,                     Columns-list div col alias.,                                https://en.wikipedia.org/wiki/Template:Col_div
-col-end
 colend
+col-end
 cols,                        Multi-column list wrapper.,                                 https://en.wikipedia.org/wiki/Template:cols
 columns-list
 Commons
 Commons and category
 Commons category
-Commons category-inline
 Commons category inline
+Commons category-inline
 Commonscatinline,            Inline link to Commons category.,                           https://en.wikipedia.org/wiki/Template:Commonscatinline
 commonscat,                  Link to category in Wikimedia Commons.,                     https://en.wikipedia.org/wiki/Template:Commons_category
 Commons-inline
@@ -98,8 +100,8 @@ Distinguish
 div
 div col
 divcol
-div col end
 divcol end
+div col end
 divcolend
 Div end
 DNB
@@ -108,22 +110,45 @@ DNB-Portal
 dubious
 dubious span
 dynamic list
+eastern name order
+EB1911 poster
 EB1911,                      Public domain attribution banner.,                          https://en.wikipedia.org/wiki/Template:EB1911
+EB1922 Poster
+EB9 poster
+editorializing
+effects of 1989 revolutions map
 efn
+efn-lg
 efn-lr,                      Footnote marker.,                                           https://en.wikipedia.org/wiki/Template:efn-lr
 efn-ua
+efn-ur
+Emblem table
+EMedicine
 empty section
 end box
+end div col
+endflatlist
 end,                        ?,                       https://en.wikipedia.org/wiki/Template:S-end
+Endorsements box
 end plainlist
+endplainlist
 EngvarB
 Essay,                       Cleanup tag.,                                               https://en.wikipedia.org/wiki/Template:Essay
+etymonline
 example needed
 Excessive citations inline
+Exchange Rate
 Expand German
+Expand Hungarian
 Expand Japanese
 Expand language
+Expand list
+Expand Russian
+expand-section
 Expand section
+expand Serbian
+Expand Spanish
+Expand Swedish
 Explain
 Explanatory footnote,        Footnote efn alias.,                                        https://en.wikipedia.org/wiki/Template:Explanatory_footnote
 external media
@@ -259,8 +284,8 @@ Subscription required
 surname
 technical,                   Cleanup banner.,                                            https://en.wikipedia.org/wiki/Template:Technical
 Technical inline,            Jargon inline cleanup tag.,                                 https://en.wikipedia.org/wiki/Template:Technical_inline
-TOClimit
 TOC limit
+TOClimit
 tocright
 Tokyo Metropolis Labelled Map
 tone

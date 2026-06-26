@@ -9380,3 +9380,170 @@ fn test_template_dom() {
 fn test_template_dza() {
     assert_eq!(render_templates("{{DZA}}"), "[[Algeria|Algeria]]");
 }
+
+#[test]
+fn test_template_e18() {
+    assert_eq!(
+        render_templates("{{e18|kor|Korean}}"),
+        "Eberhard, David M.; Simons, Gary F.; Fennig, Charles D., eds. (2015). \"[[official-url:https://www.ethnologue.com/language/kor|Korean]]\". ''Ethnologue: Languages of the World'' (18th ed.). Dallas, Texas: SIL International"
+    );
+}
+
+#[test]
+fn test_template_e19() {
+    assert_eq!(
+        render_templates("{{e19|kor|Korean}}"),
+        "Eberhard, David M.; Simons, Gary F.; Fennig, Charles D., eds. (2016). \"[[official-url:https://www.ethnologue.com/language/kor|Korean]]\". ''Ethnologue: Languages of the World'' (19th ed.). Dallas, Texas: SIL International"
+    );
+}
+
+#[test]
+fn test_template_e21() {
+    assert_eq!(
+        render_templates("{{e21|kor|Korean}}"),
+        "Eberhard, David M.; Simons, Gary F.; Fennig, Charles D., eds. (2018). \"[[official-url:https://www.ethnologue.com/language/kor|Korean]]\". ''Ethnologue: Languages of the World'' (21st ed.). Dallas, Texas: SIL International"
+    );
+}
+
+#[test]
+fn test_template_e25() {
+    assert_eq!(
+        render_templates("{{e25|kor|Korean}}"),
+        "Eberhard, David M.; Simons, Gary F.; Fennig, Charles D., eds. (2022). \"[[official-url:https://www.ethnologue.com/language/kor|Korean]]\". ''Ethnologue: Languages of the World'' (25th ed.). Dallas, Texas: SIL International"
+    );
+}
+
+#[test]
+fn test_template_e27() {
+    assert_eq!(
+        render_templates("{{e27|kor|Korean}}"),
+        "Eberhard, David M.; Simons, Gary F.; Fennig, Charles D., eds. (2024). \"[[official-url:https://www.ethnologue.com/language/kor|Korean]]\". ''Ethnologue: Languages of the World'' (27th ed.). Dallas, Texas: SIL International"
+    );
+}
+
+#[test]
+fn test_template_efloras() {
+    assert_eq!(
+        render_templates("{{eFloras|flora=fna|taxon=Carex}}"),
+        "\"Carex\" in ''eFloras''"
+    );
+    assert_eq!(render_templates("{{eFloras}}"), "''eFloras''");
+}
+
+#[test]
+fn test_template_emdash() {
+    assert_eq!(render_templates("{{emdash}}"), "—");
+}
+
+#[test]
+fn test_template_emph() {
+    assert_eq!(render_templates("{{emph|italicized}}"), "''italicized''");
+}
+
+#[test]
+fn test_template_etymology() {
+    assert_eq!(
+        render_templates("{{Etymology|grc|tele-|far off|la|visio|vision}}"),
+        "from Ancient Greek ''tele-'' 'far off' and Latin ''visio'' 'vision'"
+    );
+}
+
+#[test]
+fn test_template_eu() {
+    assert_eq!(
+        render_templates("{{EU}}"),
+        "[[European Union|European Union]]"
+    );
+}
+
+#[test]
+fn test_template_eunum() {
+    assert_eq!(render_templates("{{EUnum}}"), "27");
+}
+
+#[test]
+fn test_template_estimate() {
+    assert_eq!(render_templates("{{Estimate|10|5|15}}"), "10 (5–15)");
+}
+
+#[test]
+fn test_template_estimation() {
+    assert_eq!(render_templates("{{estimation|1900}}"), "est. 1900");
+    assert_eq!(render_templates("{{estimation}}"), "est.");
+}
+
+#[test]
+fn test_template_equation_ref() {
+    assert_eq!(render_templates("{{EquationRef|3}}"), "(3)");
+}
+
+#[test]
+fn test_template_encyclopaedia_iranica() {
+    assert_eq!(
+        render_templates("{{Encyclopaedia Iranica|title=Persia}}"),
+        "\"Persia\" in ''Encyclopædia Iranica''"
+    );
+}
+
+#[test]
+fn test_template_encyclopaedia_of_islam_new_edition() {
+    assert_eq!(
+        render_templates("{{Encyclopaedia of Islam, New Edition|title=Islam}}"),
+        "\"Islam\" in ''Encyclopaedia of Islam'' (New Edition)"
+    );
+}
+
+#[test]
+fn test_template_ei3() {
+    assert_eq!(
+        render_templates("{{EI3|title=Islam}}"),
+        "\"Islam\" in ''Encyclopaedia of Islam'' (3rd ed.)"
+    );
+}
+
+#[test]
+fn test_template_egy() {
+    assert_eq!(render_templates("{{EGY}}"), "[[Egypt|Egypt]]");
+}
+
+#[test]
+fn test_template_eri() {
+    assert_eq!(render_templates("{{ERI}}"), "[[Eritrea|Eritrea]]");
+}
+
+#[test]
+fn test_template_esa() {
+    assert_eq!(render_templates("{{ESA}}"), "[[El Salvador|El Salvador]]");
+}
+
+#[test]
+fn test_template_esp() {
+    assert_eq!(render_templates("{{ESP}}"), "[[Spain|Spain]]");
+}
+
+#[test]
+fn test_template_est() {
+    assert_eq!(render_templates("{{EST}}"), "[[Estonia|Estonia]]");
+}
+
+#[test]
+fn test_template_eth() {
+    assert_eq!(render_templates("{{ETH}}"), "[[Ethiopia|Ethiopia]]");
+}
+
+#[test]
+fn test_template_ecu() {
+    assert_eq!(render_templates("{{ECU}}"), "[[Ecuador|Ecuador]]");
+}
+
+#[test]
+fn test_template_euro() {
+    assert_eq!(render_templates("{{Euro}}"), "€");
+    assert_eq!(render_templates("{{Euro|12.50}}"), "€12.50");
+    assert_eq!(render_templates("{{Euro|1=12.50}}"), "€12.50");
+    assert_eq!(render_templates("{{Euro|link=yes}}"), "[[Euro|€]]");
+    assert_eq!(
+        render_templates("{{Euro|12.50|link=yes}}"),
+        "[[Euro|€]]12.50"
+    );
+}

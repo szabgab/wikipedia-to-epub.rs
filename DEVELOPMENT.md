@@ -181,6 +181,22 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{DEN}}` (along with `{{DEU}}`, `{{DJI}}`, `{{DMA}}`, `{{DNK}}`, `{{DOM}}`, `{{DZA}}`) formats country links with flag styling (e.g. `[[Denmark|Denmark]]`)
 * `{{Data missing}}`, `{{date?}}`, `{{DDB}}`, `{{Discogs artist}}`, `{{Disputed}}`, `{{divcolend}}`, `{{DNB}}`, and `{{dubious span}}` are silent templates and are omitted from the output
 * `{{Dacian cities}}`, `{{Dacia series}}`, `{{Danube Rectors Conference}}`, `{{democracy}}`, `{{Demographics of Europe}}`, and other regional/topic navigation blocks are silent navigational templates and are omitted from the output
+* `{{e18|code}}` (and its aliases `{{e19}}`, `{{e21}}`, `{{e25}}`, and `{{e27}}`) formats language references citing the corresponding edition of *Ethnologue*
+* `{{eFloras|taxon=Carex}}` formats taxons in eFloras references
+* `{{emdash}}` becomes `—`
+* `{{emph|text}}` is handled as an alias of `{{em}}`
+* `{{Etymology|grc|tele-|far off}}` formats multi-language etymological listings
+* `{{EUnum}}` becomes `27`
+* `{{Estimate|10|5|15}}` formats a point estimate alongside its confidence interval range
+* `{{estimation|1900}}` formats estimated numbers: `est. 1900`
+* `{{EquationRef|3}}` formats mathematical equation reference anchors: `(3)`
+* `{{Encyclopaedia Iranica|title=Persia}}` formats entries in the *Encyclopædia Iranica*
+* `{{Encyclopaedia of Islam, New Edition|title=Islam}}` formats entries in the *Encyclopaedia of Islam* (New Edition)
+* `{{EI3|title=Islam}}` formats entries in the *Encyclopaedia of Islam* (3rd edition)
+* `{{EGY}}` (along with `{{ERI}}`, `{{ESA}}`, `{{ESP}}`, `{{EST}}`, `{{ETH}}`, `{{EU}}`, `{{ECU}}`) formats country links with flag styling (e.g. `[[Egypt|Egypt]]`)
+* `{{Euro|12.50}}` (or `{{Euro|link=yes}}`) formats currency values with the Euro sign (€)
+* `{{eastern name order}}`, `{{EB1911 poster}}`, `{{editorializing}}`, `{{effects of 1989 revolutions map}}`, `{{efn-lg}}`, `{{efn-ur}}`, `{{Emblem table}}`, `{{EMedicine}}`, `{{end div col}}`, `{{endflatlist}}`, `{{endplainlist}}`, `{{Endorsements box}}`, `{{etymonline}}`, `{{Exchange Rate}}`, and `{{Expand Hungarian}}` are silent templates and are omitted from the output
+* `{{Early Germanic Kingdoms}}`, `{{Early Modern Europe}}`, `{{Eastern Bloc}}`, `{{Eastern Orthodox Church footer}}`, `{{EC Judo}}`, `{{economics}}`, `{{Education}}`, and other regional/topic navigation blocks are silent navigational templates and are omitted from the output
 * `{{unbulleted list|item1|item2}}` (or its aliases `{{ubl}}`, `{{ubli}}`, `{{ublist}}`, and `{{unbulleted indent list}}`) renders standard XHTML list items wrapped in unordered list tags: `<ul><li>item1</li><li>item2</li></ul>`
 * `{{hlist|item1|item2}}` (and `{{flatlist}}`) renders standard XHTML list items joined by commas: `item1, item2`
 * `{{native name list|tag1=ja|name1=Name}}` renders native name list as a comma-separated list of names and their language tags: `Name (Japanese)`

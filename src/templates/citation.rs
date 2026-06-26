@@ -111,6 +111,15 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_cite_eb1911_template as TemplateHandler,
         ),
         (
+            "encyclopaedia iranica",
+            render_encyclopaedia_iranica_template as TemplateHandler,
+        ),
+        (
+            "encyclopaedia of islam, new edition",
+            render_encyclopaedia_of_islam_new_edition_template as TemplateHandler,
+        ),
+        ("ei3", render_ei3_template as TemplateHandler),
+        (
             "catholic encyclopedia",
             render_cath_ency_template as TemplateHandler,
         ),
@@ -126,6 +135,11 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             "hosking-jfood",
             render_hosking_jfood_template as TemplateHandler,
         ),
+        ("e18", render_e18_template as TemplateHandler),
+        ("e19", render_e19_template as TemplateHandler),
+        ("e21", render_e21_template as TemplateHandler),
+        ("e25", render_e25_template as TemplateHandler),
+        ("e27", render_e27_template as TemplateHandler),
         ("e28", render_e28_template as TemplateHandler),
         (
             "citation-attribution",
@@ -1499,7 +1513,7 @@ fn render_hosking_jfood_template(params: &str) -> String {
     parts.join(". ")
 }
 
-fn render_e28_template(params: &str) -> String {
+fn render_ethnologue_citation(params: &str, edition: &str, year: &str) -> String {
     let named = template_named_params(params);
     let positional = template_positional_params(params);
 
@@ -1530,9 +1544,33 @@ fn render_e28_template(params: &str) -> String {
 
     let link = format!("\"[[official-url:{}|{}]]\"", url, title);
     format!(
-        "Eberhard, David M.; Simons, Gary F.; Fennig, Charles D., eds. (2025). {}. ''Ethnologue: Languages of the World'' (28th ed.). Dallas, Texas: SIL International",
-        link
+        "Eberhard, David M.; Simons, Gary F.; Fennig, Charles D., eds. ({}). {}. ''Ethnologue: Languages of the World'' ({} ed.). Dallas, Texas: SIL International",
+        year, link, edition
     )
+}
+
+fn render_e18_template(params: &str) -> String {
+    render_ethnologue_citation(params, "18th", "2015")
+}
+
+fn render_e19_template(params: &str) -> String {
+    render_ethnologue_citation(params, "19th", "2016")
+}
+
+fn render_e21_template(params: &str) -> String {
+    render_ethnologue_citation(params, "21st", "2018")
+}
+
+fn render_e25_template(params: &str) -> String {
+    render_ethnologue_citation(params, "25th", "2022")
+}
+
+fn render_e27_template(params: &str) -> String {
+    render_ethnologue_citation(params, "27th", "2024")
+}
+
+fn render_e28_template(params: &str) -> String {
+    render_ethnologue_citation(params, "28th", "2025")
 }
 
 fn render_citation_attribution_template(params: &str) -> String {
@@ -2429,4 +2467,58 @@ fn render_cath_ency_template(params: &str) -> String {
         render_templates(title),
         title
     )
+}
+
+fn render_encyclopaedia_iranica_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let title = template_param(&named, &["title", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    if title.is_empty() {
+        "''Encyclopædia Iranica''".to_string()
+    } else {
+        format!(
+            "\"{}\" in ''Encyclopædia Iranica''",
+            render_templates(title)
+        )
+    }
+}
+
+fn render_encyclopaedia_of_islam_new_edition_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let title = template_param(&named, &["title", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    if title.is_empty() {
+        "''Encyclopaedia of Islam'' (New Edition)".to_string()
+    } else {
+        format!(
+            "\"{}\" in ''Encyclopaedia of Islam'' (New Edition)",
+            render_templates(title)
+        )
+    }
+}
+
+fn render_ei3_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let title = template_param(&named, &["title", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    if title.is_empty() {
+        "''Encyclopaedia of Islam'' (3rd ed.)".to_string()
+    } else {
+        format!(
+            "\"{}\" in ''Encyclopaedia of Islam'' (3rd ed.)",
+            render_templates(title)
+        )
+    }
 }

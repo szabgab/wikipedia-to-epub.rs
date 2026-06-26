@@ -54,6 +54,7 @@ pub(crate) fn get_dispatch_template_params() -> TemplateParamsDispatchTable {
         ("l3", render_lagrange_template as TemplateParamsHandler),
         ("l4", render_lagrange_template as TemplateParamsHandler),
         ("l5", render_lagrange_template as TemplateParamsHandler),
+        ("est", render_est_dispatch_template as TemplateParamsHandler),
     ])
 }
 
@@ -114,6 +115,7 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("term", render_term_template as TemplateHandler),
         ("defn", render_defn_template as TemplateHandler),
         ("us$", render_us_dollar_template as TemplateHandler),
+        ("euro", render_euro_template as TemplateHandler),
         ("frac2", render_sfrac_template as TemplateHandler),
         ("vanchor", render_visible_anchor_template as TemplateHandler),
         (
@@ -185,6 +187,22 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("d-out", render_d_out_template as TemplateHandler),
         ("down", render_decrease_template as TemplateHandler),
         ("dza", render_dza_template as TemplateHandler),
+        ("efloras", render_efloras_template as TemplateHandler),
+        ("emph", render_em_template as TemplateHandler),
+        ("etymology", render_etymology_template as TemplateHandler),
+        ("estimate", render_estimate_template as TemplateHandler),
+        ("estimation", render_estimation_template as TemplateHandler),
+        (
+            "equationref",
+            render_equation_ref_template as TemplateHandler,
+        ),
+        ("egy", render_egy_template as TemplateHandler),
+        ("eri", render_eri_template as TemplateHandler),
+        ("esa", render_esa_template as TemplateHandler),
+        ("esp", render_esp_template as TemplateHandler),
+        ("eth", render_eth_template as TemplateHandler),
+        ("eu", render_eu_template as TemplateHandler),
+        ("ecu", render_ecu_template as TemplateHandler),
         ("afg", render_afg_template as TemplateHandler),
         ("ago", render_ago_template as TemplateHandler),
         ("aia", render_aia_template as TemplateHandler),
@@ -592,7 +610,7 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             "age in years, months, weeks and days",
             render_age_in_years_months_weeks_days_template as TemplateHandler,
         ),
-        ("est.", render_est_template as TemplateHandler),
+        ("est.", render_est_abbrev_template as TemplateHandler),
         (
             "britannica url",
             render_britannica_url_template as TemplateHandler,
@@ -5350,7 +5368,7 @@ fn render_age_in_years_months_weeks_days_template(params: &str) -> String {
     }
 }
 
-fn render_est_template(params: &str) -> String {
+fn render_est_abbrev_template(params: &str) -> String {
     let positional = template_positional_params(params);
     let val = positional.first().map(|s| s.trim()).unwrap_or("");
 
@@ -6066,6 +6084,33 @@ fn render_us_dollar_template(params: &str) -> String {
         "US$".to_string()
     } else {
         format!("US${}", render_templates(&amount))
+    }
+}
+
+fn render_euro_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let amount = template_param(&named, &["1"])
+        .map(str::to_string)
+        .or_else(|| positional.first().cloned())
+        .map(|v| v.trim().to_string())
+        .unwrap_or_default();
+
+    let link = named
+        .get("link")
+        .map(|v| v.trim().to_lowercase())
+        .unwrap_or_default();
+    let symbol = if link == "yes" || link == "y" {
+        "[[Euro|€]]"
+    } else {
+        "€"
+    };
+
+    if amount.is_empty() {
+        symbol.to_string()
+    } else {
+        format!("{}{}", symbol, render_templates(&amount))
     }
 }
 
@@ -7826,4 +7871,156 @@ fn render_dom_template(params: &str) -> String {
 
 fn render_dza_template(params: &str) -> String {
     render_country_flag_template("Algeria", params)
+}
+
+fn render_efloras_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let taxon = template_param(&named, &["taxon", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    if taxon.is_empty() {
+        "''eFloras''".to_string()
+    } else {
+        format!("\"{}\" in ''eFloras''", render_templates(taxon))
+    }
+}
+
+fn render_etymology_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let mut parts = Vec::new();
+
+    let mut i = 0;
+    while i < positional.len() {
+        let lang = positional.get(i).map(|s| s.trim()).unwrap_or("");
+        let word = positional.get(i + 1).map(|s| s.trim()).unwrap_or("");
+        let meaning = positional.get(i + 2).map(|s| s.trim()).unwrap_or("");
+
+        if lang.is_empty() && word.is_empty() {
+            break;
+        }
+
+        let lang_display = match lang.to_lowercase().as_str() {
+            "la" => "Latin",
+            "grc" => "Ancient Greek",
+            "el" => "Greek",
+            "fr" => "French",
+            "de" => "German",
+            "en" => "English",
+            "sa" => "Sanskrit",
+            "zh" => "Chinese",
+            "ja" => "Japanese",
+            "ko" => "Korean",
+            _ => lang,
+        };
+
+        let mut part = String::new();
+        if !lang_display.is_empty() {
+            part.push_str(lang_display);
+        }
+        if !word.is_empty() {
+            if !part.is_empty() {
+                part.push(' ');
+            }
+            part.push_str(&format!("''{}''", word));
+        }
+        if !meaning.is_empty() {
+            if !part.is_empty() {
+                part.push(' ');
+            }
+            part.push_str(&format!("'{}'", meaning));
+        }
+
+        if !part.is_empty() {
+            parts.push(part);
+        }
+
+        i += 3;
+    }
+
+    if parts.is_empty() {
+        String::new()
+    } else {
+        format!("from {}", join_plain_items(&parts))
+    }
+}
+
+fn render_estimate_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.len() >= 3 {
+        format!(
+            "{} ({}–{})",
+            positional[0].trim(),
+            positional[1].trim(),
+            positional[2].trim()
+        )
+    } else if positional.len() == 2 {
+        format!("{} ({})", positional[0].trim(), positional[1].trim())
+    } else if let Some(first) = positional.first() {
+        first.trim().to_string()
+    } else {
+        String::new()
+    }
+}
+
+fn render_estimation_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if let Some(first) = positional.first() {
+        format!("est. {}", first.trim())
+    } else {
+        "est.".to_string()
+    }
+}
+
+fn render_equation_ref_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.len() >= 2 {
+        positional[1].trim().to_string()
+    } else if let Some(label) = positional.first() {
+        format!("({})", label.trim())
+    } else {
+        String::new()
+    }
+}
+
+fn render_egy_template(params: &str) -> String {
+    render_country_flag_template("Egypt", params)
+}
+
+fn render_eri_template(params: &str) -> String {
+    render_country_flag_template("Eritrea", params)
+}
+
+fn render_esa_template(params: &str) -> String {
+    render_country_flag_template("El Salvador", params)
+}
+
+fn render_esp_template(params: &str) -> String {
+    render_country_flag_template("Spain", params)
+}
+
+fn render_estonia_flag_template(params: &str) -> String {
+    render_country_flag_template("Estonia", params)
+}
+
+fn render_est_dispatch_template(template: &str, params: &str) -> String {
+    if template == "EST" {
+        render_estonia_flag_template(params)
+    } else {
+        render_est_abbrev_template(params)
+    }
+}
+
+fn render_eth_template(params: &str) -> String {
+    render_country_flag_template("Ethiopia", params)
+}
+
+fn render_eu_template(params: &str) -> String {
+    render_country_flag_template("European Union", params)
+}
+
+fn render_ecu_template(params: &str) -> String {
+    render_country_flag_template("Ecuador", params)
 }
