@@ -217,28 +217,28 @@
       Formal definition
     </h2>
     <p>
-      In mathematical terms, a statistical model is a pair (), where is the set of possible observations, i.e. the
+      In mathematical terms, a statistical model is a pair (S, P), where S is the set of possible observations, i.e. the
       <a href="https://en.wikipedia.org/wiki/sample_space">
         sample space
       </a>
       <span class="external-link">
         ↗
       </span>
-      , and is a set of
+      , and P is a set of
       <a href="https://en.wikipedia.org/wiki/probability_distributions">
         probability distributions
       </a>
       <span class="external-link">
         ↗
       </span>
-      on . The set represents all of the models that are considered possible. This set is typically parameterized: . The set defines the
+      on S. The set P represents all of the models that are considered possible. This set is typically parameterized: P={F_(θ) : θ ∈ Theta}. The set Theta defines the
       <a href="https://en.wikipedia.org/wiki/Statistical_parameter">
         parameters
       </a>
       <span class="external-link">
         ↗
       </span>
-      of the model. If a parameterization is such that distinct parameter values give rise to distinct distributions, i.e. (in other words, the mapping is
+      of the model. If a parameterization is such that distinct parameter values give rise to distinct distributions, i.e. F_(θ_1) = F_(θ_2) Rightarrow θ_1 = θ_2 (in other words, the mapping is
       <a href="https://en.wikipedia.org/wiki/Injective_function">
         injective
       </a>
@@ -268,10 +268,10 @@
         <span class="external-link">
           ↗
         </span>
-        , the model is extended by adding a probability distribution over the parameter space .
+        , the model is extended by adding a probability distribution over the parameter space Theta.
       </li>
       <li>
-        A statistical model can sometimes distinguish two sets of probability distributions. The first set is the set of models considered for inference. The second set is the set of models that could have generated the data which is much larger than . Such statistical models are key in checking that a given procedure is
+        A statistical model can sometimes distinguish two sets of probability distributions. The first set Q={F_(θ) : θ ∈ Theta} is the set of models considered for inference. The second set P={F_(λ) : λ ∈ Lambda} is the set of models that could have generated the data which is much larger than Q. Such statistical models are key in checking that a given procedure is
         <a href="https://en.wikipedia.org/wiki/Robust_statistics">
           robust
         </a>
@@ -395,7 +395,7 @@
       <em>
         b
       </em>
-      1, and the variance of the Gaussian distribution. We can formally specify the model in the form () as follows. The sample space, , of our model comprises the set of all possible pairs (age, height). Each possible value of = (
+      1, and the variance of the Gaussian distribution. We can formally specify the model in the form (S, P) as follows. The sample space, S, of our model comprises the set of all possible pairs (age, height). Each possible value of θ = (
       <em>
         b
       </em>
@@ -407,10 +407,10 @@
       <em>
         σ
       </em>
-      2) determines a distribution on ; denote that distribution by . If is the set of all possible values of , then . (The parameterization is identifiable, and this is easy to check.)
+      2) determines a distribution on S; denote that distribution by F_(θ). If Theta is the set of all possible values of θ, then P={F_(θ) : θ ∈ Theta}. (The parameterization is identifiable, and this is easy to check.)
     </p>
     <p>
-      In this example, the model is determined by (1) specifying and (2) making some assumptions relevant to . There are two assumptions: that height can be approximated by a linear function of age; that errors in the approximation are distributed as i.i.d. Gaussian. The assumptions are sufficient to specify —as they are required to do.
+      In this example, the model is determined by (1) specifying S and (2) making some assumptions relevant to P. There are two assumptions: that height can be approximated by a linear function of age; that errors in the approximation are distributed as i.i.d. Gaussian. The assumptions are sufficient to specify P—as they are required to do.
     </p>
     <h2>
       General remarks
@@ -481,11 +481,11 @@
       Dimension of a model
     </h2>
     <p>
-      Suppose that we have a statistical model () with . In notation, we write that where
+      Suppose that we have a statistical model (S, P) with P={F_(θ) : θ ∈ Theta}. In notation, we write that Theta subseteq ℝ^k where
       <em>
         k
       </em>
-      is a positive integer ( denotes the
+      is a positive integer (ℝ denotes the
       <a href="https://en.wikipedia.org/wiki/real_numbers">
         real numbers
       </a>
@@ -509,14 +509,14 @@
           ↗
         </span>
       </em>
-      if has finite dimension. As an example, if we assume that data arise from a univariate
+      if Theta has finite dimension. As an example, if we assume that data arise from a univariate
       <a href="https://en.wikipedia.org/wiki/Gaussian_distribution">
         Gaussian distribution
       </a>
       <span class="external-link">
         ↗
       </span>
-      , then we are assuming that :. In this example, the dimension,
+      , then we are assuming that :P={F_(μ,σ)(x) equiv 1/(√(2 π) σ) exp(-((x-μ)^2)/2σ^2) : μ ∈ ℝ, σ &gt; 0}. In this example, the dimension,
       <em>
         k
       </em>
@@ -531,7 +531,7 @@
       ) that we assume are distributed according to a straight line with i.i.d. Gaussian residuals (with zero mean): this leads to the same statistical model as was used in the example with children's heights. The dimension of the statistical model is 3: the intercept of the line, the slope of the line, and the variance of the distribution of the residuals. (Note the set of all possible lines has dimension 2, even though geometrically, a line has dimension 1.)
     </p>
     <p>
-      Although formally is a single parameter that has dimension
+      Although formally θ ∈ Theta is a single parameter that has dimension
       <em>
         k
       </em>
@@ -539,7 +539,7 @@
       <em>
         k
       </em>
-      separate parameters. For example, with the univariate Gaussian distribution, is formally a single parameter with dimension 2, but it is often regarded as comprising 2 separate parameters—the mean and the standard deviation. A statistical model is
+      separate parameters. For example, with the univariate Gaussian distribution, θ is formally a single parameter with dimension 2, but it is often regarded as comprising 2 separate parameters—the mean and the standard deviation. A statistical model is
       <a href="https://en.wikipedia.org/wiki/Nonparametric_statistics#Non-parametric_models">
         <em>
           nonparametric
@@ -548,7 +548,7 @@
       <span class="external-link">
         ↗
       </span>
-      if the parameter set is infinite dimensional. A statistical model is
+      if the parameter set Theta is infinite dimensional. A statistical model is
       <a href="https://en.wikipedia.org/wiki/Semiparametric_model">
         <em>
           semiparametric
@@ -561,11 +561,11 @@
       <em>
         k
       </em>
-      is the dimension of and
+      is the dimension of Theta and
       <em>
         n
       </em>
-      is the number of samples, both semiparametric and nonparametric models have as . If as , then the model is semiparametric; otherwise, the model is nonparametric.
+      is the number of samples, both semiparametric and nonparametric models have k → ∞ as n → ∞. If k/n → 0 as n → ∞, then the model is semiparametric; otherwise, the model is nonparametric.
     </p>
     <p>
       Parametric models are by far the most commonly used statistical models. Regarding semiparametric and nonparametric models,

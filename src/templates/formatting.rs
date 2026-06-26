@@ -668,7 +668,7 @@ fn render_sfrac_template(params: &str) -> String {
 /// [tmath](https://en.wikipedia.org/wiki/Template:Tmath)
 fn render_tmath_template(params: &str) -> String {
     let named = template_named_params(params);
-    if let Some(val) = template_param(&named, &["1"]) {
+    let raw = if let Some(val) = template_param(&named, &["1"]) {
         val.to_string()
     } else {
         let positional = template_positional_params(params);
@@ -677,7 +677,8 @@ fn render_tmath_template(params: &str) -> String {
         } else {
             String::new()
         }
-    }
+    };
+    crate::tools::clean_math_latex(&raw)
 }
 
 /// [closed-open](https://en.wikipedia.org/wiki/Template:Closed-open)

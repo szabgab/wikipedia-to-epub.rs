@@ -199,7 +199,7 @@
       <em>
         X
       </em>
-      follows the binomial distribution with parameters (a
+      follows the binomial distribution with parameters n ∈ ℕ (a
       <a href="https://en.wikipedia.org/wiki/natural_number">
         natural number
       </a>
@@ -241,10 +241,7 @@
       <span class="external-link">
         ↗
       </span>
-      :
-    </p>
-    <p>
-      for
+      : f(k,n,p) = Pr(X = k) = (n/k)p^k(1-p)^(n-k) for
       <em>
         k
       </em>
@@ -252,10 +249,7 @@
       <em>
         n
       </em>
-      , where
-    </p>
-    <p>
-      is the
+      , where (n/k) =n!/(k!(n-k)!) is the
       <a href="https://en.wikipedia.org/wiki/binomial_coefficient">
         binomial coefficient
       </a>
@@ -315,7 +309,7 @@
       <em>
         k
       </em>
-      failures) has the same probability of being achieved (regardless of positions of successes within the sequence). There are such sequences, since the binomial coefficient counts the number of ways to choose the positions of the
+      failures) has the same probability of being achieved (regardless of positions of successes within the sequence). There are (n/k) such sequences, since the binomial coefficient (n/k) counts the number of ways to choose the positions of the
       <em>
         k
       </em>
@@ -348,10 +342,10 @@
           k
         </em>
       </sup>
-      ) must be added times, hence \textstyle \Pr(X = k) = \binom{n}{k} p^k (1-p)^{n-k}.
+      ) must be added (n/k) times, hence Pr(X = k) = (n/k) p^k (1-p)^(n-k).
     </p>
     <p>
-      In creating reference tables for binomial distribution probability, usually, the table is filled in up to \textstyle \tfrac{n}{2} values. This is because for \textstyle k &gt; \tfrac{n}{2}, the probability can be calculated by its complement as
+      In creating reference tables for binomial distribution probability, usually, the table is filled in up to n/2 values. This is because for k &gt; n/2, the probability can be calculated by its complement as f(k,n,p)=f(n-k,n,1-p).
     </p>
     <p>
       Looking at the expression
@@ -382,14 +376,11 @@
       <em>
         k
       </em>
-      value can be found by calculating
-    </p>
-    <p>
-      and comparing it to 1. There is always an integer
+      value can be found by calculating (f(k+1,n,p))/f(k,n,p)=((n-k)p)/((k+1)(1-p)) and comparing it to 1. There is always an integer
       <em>
         M
       </em>
-      that satisfies
+      that satisfies (n+1)p-1 ≤ M &lt; (n+1)p.
     </p>
     <p>
       <em>
@@ -479,7 +470,7 @@
       <span class="external-link">
         ↗
       </span>
-      comes up heads with probability 0.3 when tossed. The probability of seeing exactly 4 heads in 6 tosses is
+      comes up heads with probability 0.3 when tossed. The probability of seeing exactly 4 heads in 6 tosses is f(4,6,0.3) = (6/4) 0.3^4 (1-0.3)^(6-4)= 0.059535.
     </p>
     <h3>
       Cumulative distribution function
@@ -492,10 +483,7 @@
       <span class="external-link">
         ↗
       </span>
-      can be expressed as:
-    </p>
-    <p>
-      where is the "floor" under
+      can be expressed as: F(k;n,p) = Pr(X ≤ k) = sum_(i=0)^(⌊ k ⌋) (n/i)p^i(1-p)^(n-i), where ⌊ k ⌋ is the "floor" under
       <em>
         k
       </em>
@@ -520,10 +508,13 @@
       <span class="external-link">
         ↗
       </span>
-      , as follows:
+      , as follows: F(k;n,p) = Pr(X ≤ k)
     </p>
     <p>
-      which is equivalent to the
+      = I_(1-p)(n-k, k+1)
+    </p>
+    <p>
+      = (n-k) (n/k) ∫_0^(1-p) t^(n-k-1) (1-t)^k dt , which is equivalent to the
       <a href="https://en.wikipedia.org/wiki/cumulative_distribution_function">
         cumulative distribution function
       </a>
@@ -547,7 +538,7 @@
       <span class="external-link">
         ↗
       </span>
-      :
+      : F(k;n,p) = F_beta-distribution(x=1-p;α=n-k,β=k+1) F(k;n,p) = F_F-distribution(x=(1-p)/p(k+1)/(n-k);d_1=2(n-k),d_2=2(k+1)).
     </p>
     <p>
       Some closed-form bounds for the cumulative distribution function are given
@@ -601,7 +592,7 @@
       <em>
         X
       </em>
-      is:
+      is: E[X] = np.
     </p>
     <p>
       This follows from the linearity of the expected value along with the fact that
@@ -616,7 +607,7 @@
       <em>
         p
       </em>
-      . In other words, if are identical (and independent) Bernoulli random variables with parameter
+      . In other words, if X_1, ..., X_n are identical (and independent) Bernoulli random variables with parameter
       <em>
         p
       </em>
@@ -640,7 +631,7 @@
           n
         </em>
       </sub>
-      and
+      and E[X] = E[X_1 + cdots + X_n] = E[X_1] + cdots + E[X_n] = p + cdots + p = np.
     </p>
     <p>
       The
@@ -650,7 +641,7 @@
       <span class="external-link">
         ↗
       </span>
-      is:
+      is: Var(X) = npq = np(1 - p).
     </p>
     <p>
       This similarly follows from the fact that the variance of a sum of independent random variables is the sum of the variances.
@@ -666,40 +657,43 @@
       <span class="external-link">
         ↗
       </span>
-      s, defined as , are given by
+      s, defined as μ _(c)= E [(X- E [X])^(c)], are given by μ_1 = 0, \ μ_2 = np (1-p),
     </p>
     <p>
-      The non-central moments satisfy
+      μ_3 = np (1-p) (1-2p),
     </p>
     <p>
-      and in general
+      μ_4 = np (1-p) [1 + (3n-6) p (1-p)],
     </p>
     <p>
-      where are the
+      μ_5 = np (1-p) (1-2p) [1 + (10n-12) p (1-p)],
+    </p>
+    <p>
+      μ_6 = np (1-p) [1 - 30p(1-p)[1-4p(1-p)] + 5np (1-p)[5 - 26p(1-p)] + 15n^2 p^2 (1-p)^2].
+    </p>
+    <p>
+      The non-central moments satisfy E[X] = np, \ E[X^2] = np(1-p)+n^2p^2, and in general E[X^c] = sum_(k=0)^c {c atop k} n^underlinek p^k, where {catop k} are the
       <a href="https://en.wikipedia.org/wiki/Stirling_numbers_of_the_second_kind">
         Stirling numbers of the second kind
       </a>
       <span class="external-link">
         ↗
       </span>
-      , and is the -th
+      , and n^underlinek = n(n-1)cdots(n-k+1) is the k-th
       <a href="https://en.wikipedia.org/wiki/Falling_and_rising_factorials">
         falling power
       </a>
       <span class="external-link">
         ↗
       </span>
-      of . A simple bound follows by bounding the Binomial moments via the
+      of n. A simple bound follows by bounding the Binomial moments via the
       <a href="https://en.wikipedia.org/wiki/Poisson_distribution#Higher_moments">
         higher Poisson moments
       </a>
       <span class="external-link">
         ↗
       </span>
-      :
-    </p>
-    <p>
-      This shows that if , then is at most a constant factor away from .
+      : E[X^c] ≤ [c/(ln(1+c/np))]^c ≤ (np)^c exp(c^2/2np). This shows that if c=O(√(np)), then E[X^c] is at most a constant factor away from E[X]^c.
     </p>
     <p>
       The
@@ -709,7 +703,7 @@
       <span class="external-link">
         ↗
       </span>
-      is .
+      is M_X(t)=mathbb E[e^(tX)] = (1-p+p e^t)^n.
     </p>
     <h3>
       Mode
@@ -730,7 +724,7 @@
       <em>
         p
       </em>
-      ) distribution is equal to , where is the
+      ) distribution is equal to ⌊ (n+1)p ⌋, where ⌊ · ⌋ is the
       <a href="https://en.wikipedia.org/wiki/floor_function">
         floor function
       </a>
@@ -773,25 +767,40 @@
       <em>
         n
       </em>
-      correspondingly. These cases can be summarized as follows:
+      correspondingly. These cases can be summarized as follows: mode =
+    </p>
+    <p>
+      ⌊ (n+1) p ⌋ if (n+1)p is 0 or a noninteger,
+    </p>
+    <p>
+      (n+1) p and (n+1) p - 1 if (n+1)p ∈ {1,...,n},
+    </p>
+    <p>
+      n if (n+1)p = n + 1.
     </p>
     <p>
       <strong>
         Proof:
       </strong>
-      Let
+      Let f(k)=binom nk p^k q^(n-k).
     </p>
     <p>
-      For only has a nonzero value with . For we find and for . This proves that the mode is 0 for and for .
+      For p=0 only f(0) has a nonzero value with f(0)=1. For p=1 we find f(n)=1 and f(k)=0 for k ≠ n. This proves that the mode is 0 for p=0 and n for p=1.
     </p>
     <p>
-      Let . We find
+      Let 0 &lt; p &lt; 1. We find (f(k+1))/f(k) = ((n-k)p)/((k+1)(1-p)).
     </p>
     <p>
-      From this follows
+      From this follows k &gt; (n+1)p-1 Rightarrow f(k+1) &lt; f(k)
     </p>
     <p>
-      So when is an integer, then and is a mode. In the case that , then only is a mode.
+      k = (n+1)p-1 Rightarrow f(k+1) = f(k)
+    </p>
+    <p>
+      k &lt; (n+1)p-1 Rightarrow f(k+1) &gt; f(k)
+    </p>
+    <p>
+      So when (n+1)p-1 is an integer, then (n+1)p-1 and (n+1)p is a mode. In the case that (n+1)p-1 ∉ Z, then only ⌊ (n+1)p-1 ⌋ +1= ⌊ (n+1)p ⌋ is a mode.
     </p>
     <h3>
       Median
@@ -823,14 +832,14 @@
         <em>
           m
         </em>
-        must lie within the interval .
+        must lie within the interval ⌊ np ⌋ ≤ m ≤ ⌈ np ⌉.
       </li>
       <li>
         A median
         <em>
           m
         </em>
-        cannot lie too far away from the mean:.
+        cannot lie too far away from the mean:|m-np| ≤ min{ln2, max{p,1-p}}.
       </li>
       <li>
         The median is unique and equal to
@@ -890,7 +899,7 @@
         odd), the median is unique.
       </li>
       <li>
-        When and
+        When p = 1/2 and
         <em>
           n
         </em>
@@ -898,11 +907,11 @@
         <em>
           m
         </em>
-        in the interval is a median of the binomial distribution. If and
+        in the interval 1/2 (n-1) ≤ m ≤ 1/2 (n+1) is a median of the binomial distribution. If p = 1/2 and
         <em>
           n
         </em>
-        is even, then is the unique median.
+        is even, then m = n/2 is the unique median.
       </li>
     </ul>
     <h3>
@@ -917,11 +926,11 @@
       <em>
         np
       </em>
-      , upper bounds can be derived for the lower tail of the cumulative distribution function , the probability that there are at most
+      , upper bounds can be derived for the lower tail of the cumulative distribution function F(k;n,p) = Pr(X ≤ k), the probability that there are at most
       <em>
         k
       </em>
-      successes. Since , these bounds can also be seen as bounds for the upper tail of the cumulative distribution function for
+      successes. Since Pr(X ≥ k) = F(n-k;n,1-p), these bounds can also be seen as bounds for the upper tail of the cumulative distribution function for
       <em>
         k
       </em>
@@ -938,10 +947,7 @@
       <span class="external-link">
         ↗
       </span>
-      yields the simple bound
-    </p>
-    <p>
-      which is however not very tight. In particular, for
+      yields the simple bound F(k;n,p) ≤ exp(-2 n(p-k/n)^2), which is however not very tight. In particular, for
       <em>
         p
       </em>
@@ -987,10 +993,7 @@
       <span class="external-link">
         ↗
       </span>
-      :
-    </p>
-    <p>
-      where
+      : F(k;n,p) ≤ exp(-n D(k/nparallel p)) where
       <em>
         D
       </em>
@@ -1025,7 +1028,7 @@
       <em>
         p
       </em>
-      ) distribution):
+      ) distribution): D(aparallel p)=(a)lna/p+(1-a)ln(1-a)/(1-p).
     </p>
     <p>
       Asymptotically, this bound is reasonably tight; see for details.
@@ -1058,10 +1061,7 @@
       <span class="external-link">
         ↗
       </span>
-      it can be shown that
-    </p>
-    <p>
-      which implies the simpler but looser bound
+      it can be shown that F(k;n,p) ≥ 1/(√(8nk/n(1-k/n))) exp(-n D(k/nparallel p)), which implies the simpler but looser bound F(k;n,p) ≥ 1/√(2n) exp(-nD(k/nparallel p)).
     </p>
     <p>
       For
@@ -1080,7 +1080,7 @@
       <em>
         n
       </em>
-      , it is possible to make the denominator constant:
+      , it is possible to make the denominator constant: F(k;n,1/2) ≥ 1/15 exp(- 16n (1/2 -k/n)^2).
     </p>
     <h2>
       Statistical inference
@@ -1106,10 +1106,7 @@
       <em>
         p
       </em>
-      can be estimated using the proportion of successes:
-    </p>
-    <p>
-      This estimator is found using
+      can be estimated using the proportion of successes: widehatp = x/n. This estimator is found using
       <a href="https://en.wikipedia.org/wiki/maximum_likelihood_estimator">
         maximum likelihood estimator
       </a>
@@ -1203,7 +1200,7 @@
       <span class="external-link">
         ↗
       </span>
-      over Bernoulli samples. It has a variance of , a property which is used in various ways, such as in
+      over Bernoulli samples. It has a variance of Var(p) = (p(1-p))/n, a property which is used in various ways, such as in
       <a href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wald_interval">
         Wald's confidence intervals
       </a>
@@ -1244,17 +1241,14 @@
       <span class="external-link">
         ↗
       </span>
-      . When using a general as a prior, the
+      . When using a general Beta(α, β) as a prior, the
       <a href="https://en.wikipedia.org/wiki/Bayes_estimator#Posterior_mean">
         posterior mean
       </a>
       <span class="external-link">
         ↗
       </span>
-      estimator is:
-    </p>
-    <p>
-      The Bayes estimator is
+      estimator is: widehatp_b = (x+α)/(n+α+β). The Bayes estimator is
       <a href="https://en.wikipedia.org/wiki/Asymptotic_efficiency_(Bayes)">
         asymptotically efficient
       </a>
@@ -1317,10 +1311,7 @@
       <span class="external-link">
         ↗
       </span>
-      , , the posterior mean estimator becomes:
-    </p>
-    <p>
-      (A
+      , Beta(α=1, β=1) = U(0,1), the posterior mean estimator becomes: widehatp_b = (x+1)/(n+2). (A
       <a href="https://en.wikipedia.org/wiki/Bayes_estimator#Posterior_mode">
         posterior mode
       </a>
@@ -1351,7 +1342,7 @@
       <span class="external-link">
         ↗
       </span>
-      , the prior is , which leads to the estimator:
+      , the prior is Beta(α=1/2, β=1/2), which leads to the estimator: widehatp_mathrmJeffreys = (x+1/2)/(n+1).
     </p>
     <p>
       When estimating
@@ -1366,10 +1357,7 @@
       <em>
         x
       </em>
-      = 0), then using the standard estimator leads to which sometimes is unrealistic and undesirable. In such cases there are various alternative estimators. One way is to use the Bayes estimator , leading to:
-    </p>
-    <p>
-      Another method is to use the upper bound of the
+      = 0), then using the standard estimator leads to widehatp = 0, which sometimes is unrealistic and undesirable. In such cases there are various alternative estimators. One way is to use the Bayes estimator widehatp_b, leading to: widehatp_b = 1/(n+2). Another method is to use the upper bound of the
       <a href="https://en.wikipedia.org/wiki/confidence_interval">
         confidence interval
       </a>
@@ -1383,7 +1371,7 @@
       <span class="external-link">
         ↗
       </span>
-      :
+      : widehatp_rule of 3 = 3/n.
     </p>
     <h3>
       Confidence intervals for the parameter p
@@ -1431,10 +1419,10 @@
         , the total number of trials
       </li>
       <li>
-        is the proportion of successes
+        widehatp = n_1/n is the proportion of successes
       </li>
       <li>
-        is the
+        z is the 1 - 1/2α
         <a href="https://en.wikipedia.org/wiki/quantile">
           quantile
         </a>
@@ -1455,14 +1443,14 @@
         <span class="external-link">
           ↗
         </span>
-        ) corresponding to the target error rate . For example, for a 95%
+        ) corresponding to the target error rate α. For example, for a 95%
         <a href="https://en.wikipedia.org/wiki/confidence_level">
           confidence level
         </a>
         <span class="external-link">
           ↗
         </span>
-        the error , so and .
+        the error α=0.05, so 1 - 1/2α=0.975 and z=1.96.
       </li>
     </ul>
     <h4>
@@ -1476,6 +1464,9 @@
       <span class="external-link">
         ↗
       </span>
+    </p>
+    <p>
+      widehatp ± z √((widehatp (1 -widehatp))/n) .
     </p>
     <p>
       A
@@ -1504,11 +1495,14 @@
       </span>
     </p>
     <p>
+      p ± z √((p (1 - p))/(n + z^2))
+    </p>
+    <p>
       Here the estimate of
       <em>
         p
       </em>
-      is modified to
+      is modified to p= (n_1 + 1/2 z^2)/(n + z^2)
     </p>
     <p>
       This method works well for
@@ -1526,7 +1520,7 @@
       <em>
         n
       </em>
-      . See here for . For
+      . See here for n ≤ 10. For
       <em>
         n
       </em>
@@ -1550,6 +1544,9 @@
       <span class="external-link">
         ↗
       </span>
+    </p>
+    <p>
+      sin^2 (arcsin (√p) ± z/2√n).
     </p>
     <h4>
       Wilson (score) method
@@ -1588,9 +1585,12 @@
         )th quantile'.
       </li>
       <li>
-        Secondly, this formula does not use a plus-minus to define the two bounds. Instead, one may use to get the lower bound, or use to get the upper bound. For example: for a 95% confidence level the error , so one gets the lower bound by using , and one gets the upper bound by using .
+        Secondly, this formula does not use a plus-minus to define the two bounds. Instead, one may use z = z_(α / 2) to get the lower bound, or use z = z_(1 - α/2) to get the upper bound. For example: for a 95% confidence level the error α=0.05, so one gets the lower bound by using z = z_(α/2) = z_(0.025) = - 1.96, and one gets the upper bound by using z = z_(1 - α/2) = z_(0.975) = 1.96.
       </li>
     </ul>
+    <p>
+      (p + z^2/2n + z √((p (1 - p))/n + z^2/(4 n^2)))/(1 + z^2/n)
+    </p>
     <h4>
       Comparison
     </h4>
@@ -1678,7 +1678,10 @@
       <em>
         p
       </em>
-      ):
+      ): P(Z=k) = sum_(i=0)^k[binomni p^i (1-p)^(n-i)][binommk-i p^(k-i) (1-p)^(m-k+i)]
+    </p>
+    <p>
+      = binomn+mk p^k (1-p)^(n+m-k)
     </p>
     <p>
       A Binomial distributed random variable
@@ -2093,36 +2096,21 @@
       </strong>
     </p>
     <p>
-      Since and , by the
+      Since X sim mathrmB(n, p) and Y sim mathrmB(X, q), by the
       <a href="https://en.wikipedia.org/wiki/law_of_total_probability">
         law of total probability
       </a>
       <span class="external-link">
         ↗
       </span>
-      ,
-    </p>
-    <p>
-      Since the equation above can be expressed as
-    </p>
-    <p>
-      Factoring and pulling all the terms that don't depend on out of the sum now yields
-    </p>
-    <p>
-      After substituting in the expression above, we get
-    </p>
-    <p>
-      Notice that the sum (in the parentheses) above equals by the
+      , Pr[Y = m] = sum_(k = m)^(n) Pr[Y = m mid X = k] Pr[X = k] [2pt] = sum_(k=m)^n (n/k) (k/m) p^k q^m (1-p)^(n-k) (1-q)^(k-m) Since (n/k) (k/m) = (n/m) (n-m/k-m), the equation above can be expressed as Pr[Y = m] = sum_(k=m)^(n) (n/m) (n-m/k-m) p^k q^m (1-p)^(n-k) (1-q)^(k-m) Factoring p^k = p^m p^(k-m) and pulling all the terms that don't depend on k out of the sum now yields Pr[Y = m] = (n/m) p^m q^m (sum_(k=m)^n (n-m/k-m) p^(k-m) (1-p)^(n-k) (1-q)^(k-m)) [2pt] = (n/m) (pq)^m (sum_(k=m)^n (n-m/k-m) (p(1-q))^(k-m) (1-p)^(n-k)) After substituting i = k - m in the expression above, we get Pr[Y = m] = (n/m) (pq)^m (sum_(i=0)^(n-m) (n-m/i) (p - pq)^i (1-p)^(n-m - i)) Notice that the sum (in the parentheses) above equals (p - pq + 1 - p)^(n-m) by the
       <a href="https://en.wikipedia.org/wiki/binomial_theorem">
         binomial theorem
       </a>
       <span class="external-link">
         ↗
       </span>
-      . Substituting this in finally yields
-    </p>
-    <p>
-      and thus as desired.
+      . Substituting this in finally yields Pr[Y=m] = (n/m) (pq)^m (p - pq + 1 - p)^(n-m) [4pt] = (n/m) (pq)^m (1-pq)^(n-m) and thus Y sim mathrmB(n, pq) as desired.
     </p>
     <h3>
       Bernoulli distribution
@@ -2216,9 +2204,7 @@
       <span class="external-link">
         ↗
       </span>
-    </p>
-    <p>
-      and this basic approximation can be improved in a simple way by using a suitable
+      N(np, np(1-p)), and this basic approximation can be improved in a simple way by using a suitable
       <a href="https://en.wikipedia.org/wiki/continuity_correction">
         continuity correction
       </a>
@@ -2256,7 +2242,7 @@
         <em>
           n
         </em>
-        &gt; 5 the normal approximation is adequate if the absolute value of the skewness is strictly less than 0.3; that is, if
+        &gt; 5 the normal approximation is adequate if the absolute value of the skewness is strictly less than 0.3; that is, if (|1-2p|)/(√(np(1-p)))=1/√nleft|√(frac1-pp)-√(p/(1-p)) right|&lt;0.3.
       </li>
     </ul>
     <p>
@@ -2271,11 +2257,11 @@
     </p>
     <ul>
       <li>
-        A stronger rule states that the normal approximation is appropriate only if everything within 3 standard deviations of its mean is within the range of possible values; that is, only if
+        A stronger rule states that the normal approximation is appropriate only if everything within 3 standard deviations of its mean is within the range of possible values; that is, only if μ ± 3σ = n p ± 3 √(np(1-p)) ∈ (0,n).
       </li>
     </ul>
     <p>
-      : This 3-standard-deviation rule is equivalent to the following conditions, which also imply the first rule above.
+      : This 3-standard-deviation rule is equivalent to the following conditions, which also imply the first rule above. n&gt;9 ((1-p)/p) and n&gt;9(p/(1-p)).
     </p>
     <p>
       <strong>
@@ -2283,22 +2269,7 @@
       </strong>
     </p>
     <p>
-      The rule is totally equivalent to request that
-    </p>
-    <p>
-      Moving terms around yields:
-    </p>
-    <p>
-      Since , we can apply the square power and divide by the respective factors and , to obtain the desired conditions:
-    </p>
-    <p>
-      Notice that these conditions automatically imply that . On the other hand, apply again the square root and divide by 3,
-    </p>
-    <p>
-      Subtracting the second set of inequalities from the first one yields:
-    </p>
-    <p>
-      and so, the desired first rule is satisfied,
+      The rule np ± 3√(np(1-p)) ∈ (0,n) is totally equivalent to request that np-3√(np(1-p))&gt;0 and np+3√(np(1-p))&lt;n. Moving terms around yields: np&gt;3√(np(1-p)) and n(1-p)&gt;3√(np(1-p)). Since 0&lt;p&lt;1, we can apply the square power and divide by the respective factors np^2 and n(1-p)^2, to obtain the desired conditions: n&gt;9 (frac1-pp) and n&gt;9 (fracp1-p). Notice that these conditions automatically imply that n&gt;9. On the other hand, apply again the square root and divide by 3, frac√n3&gt;√(frac1-pp)&gt;0 and frac√n3 &gt; √(p/(1-p))&gt;0. Subtracting the second set of inequalities from the first one yields: frac√n3&gt;√(frac1-pp)-√(p/(1-p))&gt;-frac√n3; and so, the desired first rule is satisfied, left|√(frac1-pp)-√(p/(1-p)) right|&lt;frac√n3.
     </p>
     <ul>
       <li>
@@ -2323,10 +2294,7 @@
       </strong>
     </p>
     <p>
-      Assume that both values and are greater than 9. Since , we easily have that
-    </p>
-    <p>
-      We only have to divide now by the respective factors and , to deduce the alternative form of the 3-standard-deviation rule:
+      Assume that both values np and n(1-p) are greater than 9. Since 0&lt; p&lt;1, we easily have that np ≥ 9&gt;9(1-p) and n(1-p) ≥ 9&gt;9p. We only have to divide now by the respective factors p and 1-p, to deduce the alternative form of the 3-standard-deviation rule: n&gt;9 (frac1-pp) and n&gt;9 (fracp1-p).
     </p>
     <p>
       The following is an example of applying a
@@ -2461,7 +2429,7 @@
       <em>
         p
       </em>
-      of agreement in the population and with standard deviation
+      of agreement in the population and with standard deviation σ = √((p(1-p))/n)
     </p>
     <h3>
       Poisson approximation
@@ -2612,7 +2580,7 @@
         <em>
           p
         </em>
-        remains fixed, the distribution of approaches the
+        remains fixed, the distribution of (X-np)/(√(np(1-p))) approaches the
         <a href="https://en.wikipedia.org/wiki/normal_distribution">
           normal distribution
         </a>
@@ -2701,7 +2669,7 @@
       <em>
         n
       </em>
-      + 1:
+      + 1: Beta(p;α;β) = (n+1)mathrmB(k;n;p)
     </p>
     <p>
       <a href="https://en.wikipedia.org/wiki/Beta_distribution">
@@ -2724,10 +2692,7 @@
       <span class="external-link">
         ↗
       </span>
-      :
-    </p>
-    <p>
-      Given a uniform prior, the posterior distribution for the probability of success
+      : P(p;α,β) = (p^(α-1)(1-p)^(β-1))/Beta(α,β). Given a uniform prior, the posterior distribution for the probability of success
       <em>
         p
       </em>

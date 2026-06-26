@@ -111,7 +111,8 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{sfrac|1|6}}` renders vulgar fraction using superscript/subscript spans (e.g. `<sup>1</sup>⁄<sub>6</sub>`)
 * `{{mvar|k}}` formats variables in italic text (`<em>k</em>`)
 * `{{math|''y'' {{=}} 2}}` formats mathematical expressions inline (`<em>y</em> = 2`), supporting the nested `{{=}}` template which resolves to `=`
-* `{{tmath|E = mc^2}}` renders the mathematical formula as plain text
+* `{{tmath|E = mc^2}}` cleans and renders the mathematical formula as plain text
+* `<math>E = mc^2</math>` cleans and renders the mathematical formula as plain text
 * `{{Math proof|title=Proof of Theorem 1|proof=Proof content}}` formats a proof block with an italic heading: `''Proof of Theorem 1''. Proof content`
 * `{{Math theorem|name=Theorem|note=Euler|math_statement=Statement content}}` formats mathematical statements: `'''Theorem (Euler)''': Statement content`
 * `{{NumBlk|:|content|number}}` formats a numbered equation block: `content number`

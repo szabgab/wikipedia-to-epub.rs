@@ -1,5 +1,45 @@
 # Codex Session Notes
 
+## 2026-06-25 Clean and Format Math Tags and Templates
+
+### Summary
+Fixed math tag processing and `{{tmath}}` template rendering to ensure formulas are cleaned of raw LaTeX/TeX formatting commands and output as human-readable mathematical unicode/plain-text. Regenerated expected book integration fixtures and sorted CSV databases.
+
+### Decisions Made
+- **Cleaned and Formatted LaTeX**:
+  - Implemented `clean_math_latex(latex: &str) -> String` to sanitize and strip TeX syntax (backslashes, spacing commands, fraction/binomial structures, square roots, double-struck characters, and general symbols) into clear plain-text mathematical strings.
+  - Implemented `wrap_frac_term(term: &str) -> String` to cleanly format fraction numerators and denominators.
+- **Modified Math Tags and tmath Processing**:
+  - Preserved `<math>` tags in `remove_some_html_tags` inside [src/wikitext.rs](file:///opt/src/wikitext.rs) and cleaned their contents using `clean_math_latex`.
+  - Updated `render_tmath_template` in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) to clean its contents via `clean_math_latex`.
+- **Regenerated Expected Book Fixtures**:
+  - Re-ran the book regeneration scripts to update expected integration fixtures for affected books: `Binomial_distribution`, `Normal_distribution`, `Standard_deviation`, `Variance`, `Statistical_model`, `Statistics`, and `planets`.
+- **Sorted CSV Files**:
+  - Ran `./tools/sort.sh` on CSV databases in `src/` to ensure consistent alphabetical ordering.
+- **Updated Documentation**:
+  - Documented math conversion rules in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/tools.rs](file:///opt/src/tools.rs) [MODIFY]
+- [src/wikitext.rs](file:///opt/src/wikitext.rs) [MODIFY]
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [tests/books.rs](file:///opt/tests/books.rs) [MODIFY]
+- expected integration fixtures for `Binomial_distribution`, `Normal_distribution`, `Standard_deviation`, `Variance`, `Statistical_model`, `Statistics`, and `planets` [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked formatting: `cargo fmt` (passed cleanly).
+- Checked compilation and warning lints: `cargo check` and `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-24 Handle Sixth Batch of Wikipedia Templates
 
 ### Summary

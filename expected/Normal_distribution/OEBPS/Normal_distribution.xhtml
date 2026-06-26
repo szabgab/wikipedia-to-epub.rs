@@ -60,10 +60,7 @@
       <span class="external-link">
         ↗
       </span>
-      is
-    </p>
-    <p>
-      The parameter \mu is the
+      is f(x) = 1/√(2πσ^2) exp(-((x-μ)^2)/2σ^2) . The parameter μ is the
       <a href="https://en.wikipedia.org/wiki/Mean#Mean_of_a_probability_distribution">
         mean
       </a>
@@ -91,7 +88,7 @@
       <span class="external-link">
         ↗
       </span>
-      ), while the parameter is the
+      ), while the parameter σ^2 is the
       <a href="https://en.wikipedia.org/wiki/variance">
         variance
       </a>
@@ -105,7 +102,7 @@
       <span class="external-link">
         ↗
       </span>
-      of the distribution is the positive value \sigma (sigma). A random variable with a Gaussian distribution is said to be
+      of the distribution is the positive value σ (sigma). A random variable with a Gaussian distribution is said to be
       <strong>
         normally distributed
       </strong>
@@ -291,24 +288,21 @@
       <strong>
         unit normal distribution
       </strong>
-      . This is a special case when and , and it is described by this
+      . This is a special case when μ=0 and σ^2 =1, and it is described by this
       <a href="https://en.wikipedia.org/wiki/probability_density_function">
         probability density function
       </a>
       <span class="external-link">
         ↗
       </span>
-      (or density):
-    </p>
-    <p>
-      The variable z has a mean of 0 and a variance and standard deviation of 1. The density has its peak value at and
+      (or density): varphi(z) = (e^(-z^2/2))/√(2π) . The variable z has a mean of 0 and a variance and standard deviation of 1. The density varphi(z) has its peak value 1/√(2π) at z=0 and
       <a href="https://en.wikipedia.org/wiki/inflection_point">
         inflection point
       </a>
       <span class="external-link">
         ↗
       </span>
-      s at and z=-1.
+      s at z=+1 and z=-1.
     </p>
     <p>
       Although the density above is most commonly known as the
@@ -322,14 +316,14 @@
       <span class="external-link">
         ↗
       </span>
-      , for example, once defined the standard normal as which has a variance of \tfrac12, and
+      , for example, once defined the standard normal as varphi(z) = 1/√π e^(-z^2), which has a variance of 1/2, and
       <a href="https://en.wikipedia.org/wiki/Stephen_Stigler">
         Stephen Stigler
       </a>
       <span class="external-link">
         ↗
       </span>
-      once defined the standard normal as which has a simple functional form and a variance of
+      once defined the standard normal as varphi(z) = e^(-π z^2), which has a simple functional form and a variance of σ^2 = 1/2π.
     </p>
     <h3>
       General normal distribution
@@ -342,16 +336,13 @@
       <span class="external-link">
         ↗
       </span>
-      , then will have a normal distribution with expected value \mu and standard deviation \sigma. This is equivalent to saying that the standard normal distribution Z can be scaled/stretched by a factor of \sigma and shifted by \mu to yield a different normal distribution, called X.
+      , then X=σ Z + μ will have a normal distribution with expected value μ and standard deviation σ. This is equivalent to saying that the standard normal distribution Z can be scaled/stretched by a factor of σ and shifted by μ to yield a different normal distribution, called X.
     </p>
     <p>
-      Conversely, if X is a normal deviate with parameters \mu and , then this X distribution can be re-scaled and shifted via the formula to convert it to the standard normal distribution. This variate is also called the standardized form of X.
+      Conversely, if X is a normal deviate with parameters μ and σ^2, then this X distribution can be re-scaled and shifted via the formula Z=(X-μ)/σ to convert it to the standard normal distribution. This variate is also called the standardized form of X.
     </p>
     <p>
-      In particular, the probability density function for X can be written in terms of the standard normal distribution \varphi (with zero mean and unit variance):
-    </p>
-    <p>
-      The probability density must be scaled by so that the
+      In particular, the probability density function for X can be written in terms of the standard normal distribution varphi (with zero mean and unit variance): f(x mid μ, σ^2) =frac 1 σ varphi(fracx-μ σ) . The probability density must be scaled by 1/σ so that the
       <a href="https://en.wikipedia.org/wiki/integral">
         integral
       </a>
@@ -364,17 +355,20 @@
       Notation
     </h3>
     <p>
-      The probability density of the standard Gaussian distribution (standard normal distribution, with zero mean and unit variance) is often denoted with the Greek letter \phi (
+      The probability density of the standard Gaussian distribution (standard normal distribution, with zero mean and unit variance) is often denoted with the Greek letter φ (
       <a href="https://en.wikipedia.org/wiki/phi">
         phi
       </a>
       <span class="external-link">
         ↗
       </span>
-      ). The variant form of the Greek letter phi, \varphi, is also used quite often.
+      ). The variant form of the Greek letter phi, varphi, is also used quite often.
     </p>
     <p>
-      The normal distribution is often referred to as or \mathcal{N}(\mu,\sigma^2). Thus when a random variable X is normally distributed with mean \mu and standard deviation \sigma, one may write
+      The normal distribution is often referred to as N(μ,σ^2) or N(μ,σ^2). Thus when a random variable X is normally distributed with mean μ and standard deviation σ, one may write
+    </p>
+    <p>
+      X sim N(μ,σ^2).
     </p>
     <h3>
       Alternative parameterizations
@@ -387,10 +381,10 @@
       <span class="external-link">
         ↗
       </span>
-      \tau as the parameter defining the width of the distribution, instead of the standard deviation \sigma or the variance \sigma^2. The precision is normally defined as the reciprocal of the variance, 1/\sigma^2. The formula for the distribution then becomes
+      τ as the parameter defining the width of the distribution, instead of the standard deviation σ or the variance σ^2. The precision is normally defined as the reciprocal of the variance, 1/σ^2. The formula for the distribution then becomes f(x) = √(fracτ2π) e^(-τ(x-μ)^2/2).
     </p>
     <p>
-      This choice is claimed to have advantages in numerical computations when \sigma is very close to zero, and simplifies formulas in some contexts, such as in the
+      This choice is claimed to have advantages in numerical computations when σ is very close to zero, and simplifies formulas in some contexts, such as in the
       <a href="https://en.wikipedia.org/wiki/Bayesian_statistics">
         Bayesian inference
       </a>
@@ -407,11 +401,11 @@
       .
     </p>
     <p>
-      Alternatively, the reciprocal of the standard deviation might be defined as the
+      Alternatively, the reciprocal of the standard deviation τ'=1/σ might be defined as the
       <em>
         precision
       </em>
-      , in which case the expression of the normal distribution becomes
+      , in which case the expression of the normal distribution becomes f(x) = τ'/√(2π) e^(-(τ')^2(x-μ)^2/2).
     </p>
     <p>
       According to Stigler, this formulation is advantageous because of a much simpler and easier-to-remember formula, and simple approximate formulas for the
@@ -438,7 +432,7 @@
       <span class="external-link">
         ↗
       </span>
-      s and , and natural statistics
+      s θ_1=μ/σ^2 and θ_2=-1/2σ^2, and natural statistics
       <em>
         x
       </em>
@@ -494,7 +488,7 @@
       <span class="external-link">
         ↗
       </span>
-      (CDF) of the standard normal distribution, usually denoted with the capital Greek letter \Phi, is the integral
+      (CDF) of the standard normal distribution, usually denoted with the capital Greek letter Phi, is the integral Phi(x) = 1/√(2π) ∫_(- ∞)^x e^(-t^2/2) dt .
     </p>
     <p>
       The related
@@ -504,7 +498,7 @@
       <span class="external-link">
         ↗
       </span>
-      gives the probability of a random variable, with normal distribution of mean 0 and variance 1/2, falling in the range [-x, x]. That is:
+      erf(x) gives the probability of a random variable, with normal distribution of mean 0 and variance 1/2, falling in the range [-x, x]. That is: erf(x) = 1/√π ∫_(-x)^x e^(-t^2) dt = 2/√π ∫_0^x e^(-t^2) dt .
     </p>
     <p>
       These integrals cannot be expressed in terms of elementary functions, and are often said to be
@@ -525,10 +519,10 @@
       for more.
     </p>
     <p>
-      The two functions are closely related, namely
+      The two functions are closely related, namely Phi(x) = 1/2 [1 + erf(x/(√ 2))].
     </p>
     <p>
-      For a generic normal distribution with density f, mean \mu and variance , the cumulative distribution function is
+      For a generic normal distribution with density f, mean μ and variance σ^2, the cumulative distribution function is F(x) = Phi(fracx-μ σ) = frac12 [1 + erf(fracx-μσ √ 2)].
     </p>
     <p>
       The probability that
@@ -543,17 +537,17 @@
       <em>
         b
       </em>
-      with a &lt; b is therefore
+      with a &lt; b is thereforeP(a &lt; x ≤ b) = 1/2 [erf((b-μ)/(σ √2)) - erf((a-μ)/(σ √2))]
     </p>
     <p>
-      The complement of the standard normal cumulative distribution function, , is often called the
+      The complement of the standard normal cumulative distribution function, Q(x) = 1 - Phi(x), is often called the
       <a href="https://en.wikipedia.org/wiki/Q-function">
         Q-function
       </a>
       <span class="external-link">
         ↗
       </span>
-      , especially in engineering texts. It gives the probability that the value of a standard normal random variable X will exceed x: P(X&gt;x). Other definitions of the Q-function, all of which are simple transformations of \Phi, are also used occasionally.
+      , especially in engineering texts. It gives the probability that the value of a standard normal random variable X will exceed x: P(X&gt;x). Other definitions of the Q-function, all of which are simple transformations of Phi, are also used occasionally.
     </p>
     <p>
       The
@@ -563,21 +557,21 @@
       <span class="external-link">
         ↗
       </span>
-      of the standard normal cumulative distribution function \Phi has 2-fold
+      of the standard normal cumulative distribution function Phi has 2-fold
       <a href="https://en.wikipedia.org/wiki/rotational_symmetry">
         rotational symmetry
       </a>
       <span class="external-link">
         ↗
       </span>
-      around the point (0,1/2); that is, \Phi(-x) = 1 - \Phi(x). Its
+      around the point (0,1/2); that is, Phi(-x) = 1 - Phi(x). Its
       <a href="https://en.wikipedia.org/wiki/antiderivative">
         antiderivative
       </a>
       <span class="external-link">
         ↗
       </span>
-      (indefinite integral) can be expressed as follows:
+      (indefinite integral) can be expressed as follows: ∫ Phi(x) dx = xPhi(x) + varphi(x) + C.
     </p>
     <p>
       An
@@ -598,10 +592,7 @@
       <span class="external-link">
         ↗
       </span>
-      :
-    </p>
-    <p>
-      where denotes the
+      : Phi(x)=1/2 + 1/√(2π) e^(-x^2/2) sum_(n=0)^(∞) 1/((2n+1)!!)x^(2n+1) . where !! denotes the
       <a href="https://en.wikipedia.org/wiki/double_factorial">
         double factorial
       </a>
@@ -628,7 +619,7 @@
       <span class="external-link">
         ↗
       </span>
-      for the normal distribution \varphi can be derived by substituting -\tfrac12x^2 into the
+      for the normal distribution varphi can be derived by substituting -1/2x^2 into the
       <a href="https://en.wikipedia.org/wiki/Exponential_function#Power_series">
         Taylor series for the exponential function
       </a>
@@ -638,10 +629,13 @@
       :
     </p>
     <p>
+      varphi(x) = 1/√(2π) sum_(n=0)^ ∞ ((-1)^n)/n! 2^n x^(2n)
+    </p>
+    <p>
       This series can be integrated term by term to obtain the Taylor series for the cumulative distribution function:
     </p>
     <p>
-      However, this series is ineffective for calculation due to slow convergence, except when x is small.
+      Phi(x) = 1/2 + 1/√(2π) sum_(n=0)^(∞) ((-1)^n)/(n! 2^n (2n+1)) x^(2n+1) . However, this series is ineffective for calculation due to slow convergence, except when x is small.
     </p>
     <p>
       Both of these series describe
@@ -688,10 +682,13 @@
       <sub>
         0
       </sub>
-      :
+      : Phi(x) = sum_(n=0)^ ∞ Phi^((n))(x_0)/n!(x-x_0)^n , where: Phi^((0))(x_0) = 1/√(2π)∫_(- ∞)^(x_0)e^(-t^2/2) dt
     </p>
     <p>
-      where:
+      Phi^((1))(x_0) = 1/√(2π)e^(-x_0^2/2)
+    </p>
+    <p>
+      Phi^((n))(x_0) = -(x_0Phi^((n-1))(x_0)+(n-2)Phi^((n-2))(x_0)), n ≥ 2 .
     </p>
     <h4>
       Standard deviation and coverage
@@ -731,10 +728,7 @@
       .
     </p>
     <p>
-      More precisely, the probability that a normal deviate lies in the range between and is given by
-    </p>
-    <p>
-      To 12 significant digits, the values for are:
+      More precisely, the probability that a normal deviate lies in the range between μ-nσ and μ+nσ is given by F(μ+nσ) - F(μ-nσ) = Phi(n)-Phi(-n) = erf (n/√2). To 12 significant digits, the values for n=1,2,... , 6 are:
     </p>
     <div class="responsive-card-container wikitable">
       <div class="responsive-card">
@@ -743,12 +737,22 @@
         </div>
         <ul class="card-list">
           <li>
+            <strong>
+              p= F(μ+nσ) - F(μ-nσ):
+            </strong>
             0.682689492137
           </li>
           <li>
+            <strong>
+              1-p:
+            </strong>
             0.317310507863
           </li>
-          <li/>
+          <li>
+            <strong>
+              or 1 in (1-p):
+            </strong>
+          </li>
           <li>
             <strong>
               <a href="https://en.wikipedia.org/wiki/OEIS">
@@ -778,12 +782,22 @@
         </div>
         <ul class="card-list">
           <li>
+            <strong>
+              p= F(μ+nσ) - F(μ-nσ):
+            </strong>
             0.954499736104
           </li>
           <li>
+            <strong>
+              1-p:
+            </strong>
             0.045500263896
           </li>
-          <li/>
+          <li>
+            <strong>
+              or 1 in (1-p):
+            </strong>
+          </li>
           <li>
             <strong>
               <a href="https://en.wikipedia.org/wiki/OEIS">
@@ -813,12 +827,22 @@
         </div>
         <ul class="card-list">
           <li>
+            <strong>
+              p= F(μ+nσ) - F(μ-nσ):
+            </strong>
             0.997300203937
           </li>
           <li>
+            <strong>
+              1-p:
+            </strong>
             0.002699796063
           </li>
-          <li/>
+          <li>
+            <strong>
+              or 1 in (1-p):
+            </strong>
+          </li>
           <li>
             <strong>
               <a href="https://en.wikipedia.org/wiki/OEIS">
@@ -848,12 +872,22 @@
         </div>
         <ul class="card-list">
           <li>
+            <strong>
+              p= F(μ+nσ) - F(μ-nσ):
+            </strong>
             0.999936657516
           </li>
           <li>
+            <strong>
+              1-p:
+            </strong>
             0.000063342484
           </li>
-          <li/>
+          <li>
+            <strong>
+              or 1 in (1-p):
+            </strong>
+          </li>
           <li>
             <strong>
               <a href="https://en.wikipedia.org/wiki/OEIS">
@@ -875,12 +909,22 @@
         </div>
         <ul class="card-list">
           <li>
+            <strong>
+              p= F(μ+nσ) - F(μ-nσ):
+            </strong>
             0.999999426697
           </li>
           <li>
+            <strong>
+              1-p:
+            </strong>
             0.000000573303
           </li>
-          <li/>
+          <li>
+            <strong>
+              or 1 in (1-p):
+            </strong>
+          </li>
           <li>
             <strong>
               <a href="https://en.wikipedia.org/wiki/OEIS">
@@ -902,12 +946,22 @@
         </div>
         <ul class="card-list">
           <li>
+            <strong>
+              p= F(μ+nσ) - F(μ-nσ):
+            </strong>
             0.999999998027
           </li>
           <li>
+            <strong>
+              1-p:
+            </strong>
             0.000000001973
           </li>
-          <li/>
+          <li>
+            <strong>
+              or 1 in (1-p):
+            </strong>
+          </li>
           <li>
             <strong>
               <a href="https://en.wikipedia.org/wiki/OEIS">
@@ -925,7 +979,7 @@
       </div>
     </div>
     <p>
-      For large n, one can use the approximation
+      For large n, one can use the approximation 1 - p ≈ √2/(n√(π e^(n^2)))
     </p>
     <h4>
       Quantile function
@@ -961,20 +1015,14 @@
       <span class="external-link">
         ↗
       </span>
-      :
-    </p>
-    <p>
-      For a normal random variable with mean \mu and variance , the quantile function is
-    </p>
-    <p>
-      The
+      : Phi^(-1)(p) = √2erf^(-1)(2p - 1), p ∈ (0,1). For a normal random variable with mean μ and variance σ^2, the quantile function is F^(-1)(p) = μ + σPhi^(-1)(p) = μ + σ√ 2 erf^(-1)(2p - 1), p ∈ (0,1). The
       <a href="https://en.wikipedia.org/wiki/quantile">
         quantile
       </a>
       <span class="external-link">
         ↗
       </span>
-      of the standard normal distribution is commonly denoted as z_p. These values are used in
+      Phi^(-1)(p) of the standard normal distribution is commonly denoted as z_p. These values are used in
       <a href="https://en.wikipedia.org/wiki/hypothesis_testing">
         hypothesis testing
       </a>
@@ -995,17 +1043,17 @@
       <span class="external-link">
         ↗
       </span>
-      s. A normal random variable X will exceed with probability , and will lie outside the interval with probability 2(1-p). In particular, the quantile is
+      s. A normal random variable X will exceed μ + z_pσ with probability 1-p, and will lie outside the interval μ ± z_pσ with probability 2(1-p). In particular, the quantile z_(0.975) is
       <a href="https://en.wikipedia.org/wiki/1.96">
         1.96
       </a>
       <span class="external-link">
         ↗
       </span>
-      ; therefore a normal random variable will lie outside the interval in only 5% of cases.
+      ; therefore a normal random variable will lie outside the interval μ ± 1.96σ in only 5% of cases.
     </p>
     <p>
-      The following table gives the quantile such that X will lie in the range with a specified probability p. These values are useful to determine
+      The following table gives the quantile z_p such that X will lie in the range μ ± z_pσ with a specified probability p. These values are useful to determine
       <a href="https://en.wikipedia.org/wiki/tolerance_interval">
         tolerance interval
       </a>
@@ -1033,7 +1081,7 @@
       <span class="external-link">
         ↗
       </span>
-      ally normal) distributions. The following table shows , not as defined above.
+      ally normal) distributions. The following table shows √ 2 erf^(-1)(p)=Phi^(-1)((p+1)/2), not Phi^(-1)(p) as defined above.
     </p>
     <div class="responsive-card-container wikitable">
       <div class="responsive-card">
@@ -1041,12 +1089,16 @@
           p
         </div>
         <ul class="card-list">
-          <li/>
+          <li>
+            z_p
+          </li>
           <li/>
           <li>
             p
           </li>
-          <li/>
+          <li>
+            z_p
+          </li>
         </ul>
       </div>
       <div class="responsive-card">
@@ -1170,12 +1222,13 @@
       <span class="external-link">
         ↗
       </span>
+      Phi^(-1)(p)=-√(ln1/p^2-lnln1/p^2-ln(2π))+o(1).
     </p>
     <h4>
       Using root finding to compute the quantile function
     </h4>
     <p>
-      Any of the described approaches for computing the cumulative distribution function can be used with
+      Any of the described approaches for computing the cumulative distribution function Phi(x) can be used with
       <a href="https://en.wikipedia.org/wiki/Newton&apos;s_method">
         Newton's method
       </a>
@@ -1196,7 +1249,7 @@
       <span class="external-link">
         ↗
       </span>
-      ) to find the value of x for which \Phi(x) = q for some desired quantile q. For example, starting with an initial, approximately correct guess x_0, increasingly better approximations x_1, x_2, ... can be calculated iteratively using Newton's method with
+      ) to find the value of x for which Phi(x) = q for some desired quantile q. For example, starting with an initial, approximately correct guess x_0, increasingly better approximations x_1, x_2, ... can be calculated iteratively using Newton's method with x_n = x_(n-1) - (Phi(x_(n-1)) - q)/(varphi(x_(n-1))) .
     </p>
     <h2>
       Properties
@@ -1350,11 +1403,11 @@
       Symmetries and derivatives
     </h3>
     <p>
-      The normal distribution with density (mean \mu and variance ) has the following properties:
+      The normal distribution with density f(x) (mean μ and variance σ^2 &gt; 0) has the following properties:
     </p>
     <ul>
       <li>
-        It is symmetric around the point which is at the same time the
+        It is symmetric around the point x=μ, which is at the same time the
         <a href="https://en.wikipedia.org/wiki/mode_(statistics)">
           mode
         </a>
@@ -1392,16 +1445,19 @@
         <span class="external-link">
           ↗
         </span>
-        is positive for negative for and zero only at
+        is positive for x&lt;μ, negative for x&gt;μ, and zero only at x=μ.
       </li>
       <li>
         The area bounded by the curve and the x-axis is unity (i.e. equal to one).
       </li>
       <li>
-        Its first derivative is
+        Its first derivative is f'(x)=-(x-μ)/σ^2 f(x).
       </li>
       <li>
-        Its second derivative is
+        Its second derivative is f
+        <em>
+          (x) = ((x-μ)^2 - σ^2)/σ^4 f(x).
+        </em>
       </li>
       <li>
         Its density has two
@@ -1411,7 +1467,7 @@
         <span class="external-link">
           ↗
         </span>
-        s (where the second derivative of f is zero and changes sign), located one standard deviation away from the mean, namely at and
+        s (where the second derivative of f is zero and changes sign), located one standard deviation away from the mean, namely at x=μ-σ and x=μ+σ.
       </li>
       <li>
         Its density is
@@ -1442,21 +1498,24 @@
       </li>
     </ul>
     <p>
-      Furthermore, the density \varphi of the standard normal distribution (i.e. and ) also has the following properties:
+      Furthermore, the density varphi of the standard normal distribution (i.e. μ=0 and σ=1) also has the following properties:
     </p>
     <ul>
       <li>
-        Its first derivative is
+        Its first derivative is varphi'(x)=-xvarphi(x).
       </li>
       <li>
-        Its second derivative is
+        Its second derivative is varphi
+        <em>
+          (x)=(x^2-1)varphi(x)
+        </em>
       </li>
       <li>
         More generally, its
         <em>
           n
         </em>
-        th derivative is where is the
+        th derivative is varphi^((n))(x) = (-1)^nHe_n(x)varphi(x), where He_n(x) is the
         <em>
           n
         </em>
@@ -1470,7 +1529,7 @@
         .
       </li>
       <li>
-        The probability that a normally distributed variable X with known \mu and is in a particular set, can be calculated given that the fraction has a standard normal distribution.
+        The probability that a normally distributed variable X with known μ and σ^2 is in a particular set, can be calculated given that the fraction Z = (X-μ)/σ has a standard normal distribution.
       </li>
     </ul>
     <h3>
@@ -1491,7 +1550,7 @@
       <span class="external-link">
         ↗
       </span>
-      of a variable X are the expected values of and , respectively. If the expected value \mu of X is zero, these parameters are called
+      of a variable X are the expected values of X^p and |X|^p, respectively. If the expected value μ of X is zero, these parameters are called
       <em>
         central moments;
       </em>
@@ -1502,30 +1561,42 @@
       Usually we are interested only in moments with integer order p.
     </p>
     <p>
-      If X has a normal distribution, the non-central moments exist and are finite for any p whose real part is greater than −1. For any non-negative integer p, the plain central moments are:
+      If X has a normal distribution, the non-central moments exist and are finite for any p whose real part is greater than −1. For any non-negative integer p, the plain central moments are: E[(X-μ)^p] =
     </p>
     <p>
-      Here denotes the
+      0 if p is odd,
+    </p>
+    <p>
+      σ^p (p-1)!! if p is even. Here n!! denotes the
       <a href="https://en.wikipedia.org/wiki/double_factorial">
         double factorial
       </a>
       <span class="external-link">
         ↗
       </span>
-      , that is, the product of all numbers from n to 1 that have the same parity as
+      , that is, the product of all numbers from n to 1 that have the same parity as n.
     </p>
     <p>
-      The central absolute moments coincide with plain moments for all even orders, but are nonzero for odd orders. For any non-negative integer
+      The central absolute moments coincide with plain moments for all even orders, but are nonzero for odd orders. For any non-negative integer p,
     </p>
     <p>
-      The last formula is valid also for any non-integer When the mean the plain and absolute moments can be expressed in terms of
+      E[|X - μ|^p] = σ^p (p-1)!! · √(2/π) if p is odd
+    </p>
+    <p>
+      1 if p is even
+    </p>
+    <p>
+      [8pt] = σ^p · (2^(p/2)Γ(fracp+1 2))/√π. The last formula is valid also for any non-integer p&gt;-1. When the mean μ ≠ 0, the plain and absolute moments can be expressed in terms of
       <a href="https://en.wikipedia.org/wiki/confluent_hypergeometric_function">
         confluent hypergeometric function
       </a>
       <span class="external-link">
         ↗
       </span>
-      s and
+      s _1F_1 and U. E[X^p] = σ^p · (-i√ 2)^p U(-p/2, 1/2, -μ^2/2σ^2),
+    </p>
+    <p>
+      E[|X|^p] = σ^p · 2^(p/2) (Γ(frac1+p 2))/√π _1F_1(-fracp2, frac12, -fracμ^22σ^2).
     </p>
     <p>
       These expressions remain valid even when p &gt; -1 is not an integer. See also
@@ -1545,13 +1616,13 @@
         <ul class="card-list">
           <li>
             <strong>
-              Non-central moment,:
+              Non-central moment, E[X^p]:
             </strong>
             1
           </li>
           <li>
             <strong>
-              Central moment,:
+              Central moment, E[(X-μ)^p]:
             </strong>
             1
           </li>
@@ -1564,13 +1635,13 @@
         <ul class="card-list">
           <li>
             <strong>
-              Non-central moment,:
+              Non-central moment, E[X^p]:
             </strong>
-            \mu
+            μ
           </li>
           <li>
             <strong>
-              Central moment,:
+              Central moment, E[(X-μ)^p]:
             </strong>
             0
           </li>
@@ -1583,13 +1654,15 @@
         <ul class="card-list">
           <li>
             <strong>
-              Non-central moment,:
+              Non-central moment, E[X^p]:
             </strong>
+            μ^2+σ^2
           </li>
           <li>
             <strong>
-              Central moment,:
+              Central moment, E[(X-μ)^p]:
             </strong>
+            σ^2
           </li>
         </ul>
       </div>
@@ -1600,12 +1673,13 @@
         <ul class="card-list">
           <li>
             <strong>
-              Non-central moment,:
+              Non-central moment, E[X^p]:
             </strong>
+            μ^3+3μσ^2
           </li>
           <li>
             <strong>
-              Central moment,:
+              Central moment, E[(X-μ)^p]:
             </strong>
             0
           </li>
@@ -1618,13 +1692,15 @@
         <ul class="card-list">
           <li>
             <strong>
-              Non-central moment,:
+              Non-central moment, E[X^p]:
             </strong>
+            μ^4+6μ^2σ^2+3σ^4
           </li>
           <li>
             <strong>
-              Central moment,:
+              Central moment, E[(X-μ)^p]:
             </strong>
+            3σ^4
           </li>
         </ul>
       </div>
@@ -1635,12 +1711,13 @@
         <ul class="card-list">
           <li>
             <strong>
-              Non-central moment,:
+              Non-central moment, E[X^p]:
             </strong>
+            μ^5+10μ^3σ^2+15μσ^4
           </li>
           <li>
             <strong>
-              Central moment,:
+              Central moment, E[(X-μ)^p]:
             </strong>
             0
           </li>
@@ -1653,13 +1730,15 @@
         <ul class="card-list">
           <li>
             <strong>
-              Non-central moment,:
+              Non-central moment, E[X^p]:
             </strong>
+            μ^6+15μ^4σ^2+45μ^2σ^4+15σ^6
           </li>
           <li>
             <strong>
-              Central moment,:
+              Central moment, E[(X-μ)^p]:
             </strong>
+            15σ^6
           </li>
         </ul>
       </div>
@@ -1670,12 +1749,13 @@
         <ul class="card-list">
           <li>
             <strong>
-              Non-central moment,:
+              Non-central moment, E[X^p]:
             </strong>
+            μ^7+21μ^5σ^2+105μ^3σ^4+105μσ^6
           </li>
           <li>
             <strong>
-              Central moment,:
+              Central moment, E[(X-μ)^p]:
             </strong>
             0
           </li>
@@ -1688,29 +1768,28 @@
         <ul class="card-list">
           <li>
             <strong>
-              Non-central moment,:
+              Non-central moment, E[X^p]:
             </strong>
+            μ^8+28μ^6σ^2+210μ^4σ^4+420μ^2σ^6+105σ^8
           </li>
           <li>
             <strong>
-              Central moment,:
+              Central moment, E[(X-μ)^p]:
             </strong>
+            105σ^8
           </li>
         </ul>
       </div>
     </div>
     <p>
-      The expectation of X conditioned on the event that X lies in an interval is given by
-    </p>
-    <p>
-      where f and F respectively are the density and the cumulative distribution function of X. For this is known as the
+      The expectation of X conditioned on the event that X lies in an interval [a,b] is given by E[X mid a&lt;X&lt;b] = μ - σ^2(f(b)-f(a))/(F(b)-F(a)) , where f and F respectively are the density and the cumulative distribution function of X. For b= ∞ this is known as the
       <a href="https://en.wikipedia.org/wiki/inverse_Mills_ratio">
         inverse Mills ratio
       </a>
       <span class="external-link">
         ↗
       </span>
-      . Note that above, density f of X is used instead of standard normal density as in inverse Mills ratio, so here we have instead of \sigma.
+      . Note that above, density f of X is used instead of standard normal density as in inverse Mills ratio, so here we have σ^2 instead of σ.
     </p>
     <h3>
       Fourier transform and characteristic function
@@ -1723,7 +1802,10 @@
       <span class="external-link">
         ↗
       </span>
-      of a normal density f with mean \mu and variance is
+      of a normal density f with mean μ and variance σ^2 is
+    </p>
+    <p>
+      f(t) = ∫_(- ∞)^ ∞ f(x)e^(-itx) dx = e^(-iμ t) e^(- 1/2 σ^2 t^2) ,
     </p>
     <p>
       where i is the
@@ -1733,14 +1815,14 @@
       <span class="external-link">
         ↗
       </span>
-      . If the mean , the first factor is 1, and the Fourier transform is, apart from a constant factor, a normal density on the
+      . If the mean μ=0, the first factor is 1, and the Fourier transform is, apart from a constant factor, a normal density on the
       <a href="https://en.wikipedia.org/wiki/frequency_domain">
         frequency domain
       </a>
       <span class="external-link">
         ↗
       </span>
-      , with mean 0 and variance 1/\sigma^2. In particular, the standard normal distribution \varphi is an
+      , with mean 0 and variance 1/σ^2. In particular, the standard normal distribution varphi is an
       <a href="https://en.wikipedia.org/wiki/Fourier_transform#Eigenfunctions">
         eigenfunction
       </a>
@@ -1757,30 +1839,30 @@
       <span class="external-link">
         ↗
       </span>
-      of that variable, which is defined as the
+      varphi_X(t) of that variable, which is defined as the
       <a href="https://en.wikipedia.org/wiki/expected_value">
         expected value
       </a>
       <span class="external-link">
         ↗
       </span>
-      of , as a function of the real variable t (the
+      of e^(itX), as a function of the real variable t (the
       <a href="https://en.wikipedia.org/wiki/frequency">
         frequency
       </a>
       <span class="external-link">
         ↗
       </span>
-      parameter of the Fourier transform). This definition can be analytically extended to a complex-value variable t. The relation between both is:
+      parameter of the Fourier transform). This definition can be analytically extended to a complex-value variable t. The relation between both is: varphi_X(t) = f(-t) .
     </p>
     <p>
-      The real and imaginary parts of give: and
+      The real and imaginary parts of f(t) = E[e^(-itx)] = e^(-iμ t) e^(- 1/2 σ^2 t^2) give: E[cos(tx)] = cos(μ t) e^(- 1/2 σ^2 t^2) and E[sin(tx)] = sin(μ t) e^(- 1/2 σ^2 t^2).
     </p>
     <p>
-      Similarly, and
+      Similarly, E[cosh(tx)] = cosh(μ t) e^(1/2 σ^2 t^2) and E[sinh(tx)] = sinh(μ t) e^(1/2 σ^2 t^2).
     </p>
     <p>
-      These formulas evaluated at give the expected value of these basic trigonometric and hyperbolic functions over a Gaussian random variable , which also could be seen as consequences of the
+      These formulas evaluated at t=1 give the expected value of these basic trigonometric and hyperbolic functions over a Gaussian random variable X sim N(μ,σ^2), which also could be seen as consequences of the
       <a href="https://en.wikipedia.org/wiki/Isserlis&apos;s_theorem">
         Isserlis's theorem
       </a>
@@ -1800,17 +1882,17 @@
       <span class="external-link">
         ↗
       </span>
-      of a real random variable X is the expected value of , as a function of the real parameter t. For a normal distribution with density f, mean \mu and variance , the moment generating function exists and is equal to
+      of a real random variable X is the expected value of e^(tX), as a function of the real parameter t. For a normal distribution with density f, mean μ and variance σ^2, the moment generating function exists and is equal to
     </p>
     <p>
-      For any k, the coefficient of t^k / k! in the moment generating function (expressed as an
+      M(t) = E[e^(tX)] = f(it) = e^(μ t) e^(σ^2 t^2/2) . For any k, the coefficient of t^k / k! in the moment generating function (expressed as an
       <a href="https://en.wikipedia.org/wiki/Generating_function#Exponential_generating_function_(EGF)">
         exponential power series
       </a>
       <span class="external-link">
         ↗
       </span>
-      in t) is the normal distribution's expected value \operatorname{E}[X^k].
+      in t) is the normal distribution's expected value E[X^k].
     </p>
     <p>
       The
@@ -1820,7 +1902,7 @@
       <span class="external-link">
         ↗
       </span>
-      is the logarithm of the moment generating function, namely
+      is the logarithm of the moment generating function, namely g(t) = ln M(t) = μ t + 1/2 σ^2 t^2 .
     </p>
     <p>
       The coefficients of this exponential power series define the cumulants, but because this is a quadratic polynomial in t, only the first two
@@ -1830,7 +1912,7 @@
       <span class="external-link">
         ↗
       </span>
-      s are nonzero, namely the mean \mu and the variance \sigma^2.
+      s are nonzero, namely the mean μ and the variance σ^2.
     </p>
     <p>
       Some authors prefer to instead work with the
@@ -1918,7 +2000,7 @@
       <span class="external-link">
         ↗
       </span>
-      the Stein operator and class of a random variable are and the class of all absolutely continuous functions \textstyle f : \R \to \R such that \operatorname{E}[\vert f'(X)\vert] &lt; \infty.
+      the Stein operator and class of a random variable X sim N(μ, σ^2) are Af(x) = σ^2 f'(x) - (x-μ)f(x) and F the class of all absolutely continuous functions f : R → R such that E[vert f'(X)vert] &lt; ∞.
     </p>
     <h3>
       Zero-variance limit
@@ -1931,14 +2013,14 @@
       <span class="external-link">
         ↗
       </span>
-      when approaches zero, the probability density approaches zero everywhere except at , where it approaches , while its integral remains equal to 1. An extension of the normal distribution to the case with zero variance can be defined using the
+      when σ^2 approaches zero, the probability density f approaches zero everywhere except at μ, where it approaches ∞, while its integral remains equal to 1. An extension of the normal distribution to the case with zero variance can be defined using the
       <a href="https://en.wikipedia.org/wiki/Dirac_measure">
         Dirac delta measure
       </a>
       <span class="external-link">
         ↗
       </span>
-      , although the resulting random variables are not
+      delta_μ, although the resulting random variables are not
       <a href="https://en.wikipedia.org/wiki/absolutely_continuous_random_variable">
         absolutely continuous
       </a>
@@ -1959,13 +2041,19 @@
       <span class="external-link">
         ↗
       </span>
-      translated by the mean , namely
+      translated by the mean μ, namely F(x) =
+    </p>
+    <p>
+      0 if x &lt; μ
+    </p>
+    <p>
+      1 if x ≥ μ.
     </p>
     <h3>
       Maximum entropy
     </h3>
     <p>
-      Of all probability distributions over the reals with a specified finite mean \mu and finite variance \sigma^2, the normal distribution is the one with
+      Of all probability distributions over the reals with a specified finite mean μ and finite variance σ^2, the normal distribution N(μ,σ^2) is the one with
       <a href="https://en.wikipedia.org/wiki/Maximum_entropy_probability_distribution">
         maximum entropy
       </a>
@@ -1986,10 +2074,7 @@
       <span class="external-link">
         ↗
       </span>
-      f(x). The entropy of X is defined as
-    </p>
-    <p>
-      where is understood to be zero whenever f(x)=0. This functional can be maximized, subject to the constraints that the distribution is properly normalized and has a specified mean and variance, by using
+      f(x). The entropy of X is defined as H(X) = - ∫_(- ∞)^ ∞ f(x)ln f(x) dx , where f(x)log f(x) is understood to be zero whenever f(x)=0. This functional can be maximized, subject to the constraints that the distribution is properly normalized and has a specified mean and variance, by using
       <a href="https://en.wikipedia.org/wiki/variational_calculus">
         variational calculus
       </a>
@@ -2003,22 +2088,16 @@
       <span class="external-link">
         ↗
       </span>
-      is defined:
+      is defined: L=-∫_(- ∞)^ ∞ f(x)ln f(x) dx-λ_0(1-∫_(- ∞)^ ∞ f(x) dx)-λ_1(μ-∫_(- ∞)^ ∞ f(x)x dx)-λ_2(σ^2-∫_(- ∞)^ ∞ f(x)(x-μ)^2 dx) .
     </p>
     <p>
-      At maximum entropy, a small variation about will produce a variation about L which is equal to 0:
+      At maximum entropy, a small variation delta f(x) about f(x) will produce a variation delta L about L which is equal to 0: 0=delta L=∫_(- ∞)^ ∞ delta f(x)(-ln f(x) -1+λ_0+λ_1 x+λ_2(x-μ)^2) dx .
     </p>
     <p>
-      Since this must hold for any small \delta f(x), the factor multiplying \delta f(x) must be zero, and solving for f(x) yields:
+      Since this must hold for any small delta f(x), the factor multiplying delta f(x) must be zero, and solving for f(x) yields: f(x)=exp(-1+λ_0+λ_1 x+λ_2(x-μ)^2) .
     </p>
     <p>
-      The Lagrange constraints that f(x) is properly normalized and has the specified mean and variance are satisfied if and only if \lambda_0, \lambda_1, and \lambda_2 are chosen so that
-    </p>
-    <p>
-      The entropy of a normal distribution is equal to
-    </p>
-    <p>
-      which is independent of the mean \mu.
+      The Lagrange constraints that f(x) is properly normalized and has the specified mean and variance are satisfied if and only if λ_0, λ_1, and λ_2 are chosen so that f(x)=1/√(2πσ^2)e^-((x-μ)^2)/2σ^2 . The entropy of a normal distribution X sim N(μ,σ^2) is equal to H(X)=1/2(1+ln 2σ^2π) , which is independent of the mean μ.
     </p>
     <h3>
       Other properties
@@ -2039,20 +2118,17 @@
       </span>
     </p>
     <p>
-      The central limit theorem states that under certain (fairly common) conditions, the sum of many random variables will have an approximately normal distribution. More specifically, where are
+      The central limit theorem states that under certain (fairly common) conditions, the sum of many random variables will have an approximately normal distribution. More specifically, where X_1,... ,X_n are
       <a href="https://en.wikipedia.org/wiki/independent_and_identically_distributed">
         independent and identically distributed
       </a>
       <span class="external-link">
         ↗
       </span>
-      random variables with the same arbitrary distribution, zero mean, and variance and Z is their mean scaled by
+      random variables with the same arbitrary distribution, zero mean, and variance σ^2 and Z is their mean scaled by √n Z = √nbiggl(1/nsum_(i=1)^n X_ibiggr) Then, as n increases, the probability distribution of Z will tend to the normal distribution with zero mean and variance σ^2.
     </p>
     <p>
-      Then, as n increases, the probability distribution of Z will tend to the normal distribution with zero mean and variance \sigma^2.
-    </p>
-    <p>
-      The theorem can be extended to variables that are not independent and/or not identically distributed if certain constraints are placed on the degree of dependence and the moments of the distributions.
+      The theorem can be extended to variables (X_i) that are not independent and/or not identically distributed if certain constraints are placed on the degree of dependence and the moments of the distributions.
     </p>
     <p>
       Many
@@ -2097,14 +2173,14 @@
         <span class="external-link">
           ↗
         </span>
-        is
+        B(n,p) is
         <a href="https://en.wikipedia.org/wiki/De_Moivre–Laplace_theorem">
           approximately normal
         </a>
         <span class="external-link">
           ↗
         </span>
-        with mean and variance for large n and for p not too close to 0 or 1.
+        with mean np and variance np(1-p) for large n and for p not too close to 0 or 1.
       </li>
       <li>
         The
@@ -2114,7 +2190,7 @@
         <span class="external-link">
           ↗
         </span>
-        with parameter \lambda is approximately normal with mean \lambda and variance \lambda, for large values of \lambda.
+        with parameter λ is approximately normal with mean λ and variance λ, for large values of λ.
       </li>
       <li>
         The
@@ -2124,7 +2200,7 @@
         <span class="external-link">
           ↗
         </span>
-        is approximately normal with mean k and variance , for large k.
+        chi^2(k) is approximately normal with mean k and variance 2k, for large k.
       </li>
       <li>
         The
@@ -2134,7 +2210,7 @@
         <span class="external-link">
           ↗
         </span>
-        is approximately normal with mean 0 and variance 1 when \nu is large.
+        t(nu) is approximately normal with mean 0 and variance 1 when nu is large.
       </li>
     </ul>
     <p>
@@ -2181,11 +2257,11 @@
       Operations on a single normal variable
     </h4>
     <p>
-      If X is distributed normally with mean \mu and variance , then
+      If X is distributed normally with mean μ and variance σ^2, then
     </p>
     <ul>
       <li>
-        , for any real numbers a and b, is also normally distributed, with mean and variance . That is, the family of normal distributions is closed under
+        aX+b, for any real numbers a and b, is also normally distributed, with mean aμ+b and variance a^2σ^2. That is, the family of normal distributions is closed under
         <a href="https://en.wikipedia.org/wiki/linear_transformations">
           linear transformations
         </a>
@@ -2202,7 +2278,7 @@
         <span class="external-link">
           ↗
         </span>
-        : .
+        : e^X sim ln(N(μ, σ^2)).
       </li>
       <li>
         The standard
@@ -2219,7 +2295,7 @@
         <span class="external-link">
           ↗
         </span>
-        : .
+        : σ(X) sim P(N(μ, σ^2)).
       </li>
       <li>
         The absolute value of X has
@@ -2229,7 +2305,7 @@
         <span class="external-link">
           ↗
         </span>
-        : . If this is known as the
+        : left| X right| sim N_f(μ, σ^2). If μ = 0 this is known as the
         <a href="https://en.wikipedia.org/wiki/half-normal_distribution">
           half-normal distribution
         </a>
@@ -2239,24 +2315,24 @@
         .
       </li>
       <li>
-        The absolute value of normalized residuals, , has
+        The absolute value of normalized residuals, |X - μ| / σ, has
         <a href="https://en.wikipedia.org/wiki/chi_distribution">
           chi distribution
         </a>
         <span class="external-link">
           ↗
         </span>
-        with one degree of freedom: .
+        with one degree of freedom: |X - μ| / σ sim chi_1.
       </li>
       <li>
-        The square of has the
+        The square of X/σ has the
         <a href="https://en.wikipedia.org/wiki/noncentral_chi-squared_distribution">
           noncentral chi-squared distribution
         </a>
         <span class="external-link">
           ↗
         </span>
-        with one degree of freedom: . If , the distribution is called simply
+        with one degree of freedom: X^2 / σ^2 sim chi_1^2(μ^2 / σ^2). If μ = 0, the distribution is called simply
         <a href="https://en.wikipedia.org/wiki/chi-squared_distribution">
           chi-squared
         </a>
@@ -2273,7 +2349,7 @@
         <span class="external-link">
           ↗
         </span>
-        : Since this is a scaled and shifted square of a standard normal variable, it is distributed as a scaled and shifted
+        : ln p(x)= -1/2 ((x-μ)/σ)^2 -ln (σ √(2π)). Since this is a scaled and shifted square of a standard normal variable, it is distributed as a scaled and shifted
         <a href="https://en.wikipedia.org/wiki/chi-squared_distribution">
           chi-squared
         </a>
@@ -2283,7 +2359,7 @@
         variable.
       </li>
       <li>
-        The distribution of the variable X restricted to an interval is called the
+        The distribution of the variable X restricted to an interval [a, b] is called the
         <a href="https://en.wikipedia.org/wiki/truncated_normal_distribution">
           truncated normal distribution
         </a>
@@ -2293,14 +2369,14 @@
         .
       </li>
       <li>
-        has a
+        (X - μ)^(-2) has a
         <a href="https://en.wikipedia.org/wiki/Lévy_distribution">
           Lévy distribution
         </a>
         <span class="external-link">
           ↗
         </span>
-        with location 0 and scale .
+        with location 0 and scale σ^(-2).
       </li>
     </ul>
     <h5>
@@ -2308,24 +2384,24 @@
     </h5>
     <ul>
       <li>
-        If and are two
+        If X_1 and X_2 are two
         <a href="https://en.wikipedia.org/wiki/independence_(probability_theory)">
           independent
         </a>
         <span class="external-link">
           ↗
         </span>
-        normal random variables, with means , and variances , , then their sum will also be normally distributed,
+        normal random variables, with means μ_1, μ_2 and variances σ_1^2, σ_2^2, then their sum X_1 + X_2 will also be normally distributed,
         <a href="https://en.wikipedia.org/wiki/sum_of_normally_distributed_random_variables">
           [proof
         </a>
         <span class="external-link">
           ↗
         </span>
-        ] with mean and variance .
+        ] with mean μ_1 + μ_2 and variance σ_1^2 + σ_2^2.
       </li>
       <li>
-        In particular, if X and Y are independent normal deviates with zero mean and variance , then and are also independent and normally distributed, with zero mean and variance . This is a special case of the
+        In particular, if X and Y are independent normal deviates with zero mean and variance σ^2, then X + Y and X - Y are also independent and normally distributed, with zero mean and variance 2σ^2. This is a special case of the
         <a href="https://en.wikipedia.org/wiki/polarization_identity">
           polarization identity
         </a>
@@ -2335,59 +2411,59 @@
         .
       </li>
       <li>
-        If , are two independent normal deviates with mean \mu and variance , and a, b are arbitrary real numbers, then the variable is also normally distributed with mean \mu and variance . It follows that the normal distribution is
+        If X_1, X_2 are two independent normal deviates with mean μ and variance σ^2, and a, b are arbitrary real numbers, then the variable X_3 = (aX_1 + bX_2 - (a+b)μ)/(√(a^2+b^2)) + μ is also normally distributed with mean μ and variance σ^2. It follows that the normal distribution is
         <a href="https://en.wikipedia.org/wiki/stable_distribution">
           stable
         </a>
         <span class="external-link">
           ↗
         </span>
-        (with exponent ).
+        (with exponent α=2).
       </li>
       <li>
-        If , are normal distributions, then their normalized
+        If X_k sim N(m_k, σ_k^2), k ∈ {0, 1} are normal distributions, then their normalized
         <a href="https://en.wikipedia.org/wiki/geometric_mean">
           geometric mean
         </a>
         <span class="external-link">
           ↗
         </span>
-        is a normal distribution with and .
+        1/(∫_(R^n) X_0^(α)(x) X_1^(1 - α)(x) dx) X_0^(α) X_1^(1 - α) is a normal distribution N(m_(α), σ_(α)^2) with m_(α) = (α m_0 σ_1^2 + (1 - α) m_1 σ_0^2)/(α σ_1^2 + (1 - α) σ_0^2) and σ_(α)^2 = (σ_0^2 σ_1^2)/(α σ_1^2 + (1 - α) σ_0^2).
       </li>
     </ul>
     <h5>
       Operations on two independent standard normal variables
     </h5>
     <p>
-      If and are two independent standard normal random variables with mean 0 and variance 1, then
+      If X_1 and X_2 are two independent standard normal random variables with mean 0 and variance 1, then
     </p>
     <ul>
       <li>
-        Their sum and difference is distributed normally with mean zero and variance two: .
+        Their sum and difference is distributed normally with mean zero and variance two: X_1 ± X_2 sim N(0, 2).
       </li>
       <li>
-        Their product follows the
+        Their product Z = X_1 X_2 follows the
         <a href="https://en.wikipedia.org/wiki/product_distribution#Independent_central-normal_distributions">
           product distribution
         </a>
         <span class="external-link">
           ↗
         </span>
-        with density function where is the
+        with density function f_Z(z) = π^(-1) K_0(|z|) where K_0 is the
         <a href="https://en.wikipedia.org/wiki/Macdonald_function">
           modified Bessel function of the second kind
         </a>
         <span class="external-link">
           ↗
         </span>
-        . This distribution is symmetric around zero, unbounded at , and has the
+        . This distribution is symmetric around zero, unbounded at z = 0, and has the
         <a href="https://en.wikipedia.org/wiki/characteristic_function_(probability_theory)">
           characteristic function
         </a>
         <span class="external-link">
           ↗
         </span>
-        .
+        φ_Z(t) = (1 + t^2)^(-1/2).
       </li>
       <li>
         Their ratio follows the standard
@@ -2397,10 +2473,10 @@
         <span class="external-link">
           ↗
         </span>
-        : .
+        : X_1/ X_2 sim Cauchy(0, 1).
       </li>
       <li>
-        Their Euclidean norm has the
+        Their Euclidean norm √(X_1^2 + X_2^2) has the
         <a href="https://en.wikipedia.org/wiki/Rayleigh_distribution">
           Rayleigh distribution
         </a>
@@ -2425,17 +2501,17 @@
         of independent normal deviates is a normal deviate.
       </li>
       <li>
-        If are independent standard normal random variables, then the sum of their squares has the
+        If X_1, X_2, ..., X_n are independent standard normal random variables, then the sum of their squares has the
         <a href="https://en.wikipedia.org/wiki/chi-squared_distribution">
           chi-squared distribution
         </a>
         <span class="external-link">
           ↗
         </span>
-        with n degrees of freedom
+        with n degrees of freedom X_1^2 + cdots + X_n^2 sim chi_n^2.
       </li>
       <li>
-        If are independent normally distributed random variables with means \mu and variances , then their
+        If X_1, X_2, ..., X_n are independent normally distributed random variables with means μ and variances σ^2, then their
         <a href="https://en.wikipedia.org/wiki/sample_mean">
           sample mean
         </a>
@@ -2470,10 +2546,10 @@
         <span class="external-link">
           ↗
         </span>
-        with degrees of freedom:
+        with n-1 degrees of freedom: t = (X - μ)/S/√n = (1/n(X_1+cdots+X_n) - μ)/(√(1/(n(n-1))[(X_1- X)^2 + cdots+(X_n- X)^2])) sim t_(n-1).
       </li>
       <li>
-        If , are independent standard normal random variables, then the ratio of their normalized sums of squares will have the
+        If X_1, X_2, ..., X_n, Y_1, Y_2, ..., Y_m are independent standard normal random variables, then the ratio of their normalized sums of squares will have the
         <a href="https://en.wikipedia.org/wiki/F-distribution">
           F-distribution
         </a>
@@ -2488,7 +2564,7 @@
         <em>
           m
         </em>
-        ) degrees of freedom:
+        ) degrees of freedom: F = ((X_1^2+X_2^2+cdots+X_n^2)/n)/((Y_1^2+Y_2^2+cdots+Y_m^2)/m) sim F_(n,m).
       </li>
     </ul>
     <h4>
@@ -2503,7 +2579,7 @@
         <span class="external-link">
           ↗
         </span>
-        of a normal vector, i.e. a quadratic function of multiple independent or correlated normal variables, is a
+        of a normal vector, i.e. a quadratic function q = sum x_i^2 + sum x_j + c of multiple independent or correlated normal variables, is a
         <a href="https://en.wikipedia.org/wiki/generalized_chi-square_distribution">
           generalized chi-square
         </a>
@@ -2541,11 +2617,11 @@
       <em>
         n
       </em>
-      , any normal distribution with mean \mu and variance is the distribution of the sum of
+      , any normal distribution with mean μ and variance σ^2 is the distribution of the sum of
       <em>
         n
       </em>
-      independent normal deviates, each with mean and variance . This property is called
+      independent normal deviates, each with mean μ/n and variance σ^2/n. This property is called
       <a href="https://en.wikipedia.org/wiki/infinite_divisibility_(probability)">
         infinite divisibility
       </a>
@@ -2555,7 +2631,7 @@
       .
     </p>
     <p>
-      Conversely, if and are independent random variables and their sum has a normal distribution, then both and must be normal deviates.
+      Conversely, if X_1 and X_2 are independent random variables and their sum X_1+X_2 has a normal distribution, then both X_1 and X_2 must be normal deviates.
     </p>
     <p>
       This result is known as
@@ -2585,7 +2661,7 @@
       <span class="external-link">
         ↗
       </span>
-      states that if and Y are independent and and are also independent, then both
+      states that if X and Y are independent and X + Y and X - Y are also independent, then both
       <em>
         X
       </em>
@@ -2596,7 +2672,7 @@
       must necessarily have normal distributions.
     </p>
     <p>
-      More generally, if are independent random variables, then two distinct linear combinations and will be independent if and only if all are normal and , where denotes the variance of .
+      More generally, if X_1, ..., X_n are independent random variables, then two distinct linear combinations suma_kX_k and sumb_kX_kwill be independent if and only if all X_k are normal and suma_kb_kσ_k^2=0, where σ_k^2 denotes the variance of X_k.
     </p>
     <h3>
       Extensions
@@ -2968,10 +3044,10 @@
       <em>
         X
       </em>
-      has a two-piece normal distribution if it has a distribution
+      has a two-piece normal distribution if it has a distribution f_X(x) = N(μ, σ_1^2), if x ≤ μ
     </p>
     <p>
-      where
+      N(μ, σ_2^2), if x ≥ μ where
       <em>
         μ
       </em>
@@ -3010,7 +3086,13 @@
       <em>
         X
       </em>
-      ) of this distribution have been determined
+      ) of this distribution have been determined E(X) = μ + √(frac 2 π) (σ_2 - σ_1),
+    </p>
+    <p>
+      V(X) = (1 - frac 2 π)(σ_2 - σ_1)^2 + σ_1 σ_2,
+    </p>
+    <p>
+      T(X) = √(frac 2 π)(σ_2 - σ_1) [(frac 4 π - 1) (σ_2 - σ_1)^2 + σ_1 σ_2].
     </p>
     <p>
       One of the main practical uses of the Gaussian law is to model the empirical distributions of many different random variables encountered in practice. In such case a possible extension would be a richer family of distributions, having more than two parameters and therefore being able to fit the empirical distribution more accurately. The examples of such extensions are:
@@ -3066,7 +3148,7 @@
       <span class="external-link">
         ↗
       </span>
-      them. That is, having a sample from a normal population we would like to learn the approximate values of parameters \mu and . The standard approach to this problem is the
+      them. That is, having a sample (x_1, ..., x_n) from a normal N(μ, σ^2) population we would like to learn the approximate values of parameters μ and σ^2. The standard approach to this problem is the
       <a href="https://en.wikipedia.org/wiki/maximum_likelihood">
         maximum likelihood
       </a>
@@ -3082,17 +3164,17 @@
           ↗
         </span>
       </em>
-      :
+      : lnL(μ,σ^2) = sum_(i=1)^n ln f(x_imidμ,σ^2)
     </p>
     <p>
-      Taking derivatives with respect to \mu and and solving the resulting system of first order conditions yields the
+      = -n/2ln(2π) - n/2lnσ^2 - 1/2σ^2sum_(i=1)^n (x_i-μ)^2. Taking derivatives with respect to μ and σ^2 and solving the resulting system of first order conditions yields the
       <em>
         maximum likelihood estimates
       </em>
-      :
+      : μ = x equiv 1/nsum_(i=1)^n x_i, σ^2 = 1/n sum_(i=1)^n (x_i - x)^2.
     </p>
     <p>
-      Then is as follows:
+      Then lnL(μ,σ^2) is as follows: lnL(μ,σ^2) = -n/2 [ln(2 π σ^2) + 1]
     </p>
     <h4>
       Sample mean
@@ -3107,7 +3189,7 @@
       </span>
     </p>
     <p>
-      Estimator is called the
+      Estimator μ is called the
       <em>
         <a href="https://en.wikipedia.org/wiki/sample_mean">
           sample mean
@@ -3116,7 +3198,7 @@
           ↗
         </span>
       </em>
-      , since it is the arithmetic mean of all observations. The statistic is
+      , since it is the arithmetic mean of all observations. The statistic x is
       <a href="https://en.wikipedia.org/wiki/complete_statistic">
         complete
       </a>
@@ -3130,24 +3212,21 @@
       <span class="external-link">
         ↗
       </span>
-      for \mu, and therefore by the
+      for μ, and therefore by the
       <a href="https://en.wikipedia.org/wiki/Lehmann–Scheffé_theorem">
         Lehmann–Scheffé theorem
       </a>
       <span class="external-link">
         ↗
       </span>
-      , is the
+      , μ is the
       <a href="https://en.wikipedia.org/wiki/uniformly_minimum_variance_unbiased">
         uniformly minimum variance unbiased
       </a>
       <span class="external-link">
         ↗
       </span>
-      (UMVU) estimator. In finite samples it is distributed normally:
-    </p>
-    <p>
-      The variance of this estimator is equal to the
+      (UMVU) estimator. In finite samples it is distributed normally: μ sim N(μ,σ^2/n). The variance of this estimator is equal to the
       <em>
         μμ
       </em>
@@ -3158,7 +3237,7 @@
       <span class="external-link">
         ↗
       </span>
-      . This implies that the estimator is
+      I^(-1). This implies that the estimator is
       <a href="https://en.wikipedia.org/wiki/efficient_estimator">
         finite-sample efficient
       </a>
@@ -3172,7 +3251,7 @@
       <span class="external-link">
         ↗
       </span>
-      of being proportional to , that is, if one wishes to decrease the standard error by a factor of 10, one must increase the number of points in the sample by a factor of 100. This fact is widely used in determining sample sizes for opinion polls and the number of trials in
+      of μ being proportional to 1/√n, that is, if one wishes to decrease the standard error by a factor of 10, one must increase the number of points in the sample by a factor of 100. This fact is widely used in determining sample sizes for opinion polls and the number of trials in
       <a href="https://en.wikipedia.org/wiki/Monte_Carlo_simulation">
         Monte Carlo simulation
       </a>
@@ -3189,7 +3268,7 @@
       <span class="external-link">
         ↗
       </span>
-      , is
+      , μ is
       <a href="https://en.wikipedia.org/wiki/consistent_estimator">
         consistent
       </a>
@@ -3203,14 +3282,14 @@
       <span class="external-link">
         ↗
       </span>
-      to \mu as . The estimator is also
+      to μ as n → ∞. The estimator is also
       <a href="https://en.wikipedia.org/wiki/asymptotic_normality">
         asymptotically normal
       </a>
       <span class="external-link">
         ↗
       </span>
-      , which is a simple corollary of it being normal in finite samples:
+      , which is a simple corollary of it being normal in finite samples: √n(μ-μ) xrightarrowd N(0,σ^2).
     </p>
     <h4>
       Sample variance
@@ -3232,7 +3311,7 @@
       </span>
     </p>
     <p>
-      The estimator is called the
+      The estimator σ^2 is called the
       <em>
         <a href="https://en.wikipedia.org/wiki/sample_variance">
           sample variance
@@ -3241,7 +3320,7 @@
           ↗
         </span>
       </em>
-      , since it is the variance of the sample (). In practice, another estimator is often used instead of the . This other estimator is denoted , and is also called the
+      , since it is the variance of the sample ((x_1, ..., x_n)). In practice, another estimator is often used instead of the σ^2. This other estimator is denoted s^2, and is also called the
       <em>
         sample variance
       </em>
@@ -3249,7 +3328,7 @@
       <em>
         sample standard deviation
       </em>
-      . The estimator differs from by having (
+      . The estimator s^2 differs from σ^2 by having (
       <em>
         n
       </em>
@@ -3264,35 +3343,32 @@
       <span class="external-link">
         ↗
       </span>
-      ):
-    </p>
-    <p>
-      The difference between and becomes negligibly small for large
+      ): s^2 = n/(n-1) σ^2 = 1/(n-1) sum_(i=1)^n (x_i - x)^2. The difference between s^2 and σ^2 becomes negligibly small for large
       <em>
         n
       </em>
-      s. In finite samples however, the motivation behind the use of is that it is an
+      s. In finite samples however, the motivation behind the use of s^2 is that it is an
       <a href="https://en.wikipedia.org/wiki/unbiased_estimator">
         unbiased estimator
       </a>
       <span class="external-link">
         ↗
       </span>
-      of the underlying parameter , whereas is biased. Also, by the Lehmann–Scheffé theorem the estimator is uniformly minimum variance unbiased (
+      of the underlying parameter σ^2, whereas σ^2 is biased. Also, by the Lehmann–Scheffé theorem the estimator s^2 is uniformly minimum variance unbiased (
       <a href="https://en.wikipedia.org/wiki/UMVU">
         UMVU
       </a>
       <span class="external-link">
         ↗
       </span>
-      ), which makes it the "best" estimator among all unbiased ones. However it can be shown that the biased estimator is better than the in terms of the
+      ), which makes it the "best" estimator among all unbiased ones. However it can be shown that the biased estimator σ^2 is better than the s^2 in terms of the
       <a href="https://en.wikipedia.org/wiki/mean_squared_error">
         mean squared error
       </a>
       <span class="external-link">
         ↗
       </span>
-      (MSE) criterion. In finite samples both and have scaled
+      (MSE) criterion. In finite samples both s^2 and σ^2 have scaled
       <a href="https://en.wikipedia.org/wiki/chi-squared_distribution">
         chi-squared distribution
       </a>
@@ -3303,20 +3379,14 @@
       <em>
         n
       </em>
-      − 1) degrees of freedom:
-    </p>
-    <p>
-      The first of these expressions shows that the variance of is equal to , which is slightly greater than the
+      − 1) degrees of freedom: s^2 sim σ^2/(n-1) · chi^2_(n-1), σ^2 sim σ^2/n · chi^2_(n-1). The first of these expressions shows that the variance of s^2 is equal to 2σ^4/(n-1), which is slightly greater than the
       <em>
         σσ
       </em>
-      -element of the inverse Fisher information matrix , which is . Thus, is not an efficient estimator for , and moreover, since is UMVU, we can conclude that the finite-sample efficient estimator for does not exist.
+      -element of the inverse Fisher information matrix I^(-1), which is 2σ^4/n. Thus, s^2 is not an efficient estimator for σ^2, and moreover, since s^2 is UMVU, we can conclude that the finite-sample efficient estimator for σ^2 does not exist.
     </p>
     <p>
-      Applying the asymptotic theory, both estimators and are consistent, that is they converge in probability to as the sample size . The two estimators are also both asymptotically normal:
-    </p>
-    <p>
-      In particular, both estimators are asymptotically efficient for .
+      Applying the asymptotic theory, both estimators s^2 and σ^2 are consistent, that is they converge in probability to σ^2 as the sample size n → ∞. The two estimators are also both asymptotically normal: √n(σ^2 - σ^2) simeq √n(s^2-σ^2) xrightarrowd N(0,2σ^4). In particular, both estimators are asymptotically efficient for σ^2.
     </p>
     <h3>
       Confidence intervals
@@ -3345,7 +3415,7 @@
       <span class="external-link">
         ↗
       </span>
-      , for normal distributions the sample mean and the sample variance
+      , for normal distributions the sample mean μ and the sample variance
       <em>
         s
       </em>
@@ -3366,7 +3436,7 @@
       <span class="external-link">
         ↗
       </span>
-      . There is also a converse theorem: if in a sample the sample mean and sample variance are independent, then the sample must have come from the normal distribution. The independence between and
+      . There is also a converse theorem: if in a sample the sample mean and sample variance are independent, then the sample must have come from the normal distribution. The independence between μ and
       <em>
         s
       </em>
@@ -3374,10 +3444,7 @@
       <em>
         t-statistic
       </em>
-      :
-    </p>
-    <p>
-      This quantity
+      : t = (μ-μ)/s/√n = (x-μ)/(√(1/(n(n-1))sum(x_i-x)^2)) sim t_(n-1) This quantity
       <em>
         t
       </em>
@@ -3435,10 +3502,7 @@
       <sup>
         2
       </sup>
-      :
-    </p>
-    <p>
-      where
+      : μ ∈ [μ - t_(n-1,1-α/2) s/√n, μ + t_(n-1,1-α/2) s/√n] σ^2 ∈ [(n-1)/(chi^2_(n-1,1-α/2))s^2, (n-1)/(chi^2_(n-1,α/2))s^2] where
       <em>
         t
       </em>
@@ -3535,17 +3599,14 @@
       .
     </p>
     <p>
-      Approximate formulas can be derived from the asymptotic distributions of and
+      Approximate formulas can be derived from the asymptotic distributions of μ and
       <em>
         s
       </em>
       <sup>
         2
       </sup>
-      :
-    </p>
-    <p>
-      The approximate formulas become valid for large values of
+      : μ ∈ [μ - |z_(α/2)|/(√ n)s, μ + |z_(α/2)|/(√ n)s] σ^2 ∈ [s^2 - √2|z_(α/2)|/√n s^2 , s^2 + √2|z_(α/2)|/√n s^2] The approximate formulas become valid for large values of
       <em>
         n
       </em>
@@ -3773,7 +3834,7 @@
             k
           </em>
         </sub>
-        ), where . For normally distributed data this plot should lie on a straight line between (0, 0) and (1, 1).
+        ), where z_((k)) = (x_((k))-μ)/σ. For normally distributed data this plot should lie on a straight line between (0, 0) and (1, 1).
       </li>
     </ul>
     <p>
@@ -3956,6 +4017,9 @@
       update equations, which otherwise become fairly tedious.
     </p>
     <p>
+      a(x-y)^2 + b(x-z)^2 = (a + b)(x - (ay+bz)/(a+b))^2 + ab/(a+b)(y-z)^2
+    </p>
+    <p>
       This equation rewrites the sum of two quadratics in
       <em>
         x
@@ -3975,7 +4039,7 @@
     </p>
     <ol>
       <li>
-        The factor has the form of a
+        The factor (ay+bz)/(a+b) has the form of a
         <a href="https://en.wikipedia.org/wiki/weighted_average">
           weighted average
         </a>
@@ -3993,7 +4057,7 @@
         .
       </li>
       <li>
-        This shows that this factor can be thought of as resulting from a situation where the
+        ab/(a+b) = 1/(1/a+1/b) = (a^(-1) + b^(-1))^(-1). This shows that this factor can be thought of as resulting from a situation where the
         <a href="https://en.wikipedia.org/wiki/Multiplicative_inverse">
           reciprocals
         </a>
@@ -4023,7 +4087,7 @@
         <span class="external-link">
           ↗
         </span>
-        , so it is not surprising that is one-half the
+        , so it is not surprising that ab/(a+b) is one-half the
         <a href="https://en.wikipedia.org/wiki/harmonic_mean">
           harmonic mean
         </a>
@@ -4083,10 +4147,13 @@
       <span class="external-link">
         ↗
       </span>
-      of size , then
+      of size k × k, then
     </p>
     <p>
-      where
+      (mathbfy-mathbfx)'mathbfA(mathbfy-mathbfx) + (mathbfx-mathbfz)' mathbfB(mathbfx-mathbfz)
+    </p>
+    <p>
+      = (mathbfx - mathbfc)'(mathbfA+mathbfB)(mathbfx - mathbfc) + (mathbfy - mathbfz)'(mathbfA^(-1) + mathbfB^(-1))^(-1)(mathbfy - mathbfz) where mathbfc = (mathbfA + mathbfB)^(-1)(mathbfAmathbfy + mathbfB mathbfz)
     </p>
     <p>
       The form
@@ -4114,14 +4181,11 @@
       <span class="external-link">
         ↗
       </span>
-      :
-    </p>
-    <p>
-      In other words, it sums up all possible combinations of products of pairs of elements from
+      : mathbfx'mathbfAmathbfx = sum_(i,j)a_(ij) x_i x_j In other words, it sums up all possible combinations of products of pairs of elements from
       <strong>
         x
       </strong>
-      , with a separate coefficient for each. In addition, since , only the sum matters for any off-diagonal elements of
+      , with a separate coefficient for each. In addition, since x_i x_j = x_j x_i, only the sum a_(ij) + a_(ji) matters for any off-diagonal elements of
       <strong>
         A
       </strong>
@@ -4140,16 +4204,13 @@
       <strong>
         A
       </strong>
-      is symmetric, then the form
+      is symmetric, then the form mathbfx'mathbfAmathbfy = mathbfy'mathbfAmathbfx.
     </p>
     <h4>
       Sum of differences from the mean
     </h4>
     <p>
-      Another useful formula is as follows:
-    </p>
-    <p>
-      where
+      Another useful formula is as follows: sum_(i=1)^n (x_i-μ)^2 = sum_(i=1)^n (x_i-x)^2 + n(x -μ)^2 where x = 1/n sum_(i=1)^n x_i.
     </p>
     <h3>
       With known variance
@@ -4174,7 +4235,7 @@
       <em>
         x
       </em>
-      follows with known
+      follows x sim N(μ, σ^2) with known
       <a href="https://en.wikipedia.org/wiki/variance">
         variance
       </a>
@@ -4215,7 +4276,7 @@
       <sup>
         2
       </sup>
-      . Then if and we proceed as follows.
+      . Then if x sim N(μ, 1/τ) and μ sim N(μ_0, 1/τ_0), we proceed as follows.
     </p>
     <p>
       First, the
@@ -4225,10 +4286,31 @@
       <span class="external-link">
         ↗
       </span>
-      is (using the formula above for the sum of differences from the mean):
+      is (using the formula above for the sum of differences from the mean): p(mathbfXmidμ,τ) = prod_(i=1)^n √(τ/2π) exp(-1/2 τ(x_i-μ)^2)
     </p>
     <p>
-      Then, we proceed as follows:
+      = (τ/2π)^(n/2) exp(-1/2τ sum_(i=1)^n (x_i-μ)^2)
+    </p>
+    <p>
+      = (τ/2π)^(n/2) exp[-1/2τ (sum_(i=1)^n(x_i-x)^2 + n(x -μ)^2)].
+    </p>
+    <p>
+      Then, we proceed as follows: p(μmid\mathbfX) propto p(mathbfXmidμ) p(μ)
+    </p>
+    <p>
+      = (τ/2π)^(n/2) exp[-1/2τ (sum_(i=1)^n(x_i-x)^2 + n(x -μ)^2)] √(τ_0/2π) exp(-1/2τ_0(μ-μ_0)^2)
+    </p>
+    <p>
+      propto exp(-1/2(τ(sum_(i=1)^n(x_i-x)^2 + n(x -μ)^2) + τ_0(μ-μ_0)^2))
+    </p>
+    <p>
+      propto exp(-1/2 (nτ(x-μ)^2 + τ_0(μ-μ_0)^2))
+    </p>
+    <p>
+      = exp(-1/2(nτ + τ_0)(μ - (nτ x + τ_0μ_0)/(nτ + τ_0))^2 + nτtau_0/(nτ+τ_0)(x - μ_0)^2)
+    </p>
+    <p>
+      propto exp(-1/2(nτ + τ_0)(μ - (nτ x + τ_0μ_0)/(nτ + τ_0))^2)
     </p>
     <p>
       In the above derivation, we used the formula above for the sum of two quadratics and eliminated all constant factors not involving
@@ -4242,10 +4324,10 @@
       <span class="external-link">
         ↗
       </span>
-      of a normal distribution, with mean and precision , i.e.
+      of a normal distribution, with mean (nτ x + τ_0μ_0)/(nτ + τ_0) and precision nτ + τ_0, i.e. p(μmid\mathbfX) sim N((nτ x + τ_0μ_0)/(nτ + τ_0), 1/(nτ + τ_0))
     </p>
     <p>
-      This can be written as a set of Bayesian update equations for the posterior parameters in terms of the prior parameters:
+      This can be written as a set of Bayesian update equations for the posterior parameters in terms of the prior parameters: τ_0' = τ_0 + nτ [5pt] μ_0' = (nτ x + τ_0μ_0)/(nτ + τ_0) [5pt] x = 1/nsum_(i=1)^n x_i
     </p>
     <p>
       That is, to combine
@@ -4267,7 +4349,7 @@
       <sup>
         2
       </sup>
-      ) and mean of values , derive a new total precision simply by adding the total precision of the data to the prior total precision, and form a new mean through a
+      ) and mean of values x, derive a new total precision simply by adding the total precision of the data to the prior total precision, and form a new mean through a
       <em>
         precision-weighted average
       </em>
@@ -4295,7 +4377,7 @@
       <span class="external-link">
         ↗
       </span>
-      s for the normal distribution in terms of the precision. The posterior precision is simply the sum of the prior and likelihood precisions, and the posterior mean is computed through a precision-weighted average, as described above. The same formulas can be written in terms of variance by reciprocating all the precisions, yielding the more ugly formulas
+      s for the normal distribution in terms of the precision. The posterior precision is simply the sum of the prior and likelihood precisions, and the posterior mean is computed through a precision-weighted average, as described above. The same formulas can be written in terms of variance by reciprocating all the precisions, yielding the more ugly formulas σ^2_0' = 1/(n/σ^2 + 1/σ_0^2) [5pt] μ_0' = (nx/σ^2 + μ_0/σ_0^2)/(n/σ^2 + 1/σ_0^2) [5pt] x = 1/nsum_(i=1)^n x_i
     </p>
     <h4>
       With known mean
@@ -4320,7 +4402,7 @@
       <em>
         x
       </em>
-      follows with known mean
+      follows x sim N(μ, σ^2) with known mean
       <em>
         μ
       </em>
@@ -4366,7 +4448,7 @@
       <sup>
         2
       </sup>
-      is as follows:
+      is as follows: p(σ^2mid\nu_0,σ_0^2) = (σ_0^2nu_0/2)^(nu_0/2)/(Γ(nu_0/2))~(exp[(-nu_0 σ_0^2)/(2 σ^2)])/((σ^2)^1+nu_0/2) propto (exp[(-nu_0 σ_0^2)/(2 σ^2)])/((σ^2)^1+nu_0/2)
     </p>
     <p>
       The
@@ -4376,19 +4458,31 @@
       <span class="external-link">
         ↗
       </span>
-      from above, written in terms of the variance, is:
+      from above, written in terms of the variance, is: p(mathbfXmidμ,σ^2) = (1/2πσ^2)^(n/2) exp[-1/2σ^2 sum_(i=1)^n (x_i-μ)^2]
     </p>
     <p>
-      where
+      = (1/2πσ^2)^(n/2) exp[-S/2σ^2] where S = sum_(i=1)^n (x_i-μ)^2.
     </p>
     <p>
-      Then:
+      Then: p(σ^2mid\mathbfX) propto p(mathbfXmidσ^2) p(σ^2)
     </p>
     <p>
-      The above is also a scaled inverse chi-squared distribution where
+      = (1/2πσ^2)^(n/2) exp[-S/2σ^2] (σ_0^2nu_0/2)^nu_0/2/(Γ(nu_0/2))~(exp[(-nu_0 σ_0^2)/(2 σ^2)])/((σ^2)^1+nu_0/2)
     </p>
     <p>
-      or equivalently
+      propto (1/σ^2)^(n/2) 1/((σ^2)^1+nu_0/2) exp[-S/2σ^2 + (-nu_0 σ_0^2)/(2 σ^2)]
+    </p>
+    <p>
+      = 1/((σ^2)^1+(nu_0+n)/2) exp[-(nu_0 σ_0^2 + S)/2σ^2]
+    </p>
+    <p>
+      The above is also a scaled inverse chi-squared distribution where nu_0' = nu_0 + n
+    </p>
+    <p>
+      nu_0'σ_0^2' = nu_0 σ_0^2 + sum_(i=1)^n (x_i-μ)^2 or equivalently nu_0' = nu_0 + n
+    </p>
+    <p>
+      σ_0^2' = (nu_0 σ_0^2 + sum_(i=1)^n (x_i-μ)^2)/(nu_0+n)
     </p>
     <p>
       Reparameterizing in terms of an
@@ -4398,7 +4492,10 @@
       <span class="external-link">
         ↗
       </span>
-      , the result is:
+      , the result is: α' = α + n/2
+    </p>
+    <p>
+      β' = β + (sum_(i=1)^n (x_i-μ)^2)/2
     </p>
     <h4>
       With unknown mean and unknown variance
@@ -4423,7 +4520,7 @@
       <em>
         x
       </em>
-      follows with unknown mean
+      follows x sim N(μ, σ^2) with unknown mean
       <em>
         μ
       </em>
@@ -4527,10 +4624,25 @@
       </li>
     </ol>
     <p>
-      The priors are normally defined as follows:
+      The priors are normally defined as follows: p(μmidσ^2; μ_0, n_0) sim N(μ_0,σ^2/n_0)
     </p>
     <p>
-      The update equations can be derived, and look as follows: The respective numbers of pseudo-observations add the number of actual observations to them. The new mean hyperparameter is once again a weighted average, this time weighted by the relative numbers of observations. Finally, the update for is similar to the case with known mean, but in this case the sum of squared deviations is taken with respect to the observed data mean rather than the true mean, and as a result a new interaction term needs to be added to take care of the additional error source stemming from the deviation between prior and data mean.
+      p(σ^2; nu_0,σ_0^2) sim Ichi^2(nu_0,σ_0^2) = IG(nu_0/2, nu_0σ_0^2/2)
+    </p>
+    <p>
+      The update equations can be derived, and look as follows: x = 1/n sum_(i=1)^n x_i
+    </p>
+    <p>
+      μ_0' = (n_0μ_0 + nx)/(n_0 + n)
+    </p>
+    <p>
+      n_0' = n_0 + n
+    </p>
+    <p>
+      nu_0' = nu_0 + n
+    </p>
+    <p>
+      nu_0'σ_0^2' = nu_0 σ_0^2 + sum_(i=1)^n (x_i-x)^2 + (n_0 n)/(n_0 + n)(μ_0 - x)^2The respective numbers of pseudo-observations add the number of actual observations to them. The new mean hyperparameter is once again a weighted average, this time weighted by the relative numbers of observations. Finally, the update for nu_0'σ_0^2' is similar to the case with known mean, but in this case the sum of squared deviations is taken with respect to the observed data mean rather than the true mean, and as a result a new interaction term needs to be added to take care of the additional error source stemming from the deviation between prior and data mean.
     </p>
     <h2>
       Occurrence and applications
@@ -4657,7 +4769,7 @@
         <span class="external-link">
           ↗
         </span>
-        . If the initial location is given by a certain density function , then the density at time
+        partial/(partial t) f(x,t) = 1/2 partial^2/(partial x^2) f(x,t). If the initial location is given by a certain density function g(x), then the density at time
         <em>
           t
         </em>
@@ -5210,66 +5322,71 @@
         <em>
           Y
         </em>
-        will both have the standard normal distribution, and will be
-        <a href="https://en.wikipedia.org/wiki/independence_(probability_theory)">
-          independent
-        </a>
-        <span class="external-link">
-          ↗
-        </span>
-        . This formulation arises because for a
-        <a href="https://en.wikipedia.org/wiki/bivariate_normal">
-          bivariate normal
-        </a>
-        <span class="external-link">
-          ↗
-        </span>
-        random vector (
-        <em>
-          X
-        </em>
-        ,
-        <em>
-          Y
-        </em>
-        ) the squared norm
-        <em>
-          X
-        </em>
-        <sup>
-          2
-        </sup>
-        +
-        <em>
-          Y
-        </em>
-        <sup>
-          2
-        </sup>
-        will have the
-        <a href="https://en.wikipedia.org/wiki/chi-squared_distribution">
-          chi-squared distribution
-        </a>
-        <span class="external-link">
-          ↗
-        </span>
-        with two degrees of freedom, which is an easily generated
-        <a href="https://en.wikipedia.org/wiki/exponential_random_variable">
-          exponential random variable
-        </a>
-        <span class="external-link">
-          ↗
-        </span>
-        corresponding to the quantity −2 ln(
-        <em>
-          U
-        </em>
-        ) in these equations; and the angle is distributed uniformly around the circle, chosen by the random variable
-        <em>
-          V
-        </em>
-        .
+        X = √(- 2 ln U) cos(2 π V) ,
       </li>
+    </ul>
+    <p>
+      Y = √(- 2 ln U) sin(2 π V) . will both have the standard normal distribution, and will be
+      <a href="https://en.wikipedia.org/wiki/independence_(probability_theory)">
+        independent
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      . This formulation arises because for a
+      <a href="https://en.wikipedia.org/wiki/bivariate_normal">
+        bivariate normal
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      random vector (
+      <em>
+        X
+      </em>
+      ,
+      <em>
+        Y
+      </em>
+      ) the squared norm
+      <em>
+        X
+      </em>
+      <sup>
+        2
+      </sup>
+      +
+      <em>
+        Y
+      </em>
+      <sup>
+        2
+      </sup>
+      will have the
+      <a href="https://en.wikipedia.org/wiki/chi-squared_distribution">
+        chi-squared distribution
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      with two degrees of freedom, which is an easily generated
+      <a href="https://en.wikipedia.org/wiki/exponential_random_variable">
+        exponential random variable
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      corresponding to the quantity −2 ln(
+      <em>
+        U
+      </em>
+      ) in these equations; and the angle is distributed uniformly around the circle, chosen by the random variable
+      <em>
+        V
+      </em>
+      .
+    </p>
+    <ul>
       <li>
         The
         <a href="https://en.wikipedia.org/wiki/Marsaglia_polar_method">
@@ -5308,7 +5425,7 @@
         <em>
           S
         </em>
-        is greater or equal to 1, then the method starts over, otherwise the two quantities are returned. Again,
+        is greater or equal to 1, then the method starts over, otherwise the two quantities X = U√((-2ln S)/S), Y = V√((-2ln S)/S) are returned. Again,
         <em>
           X
         </em>
@@ -5527,7 +5644,7 @@
         <sup>
           −8
         </sup>
-        (algorithm 26.2.17): where
+        (algorithm 26.2.17): Phi(x) = 1 - varphi(x)(b_1 t + b_2 t^2 + b_3t^3 + b_4 t^4 + b_5 t^5) + varepsilon(x), t = 1/(1+b_0x), where
         <em>
           ϕ
         </em>
@@ -5604,7 +5721,7 @@
         .
       </li>
       <li>
-        Marsaglia (2004) suggested a simple algorithm based on the Taylor series expansion for calculating
+        Marsaglia (2004) suggested a simple algorithm based on the Taylor series expansion Phi(x) = 1/2 + varphi(x)(x + fracx^3 3 + fracx^53 · 5 + fracx^73 · 5 · 7 + fracx^93 · 5 · 7 · 9 + cdots) for calculating
         <em>
           Φ
         </em>
@@ -5636,9 +5753,18 @@
         s.
       </li>
       <li>
-        Dia (2023) proposes the following approximation of with a maximum relative error less than in absolute value: for and for ,
+        Dia (2023) proposes the following approximation of 1-Phi with a maximum relative error less than 2^(-53) (≈ 1.1 × 10^(-16)) in absolute value: for x ≥ 01-Phi(x) = (0.39894228040143268/(x+2.92678600515804815))
       </li>
     </ul>
+    <p>
+      ((x^2+8.42742300458043240 x+18.38871225773938487)/(x^2+5.81582518933527391 x+8.97280659046817350))
+    </p>
+    <p>
+      ((x^2+7.30756258553673541 x+18.25323235347346525)/(x^2+5.70347935898051437 x+10.27157061171363079)) ((x^2+5.66479518878470765 x+18.61193318971775795)/(x^2+5.51862483025707963 x+12.72323261907760928))
+    </p>
+    <p>
+      ((x^2+4.91396098895240075 x+24.14804072812762821)/(x^2+5.26184239579604207 x+16.88639562007936908)) ((x^2+3.83362947800146179 x+11.61511226260603247)/(x^2+4.92081346632882033 x+24.12333774572479110)) e^-x^2/2 and for x&lt;0, 1-Phi(x) = 1-(1-Phi(-x))
+    </p>
     <p>
       Shore (1982) introduced simple approximations that may be incorporated in stochastic optimization models of engineering and operations research, like reliability engineering and inventory analysis. Denoting
       <em>
@@ -5652,7 +5778,7 @@
       <em>
         z
       </em>
-      ), the simplest approximation for the quantile function is:
+      ), the simplest approximation for the quantile function is: z = Phi^(-1)(p)=5.5556[1- (frac1-p p)^(0.1186)], p ≥ 1/2
     </p>
     <p>
       This approximation delivers for
@@ -5679,10 +5805,22 @@
       <em>
         p
       </em>
-      and change sign. Another approximation, somewhat less accurate, is the single-parameter approximation:
+      and change sign. Another approximation, somewhat less accurate, is the single-parameter approximation: z=-0.4115{frac1-p p + log [frac1-p p] - 1}, p ≥ 1/2
     </p>
     <p>
-      The latter had served to derive a simple approximation for the loss integral of the normal distribution, defined by
+      The latter had served to derive a simple approximation for the loss integral of the normal distribution, defined by L(z) =∫_z^ ∞ (u-z)varphi(u) du=∫_z^ ∞ [1-Phi (u)] du [5pt] L(z) ≈ 0.4115(p/(1-p)) - z, p&lt;1/2, \
+    </p>
+    <p>
+      0.4115(dfrac 1-p p), p ≥ 1/2.
+    </p>
+    <p>
+      [5pt] or, equivalently,
+    </p>
+    <p>
+      L(z) ≈ 0.4115{1-log [p/(1-p)]}, p &lt; 1/2, \
+    </p>
+    <p>
+      0.4115 dfrac1-p p, p ≥ 1/2.
     </p>
     <p>
       This approximation is particularly accurate for the right far-tail (maximum error of 10
@@ -5714,7 +5852,7 @@
       <em>
         relative
       </em>
-      error on the whole domain for the cumulative distribution function \Phi and the quantile function as well, is achieved via an explicitly invertible formula by Sergei Winitzki in 2008.
+      error on the whole domain for the cumulative distribution function Phi and the quantile function Phi^(-1) as well, is achieved via an explicitly invertible formula by Sergei Winitzki in 2008.
     </p>
     <h2>
       History
@@ -5760,7 +5898,7 @@
           n
         </em>
       </sup>
-      . De Moivre proved that the middle term in this expansion has the approximate magnitude of , and that "If
+      . De Moivre proved that the middle term in this expansion has the approximate magnitude of 2^n/√(2π n), and that "If
       <em>
         m
       </em>
@@ -5779,7 +5917,7 @@
       <em>
         ℓ
       </em>
-      , has to the middle Term, is ." Although this theorem can be interpreted as the first obscure expression for the normal probability law,
+      , has to the middle Term, is -2ell\ell/n." Although this theorem can be interpreted as the first obscure expression for the normal probability law,
       <a href="https://en.wikipedia.org/wiki/Stephen_Stigler">
         Stigler
       </a>
@@ -5874,10 +6012,7 @@
       <em>
         φ
       </em>
-      is, Gauss requires that his method should reduce to the well-known answer: the arithmetic mean of the measured values. Starting from these principles, Gauss demonstrates that the only law that rationalizes the choice of arithmetic mean as an estimator of the location parameter, is the normal law of errors:
-    </p>
-    <p>
-      where
+      is, Gauss requires that his method should reduce to the well-known answer: the arithmetic mean of the measured values. Starting from these principles, Gauss demonstrates that the only law that rationalizes the choice of arithmetic mean as an estimator of the location parameter, is the normal law of errors: varphi\mathitΔ = h/surdπ e^-mathrmhhΔDelta, where
       <em>
         h
       </em>
@@ -5978,7 +6113,7 @@
       <em>
         dx
       </em>
-      is
+      is N 1/α √π e^-x^2/α^2 dx
     </p>
     <h3>
       Naming
@@ -6047,7 +6182,7 @@
       <span class="external-link">
         ↗
       </span>
-      added the location parameter to the formula for normal distribution, expressing it in the way it is written nowadays:
+      added the location parameter to the formula for normal distribution, expressing it in the way it is written nowadays: df = 1/√(2σ^2π) e^(-(x - m)^2/(2σ^2)) dx.
     </p>
     <p>
       The term
@@ -6156,15 +6291,20 @@
         <span class="external-link">
           ↗
         </span>
-        with the pdf on is given as , where denotes the
-        <a href="https://en.wikipedia.org/wiki/Fox–Wright_Psi_function">
-          Fox–Wright Psi function
-        </a>
-        <span class="external-link">
-          ↗
-        </span>
-        .
+        with the pdf on (0, ∞) is given as f(x)= (2β^(α/2) x^(α-1) exp(-β x^2+ gamma x))/(Psi(fracα2, frac\gamma√β)), where Psi(α,z)=_1Psi_1((α,1/2)
       </li>
+    </ul>
+    <p>
+      (1,0);z) denotes the
+      <a href="https://en.wikipedia.org/wiki/Fox–Wright_Psi_function">
+        Fox–Wright Psi function
+      </a>
+      <span class="external-link">
+        ↗
+      </span>
+      .
+    </p>
+    <ul>
       <li>
         <a href="https://en.wikipedia.org/wiki/Normally_distributed_and_uncorrelated_does_not_imply_independent">
           Normally distributed and uncorrelated does not imply independent

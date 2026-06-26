@@ -9,13 +9,20 @@ pub(crate) fn remove_comments(text: &str) -> String {
 
 pub(crate) fn remove_some_html_tags(text: &str) -> String {
     let mut text = text.to_string();
-    for tag in ["gallery", "timeline", "math", "score", "syntaxhighlight"] {
+    for tag in ["gallery", "timeline", "score", "syntaxhighlight"] {
         let pattern = format!(r"(?is)<{tag}\b[^>]*>.*?</{tag}>");
         text = Regex::new(&pattern)
             .unwrap()
             .replace_all(&text, "")
             .into_owned();
     }
+
+    let math_re = Regex::new(r"(?is)<math\b[^>]*>(.*?)</math>").unwrap();
+    text = math_re
+        .replace_all(&text, |caps: &regex::Captures| {
+            crate::tools::clean_math_latex(&caps[1])
+        })
+        .into_owned();
 
     text = Regex::new(r"(?i)<br\s*/?>")
         .unwrap()
@@ -72,8 +79,12 @@ mod tests {
     }
 
     #[test]
-    fn remove_some_html_tags_removes_math_tags() {
-        assert_eq!(remove_some_html_tags("<math>1 + 1 = 2</math>"), "");
+    fn remove_some_html_tags_cleans_math_tags() {
+        assert_eq!(remove_some_html_tags("<math>1 + 1 = 2</math>"), "1 + 1 = 2");
+        assert_eq!(
+            remove_some_html_tags("<math display=\"inline\">\\binom{n}{k}</math>"),
+            "(n/k)"
+        );
     }
 
     #[test]

@@ -713,4 +713,3 @@ fn generate_matsumoto_airport_book_from_local_page_dumps() {
 fn generate_binomial_distribution_book_from_local_page_dump() {
     assert_generated_book_matches_expected("Binomial_distribution");
 }
-

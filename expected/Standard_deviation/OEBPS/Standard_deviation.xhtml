@@ -216,7 +216,7 @@
       Population standard deviation of grades of eight students
     </h3>
     <p>
-      Suppose that the entire population of interest is eight students in a particular class. Their marks are the following eight values:
+      Suppose that the entire population of interest is eight students in a particular class. Their marks are the following eight values: 2, 4, 4, 4, 5, 5, 7, 9.
     </p>
     <p>
       For a finite set of numbers, the population standard deviation is found by taking the
@@ -233,7 +233,7 @@
       <span class="external-link">
         ↗
       </span>
-      of the squared deviations of the values subtracted from their average value, that is:
+      of the squared deviations of the values subtracted from their average value, that is: σ = √(mathrmaverage((v - μ)^2 for v ∈ mathrmvalues)) where μ = mathrmaverage(mathrmvalues).
     </p>
     <p>
       These eight data points have the
@@ -243,7 +243,7 @@
       <span class="external-link">
         ↗
       </span>
-      (average) of 5:
+      (average) of 5:μ = (2 + 4 + 4 + 4 + 5 + 5 + 7 + 9)/8 = 40/8 = 5.
     </p>
     <p>
       Next, calculate the deviations of each data point from the mean. Then
@@ -253,7 +253,16 @@
       <span class="external-link">
         ↗
       </span>
-      the result of each:
+      the result of each:lll (2 - 5)^2 = (-3)^2 = 9 (5 - 5)^2 = 0^2 = 0
+    </p>
+    <p>
+      (4 - 5)^2 = (-1)^2 = 1 (5 - 5)^2 = 0^2 = 0
+    </p>
+    <p>
+      (4 - 5)^2 = (-1)^2 = 1 (7 - 5)^2 = 2^2 = 4
+    </p>
+    <p>
+      (4 - 5)^2 = (-1)^2 = 1 (9 - 5)^2 = 4^2 = 16.
     </p>
     <p>
       Next, the
@@ -263,14 +272,14 @@
       <span class="external-link">
         ↗
       </span>
-      is the mean of these values:
+      is the mean of these values: σ^2 = (9 + 1 + 1 + 1 + 0 + 0 + 4 + 16)/8 = 32/8 = 4
     </p>
     <p>
       Finally, the
       <em>
         population
       </em>
-      standard deviation is the square root of the variance:
+      standard deviation is the square root of the variance:σ = √4 = 2.
     </p>
     <p>
       If the eight values with which we began are not the entire population of interest, then this is only one of many possible estimates of the standard deviation in the whole population. This specific one is
@@ -390,10 +399,7 @@
       <em>
         f
       </em>
-      :
-    </p>
-    <p>
-      The standard deviation
+      : μ equiv mathbb E[X] = ∫_(- ∞)^(+ ∞) x f(x) mathrm d x. The standard deviation
       <em>
         σ
       </em>
@@ -401,10 +407,7 @@
       <em>
         X
       </em>
-      is defined as
-    </p>
-    <p>
-      which can be shown to equal
+      is defined as σ equiv √(mathbb E[(X - μ)^2]) = √(∫_(- ∞)^(+ ∞) (x - μ)^2 f(x) mathrm d x) , which can be shown to equal √(mathbb E[X^2] - (mathbb E[X])^2) .
     </p>
     <p>
       In other words, the standard deviation is the square root of the
@@ -445,7 +448,7 @@
       <span class="external-link">
         ↗
       </span>
-      with parameter has a mean, but not a standard deviation (loosely speaking, the standard deviation is infinite). The
+      with parameter α ∈ (1,2] has a mean, but not a standard deviation (loosely speaking, the standard deviation is infinite). The
       <a href="https://en.wikipedia.org/wiki/Cauchy_distribution">
         Cauchy distribution
       </a>
@@ -488,7 +491,7 @@
       , with each value having the same probability, the standard deviation is
     </p>
     <p>
-      Note: The above expression has a built-in bias. See the discussion on
+      σ = √(1/N [(x_1 - μ)^2 + (x_2 - μ)^2 + cdots + (x_N - μ)^2]) , ~~ where ~~ μ equiv 1/N (x_1 + cdots + x_N) , Note: The above expression has a built-in bias. See the discussion on
       <a href="https://en.wikipedia.org/wiki/Bessel&apos;s_correction">
         Bessel's correction
       </a>
@@ -506,6 +509,9 @@
         ↗
       </span>
       notation,
+    </p>
+    <p>
+      σ = √(1/N sum_(i=1)^N (x_i - μ)^2) , ~~ where ~~ μ equiv 1/N sum_(i=1)^N x_i ~.
     </p>
     <p>
       If, instead of having equal probabilities, the values have different probabilities, let
@@ -554,7 +560,7 @@
           N
         </em>
       </sub>
-      . In this case, the standard deviation will be
+      . In this case, the standard deviation will be σ = √(sum_(i=1)^N p_i(x_i - μ)^2) , ~~ where ~~ μ equiv sum_(i=1)^N p_i x_i .
     </p>
     <h3>
       Continuous random variable
@@ -584,7 +590,7 @@
       <em>
         x
       </em>
-      ) is
+      ) is σ = √(∫_mathbfX (x - μ)^2 p(x) mathrm d x) , ~~ where ~~ μ equiv ∫_mathbfX x p(x) mathrm d x ,
     </p>
     <p>
       and where the integrals are
@@ -634,7 +640,7 @@
       <sup>
         2
       </sup>
-      for the underlying normal distribution, the standard deviation of the log-normal variable is given by the expression
+      for the underlying normal distribution, the standard deviation of the log-normal variable is given by the expression √((e^(σ^2) - 1) e^(2μ + σ^2)) .
     </p>
     <h2>
       Estimation
@@ -770,10 +776,7 @@
       <em>
         standard deviation of the sample
       </em>
-      (considered as the entire population), and is defined as follows:
-    </p>
-    <p>
-      where {
+      (considered as the entire population), and is defined as follows: s_N = √(1/N sum_(i=1)^N (x_i - x)^2) where {
       <em>
         x
       </em>
@@ -862,7 +865,7 @@
       <span class="external-link">
         ↗
       </span>
-      of the sample, which is a downward-biased estimate of the population variance) is used to compute an estimate of the population's standard deviation, the result is
+      of the sample, which is a downward-biased estimate of the population variance) is used to compute an estimate of the population's standard deviation, the result is s_N = √(1/N sum_(i=1)^N (x_i - x)^2).
     </p>
     <p>
       Here taking the square root introduces further downward bias, by
@@ -912,7 +915,7 @@
       <sup>
         2
       </sup>
-      :
+      : s^2 = 1/(N - 1) sum_(i=1)^N (x_i - x)^2.
     </p>
     <p>
       This estimator is unbiased if the variance exists and the sample values are drawn independently with replacement.
@@ -926,7 +929,7 @@
       <span class="external-link">
         ↗
       </span>
-      in the vector of deviations from the mean,
+      in the vector of deviations from the mean, (x_1 - x, ..., x_n - x).
     </p>
     <p>
       Taking square roots reintroduces bias (because the square root is a nonlinear function which does not
@@ -936,7 +939,7 @@
       <span class="external-link">
         ↗
       </span>
-      with the expectation, i.e. often ), yielding the
+      with the expectation, i.e. often E[√X] ≠ √(E[X])), yielding the
       <em>
         corrected sample standard deviation,
       </em>
@@ -944,7 +947,7 @@
       <em>
         s
       </em>
-      :
+      : s = √(1/(N-1) sum_(i=1)^N (x_i - x)^2).
     </p>
     <p>
       As explained above, while
@@ -962,7 +965,7 @@
       <em>
         N
       </em>
-      less than 10). As sample size increases, the amount of bias decreases. We obtain more information and the difference between and becomes smaller.
+      less than 10). As sample size increases, the amount of bias decreases. We obtain more information and the difference between 1/N and 1/(N-1) becomes smaller.
     </p>
     <h3>
       Unbiased sample standard deviation
@@ -1005,7 +1008,7 @@
       <span class="external-link">
         ↗
       </span>
-      , and equals:
+      , and equals: c_4(N) = √(2/(N-1)) Γ(N/2)/(Γ((N-1)/2)).
     </p>
     <p>
       This arises because the sampling distribution of the sample standard deviation follows a (scaled)
@@ -1026,7 +1029,7 @@
       <em>
         N
       </em>
-      − 1.5, yielding:
+      − 1.5, yielding: σ = √(1/(N - 1.5) sum_(i=1)^N (x_i - x)^2),
     </p>
     <p>
       The error in this approximation decays quadratically (as
@@ -1076,7 +1079,7 @@
       .
     </p>
     <p>
-      For other distributions, the correct formula depends on the distribution, but a rule of thumb is to use the further refinement of the approximation:
+      For other distributions, the correct formula depends on the distribution, but a rule of thumb is to use the further refinement of the approximation: σ = √(1/(N - 1.5 - 1/4gamma_2) sum_(i=1)^N (x_i - x)^2),
     </p>
     <p>
       where
@@ -1144,7 +1147,10 @@
       :
     </p>
     <p>
-      where is the
+      Pr(q_α/2 &lt; k s^2/σ^2 &lt; q_1 - α/2) = 1 - α,
+    </p>
+    <p>
+      where q_p is the
       <em>
         p
       </em>
@@ -1157,6 +1163,9 @@
         α
       </em>
       is the confidence level. This is equivalent to the following:
+    </p>
+    <p>
+      Pr(ks^2/(q_1 - α/2) &lt; σ^2 &lt; ks^2/q_α/2) = 1 - α.
     </p>
     <p>
       With
@@ -1318,7 +1327,13 @@
       <em>
         Y
       </em>
-      :
+      : σ(c) = 0
+    </p>
+    <p>
+      σ(X + c) = σ(X),
+    </p>
+    <p>
+      σ(cX) = |c| σ(X).
     </p>
     <p>
       The standard deviation of the sum of two random variables can be related to their individual standard deviations and the
@@ -1331,7 +1346,10 @@
       between them:
     </p>
     <p>
-      where and stand for variance and
+      σ(X + Y) = √(var(X) + var(Y) + 2 cov(X,Y)).
+    </p>
+    <p>
+      where var = σ^2 and cov stand for variance and
       <a href="https://en.wikipedia.org/wiki/covariance">
         covariance
       </a>
@@ -1355,10 +1373,16 @@
       is interpreted to mean expected value, i.e., mean.
     </p>
     <p>
-      The sample standard deviation can be computed as:
+      σ(X) = √(E[(X - E[X])^2]) = √(E[X^2] - (E[X])^2).
+    </p>
+    <p>
+      The sample standard deviation can be computed as: s(X) = √(N/(N-1)) √(E[(X - E[X])^2]).
     </p>
     <p>
       For a finite population with equal probabilities at all points, we have
+    </p>
+    <p>
+      √(1/Nsum_(i=1)^N(x_i - x)^2) = √(1/N(sum_(i=1)^N x_i^2) - x^2) [1ex] = √((1/Nsum_(i=1)^N x_i^2) - (1/N sum_(i=1)^(N) x_i)^2),
     </p>
     <p>
       which means that the standard deviation is equal to the square root of the difference between the average of the squares of the values and the square of the average value.
@@ -1647,15 +1671,18 @@
       , one begins at the point:
     </p>
     <p>
+      M = (x, x, x)
+    </p>
+    <p>
       whose coordinates are the mean of the values we started out with.
     </p>
     <p>
       <strong>
-        Derivation of
+        Derivation of M = (x, x, x)
       </strong>
     </p>
     <p>
-      is on therefore for some .
+      M is on L therefore M = (ell,ell,ell) for some ell ∈ ℝ.
     </p>
     <p>
       The line
@@ -1671,6 +1698,9 @@
         P
       </em>
       . Therefore:
+    </p>
+    <p>
+      L · (P - M) = 0 [4pt] (r, r, r) · (x_1 - ell, x_2 - ell, x_3 - ell) = 0 [4pt] r(x_1 - ell + x_2 - ell + x_3 - ell) = 0 [4pt] r(sum_i x_i - 3ell) = 0 [4pt] sum_i x_i - 3ell = 0 [4pt] 1/3sum_i x_i = ell [4pt] x = ell
     </p>
     <p>
       A little algebra shows that the distance between
@@ -1696,7 +1726,7 @@
       <em>
         L
       </em>
-      ) is equal to the standard deviation of the vector (
+      ) √(sum_i (x_i - x)^2) is equal to the standard deviation of the vector (
       <em>
         x
       </em>
@@ -1741,34 +1771,54 @@
       <dd>
         Minimum population
       </dd>
-      <dt/>
+      <dt>
+        √2 σ
+      </dt>
       <dd>
         50%
       </dd>
-      <dt/>
+      <dt>
+        2σ
+      </dt>
       <dd>
         75%
       </dd>
-      <dt/>
+      <dt>
+        3σ
+      </dt>
       <dd>
         89%
       </dd>
-      <dt/>
+      <dt>
+        4σ
+      </dt>
       <dd>
         94%
       </dd>
-      <dt/>
+      <dt>
+        5σ
+      </dt>
       <dd>
         96%
       </dd>
-      <dt/>
+      <dt>
+        6σ
+      </dt>
       <dd>
         97%
       </dd>
-      <dt/>
-      <dd/>
-      <dt/>
-      <dd/>
+      <dt>
+        kσ
+      </dt>
+      <dd>
+        1 - 1/k^2
+      </dd>
+      <dt>
+        1/(√(1 - ell)) σ
+      </dt>
+      <dd>
+        ell
+      </dd>
     </dl>
     <h3>
       Rules for normally distributed data
@@ -1789,6 +1839,9 @@
         ↗
       </span>
       of
+    </p>
+    <p>
+      f(x, μ, σ^2) = 1/σ√(2π) e^-1/2((x - μ)/σ)^2,
     </p>
     <p>
       where
@@ -1834,7 +1887,10 @@
       standard deviations of the mean is defined by:
     </p>
     <p>
-      where is the
+      Proportion = erf(z/√2)
+    </p>
+    <p>
+      where erf is the
       <a href="https://en.wikipedia.org/wiki/error_function">
         error function
       </a>
@@ -1853,6 +1909,9 @@
         ↗
       </span>
       :
+    </p>
+    <p>
+      Proportion ≤ x = 1/2[1 + erf((x - μ)/σ√2)] = 1/2[1 + erf(z/√2)].
     </p>
     <p>
       If a data distribution is approximately normal then about 68 percent of the data values are within one standard deviation of the mean (mathematically,
@@ -2577,27 +2636,27 @@
       Standard deviation matrix
     </h2>
     <p>
-      The standard deviation matrix is the extension of the standard deviation to multiple dimensions. It is the
+      The standard deviation matrix mathbfS is the extension of the standard deviation to multiple dimensions. It is the
       <a href="https://en.wikipedia.org/wiki/Square_root_of_a_matrix">
         symmetric square root
       </a>
       <span class="external-link">
         ↗
       </span>
-      of the covariance matrix .
+      of the covariance matrix mathbfSigma.
     </p>
     <p>
-      linearly scales a random vector in multiple dimensions in the same way that does in one dimension. A scalar random variable with variance can be written as , where has unit variance. In the same way, a random vector in several dimensions with covariance can be written as , where is a normalized variable with identity covariance . This requires that . There are then infinite solutions for , and consequently there are multiple ways to whiten the distribution. The symmetric square root of is one of the solutions.
+      mathbfS linearly scales a random vector in multiple dimensions in the same way that σ does in one dimension. A scalar random variable x with variance σ^2 can be written as x=σ z, where z has unit variance. In the same way, a random vector boldsymbolx in several dimensions with covariance mathbfSigma can be written as boldsymbolx=mathbfSboldsymbolz, where boldsymbolz is a normalized variable with identity covariance mathbf1. This requires that mathbfSmathbfS' = mathbfSigma. There are then infinite solutions for mathbfS, and consequently there are multiple ways to whiten the distribution. The symmetric square root of mathbfSigma is one of the solutions.
     </p>
     <p>
-      For example, a multivariate normal vector can be defined as , where is the multivariate standard normal.
+      For example, a multivariate normal vector boldsymbolx sim N(boldsymbolμ, mathbfSigma) can be defined as boldsymbolx=mathbfSboldsymbolz+boldsymbolμ, where boldsymbolz sim N(boldsymbol0, mathbf1) is the multivariate standard normal.
     </p>
     <h3>
       Properties
     </h3>
     <ul>
       <li>
-        The eigenvectors and eigenvalues of correspond to the axes of the 1 sd error ellipsoid of the multivariate normal distribution. See
+        The eigenvectors and eigenvalues of mathbfS correspond to the axes of the 1 sd error ellipsoid of the multivariate normal distribution. See
         <em>
           <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Geometric_interpretation">
             Multivariate normal distribution: geometric interpretation
@@ -2613,14 +2672,14 @@
         <em>
           projection
         </em>
-        of the multivariate distribution (i.e. the marginal distribution) on to a line in the direction of the unit vector equals .
+        of the multivariate distribution (i.e. the marginal distribution) on to a line in the direction of the unit vector boldsymbolη equals √(boldsymbolη' mathbfSigma boldsymbolη) = lVert mathbfS boldsymbolη rVert.
       </li>
       <li>
         The standard deviation of a
         <em>
           slice
         </em>
-        of the multivariate distribution (i.e. the conditional distribution) along the line in the direction of the unit vector equals .
+        of the multivariate distribution (i.e. the conditional distribution) along the line in the direction of the unit vector boldsymbolη equals 1/(lVert mathbfS^(-1)boldsymbolη rVert).
       </li>
       <li>
         The
@@ -2637,10 +2696,10 @@
         <span class="external-link">
           ↗
         </span>
-        , which can also be expressed in terms of the sd matrix: , where is the mean-difference vector.
+        , which can also be expressed in terms of the sd matrix: d'=√((boldsymbolμ_a-boldsymbolμ_b)'boldsymbolSigma^(-1)(boldsymbolμ_a-boldsymbolμ_b)) = lVert mathbfS^(-1)boldsymbold rVert, where boldsymbold=boldsymbolμ_a-boldsymbolμ_b is the mean-difference vector.
       </li>
       <li>
-        Since scales a normalized variable, it can be used to invert the transformation, and make it decorrelated and unit-variance: has zero mean and identity covariance. This is called the
+        Since mathbfS scales a normalized variable, it can be used to invert the transformation, and make it decorrelated and unit-variance: boldsymbolz=mathbfS^(-1) (boldsymbolx-boldsymbolμ) has zero mean and identity covariance. This is called the
         <a href="https://en.wikipedia.org/wiki/Whitening_transformation">
           Mahalanobis whitening transform
         </a>
@@ -2687,6 +2746,9 @@
       are real numbers and define the function:
     </p>
     <p>
+      σ(r) = √(1/(N - 1) sum_(i=1)^N (x_i - r)^2).
+    </p>
+    <p>
       Using
       <a href="https://en.wikipedia.org/wiki/calculus">
         calculus
@@ -2710,6 +2772,9 @@
         r
       </em>
       ) has a unique minimum at the mean:
+    </p>
+    <p>
+      r = x.
     </p>
     <p>
       Variability can also be measured by the
@@ -2752,6 +2817,9 @@
       ) is related to the standard deviation of the distribution by:
     </p>
     <p>
+      σ_mean = 1/√Nσ,
+    </p>
+    <p>
       where
       <em>
         N
@@ -2763,16 +2831,19 @@
       <span class="external-link">
         ↗
       </span>
-      ):
+      ): var(X) = σ^2_X
     </p>
     <p>
-      (Statistical independence is assumed.)
+      var(X_1 + X_2) = var(X_1) + var(X_2)\ (Statistical independence is assumed.) var(cX_1) equiv c^2 var(X_1)
     </p>
     <p>
-      hence
+      hence var(mean) = var(1/Nsum_(i=1)^N X_i) = 1/N^2 var(sum_(i=1)^N X_i)
     </p>
     <p>
-      Resulting in:
+      = 1/N^2 sum_(i=1)^N var(X_i) = N/N^2 var(X) = 1/N var(X).
+    </p>
+    <p>
+      Resulting in: σ_mean = σ/√N.
     </p>
     <p>
       In order to estimate the standard deviation of the mean
@@ -2840,6 +2911,9 @@
       :
     </p>
     <p>
+      s_j = sum_(k=1)^Nx_k^j.
+    </p>
+    <p>
       Given the results of these running summations, the values
       <em>
         N
@@ -2865,6 +2939,9 @@
       value of the running standard deviation:
     </p>
     <p>
+      σ = (√(N s_2 - (s_1)^2))/N.
+    </p>
+    <p>
       Where
       <em>
         N
@@ -2880,6 +2957,9 @@
     </p>
     <p>
       Similarly for sample standard deviation,
+    </p>
+    <p>
+      s = √((N s_2 - (s_1)^2)/(N(N - 1))).
     </p>
     <p>
       In a computer implementation, as the two
@@ -2938,11 +3018,23 @@
       :
     </p>
     <p>
+      A_0 = 0
+    </p>
+    <p>
+      A_k = A_(k-1) + (x_k - A_(k-1))/k
+    </p>
+    <p>
       where
       <em>
         A
       </em>
-      is the mean value.
+      is the mean value. Q_0 = 0
+    </p>
+    <p>
+      Q_k = Q_(k-1) + (k-1)/k (x_k - A_(k-1))^2
+    </p>
+    <p>
+      = Q_(k-1) + (x_k - A_(k-1))(x_k - A_k)
     </p>
     <p>
       Note:
@@ -2973,16 +3065,16 @@
       .
     </p>
     <p>
-      Sample variance:
+      Sample variance: s^2_n = Q_n/(n - 1)
     </p>
     <p>
-      Population variance:
+      Population variance: σ^2_n = Q_n/n
     </p>
     <h3>
       Weighted calculation
     </h3>
     <p>
-      When the values are weighted with unequal weights , the power sums
+      When the values x_k are weighted with unequal weights w_k, the power sums
       <em>
         s
       </em>
@@ -3004,6 +3096,9 @@
         2
       </sub>
       are each computed as:
+    </p>
+    <p>
+      s_j = sum_(k=1)^N w_k x_k^j.
     </p>
     <p>
       And the standard deviation equations remain unchanged.
@@ -3031,23 +3126,38 @@
       <em>
         n
       </em>
-      :
+      : W_0 = 0
+    </p>
+    <p>
+      W_k = W_(k-1) + w_k
     </p>
     <p>
       and places where 1/
       <em>
         k
       </em>
-      is used above must be replaced by :
+      is used above must be replaced by w_k/W_k: A_0 = 0
     </p>
     <p>
-      In the final division,
+      A_k = A_(k-1) + w_k/W_k(x_k - A_(k-1))
     </p>
     <p>
-      and
+      Q_0 = 0
     </p>
     <p>
-      or
+      Q_k = Q_(k-1) + (w_k W_(k-1))/W_k(x_k -A_(k-1))^2
+    </p>
+    <p>
+      = Q_(k-1) + w_k(x_k-A_(k-1))(x_k - A_k)
+    </p>
+    <p>
+      In the final division, σ^2_n = Q_n/W_n
+    </p>
+    <p>
+      and s^2_n = Q_n/(W_n - 1),
+    </p>
+    <p>
+      or s^2_n = n'/(n' - 1) σ^2_n,
     </p>
     <p>
       where
@@ -3109,7 +3219,7 @@
       <span class="external-link">
         ↗
       </span>
-      . It is calculated as:
+      . It is calculated as: SDI = (Laboratory mean - Consensus group mean)/(Consensus group standard deviation).
     </p>
     <h2>
       Alternatives

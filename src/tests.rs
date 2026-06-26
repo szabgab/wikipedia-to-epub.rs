@@ -7185,7 +7185,7 @@ fn render_wikitext_formats_tmath_template() {
     assert!(rendered.contains("E = mc^2"), "{rendered}");
 
     let rendered2 = render_wikitext("Sample", "{{tmath|\\sigma^2}}", &InternalLinks::new(), "en");
-    assert!(rendered2.contains("\\sigma^2"), "{rendered2}");
+    assert!(rendered2.contains("σ^2"), "{rendered2}");
 }
 
 #[test]
