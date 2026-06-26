@@ -311,6 +311,63 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("frg", render_frg_template as TemplateHandler),
         ("fsm", render_fsm_template as TemplateHandler),
         ("fs player", render_fs_player_template as TemplateHandler),
+        ("gabon", render_gab_template as TemplateHandler),
+        ("gab", render_gab_template as TemplateHandler),
+        ("gamesname", render_games_name_template as TemplateHandler),
+        ("gamessport", render_games_sport_template as TemplateHandler),
+        ("gbp", render_gbp_template as TemplateHandler),
+        ("gbr", render_gbr_template as TemplateHandler),
+        ("gbr2", render_gbr_template as TemplateHandler),
+        ("gbs", render_gnb_template as TemplateHandler),
+        ("gdr", render_gdr_template as TemplateHandler),
+        ("geonet2", render_geonet2_template as TemplateHandler),
+        ("geoquelle", render_geo_source_template as TemplateHandler),
+        ("geosource", render_geo_source_template as TemplateHandler),
+        ("geo", render_geo_template as TemplateHandler),
+        ("ger", render_deu_template as TemplateHandler),
+        ("gha", render_gha_template as TemplateHandler),
+        ("gib", render_gib_template as TemplateHandler),
+        ("gin", render_gin_template as TemplateHandler),
+        ("gli", render_gli_template as TemplateHandler),
+        ("glottolog", render_glottolog_template as TemplateHandler),
+        ("gmb", render_gmb_template as TemplateHandler),
+        ("gnb", render_gnb_template as TemplateHandler),
+        ("gnq", render_gnq_template as TemplateHandler),
+        ("goal", render_goal_template as TemplateHandler),
+        ("gold01", render_gold1_template as TemplateHandler),
+        ("gold1", render_gold1_template as TemplateHandler),
+        ("gold medal", render_gold_medal_template as TemplateHandler),
+        (
+            "google scholar id",
+            render_google_scholar_id_template as TemplateHandler,
+        ),
+        (
+            "googlebooks",
+            render_google_books_template as TemplateHandler,
+        ),
+        ("grapheme", render_grapheme_template as TemplateHandler),
+        ("grc", render_grc_template as TemplateHandler),
+        ("grc-tr", render_grc_tr_template as TemplateHandler),
+        ("grd", render_grd_template as TemplateHandler),
+        ("gre", render_grc_template as TemplateHandler),
+        (
+            "greenwood&earnshaw2nd",
+            render_greenwood_earnshaw_2nd_template as TemplateHandler,
+        ),
+        ("grey", render_passthrough_template as TemplateHandler),
+        ("grl", render_grl_template as TemplateHandler),
+        ("gtm", render_gtm_template as TemplateHandler),
+        ("gua", render_gtm_template as TemplateHandler),
+        (
+            "guardian topic",
+            render_guardian_topic_template as TemplateHandler,
+        ),
+        ("gum", render_gum_template as TemplateHandler),
+        (
+            "gutenberg author",
+            render_gutenberg_author_template as TemplateHandler,
+        ),
+        ("guy", render_guy_template as TemplateHandler),
         (
             "further information",
             render_further_template as TemplateHandler,
@@ -8674,4 +8731,319 @@ fn render_fs_player_template(params: &str) -> String {
     } else {
         format!("* {}\n", render_templates(&parts.join(" ")))
     }
+}
+
+fn render_gab_template(params: &str) -> String {
+    render_country_flag_template("Gabon", params)
+}
+
+fn render_games_name_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let kind = positional.first().map(String::as_str).unwrap_or("").trim();
+    let year = positional.get(1).map(String::as_str).unwrap_or("").trim();
+    let sport = positional.get(2).map(String::as_str).unwrap_or("").trim();
+
+    let host = match (kind.to_ascii_uppercase().as_str(), year) {
+        ("SOG", "1896") => "1896 Athens",
+        ("SOG", "2024") => "2024 Paris",
+        ("SOG", "2028") => "2028 Los Angeles",
+        ("WOG", "2022") => "2022 Beijing",
+        ("WOG", "2026") => "2026 Milano Cortina",
+        _ if !year.is_empty() => year,
+        _ => "",
+    };
+
+    if host.is_empty() {
+        return String::new();
+    }
+
+    let label = if sport.is_empty() {
+        host.to_string()
+    } else {
+        format!("{sport} at the {host}")
+    };
+
+    if template_param(&named, &["nolink"])
+        .map(|value| !value.trim().is_empty())
+        .unwrap_or(false)
+    {
+        label
+    } else {
+        format!("[[{label}|{host}]]")
+    }
+}
+
+fn render_games_sport_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let sport = positional.first().map(String::as_str).unwrap_or("").trim();
+    if sport.is_empty() {
+        String::new()
+    } else {
+        format!("[[{sport}]]")
+    }
+}
+
+fn render_gbp_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let amount = positional.first().map(String::as_str).unwrap_or("").trim();
+    if amount.is_empty() {
+        "£".to_string()
+    } else {
+        format!("£{}", render_templates(amount))
+    }
+}
+
+fn render_gbr_template(params: &str) -> String {
+    render_country_flag_template("Great Britain", params)
+}
+
+fn render_gdr_template(params: &str) -> String {
+    render_country_flag_template("East Germany", params)
+}
+
+fn render_geonet2_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let name = template_param(&named, &["name", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("GEOnet2");
+    let query = name.replace(' ', "+");
+    format!(
+        "[[official-url:https://geonames.nga.mil/geonames/GeographicNamesSearch/?q={query}|{}]] at GEOnet Names Server",
+        render_templates(name)
+    )
+}
+
+fn render_geo_source_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let country = positional.first().map(String::as_str).unwrap_or("").trim();
+    let source = positional.get(1).map(String::as_str).unwrap_or("").trim();
+    if country.is_empty() && source.is_empty() {
+        String::new()
+    } else if source.is_empty() {
+        render_templates(country)
+    } else {
+        format!("{} {}", render_templates(country), render_templates(source))
+    }
+}
+
+fn render_geo_template(params: &str) -> String {
+    render_country_flag_template("Georgia", params)
+}
+
+fn render_gha_template(params: &str) -> String {
+    render_country_flag_template("Ghana", params)
+}
+
+fn render_gib_template(params: &str) -> String {
+    render_country_flag_template("Gibraltar", params)
+}
+
+fn render_gin_template(params: &str) -> String {
+    render_country_flag_template("Guinea", params)
+}
+
+fn render_gli_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(term) = positional.first().map(String::as_str).map(str::trim) else {
+        return String::new();
+    };
+    if term.is_empty() {
+        return String::new();
+    }
+
+    let label = positional
+        .get(1)
+        .map(String::as_str)
+        .map(str::trim)
+        .unwrap_or(term);
+    format!(
+        "[[#{}|{}]]",
+        render_templates(term),
+        render_templates(label)
+    )
+}
+
+fn render_glottolog_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let code = positional.first().map(String::as_str).unwrap_or("").trim();
+    let name = positional
+        .get(1)
+        .map(String::as_str)
+        .unwrap_or("Glottolog")
+        .trim();
+    if code.is_empty() {
+        "Glottolog".to_string()
+    } else {
+        format!(
+            "[[official-url:https://glottolog.org/resource/languoid/id/{code}|{}]]",
+            render_templates(name)
+        )
+    }
+}
+
+fn render_gmb_template(params: &str) -> String {
+    render_country_flag_template("Gambia", params)
+}
+
+fn render_gnb_template(params: &str) -> String {
+    render_country_flag_template("Guinea-Bissau", params)
+}
+
+fn render_gnq_template(params: &str) -> String {
+    render_country_flag_template("Equatorial Guinea", params)
+}
+
+fn render_goal_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let mut goals = Vec::new();
+    for chunk in positional.chunks(2).take(10) {
+        let minute = chunk.first().map(String::as_str).unwrap_or("").trim();
+        let note = chunk.get(1).map(String::as_str).unwrap_or("").trim();
+        if minute.is_empty() && note.is_empty() {
+            continue;
+        }
+
+        let mut goal = String::new();
+        if !minute.is_empty() {
+            goal.push_str(&format!("{}'", render_templates(minute)));
+        }
+        if !note.is_empty() {
+            if !goal.is_empty() {
+                goal.push(' ');
+            }
+            goal.push_str(&format!("({})", render_templates(note)));
+        }
+        goals.push(goal);
+    }
+
+    goals.join(", ")
+}
+
+fn render_gold1_template(_params: &str) -> String {
+    "Gold".to_string()
+}
+
+fn render_gold_medal_template(_params: &str) -> String {
+    "Gold".to_string()
+}
+
+fn render_google_scholar_id_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let id = template_param(&named, &["id", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(id) = id else {
+        return String::new();
+    };
+    let name = template_param(&named, &["name", "2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("Google Scholar");
+    format!(
+        "[[official-url:https://scholar.google.com/citations?user={id}|{}]] publications indexed by Google Scholar",
+        render_templates(name)
+    )
+}
+
+fn render_grapheme_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let text = positional.first().map(String::as_str).unwrap_or("").trim();
+    format!("⟨{}⟩", render_templates(text))
+}
+
+fn render_grc_template(params: &str) -> String {
+    render_country_flag_template("Greece", params)
+}
+
+fn render_grc_tr_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    positional
+        .first()
+        .map(|value| render_templates(value.trim()))
+        .unwrap_or_default()
+}
+
+fn render_grd_template(params: &str) -> String {
+    render_country_flag_template("Grenada", params)
+}
+
+fn render_greenwood_earnshaw_2nd_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let mut parts = vec![
+        "Greenwood, Norman N.; Earnshaw, Alan (1997). ''Chemistry of the Elements'' (2nd ed.). Butterworth-Heinemann".to_string(),
+    ];
+    if let Some(page) = template_param(&named, &["page"]) {
+        parts.push(format!("p. {}", render_templates(page.trim())));
+    }
+    if let Some(pages) = template_param(&named, &["pages"]) {
+        parts.push(format!("pp. {}", render_templates(pages.trim())));
+    }
+    parts.push("doi:10.1016/C2009-0-30414-6".to_string());
+    parts.push("ISBN 978-0-08-037941-8".to_string());
+    parts.join(". ")
+}
+
+fn render_grl_template(params: &str) -> String {
+    render_country_flag_template("Greenland", params)
+}
+
+fn render_gtm_template(params: &str) -> String {
+    render_country_flag_template("Guatemala", params)
+}
+
+fn render_guardian_topic_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let topic = template_param(&named, &["id", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(topic) = topic else {
+        return String::new();
+    };
+    let name = template_param(&named, &["name", "2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("The Guardian");
+    format!(
+        "[[official-url:https://www.theguardian.com/{topic}|{}]] collected news and commentary at The Guardian",
+        render_templates(name)
+    )
+}
+
+fn render_gum_template(params: &str) -> String {
+    render_country_flag_template("Guam", params)
+}
+
+fn render_gutenberg_author_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let id = template_param(&named, &["id", "1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(id) = id else {
+        return String::new();
+    };
+    let name = template_param(&named, &["name", "2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("Project Gutenberg");
+    format!(
+        "[[official-url:https://www.gutenberg.org/ebooks/author/{id}|{}]] at Project Gutenberg",
+        render_templates(name)
+    )
+}
+
+fn render_guy_template(params: &str) -> String {
+    render_country_flag_template("Guyana", params)
 }

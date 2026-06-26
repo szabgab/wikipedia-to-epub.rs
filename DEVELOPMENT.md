@@ -206,6 +206,13 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{fbu|21|Germany}}` (along with `{{fbwu}}` and their right-aligned variants) formats national youth sports teams: e.g., `[[Germany national under-21 football team|Germany U-21]]`
 * `{{fba|Germany}}` formats national football associations: `[[Germany Football Association|Germany]]`
 * `{{FIN}}` (along with `{{FJI}}`, `{{FRA}}`, `{{FR}}`, `{{FRG}}`, `{{FSM}}`) formats country links with flag styling (e.g. `[[Finland|Finland]]`)
+* `{{GAB}}`, `{{GBR}}`, `{{GBR2}}`, `{{GBS}}`, `{{GDR}}`, `{{GEO}}`, `{{GER}}`, `{{GHA}}`, `{{GIB}}`, `{{GIN}}`, `{{GMB}}`, `{{GNB}}`, `{{GNQ}}`, `{{GRC}}`, `{{GRD}}`, `{{GRE}}`, `{{GRL}}`, `{{GTM}}`, `{{GUA}}`, `{{GUM}}`, and `{{GUY}}` format country links with flag styling
+* `{{GamesName|SOG|2024}}` and `{{GamesSport|Athletics}}` format Olympic games/sport links
+* `{{GBP|12.50}}` formats pound sterling values prefixed with £
+* `{{GEOnet2|Budapest}}`, `{{GeoSource|DE|TK25}}`, `{{GeoQuelle|DE|TK25}}`, `{{Glottolog|stan1293|Standard Arabic}}`, `{{Google scholar ID|abc123|Name}}`, `{{Guardian topic|world/example|Example}}`, and `{{Gutenberg author|42|Name}}` render external reference/profile links or concise source text
+* `{{goal|44|o.g.}}`, `{{gold01}}`, `{{gold1}}`, `{{Gold1}}`, and `{{Gold medal}}` format sports goal/medal markers as plain text
+* `{{gli|term|label}}`, `{{grapheme|ab}}`, `{{grc-tr|Θουκυδίδης}}`, `{{grey|text}}`, and `{{Greenwood&Earnshaw2nd|page=386}}` render glossary, bracket, transliteration, color wrapper, and chemistry citation templates
+* `{{G20}}`, `{{G8 nations}}`, `{{Game theory}}`, `{{Germanic languages}}`, `{{Globalization}}`, `{{Gospel of John}}`, `{{Government}}`, `{{Greek language}}`, `{{Guilder}}`, and related G-series topic/navigation templates are silent templates and are omitted from the output
 * `{{flag+link|Agriculture in|India}}` formats prefix-based country links: `[[Agriculture in India|Agriculture in India]]`
 * `{{flagathlete|[[Michael Phelps]]|USA}}` formats athlete names with country codes: `[[Michael Phelps|Michael Phelps]] (USA)`
 * `{{flagg|t|Germany}}` (along with `{{flaglink}}`, `{{flaglist}}`) formats generalized country flag/link variations

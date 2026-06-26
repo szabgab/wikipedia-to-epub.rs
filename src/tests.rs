@@ -9834,3 +9834,548 @@ fn test_template_further_information() {
         "Further information: [[Article 1]] and [[Article 2]]"
     );
 }
+
+macro_rules! assert_template_is_recognized_skip {
+    ($template:literal) => {{
+        let (_, counts) = render_wikitext_with_template_counts(
+            "Sample",
+            concat!("{{", $template, "}}"),
+            &InternalLinks::new(),
+            "en",
+            None,
+        );
+        assert_eq!(
+            counts,
+            TemplateSkipCounts {
+                recognized: 1,
+                unknown: 0
+            }
+        );
+    }};
+}
+
+#[test]
+fn test_template_g20() {
+    assert_template_is_recognized_skip!("G20");
+}
+
+#[test]
+fn test_template_g8_nations() {
+    assert_template_is_recognized_skip!("G8 nations");
+}
+
+#[test]
+fn test_template_gab() {
+    assert_eq!(render_templates("{{GAB}}"), "[[Gabon|Gabon]]");
+}
+
+#[test]
+fn test_template_gaels() {
+    assert_template_is_recognized_skip!("Gaels");
+}
+
+#[test]
+fn test_template_gallic_peoples() {
+    assert_template_is_recognized_skip!("Gallic peoples");
+}
+
+#[test]
+fn test_template_gamaleya_research_institute_of_epidemiology_and_microbiology() {
+    assert_template_is_recognized_skip!(
+        "Gamaleya Research Institute of Epidemiology and Microbiology"
+    );
+}
+
+#[test]
+fn test_template_games_name() {
+    assert_eq!(
+        render_templates("{{GamesName|SOG|2024}}"),
+        "[[2024 Paris|2024 Paris]]"
+    );
+    assert_eq!(
+        render_templates("{{GamesName|SOG|2024|nolink=1}}"),
+        "2024 Paris"
+    );
+}
+
+#[test]
+fn test_template_games_sport() {
+    assert_eq!(
+        render_templates("{{GamesSport|Athletics}}"),
+        "[[Athletics]]"
+    );
+}
+
+#[test]
+fn test_template_game_theory() {
+    assert_template_is_recognized_skip!("Game theory");
+}
+
+#[test]
+fn test_template_gautama_buddha() {
+    assert_template_is_recognized_skip!("Gautama Buddha");
+}
+
+#[test]
+fn test_template_gbp() {
+    assert_eq!(render_templates("{{GBP|12.50}}"), "£12.50");
+}
+
+#[test]
+fn test_template_gbr() {
+    assert_eq!(
+        render_templates("{{GBR}}"),
+        "[[Great Britain|Great Britain]]"
+    );
+}
+
+#[test]
+fn test_template_gbr2() {
+    assert_eq!(
+        render_templates("{{GBR2}}"),
+        "[[Great Britain|Great Britain]]"
+    );
+}
+
+#[test]
+fn test_template_gbs() {
+    assert_eq!(
+        render_templates("{{GBS}}"),
+        "[[Guinea-Bissau|Guinea-Bissau]]"
+    );
+}
+
+#[test]
+fn test_template_gdp_country_lists() {
+    assert_template_is_recognized_skip!("GDP country lists");
+}
+
+#[test]
+fn test_template_gdr() {
+    assert_eq!(render_templates("{{GDR}}"), "[[East Germany|East Germany]]");
+}
+
+#[test]
+fn test_template_general_geometry() {
+    assert_template_is_recognized_skip!("General geometry");
+}
+
+#[test]
+fn test_template_geneva() {
+    assert_template_is_recognized_skip!("Geneva");
+}
+
+#[test]
+fn test_template_geo() {
+    assert_eq!(render_templates("{{GEO}}"), "[[Georgia|Georgia]]");
+}
+
+#[test]
+fn test_template_geocoding_systems() {
+    assert_template_is_recognized_skip!("Geocoding-systems");
+}
+
+#[test]
+fn test_template_geographical_regions_of_hungary() {
+    assert_template_is_recognized_skip!("Geographical regions of Hungary");
+}
+
+#[test]
+fn test_template_geometry_footer() {
+    assert_template_is_recognized_skip!("Geometry-footer");
+}
+
+#[test]
+fn test_template_geonet2() {
+    assert_eq!(
+        render_templates("{{GEOnet2|Budapest}}"),
+        "[[official-url:https://geonames.nga.mil/geonames/GeographicNamesSearch/?q=Budapest|Budapest]] at GEOnet Names Server"
+    );
+}
+
+#[test]
+fn test_template_geoquelle() {
+    assert_eq!(render_templates("{{GeoQuelle|DE|TK25}}"), "DE TK25");
+}
+
+#[test]
+fn test_template_george_soros() {
+    assert_template_is_recognized_skip!("George Soros");
+}
+
+#[test]
+fn test_template_geosource() {
+    assert_eq!(render_templates("{{GeoSource|DE|TK25}}"), "DE TK25");
+}
+
+#[test]
+fn test_template_ger() {
+    assert_eq!(render_templates("{{GER}}"), "[[Germany|Germany]]");
+}
+
+#[test]
+fn test_template_german_diaspora() {
+    assert_template_is_recognized_skip!("German diaspora");
+}
+
+#[test]
+fn test_template_german_empire_states() {
+    assert_template_is_recognized_skip!("German Empire States");
+}
+
+#[test]
+fn test_template_german_folklore() {
+    assert_template_is_recognized_skip!("German folklore");
+}
+
+#[test]
+fn test_template_germanic_languages() {
+    assert_template_is_recognized_skip!("Germanic languages");
+}
+
+#[test]
+fn test_template_germanic_languages_map() {
+    assert_template_is_recognized_skip!("Germanic languages map");
+}
+
+#[test]
+fn test_template_germanic_monarchs() {
+    assert_template_is_recognized_skip!("Germanic monarchs");
+}
+
+#[test]
+fn test_template_germanic_peoples() {
+    assert_template_is_recognized_skip!("Germanic peoples");
+}
+
+#[test]
+fn test_template_germanic_tribes() {
+    assert_template_is_recognized_skip!("Germanic tribes");
+}
+
+#[test]
+fn test_template_german_monarchs() {
+    assert_template_is_recognized_skip!("German monarchs");
+}
+
+#[test]
+fn test_template_german_people() {
+    assert_template_is_recognized_skip!("German people");
+}
+
+#[test]
+fn test_template_germany_topics() {
+    assert_template_is_recognized_skip!("Germany topics");
+}
+
+#[test]
+fn test_template_gha() {
+    assert_eq!(render_templates("{{GHA}}"), "[[Ghana|Ghana]]");
+}
+
+#[test]
+fn test_template_gib() {
+    assert_eq!(render_templates("{{GIB}}"), "[[Gibraltar|Gibraltar]]");
+}
+
+#[test]
+fn test_template_gin() {
+    assert_eq!(render_templates("{{GIN}}"), "[[Guinea|Guinea]]");
+}
+
+#[test]
+fn test_template_gli() {
+    assert_eq!(render_templates("{{gli|term|label}}"), "[[#term|label]]");
+}
+
+#[test]
+fn test_template_global_cities_map() {
+    assert_template_is_recognized_skip!("Global cities map");
+}
+
+#[test]
+fn test_template_global_economic_classifications() {
+    assert_template_is_recognized_skip!("Global economic classifications");
+}
+
+#[test]
+fn test_template_globalization() {
+    assert_template_is_recognized_skip!("Globalization");
+}
+
+#[test]
+fn test_template_globalize_section() {
+    assert_template_is_recognized_skip!("globalize section");
+}
+
+#[test]
+fn test_template_global_warming() {
+    assert_template_is_recognized_skip!("Global warming");
+}
+
+#[test]
+fn test_template_glossaries_of_sports() {
+    assert_template_is_recognized_skip!("Glossaries of sports");
+}
+
+#[test]
+fn test_template_glottolog() {
+    assert_eq!(
+        render_templates("{{Glottolog|stan1293|Standard Arabic}}"),
+        "[[official-url:https://glottolog.org/resource/languoid/id/stan1293|Standard Arabic]]"
+    );
+}
+
+#[test]
+fn test_template_gmb() {
+    assert_eq!(render_templates("{{GMB}}"), "[[Gambia|Gambia]]");
+}
+
+#[test]
+fn test_template_gnb() {
+    assert_eq!(
+        render_templates("{{GNB}}"),
+        "[[Guinea-Bissau|Guinea-Bissau]]"
+    );
+}
+
+#[test]
+fn test_template_gnq() {
+    assert_eq!(
+        render_templates("{{GNQ}}"),
+        "[[Equatorial Guinea|Equatorial Guinea]]"
+    );
+}
+
+#[test]
+fn test_template_goal() {
+    assert_eq!(
+        render_templates("{{goal|44|o.g.|90+2|pen.}}"),
+        "44' (o.g.), 90+2' (pen.)"
+    );
+}
+
+#[test]
+fn test_template_godel_winners() {
+    assert_template_is_recognized_skip!("Gödel winners");
+}
+
+#[test]
+fn test_template_gold01() {
+    assert_eq!(render_templates("{{gold01}}"), "Gold");
+}
+
+#[test]
+fn test_template_gold1() {
+    assert_eq!(render_templates("{{gold1}}"), "Gold");
+}
+
+#[test]
+fn test_template_gold1_capitalized() {
+    assert_eq!(render_templates("{{Gold1}}"), "Gold");
+}
+
+#[test]
+fn test_template_gold_medal() {
+    assert_eq!(render_templates("{{Gold medal}}"), "Gold");
+}
+
+#[test]
+fn test_template_googlebooks() {
+    assert_eq!(
+        render_templates("{{googlebooks|abc123|Example book}}"),
+        "[[official-url:https://books.google.com/books?id=abc123|Example book]]"
+    );
+}
+
+#[test]
+fn test_template_google_scholar_id() {
+    assert_eq!(
+        render_templates("{{Google scholar ID|abc123|Ada Lovelace}}"),
+        "[[official-url:https://scholar.google.com/citations?user=abc123|Ada Lovelace]] publications indexed by Google Scholar"
+    );
+}
+
+#[test]
+fn test_template_google_scholar_id_capitalized() {
+    assert_eq!(
+        render_templates("{{Google Scholar id|abc123|Ada Lovelace}}"),
+        "[[official-url:https://scholar.google.com/citations?user=abc123|Ada Lovelace]] publications indexed by Google Scholar"
+    );
+}
+
+#[test]
+fn test_template_gospel_of_john() {
+    assert_template_is_recognized_skip!("Gospel of John");
+}
+
+#[test]
+fn test_template_gospel_of_luke() {
+    assert_template_is_recognized_skip!("Gospel of Luke");
+}
+
+#[test]
+fn test_template_gospel_of_mark() {
+    assert_template_is_recognized_skip!("Gospel of Mark");
+}
+
+#[test]
+fn test_template_gospel_of_matthew() {
+    assert_template_is_recognized_skip!("Gospel of Matthew");
+}
+
+#[test]
+fn test_template_government() {
+    assert_template_is_recognized_skip!("Government");
+}
+
+#[test]
+fn test_template_governments_represented_in_the_council_of_the_european_union() {
+    assert_template_is_recognized_skip!(
+        "Governments represented in the Council of the European Union"
+    );
+}
+
+#[test]
+fn test_template_grapheme() {
+    assert_eq!(render_templates("{{grapheme|ab}}"), "⟨ab⟩");
+}
+
+#[test]
+fn test_template_grc() {
+    assert_eq!(render_templates("{{GRC}}"), "[[Greece|Greece]]");
+}
+
+#[test]
+fn test_template_grc_tr() {
+    assert_eq!(render_templates("{{grc-tr|Θουκυδίδης}}"), "Θουκυδίδης");
+}
+
+#[test]
+fn test_template_grd() {
+    assert_eq!(render_templates("{{GRD}}"), "[[Grenada|Grenada]]");
+}
+
+#[test]
+fn test_template_gre() {
+    assert_eq!(render_templates("{{GRE}}"), "[[Greece|Greece]]");
+}
+
+#[test]
+fn test_template_great_depression() {
+    assert_template_is_recognized_skip!("Great Depression");
+}
+
+#[test]
+fn test_template_great_power_diplomacy() {
+    assert_template_is_recognized_skip!("Great Power diplomacy");
+}
+
+#[test]
+fn test_template_great_union() {
+    assert_template_is_recognized_skip!("Great Union");
+}
+
+#[test]
+fn test_template_greece_topics() {
+    assert_template_is_recognized_skip!("Greece topics");
+}
+
+#[test]
+fn test_template_greek_alphabet_sidebar() {
+    assert_template_is_recognized_skip!("Greek alphabet sidebar");
+}
+
+#[test]
+fn test_template_greek_language() {
+    assert_template_is_recognized_skip!("Greek language");
+}
+
+#[test]
+fn test_template_greek_language_periods() {
+    assert_template_is_recognized_skip!("Greek language periods");
+}
+
+#[test]
+fn test_template_greenwood_earnshaw_2nd() {
+    assert_eq!(
+        render_templates("{{Greenwood&Earnshaw2nd|page=386}}"),
+        "Greenwood, Norman N.; Earnshaw, Alan (1997). ''Chemistry of the Elements'' (2nd ed.). Butterworth-Heinemann. p. 386. doi:10.1016/C2009-0-30414-6. ISBN 978-0-08-037941-8"
+    );
+}
+
+#[test]
+fn test_template_grey() {
+    assert_eq!(render_templates("{{grey|text}}"), "text");
+}
+
+#[test]
+fn test_template_grl() {
+    assert_eq!(render_templates("{{GRL}}"), "[[Greenland|Greenland]]");
+}
+
+#[test]
+fn test_template_grove_music_subscription() {
+    assert_template_is_recognized_skip!("Grove Music subscription");
+}
+
+#[test]
+fn test_template_gtm() {
+    assert_eq!(render_templates("{{GTM}}"), "[[Guatemala|Guatemala]]");
+}
+
+#[test]
+fn test_template_gua() {
+    assert_eq!(render_templates("{{GUA}}"), "[[Guatemala|Guatemala]]");
+}
+
+#[test]
+fn test_template_guardian_topic() {
+    assert_eq!(
+        render_templates("{{Guardian topic|world/climate-crisis|Climate crisis}}"),
+        "[[official-url:https://www.theguardian.com/world/climate-crisis|Climate crisis]] collected news and commentary at The Guardian"
+    );
+}
+
+#[test]
+fn test_template_guilder() {
+    assert_template_is_recognized_skip!("Guilder");
+}
+
+#[test]
+fn test_template_gum() {
+    assert_eq!(render_templates("{{GUM}}"), "[[Guam|Guam]]");
+}
+
+#[test]
+fn test_template_gutenberg_author() {
+    assert_eq!(
+        render_templates("{{Gutenberg author|42|Author Name}}"),
+        "[[official-url:https://www.gutenberg.org/ebooks/author/42|Author Name]] at Project Gutenberg"
+    );
+}
+
+#[test]
+fn test_template_guy() {
+    assert_eq!(render_templates("{{GUY}}"), "[[Guyana|Guyana]]");
+}
+
+#[test]
+fn test_template_gyor_district() {
+    assert_template_is_recognized_skip!("Győr District");
+}
+
+#[test]
+fn test_template_gyorgy_kurtag() {
+    assert_template_is_recognized_skip!("György Kurtág");
+}
+
+#[test]
+fn test_template_gyorgy_ligeti() {
+    assert_template_is_recognized_skip!("György Ligeti");
+}
+
+#[test]
+fn test_template_gyor_moson_sopron() {
+    assert_template_is_recognized_skip!("Győr-Moson-Sopron");
+}

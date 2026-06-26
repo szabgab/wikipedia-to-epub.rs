@@ -1871,6 +1871,40 @@ Added support for the `official` template name by routing it through the existin
 * None.
 
 
+## Session Note: 2026-06-26 - Handle G-series templates from g.txt
+
+### Decisions Made
+
+* Used the `handle-template` skill for Wikipedia template support work.
+* Checked Wikipedia Template pages for the listed G-series templates, including renderable cases such as `GamesName`, `GamesSport`, `GEOnet2`, `Glottolog`, `Google Scholar ID`, `Guardian topic`, `Gutenberg author`, `Goal`, medal templates, and country-code redirects.
+* Added renderer support for G-series country codes, Olympic games/sport helpers, geography/source/profile links, goal/medal markers, glossary/bracket/transliteration helpers, and the Greenwood/Earnshaw chemistry citation.
+* Added G-series topic, sidebar, map, subscription, cleanup, and navigation templates to recognized skip lists where EPUB output should omit them.
+* Added one focused unit test per unique template name from `g.txt`.
+
+### Files Changed
+
+* `DEVELOPMENT.md` [MODIFY]
+* `src/navigations.csv` [MODIFY]
+* `src/silent.csv` [MODIFY]
+* `src/templates/formatting.rs` [MODIFY]
+* `src/tests.rs` [MODIFY]
+* `docs/codex-notes.md` [MODIFY]
+
+### Tests Run
+
+* `./tools/sort.sh`
+* `cargo fmt`
+* `cargo test test_template_g -- --nocapture`
+* `cargo check`
+* `cargo test`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test --locked -- --ignored`
+
+### Pending Follow-Ups
+
+* None.
+
+
 ## Session Note: 2026-06-19 - Add cleanup parser unit tests
 
 ### Decisions Made
