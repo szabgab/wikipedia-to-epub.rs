@@ -11839,3 +11839,221 @@ fn test_template_zoltan_kodaly() {
 fn test_template_zwe() {
     assert_eq!(render_templates("{{ZWE}}"), "[[Zimbabwe|Zimbabwe]]");
 }
+
+#[test]
+fn test_template_lang_cyrl() {
+    assert_eq!(
+        render_templates("{{lang-cyrl|текст}}"),
+        "__WIKIPEDIA_TO_EPUB_LANG_START__cyrl__WIKIPEDIA_TO_EPUB_LANG_VALUE__текст__WIKIPEDIA_TO_EPUB_LANG_END__"
+    );
+}
+
+#[test]
+fn test_template_lang_sh_latn() {
+    assert_eq!(
+        render_templates("{{lang-sh-Latn|tekst}}"),
+        "__WIKIPEDIA_TO_EPUB_LANG_START__sh-Latn__WIKIPEDIA_TO_EPUB_LANG_VALUE__tekst__WIKIPEDIA_TO_EPUB_LANG_END__"
+    );
+}
+
+#[test]
+fn test_template_lang_sh_latn_capitalized() {
+    assert_eq!(
+        render_templates("{{Lang-sh-Latn|tekst}}"),
+        "__WIKIPEDIA_TO_EPUB_LANG_START__sh-Latn__WIKIPEDIA_TO_EPUB_LANG_VALUE__tekst__WIKIPEDIA_TO_EPUB_LANG_END__"
+    );
+}
+
+#[test]
+fn test_template_lang_sh_latn_cyrl() {
+    assert_eq!(
+        render_templates("{{lang-sh-Latn-Cyrl|tekst}}"),
+        "__WIKIPEDIA_TO_EPUB_LANG_START__sh-Latn-Cyrl__WIKIPEDIA_TO_EPUB_LANG_VALUE__tekst__WIKIPEDIA_TO_EPUB_LANG_END__"
+    );
+}
+
+#[test]
+fn test_template_lang_sr_cyrl() {
+    assert_eq!(
+        render_templates("{{lang-sr-Cyrl|текст}}"),
+        "__WIKIPEDIA_TO_EPUB_LANG_START__sr-Cyrl__WIKIPEDIA_TO_EPUB_LANG_VALUE__текст__WIKIPEDIA_TO_EPUB_LANG_END__"
+    );
+}
+
+#[test]
+fn test_template_lang_sr_cyrl_latn() {
+    assert_eq!(
+        render_templates("{{lang-sr-Cyrl-Latn|tekst}}"),
+        "__WIKIPEDIA_TO_EPUB_LANG_START__sr-Cyrl-Latn__WIKIPEDIA_TO_EPUB_LANG_VALUE__tekst__WIKIPEDIA_TO_EPUB_LANG_END__"
+    );
+}
+
+#[test]
+fn test_template_lang_sr_latn_cyrl() {
+    assert_eq!(
+        render_templates("{{lang-sr-Latn-Cyrl|текст}}"),
+        "__WIKIPEDIA_TO_EPUB_LANG_START__sr-Latn-Cyrl__WIKIPEDIA_TO_EPUB_LANG_VALUE__текст__WIKIPEDIA_TO_EPUB_LANG_END__"
+    );
+}
+
+#[test]
+fn test_template_literally() {
+    assert_eq!(render_templates("{{literally|example}}"), "lit. example");
+}
+
+#[test]
+fn test_template_lao() {
+    assert_eq!(render_templates("{{LAO}}"), "[[Laos|Laos]]");
+}
+
+#[test]
+fn test_template_lat() {
+    assert_eq!(render_templates("{{LAT}}"), "[[Latvia|Latvia]]");
+}
+
+#[test]
+fn test_template_lbn() {
+    assert_eq!(render_templates("{{LBN}}"), "[[Lebanon|Lebanon]]");
+}
+
+#[test]
+fn test_template_lbr() {
+    assert_eq!(render_templates("{{LBR}}"), "[[Liberia|Liberia]]");
+}
+
+#[test]
+fn test_template_lby() {
+    assert_eq!(render_templates("{{LBY}}"), "[[Libya|Libya]]");
+}
+
+#[test]
+fn test_template_lca() {
+    assert_eq!(render_templates("{{LCA}}"), "[[Saint Lucia|Saint Lucia]]");
+}
+
+#[test]
+fn test_template_lib() {
+    assert_eq!(render_templates("{{LIB}}"), "[[Lebanon|Lebanon]]");
+}
+
+#[test]
+fn test_template_lie() {
+    assert_eq!(
+        render_templates("{{LIE}}"),
+        "[[Liechtenstein|Liechtenstein]]"
+    );
+}
+
+#[test]
+fn test_template_lka() {
+    assert_eq!(render_templates("{{LKA}}"), "[[Sri Lanka|Sri Lanka]]");
+}
+
+#[test]
+fn test_template_lso() {
+    assert_eq!(render_templates("{{LSO}}"), "[[Lesotho|Lesotho]]");
+}
+
+#[test]
+fn test_template_ltu() {
+    assert_eq!(render_templates("{{LTU}}"), "[[Lithuania|Lithuania]]");
+}
+
+#[test]
+fn test_template_lux() {
+    assert_eq!(render_templates("{{LUX}}"), "[[Luxembourg|Luxembourg]]");
+}
+
+#[test]
+fn test_template_lva() {
+    assert_eq!(render_templates("{{LVA}}"), "[[Latvia|Latvia]]");
+}
+
+#[test]
+fn test_template_lccn() {
+    assert_eq!(render_templates("{{LCCN|n80020301}}"), "LCCN n80020301");
+}
+
+#[test]
+fn test_template_lcauth() {
+    assert_eq!(
+        render_templates("{{LCAuth|n80020301}}"),
+        "LC Auth: n80020301"
+    );
+}
+
+#[test]
+fn test_template_lsj() {
+    assert_eq!(
+        render_templates("{{LSJ|h(/lios}}"),
+        "[[official-url:https://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0057:entry=h(/lios|h(/lios]] in Liddell and Scott"
+    );
+    assert_eq!(
+        render_templates("{{LSJ|h(/lios|ἥλιος|mLSJ}}"),
+        "[[official-url:https://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0058:entry=h(/lios|ἥλιος]] in Middle Liddell and Scott"
+    );
+}
+
+#[test]
+fn test_template_ls() {
+    assert_eq!(
+        render_templates("{{L&S|headword}}"),
+        "[[official-url:https://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0059:entry=headword|headword]] in Lewis and Short"
+    );
+    assert_eq!(
+        render_templates("{{L&S|headword|display|lL&S}}"),
+        "[[official-url:https://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0060:entry=headword|display]] in Lewis and Short"
+    );
+}
+
+#[test]
+fn test_template_longlink() {
+    assert_eq!(
+        render_templates("{{longlink|[[Link|Label]]}}"),
+        "[[Link|Label]]"
+    );
+}
+
+#[test]
+fn test_template_left() {
+    assert_eq!(
+        render_templates("{{left|sample}}"),
+        "<div style=\"float:left;\">sample</div>"
+    );
+    assert_eq!(render_templates("{{left}}"), "style=\"text-align:left\"|");
+}
+
+#[test]
+fn test_template_lord() {
+    assert_eq!(render_templates("{{LORD}}"), "L<small>ORD</small>");
+    assert_eq!(render_templates("{{LORD|the}}"), "the L<small>ORD</small>");
+}
+
+#[test]
+fn test_template_leftlegend() {
+    assert_eq!(render_templates("{{Leftlegend|#EF767E|Label}}"), "Label");
+}
+
+#[test]
+fn test_template_legend2() {
+    assert_eq!(render_templates("{{legend2|#EF767E|Label}}"), "Label");
+}
+
+#[test]
+fn test_template_legend_col() {
+    assert_eq!(render_templates("{{legend-col|Content}}"), "Content");
+}
+
+#[test]
+fn test_template_legend_inline() {
+    assert_eq!(render_templates("{{legend inline|#EF767E|Label}}"), "Label");
+    assert_eq!(render_templates("{{legend-inline|#EF767E|Label}}"), "Label");
+}
+
+#[test]
+fn test_template_legend_striped() {
+    assert_eq!(
+        render_templates("{{legend striped|#FFF|#000|Label}}"),
+        "Label"
+    );
+}

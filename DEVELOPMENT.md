@@ -87,9 +87,20 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{round|123.456|2}}` rounds a number to a specified number of decimal places and formats with commas
 * `{{JRSSN|Y|12}}` formats a JR station numbering identifier (`Y12`)
 * `{{ABW}}` (along with `{{AFG}}`, `{{AGO}}`, `{{AIA}}`, `{{ALB}}`, `{{ALG}}`, `{{AND}}`, `{{ARE}}`, `{{ARG}}`, `{{ARM}}`, `{{ATG}}`, `{{AUS}}`, `{{AUT}}`, `{{AZE}}`) formats country links with flag styling (e.g. `[[Aruba|Aruba]]` or `[[Albania|Albania]]`)
+* `{{LAO}}` (along with other IOC/ISO templates `{{LAT}}`, `{{LBN}}`, `{{LBR}}`, `{{LBY}}`, `{{LCA}}`, `{{LIB}}`, `{{LIE}}`, `{{LKA}}`, `{{LSO}}`, `{{LTU}}`, `{{LUX}}`, `{{LVA}}`) formats country links with flag styling
 * `{{army|Spain}}` formats national army article links (e.g. `[[Spanish Army|Spanish Army]]`)
 * `{{marines|United States}}` formats national marine corps article links (e.g. `[[United States Marine Corps|United States Marine Corps]]`)
 * `{{MAC}}` (along with other IOC/ISO templates `{{MAD}}`, `{{MAR}}`, `{{MAS}}`, `{{MCO}}`, `{{MDA}}`, `{{MDG}}`, `{{MDV}}`, `{{MEX}}`, `{{MGL}}`, `{{MHL}}`, `{{MKD}}`, `{{MLD}}`, `{{MLI}}`, `{{MLT}}`, `{{MMR}}`, `{{MNE}}`, `{{MNG}}`, `{{MOZ}}`, `{{MRI}}`, `{{MRT}}`, `{{MUS}}`, `{{MWI}}`, `{{MYS}}`) formats country links with flag styling
+* `{{LCCN|n80020301}}` renders a Library of Congress Control Number reference
+* `{{LCAuth|n80020301}}` renders a Library of Congress Authority ID reference
+* `{{LSJ|h(/lios}}` and `{{L&S|headword}}` render citations and links to online Greek/Latin dictionaries at the Perseus Project
+* `{{left|sample}}` renders text floated to the left, or cell alignment styling
+* `{{literally|sample}}` (or alias `{{literally}}`) renders a literal translation prefix
+* `{{longlink|content}}` acts as a passthrough formatting wrapper
+* `{{LORD}}` (and option `{{LORD|the}}`) formats small-cap LORD representations
+* `{{Leftlegend|#EF767E|Label}}` (along with `{{legend2}}`, `{{legend inline}}`, `{{legend-inline}}`, `{{legend striped}}`) displays color legend descriptions (without the color box in EPUB)
+* `{{legend-col|Content}}` acts as a passthrough layout wrapper for legends
+* `{{lang-cyrl|текст}}` (along with other lang templates `{{lang-sh-Latn}}`, `{{Lang-sh-Latn}}`, `{{lang-sh-Latn-Cyrl}}`, `{{lang-sr-Cyrl}}`, `{{lang-sr-Cyrl-Latn}}`, `{{lang-sr-Latn-Cyrl}}`) renders inline text using custom language spans
 * `{{mactutor biography|id=Kepler|title=Johannes Kepler}}` formats external links to the MacTutor Biography archive
 * `{{main articles|Page1}}` renders main article hatnotes
 * `{{main category|Some Cat}}` and `{{maincat|Some Cat}}` render main category links

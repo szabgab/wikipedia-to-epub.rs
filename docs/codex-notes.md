@@ -1,5 +1,43 @@
 # Codex Session Notes
 
+## 2026-06-26 Handle L-Series Wikipedia Templates
+
+### Summary
+Handled all 121 Wikipedia templates listed in `l.txt` by checking their definitions where needed, adding active renderers for visible L-series templates, registering navigation/header templates as recognized skips, adding separate unit tests for each listed template, and updating conversion documentation.
+
+### Decisions Made
+- Used the `handle-template` and `add-missing-templates-handle` skills.
+- Classified 81 templates as navigation/sidebars and added them to `navigations.csv` (e.g. Land-use planning, Language families, law/Law, etc.).
+- Classified 6 templates as silent/maintenance in `silent.csv` (e.g. Lead too long, lead too short, Location map many, Long quote, lds, Languages of).
+- Sorted both CSV files using `./tools/sort.sh`.
+- Added active renderers in Rust for:
+  - Language-specific templates: `lang-cyrl`, `lang-sh-Latn`/`Lang-sh-Latn`, `lang-sh-Latn-Cyrl`, `lang-sr-Cyrl`, `lang-sr-Cyrl-Latn`, `lang-sr-Latn-Cyrl` mapping to a generic language renderer in `lang.rs`.
+  - Country-code flags: `LAO`, `LAT`, `LBN`, `LBR`, `LBY`, `LCA`, `LIB`, `LIE`, `LKA`, `LSO`, `LTU`, `LUX`, `LVA` mapping to `render_country_flag_template` in `formatting.rs` (and registered in `resolve_ioc_code_to_name`).
+  - Citations: `LCCN` (formats Library of Congress Control Number), `LCAuth` (formats Library of Congress Authority), `L&S` and `LSJ` (formats external links to Latin/Greek dictionaries at Perseus Project, handling optional edition parameter overrides).
+  - Formatting & layout: `left` (floats content left), `literally` (prefix alias for `lit.`), `longlink` (passthrough wrapper), `LORD` (small caps LORD formatting), `Leftlegend`, `legend2`, `legend inline`/`legend-inline`, `legend striped`, and `legend-col` (handling various legend layout/labels).
+- Wrote separate unit tests for all implemented templates in `src/tests.rs`.
+- Kept all new helper functions private.
+
+### Files Changed
+- `DEVELOPMENT.md`
+- `src/silent.csv`
+- `src/navigations.csv`
+- `src/templates/formatting.rs`
+- `src/templates/citation.rs`
+- `src/templates/lang.rs`
+- `src/tests.rs`
+- `docs/codex-notes.md`
+
+### Tests Run
+- Checked formatting: `cargo fmt` (passed cleanly).
+- Checked compilation: `cargo check` (passed cleanly).
+- Checked warning lints: `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-26 Handle M-Series Wikipedia Templates
 
 ### Summary

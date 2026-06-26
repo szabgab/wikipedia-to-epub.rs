@@ -57,6 +57,8 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_asn_accident_template as TemplateHandler,
         ),
         ("cite q", render_cite_q_template as TemplateHandler),
+        ("l&s", render_ls_template as TemplateHandler),
+        ("lsj", render_lsj_template as TemplateHandler),
         (
             "springereom",
             render_springereom_template as TemplateHandler,
@@ -2708,4 +2710,83 @@ fn render_musopen_template(params: &str) -> String {
     } else {
         "Musopen".to_string()
     }
+}
+
+fn render_lsj_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let headword = template_param(&named, &["headword", "1"])
+        .or_else(|| positional.first().map(|s| s.as_str()))
+        .unwrap_or("")
+        .trim();
+
+    if headword.is_empty() {
+        return String::new();
+    }
+
+    let display = template_param(&named, &["2"])
+        .or_else(|| positional.get(1).map(|s| s.as_str()))
+        .unwrap_or(headword)
+        .trim();
+
+    let use_mlsj = template_param(&named, &["mLSJ", "4"]).is_some_and(|v| !v.trim().is_empty())
+        || positional.iter().any(|v| v.trim() == "mLSJ");
+
+    let doc_id = if use_mlsj {
+        "1999.04.0058"
+    } else {
+        "1999.04.0057"
+    };
+
+    let url = format!(
+        "https://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:{}:entry={}",
+        doc_id, headword
+    );
+
+    let link = format!("[[official-url:{}|{}]]", url, display);
+    let suffix = if use_mlsj {
+        " in Middle Liddell and Scott"
+    } else {
+        " in Liddell and Scott"
+    };
+
+    format!("{}{}", link, suffix)
+}
+
+fn render_ls_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let headword = template_param(&named, &["headword", "1"])
+        .or_else(|| positional.first().map(|s| s.as_str()))
+        .unwrap_or("")
+        .trim();
+
+    if headword.is_empty() {
+        return String::new();
+    }
+
+    let display = template_param(&named, &["latin_text", "2"])
+        .or_else(|| positional.get(1).map(|s| s.as_str()))
+        .unwrap_or(headword)
+        .trim();
+
+    let use_elementary = template_param(&named, &["lL&S", "4"])
+        .is_some_and(|v| !v.trim().is_empty())
+        || positional.iter().any(|v| v.trim() == "lL&S");
+
+    let doc_id = if use_elementary {
+        "1999.04.0060"
+    } else {
+        "1999.04.0059"
+    };
+
+    let url = format!(
+        "https://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:{}:entry={}",
+        doc_id, headword
+    );
+
+    let link = format!("[[official-url:{}|{}]]", url, display);
+    format!("{} in Lewis and Short", link)
 }

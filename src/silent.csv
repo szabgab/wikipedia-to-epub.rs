@@ -71,8 +71,8 @@ columns-list
 Commons
 Commons and category
 Commons category
-Commons category-inline
 Commons category inline
+Commons category-inline
 Commonscatinline,            Inline link to Commons category.,                           https://en.wikipedia.org/wiki/Template:Commonscatinline
 commonscat,                  Link to category in Wikimedia Commons.,                     https://en.wikipedia.org/wiki/Template:Commons_category
 Commons-inline
@@ -101,9 +101,9 @@ Distinguish
 div
 div col
 divcol
+div col end
 divcolend
 divcol end
-div col end
 Div end
 DNB
 DNB portal
@@ -131,8 +131,8 @@ end div col
 endflatlist
 end,                        ?,                       https://en.wikipedia.org/wiki/Template:S-end
 Endorsements box
-end plainlist
 endplainlist
+end plainlist
 EngvarB
 Essay,                       Cleanup tag.,                                               https://en.wikipedia.org/wiki/Template:Essay
 etymonline
@@ -199,8 +199,8 @@ HESA student population
 how
 How
 how-to
-huh
 huh?
+huh
 hungarian name
 Hungarian name
 Ice Hockey World Championships, Navigation template., https://en.wikipedia.org/wiki/Template:Ice_Hockey_World_Championships
@@ -281,12 +281,18 @@ j-railservice start
 j-route
 j-rserv
 kml
+Languages of
+lds
 lead rewrite,                Cleanup banner for lead section.,                           https://en.wikipedia.org/wiki/Template:Lead_rewrite
+Lead too long
+lead too short
 Library resources box
 Librivox author
 Listen
 location map+
+Location map many
 long
+Long quote
 look from
 lower,                       Visual change.,                                             https://en.wikipedia.org/wiki/Template:Lower
 main category
@@ -382,8 +388,8 @@ sfnp
 SfnRef
 Short description,           TODO we might want to display this on some kind of an index page or TOC., https://en.wikipedia.org/wiki/Template:Short_description
 Sister bar
-sisterlinks
 sister links
+sisterlinks
 Sister project links
 solar system delta v map.svg
 source-attribution

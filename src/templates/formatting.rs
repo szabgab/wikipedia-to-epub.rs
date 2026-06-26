@@ -108,6 +108,33 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("nobold", render_passthrough_template as TemplateHandler),
         ("stack", render_passthrough_template as TemplateHandler),
         ("longitem", render_passthrough_template as TemplateHandler),
+        ("lao", render_lao_template as TemplateHandler),
+        ("lat", render_lat_template as TemplateHandler),
+        ("lbn", render_lbn_template as TemplateHandler),
+        ("lbr", render_lbr_template as TemplateHandler),
+        ("lby", render_lby_template as TemplateHandler),
+        ("lca", render_lca_template as TemplateHandler),
+        ("lib", render_lib_template as TemplateHandler),
+        ("lie", render_lie_template as TemplateHandler),
+        ("lka", render_lka_template as TemplateHandler),
+        ("lso", render_lso_template as TemplateHandler),
+        ("ltu", render_ltu_template as TemplateHandler),
+        ("lux", render_lux_template as TemplateHandler),
+        ("lva", render_lva_template as TemplateHandler),
+        ("lcauth", render_lcauth_template as TemplateHandler),
+        ("lccn", render_lccn_template as TemplateHandler),
+        ("longlink", render_passthrough_template as TemplateHandler),
+        ("left", render_left_template as TemplateHandler),
+        ("lord", render_lord_template as TemplateHandler),
+        ("leftlegend", render_legend_template as TemplateHandler),
+        ("legend2", render_legend_template as TemplateHandler),
+        ("legend inline", render_legend_template as TemplateHandler),
+        ("legend-inline", render_legend_template as TemplateHandler),
+        (
+            "legend striped",
+            render_legend_striped_template as TemplateHandler,
+        ),
+        ("legend-col", render_passthrough_template as TemplateHandler),
         ("xref", render_passthrough_template as TemplateHandler),
         ("quote box", render_blockquote_template as TemplateHandler),
         ("quote", render_blockquote_template as TemplateHandler),
@@ -9311,6 +9338,17 @@ fn resolve_ioc_code_to_name(code: &str) -> String {
         "CHN" => "China".to_string(),
         "CAN" => "Canada".to_string(),
         "AUS" => "Australia".to_string(),
+        "LAO" => "Laos".to_string(),
+        "LAT" | "LVA" => "Latvia".to_string(),
+        "LBN" | "LIB" => "Lebanon".to_string(),
+        "LBR" => "Liberia".to_string(),
+        "LBY" => "Libya".to_string(),
+        "LCA" => "Saint Lucia".to_string(),
+        "LIE" => "Liechtenstein".to_string(),
+        "LKA" => "Sri Lanka".to_string(),
+        "LSO" => "Lesotho".to_string(),
+        "LTU" => "Lithuania".to_string(),
+        "LUX" => "Luxembourg".to_string(),
         "MAC" => "Macau".to_string(),
         "MAD" | "MDG" => "Madagascar".to_string(),
         "MAR" => "Morocco".to_string(),
@@ -10320,4 +10358,118 @@ fn render_mr_template(params: &str) -> String {
         return String::new();
     }
     format!("MR [[official-url:https://mathscinet.ams.org/mathscinet-getitem?mr={mr_id}|{mr_id}]]")
+}
+
+fn render_lao_template(params: &str) -> String {
+    render_country_flag_template("Laos", params)
+}
+
+fn render_lat_template(params: &str) -> String {
+    render_country_flag_template("Latvia", params)
+}
+
+fn render_lbn_template(params: &str) -> String {
+    render_country_flag_template("Lebanon", params)
+}
+
+fn render_lbr_template(params: &str) -> String {
+    render_country_flag_template("Liberia", params)
+}
+
+fn render_lby_template(params: &str) -> String {
+    render_country_flag_template("Libya", params)
+}
+
+fn render_lca_template(params: &str) -> String {
+    render_country_flag_template("Saint Lucia", params)
+}
+
+fn render_lib_template(params: &str) -> String {
+    render_country_flag_template("Lebanon", params)
+}
+
+fn render_lie_template(params: &str) -> String {
+    render_country_flag_template("Liechtenstein", params)
+}
+
+fn render_lka_template(params: &str) -> String {
+    render_country_flag_template("Sri Lanka", params)
+}
+
+fn render_lso_template(params: &str) -> String {
+    render_country_flag_template("Lesotho", params)
+}
+
+fn render_ltu_template(params: &str) -> String {
+    render_country_flag_template("Lithuania", params)
+}
+
+fn render_lux_template(params: &str) -> String {
+    render_country_flag_template("Luxembourg", params)
+}
+
+fn render_lva_template(params: &str) -> String {
+    render_country_flag_template("Latvia", params)
+}
+
+fn render_lccn_template(params: &str) -> String {
+    let Some(lccn) = template_positional_params(params)
+        .into_iter()
+        .find(|value| !value.trim().is_empty())
+    else {
+        return String::new();
+    };
+    format!("LCCN {}", render_templates(&lccn))
+}
+
+fn render_lcauth_template(params: &str) -> String {
+    let Some(lcauth) = template_positional_params(params)
+        .into_iter()
+        .find(|value| !value.trim().is_empty())
+    else {
+        return String::new();
+    };
+    format!("LC Auth: {}", render_templates(&lcauth))
+}
+
+fn render_left_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let content = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+
+    if content.is_empty() {
+        "style=\"text-align:left\"|".to_string()
+    } else {
+        format!(
+            "<div style=\"float:left;\">{}</div>",
+            render_templates(content)
+        )
+    }
+}
+
+fn render_lord_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let is_the = positional
+        .first()
+        .map(String::as_str)
+        .unwrap_or("")
+        .trim()
+        .eq_ignore_ascii_case("the");
+    if is_the {
+        "the L<small>ORD</small>".to_string()
+    } else {
+        "L<small>ORD</small>".to_string()
+    }
+}
+
+fn render_legend_striped_template(params: &str) -> String {
+    let params = template_positional_params(params);
+    let Some(label) = params.get(2).map(String::as_str) else {
+        return String::new();
+    };
+    render_templates(label)
 }

@@ -1263,12 +1263,34 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_korean_transliteration_template as TemplateHandler,
         ),
         ("lit", render_literal_template as TemplateHandler),
+        ("literally", render_literal_template as TemplateHandler),
         ("lit.", render_literal_template as TemplateHandler),
         (
             "literal translation",
             render_literal_template as TemplateHandler,
         ),
         ("literal", render_literal_template as TemplateHandler),
+        ("lang-cyrl", render_lang_cyrl_template as TemplateHandler),
+        (
+            "lang-sh-latn",
+            render_lang_sh_latn_template as TemplateHandler,
+        ),
+        (
+            "lang-sh-latn-cyrl",
+            render_lang_sh_latn_cyrl_template as TemplateHandler,
+        ),
+        (
+            "lang-sr-cyrl",
+            render_lang_sr_cyrl_template as TemplateHandler,
+        ),
+        (
+            "lang-sr-cyrl-latn",
+            render_lang_sr_cyrl_latn_template as TemplateHandler,
+        ),
+        (
+            "lang-sr-latn-cyrl",
+            render_lang_sr_latn_cyrl_template as TemplateHandler,
+        ),
         (
             "translation",
             render_translation_template as TemplateHandler,
@@ -1349,4 +1371,76 @@ fn render_ae_template(params: &str) -> String {
     format!(
         "__WIKIPEDIA_TO_EPUB_LANG_START__ae__WIKIPEDIA_TO_EPUB_LANG_VALUE__{rendered_text}__WIKIPEDIA_TO_EPUB_LANG_END__"
     )
+}
+
+fn render_lang_generic_template(lang: &str, params: &str) -> String {
+    let mut positional = Vec::new();
+    let mut named = HashMap::new();
+
+    for param in split_template_params(params)
+        .into_iter()
+        .map(|param| param.trim().to_string())
+        .filter(|param| !param.is_empty())
+    {
+        if let Some((key, value)) = param.split_once('=') {
+            named.insert(key.trim().to_lowercase(), value.trim().to_string());
+        } else {
+            positional.push(param);
+        }
+    }
+
+    let Some(text) = named
+        .get("text")
+        .or_else(|| named.get("t"))
+        .or_else(|| named.get("s"))
+        .or_else(|| named.get("c"))
+        .or_else(|| positional.first())
+        .map(String::as_str)
+        .filter(|value| !value.trim().is_empty())
+    else {
+        return String::new();
+    };
+
+    let mut rendered = render_lang_template(&format!("{lang}|{text}"));
+
+    let translit = named
+        .get("translit")
+        .or_else(|| named.get("p"))
+        .or_else(|| named.get("pinyin"));
+    if let Some(translit) = translit.filter(|value| !value.trim().is_empty()) {
+        rendered.push_str(" (");
+        rendered.push_str(translit.trim());
+        rendered.push(')');
+    }
+
+    if let Some(literal) = named.get("lit").filter(|value| !value.trim().is_empty()) {
+        rendered.push_str(", lit. ");
+        rendered.push_str(literal.trim());
+    }
+
+    rendered
+}
+
+fn render_lang_cyrl_template(params: &str) -> String {
+    render_lang_generic_template("cyrl", params)
+}
+
+fn render_lang_sh_latn_template(params: &str) -> String {
+    render_lang_generic_template("sh-Latn", params)
+}
+
+fn render_lang_sh_latn_cyrl_template(params: &str) -> String {
+    render_lang_generic_template("sh-Latn-Cyrl", params)
+}
+
+fn render_lang_sr_cyrl_template(params: &str) -> String {
+    render_lang_generic_template("sr-Cyrl", params)
+}
+
+fn render_lang_sr_cyrl_latn_template(params: &str) -> String {
+    render_lang_generic_template("sr-Cyrl-Latn", params)
+}
+
+fn render_lang_sr_latn_cyrl_template(params: &str) -> String {
+    render_lang_generic_template("sr-Latn-Cyrl", params)
 }
