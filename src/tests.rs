@@ -11106,3 +11106,245 @@ fn test_template_hydrography_of_slovakia() {
 fn test_template_hypothetical_indo_european_subfamilies() {
     assert_template_is_recognized_skip!("Hypothetical Indo-European subfamilies");
 }
+
+#[test]
+fn test_template_jam() {
+    assert_eq!(render_templates("{{JAM}}"), "[[Jamaica|Jamaica]]");
+}
+
+#[test]
+fn test_template_james_madison() {
+    assert_template_is_recognized_skip!("James Madison");
+}
+
+#[test]
+fn test_template_jap() {
+    assert_eq!(render_templates("{{JAP}}"), "🇯🇵 [[Japan]]");
+}
+
+#[test]
+fn test_template_jasz_nagykun_szolnok() {
+    assert_template_is_recognized_skip!("Jasz-Nagykun-Szolnok");
+}
+
+#[test]
+fn test_template_jasz_nagykun_szolnok_with_accent() {
+    assert_template_is_recognized_skip!("Jász-Nagykun-Szolnok");
+}
+
+#[test]
+fn test_template_jazz() {
+    assert_template_is_recognized_skip!("jazz");
+}
+
+#[test]
+fn test_template_jesuit() {
+    assert_template_is_recognized_skip!("Jesuit");
+}
+
+#[test]
+fn test_template_jesuits() {
+    assert_template_is_recognized_skip!("Jesuits");
+}
+
+#[test]
+fn test_template_jesus_footer() {
+    assert_template_is_recognized_skip!("Jesus footer");
+}
+
+#[test]
+fn test_template_jewish_baked_goods() {
+    assert_template_is_recognized_skip!("Jewish baked goods");
+}
+
+#[test]
+fn test_template_jewish_cuisine() {
+    assert_template_is_recognized_skip!("Jewish cuisine");
+}
+
+#[test]
+fn test_template_jewish_encyclopedia() {
+    assert_eq!(
+        render_templates("{{Jewish Encyclopedia|wstitle=Atonement, Day of}}"),
+        "This article incorporates text from a publication now in the public domain: Singer, Isidore; et al., eds. (1901–1906). \"[[src:Jewish Encyclopedia (1906)/Atonement, Day of|Atonement, Day of]]\". ''The Jewish Encyclopedia''. New York: Funk & Wagnalls."
+    );
+}
+
+#[test]
+fn test_template_jewishencyclopedia() {
+    assert_eq!(
+        render_templates("{{JewishEncyclopedia|no-prescript=1|title=Atonement, Day of}}"),
+        "Singer, Isidore; et al., eds. (1901–1906). \"Atonement, Day of\". ''The Jewish Encyclopedia''. New York: Funk & Wagnalls."
+    );
+}
+
+#[test]
+fn test_template_jews_and_judaism() {
+    assert_template_is_recognized_skip!("Jews and Judaism");
+}
+
+#[test]
+fn test_template_jews_and_judaism_sidebar() {
+    assert_template_is_recognized_skip!("Jews and Judaism sidebar");
+}
+
+#[test]
+fn test_template_jhu() {
+    assert_template_is_recognized_skip!("JHU");
+}
+
+#[test]
+fn test_template_john_von_neumann_theory_prize_recipients() {
+    assert_template_is_recognized_skip!("John von Neumann Theory Prize recipients");
+}
+
+#[test]
+fn test_template_jor() {
+    assert_eq!(render_templates("{{JOR}}"), "[[Jordan|Jordan]]");
+}
+
+#[test]
+fn test_template_joseph_stalin() {
+    assert_template_is_recognized_skip!("Joseph Stalin");
+}
+
+#[test]
+fn test_template_joseph_stalin_series() {
+    assert_template_is_recognized_skip!("Joseph Stalin series");
+}
+
+#[test]
+fn test_template_judaism() {
+    assert_template_is_recognized_skip!("Judaism");
+}
+
+#[test]
+fn test_template_judicial_interpretation() {
+    assert_template_is_recognized_skip!("Judicial interpretation");
+}
+
+#[test]
+fn test_template_julio_claudian_dynasty() {
+    assert_template_is_recognized_skip!("Julio-Claudian dynasty");
+}
+
+#[test]
+fn test_template_julius_caesar() {
+    assert_template_is_recognized_skip!("Julius Caesar");
+}
+
+#[test]
+fn test_template_kaposvar_district() {
+    assert_template_is_recognized_skip!("Kaposvár District");
+}
+
+#[test]
+fn test_template_kaz() {
+    assert_eq!(render_templates("{{KAZ}}"), "[[Kazakhstan|Kazakhstan]]");
+}
+
+#[test]
+fn test_template_kecskemet_district() {
+    assert_template_is_recognized_skip!("Kecskemét District");
+}
+
+#[test]
+fn test_template_ken() {
+    assert_eq!(render_templates("{{KEN}}"), "[[Kenya|Kenya]]");
+}
+
+#[test]
+fn test_template_kgz() {
+    assert_eq!(render_templates("{{KGZ}}"), "[[Kyrgyzstan|Kyrgyzstan]]");
+}
+
+#[test]
+fn test_template_khazaria() {
+    assert_template_is_recognized_skip!("Khazaria");
+}
+
+#[test]
+fn test_template_khm() {
+    assert_eq!(render_templates("{{KHM}}"), "[[Cambodia|Cambodia]]");
+}
+
+#[test]
+fn test_template_kir() {
+    assert_eq!(render_templates("{{KIR}}"), "[[Kiribati|Kiribati]]");
+}
+
+#[test]
+fn test_template_kiskunhalas_district() {
+    assert_template_is_recognized_skip!("Kiskunhalas District");
+}
+
+#[test]
+fn test_template_km2() {
+    assert_eq!(render_templates("{{km2}}"), "km²");
+}
+
+#[test]
+fn test_template_kna() {
+    assert_eq!(
+        render_templates("{{KNA}}"),
+        "[[Saint Kitts and Nevis|Saint Kitts and Nevis]]"
+    );
+}
+
+#[test]
+fn test_template_knowledge_management() {
+    assert_template_is_recognized_skip!("Knowledge management");
+}
+
+#[test]
+fn test_template_knuth_prize_laureates() {
+    assert_template_is_recognized_skip!("Knuth Prize laureates");
+}
+
+#[test]
+fn test_template_komarom_esztergom() {
+    assert_template_is_recognized_skip!("Komárom-Esztergom");
+}
+
+#[test]
+fn test_template_koppen() {
+    assert_template_is_recognized_skip!("Köppen");
+}
+
+#[test]
+fn test_template_kor() {
+    assert_eq!(render_templates("{{KOR}}"), "[[South Korea|South Korea]]");
+}
+
+#[test]
+fn test_template_kos() {
+    assert_eq!(render_templates("{{KOS}}"), "[[Kosovo|Kosovo]]");
+}
+
+#[test]
+fn test_template_kosice_region() {
+    assert_template_is_recognized_skip!("Košice Region");
+}
+
+#[test]
+fn test_template_kosovo_topics() {
+    assert_template_is_recognized_skip!("Kosovo topics");
+}
+
+#[test]
+fn test_template_ksh_url() {
+    assert_eq!(
+        render_templates("{{ksh url}}27872"),
+        "[[official-url:https://www.ksh.hu/apps/!cp.hnt2.telep?nn=|Ksh url]] at the [[Hungarian Central Statistical Office]]27872"
+    );
+}
+
+#[test]
+fn test_template_kuw() {
+    assert_eq!(render_templates("{{KUW}}"), "[[Kuwait|Kuwait]]");
+}
+
+#[test]
+fn test_template_kwt() {
+    assert_eq!(render_templates("{{KWT}}"), "[[Kuwait|Kuwait]]");
+}

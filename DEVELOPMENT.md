@@ -335,6 +335,7 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{multiref|Ref 1|Ref 2}}` (and its alias `{{Multiref2}}`) joins positional ref values with a semicolon: `Ref 1; Ref 2`
 * `{{hosking-jfood|page=123}}` renders Richard Hosking book citation format: `Hosking, Richard (1996). ''A Dictionary of Japanese Food: Ingredients & Culture''. Tuttle Publishing. p. 123. ISBN 978-0-8048-2042-4`
 * `{{citation-attribution|text}}` renders public domain text attribution: `One or more of the preceding sentences incorporates text from a work now in the public domain: text`
+* `{{Jewish Encyclopedia|wstitle=Atonement, Day of}}` and `{{JewishEncyclopedia|title=Atonement, Day of}}` render public-domain Jewish Encyclopedia attribution/citation text
 * `{{Free-content attribution|title=...}}` renders free content attribution: `This article incorporates text from a free content work. Licensed under...`
 * `{{olist|Item 1|Item 2}}` (and its alias `{{ordered list}}`) renders a numbered list: `# Item 1\n# Item 2`
 * `{{webtrans|url|title|lang}}` renders an external link with translation language indicator: `[[official-url:url|title]] (in lang)`
@@ -425,6 +426,10 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Ja-rail-color|JY}}` returns the standardized hex color code for the Japanese rail line (e.g. `#80c241`)
 * `{{jarc|JY}}` returns the standardized hex color code for the Japanese rail line (e.g. `#80c241`), redirecting to `{{Ja-rail-color}}`
 * `{{JRKSN|JK|01}}` formats station numbering icons as a string concatenation: `JK01`
+* `{{JAM}}`, `{{JOR}}`, `{{KAZ}}`, `{{KEN}}`, `{{KGZ}}`, `{{KHM}}`, `{{KIR}}`, `{{KNA}}`, `{{KOR}}`, `{{KOS}}`, `{{KUW}}`, and `{{KWT}}` render country-code flag shorthand templates as country wikilinks; `{{JAP}}` redirects to the existing Japan shorthand rendering
+* `{{km2}}` renders the square-kilometre unit as `km²`
+* `{{ksh url}}` renders the Hungarian Central Statistical Office settlement URL prefix
+* J/K-series navigation and sidebar templates such as `{{James Madison}}`, `{{Jews and Judaism}}`, `{{JHU}}`, `{{Joseph Stalin series}}`, `{{Köppen}}`, and `{{Kosovo topics}}` are silent templates and are omitted from output
 * `{{Ja-platform|pfn=1|name=Yamanote Line|dir=for Tokyo}}` (or `{{jpf}}`, `{{Ja-platform-m}}`, `{{jpfm}}`) renders a Japanese rail platform layout as a table row inside wikitables
 * `{{ja-rail-linem|m|linename=Tokyo Metro|linecol=blue}}` renders a Japanese railway line row inside wikitables, supporting customizable symbol types, line colors, names, and direction descriptions
 * `{{rail-interchange|JR East|JT}}` (or `{{ric}}`, `{{rint}}`) displays railway system/line abbreviations in brackets, e.g. `[JT]`

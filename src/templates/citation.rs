@@ -218,6 +218,14 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_london_gazette_template as TemplateHandler,
         ),
         (
+            "jewish encyclopedia",
+            render_jewish_encyclopedia_template as TemplateHandler,
+        ),
+        (
+            "jewishencyclopedia",
+            render_jewish_encyclopedia_template as TemplateHandler,
+        ),
+        (
             "free-content attribution",
             render_free_content_attribution_template as TemplateHandler,
         ),
@@ -2482,6 +2490,59 @@ fn render_cath_ency_template(params: &str) -> String {
         render_templates(title),
         title
     )
+}
+
+/// [Jewish Encyclopedia](https://en.wikipedia.org/wiki/Template:Jewish_Encyclopedia)
+fn render_jewish_encyclopedia_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+    let title = template_param(&named, &["wstitle", "title"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    let title_part = if title.is_empty() {
+        String::new()
+    } else if template_param(&named, &["wstitle"]).is_some() {
+        format!(
+            "\"{}\". ",
+            render_templates(&format!(
+                "[[src:Jewish Encyclopedia (1906)/{}|{}]]",
+                title, title
+            ))
+        )
+    } else if let Some(url) = template_param(&named, &["url"]) {
+        format!(
+            "\"{}\". ",
+            render_templates(&format!("[{} {}]", url.trim(), title))
+        )
+    } else {
+        format!("\"{}\". ", render_templates(title))
+    };
+
+    let mut citation = format!(
+        "Singer, Isidore; et al., eds. (1901–1906). {}''The Jewish Encyclopedia''. New York: Funk & Wagnalls.",
+        title_part
+    );
+
+    if let Some(volume) = template_param(&named, &["volume"]) {
+        citation.push_str(&format!(" Vol. {}.", render_templates(volume.trim())));
+    }
+    if let Some(page) = template_param(&named, &["page", "pages"]) {
+        citation.push_str(&format!(" p. {}.", render_templates(page.trim())));
+    }
+
+    if template_param(&named, &["no-prescript"]).is_some() {
+        citation
+    } else if template_param(&named, &["inline"]).is_some() {
+        format!(
+            "One or more of the preceding sentences incorporates text from a publication now in the public domain: {citation}"
+        )
+    } else {
+        format!(
+            "This article incorporates text from a publication now in the public domain: {citation}"
+        )
+    }
 }
 
 fn render_encyclopaedia_iranica_template(params: &str) -> String {

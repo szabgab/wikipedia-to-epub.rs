@@ -1903,6 +1903,41 @@ Added support for the `official` template name by routing it through the existin
 * None.
 
 
+## Session Note: 2026-06-26 - Handle j.txt Wikipedia templates
+
+### Decisions Made
+
+* Checked the `j.txt` template names against Wikipedia template definitions, using page/API results where available and direct page opens for key ambiguous templates.
+* Rendered country-code shorthand templates as country wikilinks, added `{{JAP}}` as an alias to the existing Japan shorthand, rendered standalone `{{km2}}`, added `{{ksh url}}`, and added Jewish Encyclopedia attribution/citation rendering.
+* Registered the remaining J/K topic, navigation, sidebar, and regional templates as recognized skipped navigation templates.
+
+### Files Changed
+
+* `DEVELOPMENT.md` [MODIFY]
+* `docs/codex-notes.md` [MODIFY]
+* `src/navigations.csv` [MODIFY]
+* `src/silent.csv` [MODIFY by `./tools/sort.sh`]
+* `src/templates/citation.rs` [MODIFY]
+* `src/templates/formatting.rs` [MODIFY]
+* `src/templates/mod.rs` [MODIFY]
+* `src/tests.rs` [MODIFY]
+
+### Tests Run
+
+* `./tools/sort.sh`
+* `cargo test test_template_j`
+* `cargo test test_template_k`
+* `cargo fmt`
+* `cargo test`
+* `cargo check`
+* `cargo clippy --all-targets -- -D warnings`
+* `cargo test --locked -- --ignored`
+
+### Pending Follow-Ups
+
+* None.
+
+
 ## Session Note: 2026-06-26 - Handle H-series templates from h.txt
 
 ### Decisions Made

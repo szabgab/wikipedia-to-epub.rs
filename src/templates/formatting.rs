@@ -368,6 +368,19 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_gutenberg_author_template as TemplateHandler,
         ),
         ("guy", render_guy_template as TemplateHandler),
+        ("jam", render_jam_template as TemplateHandler),
+        ("jap", render_jpn_template as TemplateHandler),
+        ("jor", render_jor_template as TemplateHandler),
+        ("kaz", render_kaz_template as TemplateHandler),
+        ("ken", render_ken_template as TemplateHandler),
+        ("kgz", render_kgz_template as TemplateHandler),
+        ("khm", render_khm_template as TemplateHandler),
+        ("kir", render_kir_template as TemplateHandler),
+        ("kna", render_kna_template as TemplateHandler),
+        ("kor", render_kor_template as TemplateHandler),
+        ("kos", render_kos_template as TemplateHandler),
+        ("kuw", render_kuw_template as TemplateHandler),
+        ("kwt", render_kuw_template as TemplateHandler),
         (
             "further information",
             render_further_template as TemplateHandler,
@@ -741,6 +754,7 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             "google books",
             render_google_books_template as TemplateHandler,
         ),
+        ("ksh url", render_ksh_url_template as TemplateHandler),
         ("usurped", render_usurped_template as TemplateHandler),
         ("break", render_break_template as TemplateHandler),
         ("br", render_break_template as TemplateHandler),
@@ -3247,6 +3261,11 @@ fn render_usurped_template(params: &str) -> String {
         .unwrap_or("");
 
     render_templates(url)
+}
+
+/// [Ksh url](https://en.wikipedia.org/wiki/Template:Ksh_url)
+fn render_ksh_url_template(_params: &str) -> String {
+    "[[official-url:https://www.ksh.hu/apps/!cp.hnt2.telep?nn=|Ksh url]] at the [[Hungarian Central Statistical Office]]".to_string()
 }
 
 /// [Break](https://en.wikipedia.org/wiki/Template:Break)
@@ -9503,6 +9522,50 @@ fn render_gutenberg_author_template(params: &str) -> String {
 
 fn render_guy_template(params: &str) -> String {
     render_country_flag_template("Guyana", params)
+}
+
+fn render_jam_template(params: &str) -> String {
+    render_country_flag_template("Jamaica", params)
+}
+
+fn render_jor_template(params: &str) -> String {
+    render_country_flag_template("Jordan", params)
+}
+
+fn render_kaz_template(params: &str) -> String {
+    render_country_flag_template("Kazakhstan", params)
+}
+
+fn render_ken_template(params: &str) -> String {
+    render_country_flag_template("Kenya", params)
+}
+
+fn render_kgz_template(params: &str) -> String {
+    render_country_flag_template("Kyrgyzstan", params)
+}
+
+fn render_khm_template(params: &str) -> String {
+    render_country_flag_template("Cambodia", params)
+}
+
+fn render_kir_template(params: &str) -> String {
+    render_country_flag_template("Kiribati", params)
+}
+
+fn render_kna_template(params: &str) -> String {
+    render_country_flag_template("Saint Kitts and Nevis", params)
+}
+
+fn render_kor_template(params: &str) -> String {
+    render_country_flag_template("South Korea", params)
+}
+
+fn render_kos_template(params: &str) -> String {
+    render_country_flag_template("Kosovo", params)
+}
+
+fn render_kuw_template(params: &str) -> String {
+    render_country_flag_template("Kuwait", params)
 }
 
 fn render_h2g2_template(params: &str) -> String {
