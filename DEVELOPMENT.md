@@ -169,6 +169,18 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * `{{Birth date and age|1931|3|7}}` and `{{birth date and age|1931|3|7|df=yes}}` render the birth date and current age: `March 7, 1931 (age X)` and `7 March 1931 (age X)`
 * `{{Start date and age|2023|06|23}}` (or with `df=yes`, `paren=yes`, or `br=yes`) renders the start date and current age: `June 23, 2023; age X`
 * `{{dts|1947-5-20}}` (or `{{dts|1947|May|20}}`) formats the date for table sorting, displaying it in a human-readable form: `May 20, 1947`; also supports the `format=dmy` parameter (e.g. `20 May 1947`) and the `bc` flag
+* `{{date|2006-05-17}}` formats dates in standard formats
+* `{{daterangedash|1 January|15 January}}` displays date ranges
+* `{{date table sorting}}` is handled as an alias of `{{dts}}`
+* `{{death date|1993|2|24}}` and `{{death date and age|1993|2|24|1921|3|7}}` format death dates and age at death
+* `{{decimal cell|12.34}}` aligns numbers in table cells
+* `{{decrease}}` (along with `{{DecreaseNeutral}}`, `{{decreasepositive}}`, and `{{down}}`) renders a downward arrow: `▼`
+* `{{details|Article}}` renders hatnotes pointing to detailed articles: `For more details, see [[Article]].`
+* `{{DetailsLink|Article}}` formats internal details links: `[[Article|details]]`
+* `{{D-Out}}` formats table cells indicating a participant has withdrawn/out in gray background
+* `{{DEN}}` (along with `{{DEU}}`, `{{DJI}}`, `{{DMA}}`, `{{DNK}}`, `{{DOM}}`, `{{DZA}}`) formats country links with flag styling (e.g. `[[Denmark|Denmark]]`)
+* `{{Data missing}}`, `{{date?}}`, `{{DDB}}`, `{{Discogs artist}}`, `{{Disputed}}`, `{{divcolend}}`, `{{DNB}}`, and `{{dubious span}}` are silent templates and are omitted from the output
+* `{{Dacian cities}}`, `{{Dacia series}}`, `{{Danube Rectors Conference}}`, `{{democracy}}`, `{{Demographics of Europe}}`, and other regional/topic navigation blocks are silent navigational templates and are omitted from the output
 * `{{unbulleted list|item1|item2}}` (or its aliases `{{ubl}}`, `{{ubli}}`, `{{ublist}}`, and `{{unbulleted indent list}}`) renders standard XHTML list items wrapped in unordered list tags: `<ul><li>item1</li><li>item2</li></ul>`
 * `{{hlist|item1|item2}}` (and `{{flatlist}}`) renders standard XHTML list items joined by commas: `item1, item2`
 * `{{native name list|tag1=ja|name1=Name}}` renders native name list as a comma-separated list of names and their language tags: `Name (Japanese)`

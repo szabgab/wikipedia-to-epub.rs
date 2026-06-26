@@ -1,3 +1,5 @@
+
+
 '
 -
 
@@ -59,15 +61,15 @@ colbegin
 col-begin
 col-break
 col div,                     Columns-list div col alias.,                                https://en.wikipedia.org/wiki/Template:Col_div
-colend
 col-end
+colend
 cols,                        Multi-column list wrapper.,                                 https://en.wikipedia.org/wiki/Template:cols
 columns-list
 Commons
 Commons and category
 Commons category
-Commons category inline
 Commons category-inline
+Commons category inline
 Commonscatinline,            Inline link to Commons category.,                           https://en.wikipedia.org/wiki/Template:Commonscatinline
 commonscat,                  Link to category in Wikimedia Commons.,                     https://en.wikipedia.org/wiki/Template:Commons_category
 Commons-inline
@@ -78,20 +80,33 @@ Contains special characters
 coord missing
 Copy edit,                   Cleanup banner.,                                            https://en.wikipedia.org/wiki/Template:Copy_edit
 CS1 config
+Data missing
+date?
 date missing,                Inline cleanup tag.,                                        https://en.wikipedia.org/wiki/Template:Date_missing
+DDB
 Dead link
 Dead link,                  Dead link,               https://en.wikipedia.org/wiki/Template:Dead_link
 disambiguation
+discogs artist
+Discogs artist
 discuss
+Disputed
+Disputed inline
+Disputed map
 disputed section
 Distinguish
 div
 div col
 divcol
-divcol end
 div col end
+divcol end
+divcolend
 Div end
+DNB
+DNB portal
+DNB-Portal
 dubious
+dubious span
 dynamic list
 EB1911,                      Public domain attribution banner.,                          https://en.wikipedia.org/wiki/Template:EB1911
 efn

@@ -9245,3 +9245,138 @@ fn test_template_cc_by_sa_source() {
 fn test_template_cc_notice() {
     assert_eq!(render_templates("{{CC-notice}}"), "");
 }
+
+#[test]
+fn test_template_date() {
+    assert_eq!(render_templates("{{date|2006-05-17}}"), "May 17, 2006");
+    assert_eq!(render_templates("{{date|17 May 2006|dmy}}"), "17 May 2006");
+    assert_eq!(
+        render_templates("{{date|May 17, 2006|format=dmy}}"),
+        "17 May 2006"
+    );
+    assert_eq!(render_templates("{{date|invalid}}"), "invalid");
+}
+
+#[test]
+fn test_template_daterangedash() {
+    assert_eq!(
+        render_templates("{{daterangedash|1 January|15 January}}"),
+        "1 January – 15 January"
+    );
+    assert_eq!(render_templates("{{daterangedash|1 January}}"), "1 January");
+}
+
+#[test]
+fn test_template_date_table_sorting() {
+    assert_eq!(
+        render_templates("{{date table sorting|2026|06|26}}"),
+        "June 26, 2026"
+    );
+}
+
+#[test]
+fn test_template_death_date() {
+    assert_eq!(
+        render_templates("{{death date|1993|2|24}}"),
+        "February 24, 1993"
+    );
+    assert_eq!(
+        render_templates("{{death_date|1993|2|24|df=yes}}"),
+        "24 February 1993"
+    );
+}
+
+#[test]
+fn test_template_death_date_and_age() {
+    assert_eq!(
+        render_templates("{{death date and age|1993|2|24|1921|3|7}}"),
+        "February 24, 1993 (aged 71)"
+    );
+    assert_eq!(
+        render_templates("{{death date and age|1993|2|24|1921|3|7|df=yes}}"),
+        "24 February 1993 (aged 71)"
+    );
+}
+
+#[test]
+fn test_template_decimal_cell() {
+    assert_eq!(render_templates("{{decimal cell|12.34}}"), "12.34");
+}
+
+#[test]
+fn test_template_decrease() {
+    assert_eq!(render_templates("{{decrease}}"), "▼");
+    assert_eq!(render_templates("{{DecreaseNeutral}}"), "▼");
+    assert_eq!(render_templates("{{decreasepositive}}"), "▼");
+    assert_eq!(render_templates("{{down}}"), "▼");
+}
+
+#[test]
+fn test_template_details() {
+    assert_eq!(
+        render_templates("{{Details|Cologne War}}"),
+        "For more details, see [[Cologne War]]"
+    );
+    assert_eq!(
+        render_templates("{{details|Article 1|Article 2}}"),
+        "For more details, see [[Article 1]] and [[Article 2]]"
+    );
+}
+
+#[test]
+fn test_template_details_link() {
+    assert_eq!(
+        render_templates("{{DetailsLink|Cologne War}}"),
+        "[[Cologne War|details]]"
+    );
+}
+
+#[test]
+fn test_template_d_out() {
+    assert_eq!(
+        render_templates("{{D-Out}}"),
+        "style=\"background: #a9a9a9; color: black; vertical-align: middle; text-align: center;\" class=\"d-out table-d-out\"|Out"
+    );
+    assert_eq!(
+        render_templates("{{D-Out|Withdrawn}}"),
+        "style=\"background: #a9a9a9; color: black; vertical-align: middle; text-align: center;\" class=\"d-out table-d-out\"|Withdrawn"
+    );
+}
+
+#[test]
+fn test_template_den() {
+    assert_eq!(render_templates("{{DEN}}"), "[[Denmark|Denmark]]");
+}
+
+#[test]
+fn test_template_deu() {
+    assert_eq!(render_templates("{{DEU}}"), "[[Germany|Germany]]");
+}
+
+#[test]
+fn test_template_dji() {
+    assert_eq!(render_templates("{{DJI}}"), "[[Djibouti|Djibouti]]");
+}
+
+#[test]
+fn test_template_dma() {
+    assert_eq!(render_templates("{{DMA}}"), "[[Dominica|Dominica]]");
+}
+
+#[test]
+fn test_template_dnk() {
+    assert_eq!(render_templates("{{DNK}}"), "[[Denmark|Denmark]]");
+}
+
+#[test]
+fn test_template_dom() {
+    assert_eq!(
+        render_templates("{{DOM}}"),
+        "[[Dominican Republic|Dominican Republic]]"
+    );
+}
+
+#[test]
+fn test_template_dza() {
+    assert_eq!(render_templates("{{DZA}}"), "[[Algeria|Algeria]]");
+}

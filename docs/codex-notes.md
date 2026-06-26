@@ -1,5 +1,42 @@
 # Codex Session Notes
 
+## 2026-06-26 Handle Ninth Batch of Wikipedia Templates
+
+### Summary
+Added support for 82 Wikipedia templates listed in `d.txt` by registering them in template databases (silent/navigations), implementing custom rendering logic, writing unit tests for each template, and updating documentation rules.
+
+### Decisions Made
+- **Created Renderers & Aliases in Rust**:
+  - Implemented `render_date_template` (formats date parameters), `render_daterangedash_template` (formats date range with dash), `render_death_date_template` (formats death date), `render_death_date_and_age_template` (formats death date and age at death), `render_decimal_cell_template` (table cell decimal align value passthrough), `render_decrease_template` (renders trend down arrow ▼), `render_details_template` (summary style hatnote link list), `render_details_link_template` (details link shorthand), and `render_d_out_template` (gray table cell debate status text).
+  - Implemented flag template helpers `render_den_template`/`render_dnk_template` (Denmark), `render_deu_template` (Germany), `render_dji_template` (Djibouti), `render_dma_template` (Dominica), `render_dom_template` (Dominican Republic), and `render_dza_template` (Algeria).
+  - Registered all new active templates and aliases (including `"date table sorting"` mapping to `render_dts_template`, and `"down"`, `"decreaseneutral"`, `"decreasepositive"` mapping to `render_decrease_template`) in `get_dispatch_table()` in [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs).
+- **Classified Skipped Templates**:
+  - Appended 13 templates to [src/silent.csv](file:///opt/src/silent.csv) (e.g. Data missing, date?, DDB, Discogs artist, Disputed, etc.).
+  - Appended 48 navigation and sidebar templates to [src/navigations.csv](file:///opt/src/navigations.csv) (e.g. Dacian cities, Dacia series, Danube Rectors Conference, democracy, etc.).
+  - Sorted both CSV databases using `./tools/sort.sh`.
+- **Added Unit Tests**:
+  - Added 17 separate unit test cases in [src/tests.rs](file:///opt/src/tests.rs) (covering each newly added template).
+- **Updated Documentation**:
+  - Documented conversion rules for the new active templates in [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md).
+
+### Files Changed
+- [src/templates/formatting.rs](file:///opt/src/templates/formatting.rs) [MODIFY]
+- [src/silent.csv](file:///opt/src/silent.csv) [MODIFY]
+- [src/navigations.csv](file:///opt/src/navigations.csv) [MODIFY]
+- [src/tests.rs](file:///opt/src/tests.rs) [MODIFY]
+- [DEVELOPMENT.md](file:///opt/DEVELOPMENT.md) [MODIFY]
+- [docs/codex-notes.md](file:///opt/docs/codex-notes.md) [MODIFY]
+
+### Tests Run
+- Checked formatting: `cargo fmt` (passed cleanly).
+- Checked compilation: `cargo check` (passed cleanly).
+- Checked warning lints: `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-26 Handle Eighth Batch of Wikipedia Templates
 
 ### Summary

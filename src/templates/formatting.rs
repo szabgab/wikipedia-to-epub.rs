@@ -146,6 +146,45 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("jrssn", render_jrksn_template as TemplateHandler),
         ("co2", render_co2_template as TemplateHandler),
         ("abw", render_abw_template as TemplateHandler),
+        ("date", render_date_template as TemplateHandler),
+        (
+            "daterangedash",
+            render_daterangedash_template as TemplateHandler,
+        ),
+        ("date table sorting", render_dts_template as TemplateHandler),
+        ("death date", render_death_date_template as TemplateHandler),
+        ("death_date", render_death_date_template as TemplateHandler),
+        (
+            "death date and age",
+            render_death_date_and_age_template as TemplateHandler,
+        ),
+        (
+            "decimal cell",
+            render_decimal_cell_template as TemplateHandler,
+        ),
+        ("decrease", render_decrease_template as TemplateHandler),
+        (
+            "decreaseneutral",
+            render_decrease_template as TemplateHandler,
+        ),
+        (
+            "decreasepositive",
+            render_decrease_template as TemplateHandler,
+        ),
+        ("den", render_den_template as TemplateHandler),
+        ("details", render_details_template as TemplateHandler),
+        (
+            "detailslink",
+            render_details_link_template as TemplateHandler,
+        ),
+        ("deu", render_deu_template as TemplateHandler),
+        ("dji", render_dji_template as TemplateHandler),
+        ("dma", render_dma_template as TemplateHandler),
+        ("dnk", render_dnk_template as TemplateHandler),
+        ("dom", render_dom_template as TemplateHandler),
+        ("d-out", render_d_out_template as TemplateHandler),
+        ("down", render_decrease_template as TemplateHandler),
+        ("dza", render_dza_template as TemplateHandler),
         ("afg", render_afg_template as TemplateHandler),
         ("ago", render_ago_template as TemplateHandler),
         ("aia", render_aia_template as TemplateHandler),
@@ -7508,4 +7547,283 @@ fn render_census_2021_aus_template(params: &str) -> String {
         "Australian Bureau of Statistics (28 June 2022). [{} {}]. {}.{}",
         url, title, source, ret
     )
+}
+
+fn render_date_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    let date_str = if let Some(p) = positional.first() {
+        p.trim()
+    } else {
+        ""
+    };
+
+    if date_str.is_empty() {
+        return String::new();
+    }
+
+    let mut year = None;
+    let mut month = None;
+    let mut day = None;
+
+    let parts: Vec<&str> = date_str.split('-').collect();
+    if parts.len() == 3 {
+        year = parts[0].parse::<i32>().ok();
+        month = parts[1].parse::<i32>().ok();
+        day = parts[2].parse::<i32>().ok();
+    } else if let Some((y, m, d)) = parse_date_string(date_str) {
+        year = Some(y);
+        month = Some(m);
+        day = Some(d);
+    }
+
+    if let (Some(y), Some(m), Some(d)) = (year, month, day) {
+        let months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+        ];
+        if (1..=12).contains(&m) {
+            let month_name = months[m as usize - 1];
+            let is_dmy = positional
+                .get(1)
+                .is_some_and(|fmt| fmt.trim().eq_ignore_ascii_case("dmy"))
+                || template_param(&named, &["format"])
+                    .is_some_and(|fmt| fmt.eq_ignore_ascii_case("dmy"));
+
+            if is_dmy {
+                format!("{} {} {}", d, month_name, y)
+            } else {
+                format!("{} {}, {}", month_name, d, y)
+            }
+        } else {
+            date_str.to_string()
+        }
+    } else {
+        date_str.to_string()
+    }
+}
+
+fn render_daterangedash_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if positional.len() >= 2 {
+        format!("{} – {}", positional[0].trim(), positional[1].trim())
+    } else if let Some(first) = positional.first() {
+        first.trim().to_string()
+    } else {
+        String::new()
+    }
+}
+
+fn render_death_date_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let nums: Vec<i32> = positional
+        .iter()
+        .map(|s| s.parse::<i32>().unwrap_or(0))
+        .collect();
+
+    if nums.len() >= 3 {
+        let y = nums[0];
+        let m = nums[1];
+        let d = nums[2];
+
+        let months = [
+            "",
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+        ];
+        let month_name = if (1..=12).contains(&m) {
+            months[m as usize]
+        } else {
+            ""
+        };
+
+        let df_dmy = template_param(&named, &["df"])
+            .is_some_and(|v| v.eq_ignore_ascii_case("yes") || v.eq_ignore_ascii_case("dmy"));
+
+        if df_dmy {
+            format!("{} {} {}", d, month_name, y)
+        } else {
+            format!("{} {}, {}", month_name, d, y)
+        }
+    } else {
+        String::new()
+    }
+}
+
+fn render_death_date_and_age_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let nums: Vec<i32> = positional
+        .iter()
+        .map(|s| s.parse::<i32>().unwrap_or(0))
+        .collect();
+
+    if nums.len() >= 6 {
+        let yd = nums[0];
+        let md = nums[1];
+        let dd = nums[2];
+        let yb = nums[3];
+        let mb = nums[4];
+        let db = nums[5];
+
+        let age = calculate_age(yb, mb, db, yd, md, dd);
+
+        let months = [
+            "",
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+        ];
+        let month_name = if (1..=12).contains(&md) {
+            months[md as usize]
+        } else {
+            ""
+        };
+
+        let df_dmy = template_param(&named, &["df"])
+            .is_some_and(|v| v.eq_ignore_ascii_case("yes") || v.eq_ignore_ascii_case("dmy"));
+
+        if df_dmy {
+            format!("{} {} {} (aged {})", dd, month_name, yd, age)
+        } else {
+            format!("{} {}, {} (aged {})", month_name, dd, yd, age)
+        }
+    } else if nums.len() >= 3 {
+        let yd = nums[0];
+        let md = nums[1];
+        let dd = nums[2];
+
+        let months = [
+            "",
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+        ];
+        let month_name = if (1..=12).contains(&md) {
+            months[md as usize]
+        } else {
+            ""
+        };
+
+        let df_dmy = template_param(&named, &["df"])
+            .is_some_and(|v| v.eq_ignore_ascii_case("yes") || v.eq_ignore_ascii_case("dmy"));
+
+        if df_dmy {
+            format!("{} {} {}", dd, month_name, yd)
+        } else {
+            format!("{} {}, {}", month_name, dd, yd)
+        }
+    } else {
+        String::new()
+    }
+}
+
+fn render_decimal_cell_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if let Some(val) = positional.first() {
+        val.trim().to_string()
+    } else {
+        String::new()
+    }
+}
+
+fn render_decrease_template(_params: &str) -> String {
+    "▼".to_string()
+}
+
+fn render_details_template(params: &str) -> String {
+    let articles = template_article_params(params);
+    if articles.is_empty() {
+        String::new()
+    } else {
+        format!(
+            "For more details, see {}",
+            join_template_articles(&articles)
+        )
+    }
+}
+
+fn render_details_link_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    if let Some(article) = positional.first() {
+        format!("[[{}|details]]", article.trim())
+    } else {
+        String::new()
+    }
+}
+
+fn render_d_out_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let text = positional.first().map(String::as_str).unwrap_or("Out");
+    format!(
+        "style=\"background: #a9a9a9; color: black; vertical-align: middle; text-align: center;\" class=\"d-out table-d-out\"|{text}"
+    )
+}
+
+fn render_den_template(params: &str) -> String {
+    render_country_flag_template("Denmark", params)
+}
+
+fn render_deu_template(params: &str) -> String {
+    render_country_flag_template("Germany", params)
+}
+
+fn render_dji_template(params: &str) -> String {
+    render_country_flag_template("Djibouti", params)
+}
+
+fn render_dma_template(params: &str) -> String {
+    render_country_flag_template("Dominica", params)
+}
+
+fn render_dnk_template(params: &str) -> String {
+    render_country_flag_template("Denmark", params)
+}
+
+fn render_dom_template(params: &str) -> String {
+    render_country_flag_template("Dominican Republic", params)
+}
+
+fn render_dza_template(params: &str) -> String {
+    render_country_flag_template("Algeria", params)
 }
