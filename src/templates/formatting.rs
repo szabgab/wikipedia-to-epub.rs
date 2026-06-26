@@ -629,6 +629,58 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_internet_archive_short_film_template as TemplateHandler,
         ),
         (
+            "ibdb name",
+            render_internet_broadway_database_name_template as TemplateHandler,
+        ),
+        ("idn", render_idn_template as TemplateHandler),
+        ("ina", render_idn_template as TemplateHandler),
+        ("ind", render_ind_template as TemplateHandler),
+        ("ih", render_ice_hockey_team_template as TemplateHandler),
+        ("imdb event", render_imdb_event_template as TemplateHandler),
+        (
+            "imo results",
+            render_imo_results_template as TemplateHandler,
+        ),
+        ("imslp", render_imslp_template as TemplateHandler),
+        ("increase", render_increase_template as TemplateHandler),
+        ("indent", render_indent_template as TemplateHandler),
+        ("inrconvert", render_inr_convert_template as TemplateHandler),
+        ("insee", render_insee_template as TemplateHandler),
+        ("instagram", render_instagram_template as TemplateHandler),
+        (
+            "in our time",
+            render_in_our_time_template as TemplateHandler,
+        ),
+        (
+            "internet archive",
+            render_internet_archive_template as TemplateHandler,
+        ),
+        (
+            "internet archive author",
+            render_internet_archive_author_template as TemplateHandler,
+        ),
+        (
+            "internet archive film",
+            render_internet_archive_film_template as TemplateHandler,
+        ),
+        ("interp", render_interp_template as TemplateHandler),
+        (
+            "interlinear",
+            render_passthrough_template as TemplateHandler,
+        ),
+        ("irl", render_irl_template as TemplateHandler),
+        ("irn", render_irn_template as TemplateHandler),
+        ("iri", render_irn_template as TemplateHandler),
+        ("irq", render_irq_template as TemplateHandler),
+        ("isbnt", render_isbn_template as TemplateHandler),
+        ("isl", render_isl_template as TemplateHandler),
+        ("isr", render_isr_template as TemplateHandler),
+        (
+            "isu short track skater",
+            render_isu_short_track_skater_template as TemplateHandler,
+        ),
+        ("ita", render_ita_template as TemplateHandler),
+        (
             "worldhistory",
             render_worldhistory_template as TemplateHandler,
         ),
@@ -4680,6 +4732,377 @@ fn render_internet_archive_short_film_template(params: &str) -> String {
         "[[official-url:{url}|''{}'']] at the Internet Archive",
         render_templates(name)
     )
+}
+
+/// [IBDB name](https://en.wikipedia.org/wiki/Template:IBDB_name)
+fn render_internet_broadway_database_name_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let id = template_param(&named, &["1", "id"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(id) = id else {
+        return String::new();
+    };
+    let name = template_param(&named, &["2", "name"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("IBDB");
+
+    format!(
+        "[[official-url:https://www.ibdb.com/broadway-cast-staff/{id}|{}]] at the Internet Broadway Database",
+        render_templates(name)
+    )
+}
+
+/// [IDN](https://en.wikipedia.org/wiki/Template:IDN)
+/// [INA](https://en.wikipedia.org/wiki/Template:INA)
+fn render_idn_template(params: &str) -> String {
+    render_country_flag_template("Indonesia", params)
+}
+
+/// [IND](https://en.wikipedia.org/wiki/Template:IND)
+fn render_ind_template(params: &str) -> String {
+    render_country_flag_template("India", params)
+}
+
+/// [ih](https://en.wikipedia.org/wiki/Template:Ih)
+fn render_ice_hockey_team_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(country) = positional.first().map(String::as_str).map(str::trim) else {
+        return String::new();
+    };
+    if country.is_empty() {
+        return String::new();
+    }
+    let label = positional
+        .get(1)
+        .map(String::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or(country);
+    format!(
+        "[[{country} men's national ice hockey team|{}]]",
+        render_templates(label)
+    )
+}
+
+/// [IMDb event](https://en.wikipedia.org/wiki/Template:IMDb_event)
+fn render_imdb_event_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let id = template_param(&named, &["1", "id"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(id) = id else {
+        return String::new();
+    };
+    let event = template_param(&named, &["2", "event"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("IMDb event");
+    let year = template_param(&named, &["year"])
+        .map(str::trim)
+        .unwrap_or("");
+
+    format!(
+        "[[official-url:https://www.imdb.com/event/ev{id}/{year}|{}]] at IMDb",
+        render_templates(event)
+    )
+}
+
+/// [IMO results](https://en.wikipedia.org/wiki/Template:IMO_results)
+fn render_imo_results_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let id = template_param(&named, &["1", "id", "grid"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(id) = id else {
+        return String::new();
+    };
+    let title = template_param(&named, &["2", "title"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("Participant");
+
+    format!(
+        "[[official-url:https://www.imo-official.org/participant_r.aspx?id={id}|{}'s results]] at International Mathematical Olympiad",
+        render_templates(title)
+    )
+}
+
+/// [IMSLP](https://en.wikipedia.org/wiki/Template:IMSLP)
+fn render_imslp_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+
+    if let Some(work) = template_param(&named, &["work"])
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
+        let name = template_param(&named, &["cname"])
+            .map(str::trim)
+            .filter(|value| !value.is_empty())
+            .unwrap_or(work);
+        return format!(
+            "[[official-url:https://imslp.org/wiki/{work}|{}]] at the International Music Score Library Project",
+            render_templates(name)
+        );
+    }
+
+    let id = template_param(&named, &["1", "id", "author"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(id) = id else {
+        return String::new();
+    };
+    let name = template_param(&named, &["2", "cname"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or(id);
+    let descr = template_param(&named, &["descr"])
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("Free scores");
+    format!(
+        "[[official-url:https://imslp.org/wiki/Category:{id}|{} by {}]] at the International Music Score Library Project",
+        render_templates(descr),
+        render_templates(name)
+    )
+}
+
+/// [increase](https://en.wikipedia.org/wiki/Template:Increase)
+fn render_increase_template(_params: &str) -> String {
+    "▲".to_string()
+}
+
+/// [indent](https://en.wikipedia.org/wiki/Template:Indent)
+fn render_indent_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let count = positional
+        .first()
+        .and_then(|value| value.trim().parse::<usize>().ok())
+        .unwrap_or(1)
+        .min(16);
+    " ".repeat(count)
+}
+
+/// [INRConvert](https://en.wikipedia.org/wiki/Template:INRConvert)
+fn render_inr_convert_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let amount = template_param(&named, &["1"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("0");
+    let unit = template_param(&named, &["2"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+    let unit_text = match unit.to_ascii_lowercase().as_str() {
+        "k" => " thousand",
+        "m" => " million",
+        "b" => " billion",
+        "t" => " trillion",
+        "l" => " lakh",
+        "c" => " crore",
+        "lc" => " lakh crore",
+        _ => "",
+    };
+    format!("₹{}{unit_text}", render_templates(amount))
+}
+
+/// [INSEE](https://en.wikipedia.org/wiki/Template:INSEE)
+fn render_insee_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let title = template_param(&named, &["2", "title"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("INSEE");
+    format!(
+        "[[official-url:https://www.insee.fr/en/accueil|{}]]",
+        render_templates(title)
+    )
+}
+
+/// [Instagram](https://en.wikipedia.org/wiki/Template:Instagram)
+fn render_instagram_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let id = template_param(&named, &["1", "id"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(id) = id else {
+        return String::new();
+    };
+    let name = template_param(&named, &["2", "name"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or(id);
+    format!(
+        "[[official-url:https://www.instagram.com/{id}/|{}]] on Instagram",
+        render_templates(name)
+    )
+}
+
+/// [In Our Time](https://en.wikipedia.org/wiki/Template:In_Our_Time)
+fn render_in_our_time_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let title = positional.first().map(String::as_str).unwrap_or("").trim();
+    let id = positional.get(1).map(String::as_str).unwrap_or("").trim();
+    if title.is_empty() || id.is_empty() {
+        return String::new();
+    }
+    format!(
+        "[[official-url:https://www.bbc.co.uk/programmes/{id}|{}]] on ''In Our Time'' at the BBC",
+        render_templates(title)
+    )
+}
+
+/// [Internet Archive](https://en.wikipedia.org/wiki/Template:Internet_Archive)
+fn render_internet_archive_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let id = template_param(&named, &["1", "id"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(id) = id else {
+        return String::new();
+    };
+    let name = template_param(&named, &["2", "name"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("Internet Archive");
+    let page = template_param(&named, &["3", "page"])
+        .or_else(|| positional.get(2).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let url = if let Some(page) = page {
+        format!("https://archive.org/stream/{id}#page/n{page}/mode/2up")
+    } else {
+        format!("https://archive.org/details/{id}")
+    };
+    format!(
+        "[[official-url:{url}|{}]] at the Internet Archive",
+        render_templates(name)
+    )
+}
+
+/// [Internet Archive author](https://en.wikipedia.org/wiki/Template:Internet_Archive_author)
+fn render_internet_archive_author_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let id = template_param(&named, &["1", "id", "author"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(id) = id else {
+        return String::new();
+    };
+    let name = template_param(&named, &["2", "name"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or(id);
+    format!(
+        "[[official-url:https://archive.org/search?query=creator%3A%22{id}%22|{}]] at the Internet Archive",
+        render_templates(name)
+    )
+}
+
+/// [Internet Archive film](https://en.wikipedia.org/wiki/Template:Internet_Archive_film)
+fn render_internet_archive_film_template(params: &str) -> String {
+    let rendered = render_internet_archive_template(params);
+    if rendered.is_empty() {
+        String::new()
+    } else {
+        rendered.replace(
+            " at the Internet Archive",
+            " is available at the Internet Archive",
+        )
+    }
+}
+
+/// [interp](https://en.wikipedia.org/wiki/Template:Interp)
+fn render_interp_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let Some(text) = positional.first().filter(|value| !value.trim().is_empty()) else {
+        return String::new();
+    };
+    format!("[{}]", render_templates(text.trim()))
+}
+
+fn render_irl_template(params: &str) -> String {
+    render_country_flag_template("Ireland", params)
+}
+
+fn render_irn_template(params: &str) -> String {
+    render_country_flag_template("Iran", params)
+}
+
+fn render_irq_template(params: &str) -> String {
+    render_country_flag_template("Iraq", params)
+}
+
+fn render_isl_template(params: &str) -> String {
+    render_country_flag_template("Iceland", params)
+}
+
+fn render_isr_template(params: &str) -> String {
+    render_country_flag_template("Israel", params)
+}
+
+/// [ISU short track skater](https://en.wikipedia.org/wiki/Template:ISU_short_track_skater)
+fn render_isu_short_track_skater_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let name = template_param(&named, &["2", "name"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("ISU short track skater");
+
+    if let Some(new_id) = template_param(&named, &["new_id"])
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
+        return format!(
+            "[[official-url:https://isu-skating.com/short-track/skaters/{new_id}/|{}]] at the International Skating Union",
+            render_templates(name)
+        );
+    }
+
+    let id = template_param(&named, &["1", "id", "old_id"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let Some(id) = id else {
+        return String::new();
+    };
+    format!(
+        "[[official-url:https://web.archive.org/web/202409/http://www.isu.html.infostradasports.com/cache/TheASP.asp@PageID=302037&SportID=302&Personid={id}&TaalCode=2&StyleID=0&Cache=2.html#short|{}]] at the International Skating Union (archived)",
+        render_templates(name)
+    )
+}
+
+fn render_ita_template(params: &str) -> String {
+    render_country_flag_template("Italy", params)
 }
 
 /// [ill](https://en.wikipedia.org/wiki/Template:Ill)

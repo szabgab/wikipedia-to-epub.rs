@@ -1,5 +1,37 @@
 # Codex Session Notes
 
+## 2026-06-26 Handle I-Series Wikipedia Templates
+
+### Summary
+Handled all 102 templates listed in `i.txt` by checking their `Template:NAME` definitions on English Wikipedia, adding active renderers for behavior-bearing templates, registering layout/navigation/maintenance templates as recognized silent templates, adding per-template unit tests, and updating conversion documentation.
+
+### Decisions Made
+- Used the `handle-template` skill for Wikipedia template rendering work.
+- Added active renderers and aliases for I-series transliteration/IPA, external-link, country-code, sports-link, rupee-formatting, indentation, interpolation, ISBN-wrapper, and trend-marker templates.
+- Registered navigation, sidebar, layout-only image-label, maintenance, and metadata templates in `src/silent.csv` so they are recognized and omitted instead of counted as unknown.
+- Ran `./tools/sort.sh`, which sorted CSV files under `src`, including `src/navigations.csv`.
+
+### Files Changed
+- `DEVELOPMENT.md`
+- `src/silent.csv`
+- `src/navigations.csv`
+- `src/templates/formatting.rs`
+- `src/templates/lang.rs`
+- `src/templates/mod.rs`
+- `docs/codex-notes.md`
+
+### Tests Run
+- `cargo test templates::tests`
+- `cargo fmt`
+- `./tools/sort.sh`
+- `cargo test`
+- `cargo check`
+- `cargo clippy --all-targets -- -D warnings`
+- `cargo test --locked -- --ignored`
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-26 Handle Eleventh Batch of Wikipedia Templates
 
 ### Summary

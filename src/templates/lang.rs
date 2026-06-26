@@ -517,6 +517,18 @@ fn render_transliteration_template(params: &str) -> String {
     )
 }
 
+/// [IAST](https://en.wikipedia.org/wiki/Template:IAST)
+fn render_iast_template(params: &str) -> String {
+    let Some(text) = template_positional_params(params)
+        .into_iter()
+        .find(|value| !value.trim().is_empty())
+    else {
+        return String::new();
+    };
+
+    render_transliteration_template(&format!("sa|IAST|{text}"))
+}
+
 /// [tlit](https://en.wikipedia.org/wiki/Template:Tlit)
 fn render_transliteration_like_template(params: &str) -> String {
     let params = split_template_params(params)
@@ -1269,6 +1281,8 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("script", render_script_template as TemplateHandler),
         ("ipa", render_ipa_template as TemplateHandler),
         ("ipac-en", render_english_ipa_template as TemplateHandler),
+        ("ipac-cmn", render_english_ipa_template as TemplateHandler),
+        ("ipac-hu", render_english_ipa_template as TemplateHandler),
         ("respell", render_respell_template as TemplateHandler),
         (
             "native phrase",
@@ -1284,6 +1298,9 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("nihongo2", render_nihongo2_template as TemplateHandler),
         ("gloss", render_gloss_template as TemplateHandler),
         ("ipaslink", render_ipa_link_template as TemplateHandler),
+        ("ipa link", render_ipa_link_template as TemplateHandler),
+        ("ipalink", render_ipa_link_template as TemplateHandler),
+        ("ipablink", render_ipa_link_template as TemplateHandler),
         ("angbr", render_angbr_template as TemplateHandler),
         ("angbr ipa", render_angbr_ipa_template as TemplateHandler),
         ("angle bracket", render_angbr_template as TemplateHandler),
@@ -1318,6 +1335,7 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
         ("jarc", render_ja_rail_color_template as TemplateHandler),
         ("inlang", render_in_lang_template as TemplateHandler),
         ("ae", render_ae_template as TemplateHandler),
+        ("iast", render_iast_template as TemplateHandler),
     ])
 }
 
