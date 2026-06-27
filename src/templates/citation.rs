@@ -249,6 +249,11 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             "free-content attribution",
             render_free_content_attribution_template as TemplateHandler,
         ),
+        (
+            "standardebooks",
+            render_standard_ebooks_template as TemplateHandler,
+        ),
+        ("structurae", render_structurae_template as TemplateHandler),
     ])
 }
 
@@ -2789,4 +2794,92 @@ fn render_ls_template(params: &str) -> String {
 
     let link = format!("[[official-url:{}|{}]]", url, display);
     format!("{} in Lewis and Short", link)
+}
+
+fn render_standard_ebooks_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let url = template_param(&named, &["Standard Ebooks URL", "url"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    if url.is_empty() {
+        return String::new();
+    }
+
+    let name = template_param(&named, &["Display Name", "name"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("Standard Ebooks");
+
+    let is_collection = url.contains("/collections/");
+    let is_book = url.contains("/ebooks/");
+
+    if is_collection {
+        format!("[{url} A collection of {name} eBooks] at [[Standard Ebooks]]")
+    } else if is_book {
+        let noitalics = template_param(&named, &["noitalics"])
+            .is_some_and(|s| s.trim().eq_ignore_ascii_case("true"));
+        if noitalics {
+            format!("[{url} {name}] at [[Standard Ebooks]]")
+        } else {
+            format!("''[{url} {name}]'' at [[Standard Ebooks]]")
+        }
+    } else {
+        format!("[{url} Works by {name} in eBook form] at [[Standard Ebooks]]")
+    }
+}
+
+fn render_structurae_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let positional = template_positional_params(params);
+
+    let id = template_param(&named, &["1", "id"])
+        .or_else(|| positional.first().map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    if id.is_empty() {
+        return String::new();
+    }
+
+    let name = template_param(&named, &["2", "name", "title"])
+        .or_else(|| positional.get(1).map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("Structurae");
+
+    let t_type = template_param(&named, &["type"])
+        .map(|s| s.trim().to_lowercase())
+        .unwrap_or_else(|| "structures".to_string());
+
+    let path_type = match t_type.as_str() {
+        "persons" | "person" => "persons",
+        "literature" | "publication" => "literature",
+        "media" => "media",
+        _ => "structures",
+    };
+
+    let url = format!("https://structurae.net/{path_type}/{id}");
+
+    let nolink = template_param(&named, &["nolink"]).is_some();
+    let structurae_link = if nolink {
+        "Structurae"
+    } else {
+        "[[Structurae]]"
+    };
+
+    let mut result = format!("[{url} {name}] at {structurae_link}");
+
+    let access_date = template_param(&named, &["3", "access-date", "accessdate"])
+        .or_else(|| positional.get(2).map(String::as_str))
+        .map(|s| s.trim())
+        .unwrap_or("");
+
+    if !access_date.is_empty() {
+        result.push_str(&format!(". Retrieved {}", access_date));
+    }
+
+    result
 }

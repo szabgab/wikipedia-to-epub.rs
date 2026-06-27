@@ -553,7 +553,21 @@ The converter renders a simplified subset of Wikipedia wikitext as XHTML:
 * Footnote wrappers such as `{{efn|...}}`, `{{efn-ua|...}}`, and `{{refn|...}}` are omitted
 * Layout-only column templates such as `{{col-begin}}`, `{{col-break}}`, and `{{col-end}}` are omitted
 * Decorative flag image templates such as `{{flagicon|US}}` are omitted
-* `== History ==` becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings
+* `{{spaced en dash}}` (and aliases `{{spaced ndash}}`, `{{spnd}}`) renders ` – `
+* `{{sort|key|value}}` renders the display text `value`
+* `{{sortname|first|last|target|nolink=}}` renders the person's name as a link to `target` or `first last`, with sorting parameters ignored
+* `{{Start date|year|month|day|df=}}` formats the start date to standard Month Day, Year or Day Month Year format
+* `{{start and end dates|y1|m1|d1|y2|m2|d2|df=}}` (and alias `{{start and end date}}`) formats the date range with a spaced en dash ` – `
+* `{{steady}}` (and alias `{{Steady}}`) renders `▬`
+* `{{South Ossetia-note}}` renders standard political status note about South Ossetia
+* `{{Southeastern Europe in the Middle Ages, 500–1250}}` renders bibliographic attribution citing Florin Curta
+* `{{StandardEbooks|url=...|name=...}}` formats Standard Ebooks links
+* `{{Structurae|id=...|name=...|type=...}}` formats Structurae links for structures, persons, literature, or media
+* `{{surrender}}` renders `&nbsp;[[File:White flag icon.svg|14px|Surrendered|link=Surrender (military)]]`
+* `{{Switcher|text}}` acts as a passthrough layout wrapper
+* S-series country flag templates `{{SRB}}`, `{{SRI}}`, `{{SSD}}`, `{{STP}}`, `{{SUI}}`, `{{SUR}}`, `{{SVK}}`, `{{SVN}}`, `{{SWE}}`, `{{SWI}}`, `{{SWZ}}`, `{{SYC}}`, `{{SYR}}` format country links with flag styling
+* S-series maintenance and table layout templates such as `{{Sort under}}`, `{{Source?}}`, `{{Sources}}`, `{{specify}}`, `{{Specify}}`, `{{Split section}}`, `{{srn}}`, `{{sro}}`, `{{startflatlist}}`, `{{static row numbers}}`, `{{Static row numbers}}`, `{{Sticky header}}`, `{{Sticky table end}}`, `{{sticky table start}}`, `{{Sports links}}`, `{{Sports rankings table}}`, `{{Summarize}}`, and `{{summarize section}}` are silent templates and are omitted
+* == History == becomes `<h2>History</h2>`; deeper heading levels use deeper XHTML headings
 * Lines starting with `*` become unordered list items
 * Lines starting with `#` become ordered list items
 * References, unhandled templates, non-wikitable tables, categories, and file/image links are omitted; wikitables are converted into XHTML tables; file/image links are only rendered when `images: true` and the image can be resolved

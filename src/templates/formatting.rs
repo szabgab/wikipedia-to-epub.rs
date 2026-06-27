@@ -1022,6 +1022,41 @@ pub(crate) fn get_dispatch_table() -> DispatchTable {
             render_census_2021_aus_template as TemplateHandler,
         ),
         ("centre", render_passthrough_template as TemplateHandler),
+        ("srb", render_srb_template as TemplateHandler),
+        ("sri", render_sri_template as TemplateHandler),
+        ("ssd", render_ssd_template as TemplateHandler),
+        ("stp", render_stp_template as TemplateHandler),
+        ("sui", render_sui_template as TemplateHandler),
+        ("sur", render_sur_template as TemplateHandler),
+        ("svk", render_svk_template as TemplateHandler),
+        ("svn", render_svn_template as TemplateHandler),
+        ("swe", render_swe_template as TemplateHandler),
+        ("swi", render_swi_template as TemplateHandler),
+        ("swz", render_swz_template as TemplateHandler),
+        ("syc", render_syc_template as TemplateHandler),
+        ("syr", render_syr_template as TemplateHandler),
+        ("surrender", render_surrendered_template as TemplateHandler),
+        ("switcher", render_passthrough_template as TemplateHandler),
+        ("sort", render_sort_template as TemplateHandler),
+        ("sortname", render_sortname_template as TemplateHandler),
+        ("start date", render_start_date_template as TemplateHandler),
+        (
+            "start and end date",
+            render_start_and_end_dates_template as TemplateHandler,
+        ),
+        (
+            "start and end dates",
+            render_start_and_end_dates_template as TemplateHandler,
+        ),
+        ("steady", render_steady_template as TemplateHandler),
+        (
+            "south ossetia-note",
+            render_south_ossetia_note_template as TemplateHandler,
+        ),
+        (
+            "southeastern europe in the middle ages, 500–1250",
+            render_southeastern_europe_middle_ages_template as TemplateHandler,
+        ),
     ])
 }
 
@@ -9368,6 +9403,17 @@ fn resolve_ioc_code_to_name(code: &str) -> String {
         "MRI" | "MUS" => "Mauritius".to_string(),
         "MRT" => "Mauritania".to_string(),
         "MWI" => "Malawi".to_string(),
+        "SRB" => "Serbia".to_string(),
+        "SRI" => "Sri Lanka".to_string(),
+        "SSD" => "South Sudan".to_string(),
+        "STP" => "São Tomé and Príncipe".to_string(),
+        "SUR" => "Suriname".to_string(),
+        "SVK" => "Slovakia".to_string(),
+        "SVN" => "Slovenia".to_string(),
+        "SWI" => "Switzerland".to_string(),
+        "SWZ" => "Eswatini".to_string(),
+        "SYC" => "Seychelles".to_string(),
+        "SYR" => "Syria".to_string(),
         _ => code.to_string(),
     }
 }
@@ -10472,4 +10518,253 @@ fn render_legend_striped_template(params: &str) -> String {
         return String::new();
     };
     render_templates(label)
+}
+
+fn render_sort_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let text = positional
+        .get(1)
+        .or_else(|| positional.first())
+        .map(|s| s.trim())
+        .unwrap_or("");
+    render_templates(text)
+}
+
+fn render_sortname_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let first = positional.first().map(|s| s.trim()).unwrap_or("");
+    let last = positional.get(1).map(|s| s.trim()).unwrap_or("");
+    let target = positional.get(2).map(|s| s.trim()).unwrap_or("");
+    let nolink = named
+        .get("nolink")
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .is_some();
+
+    let mut full_name = String::new();
+    if !first.is_empty() && !last.is_empty() {
+        full_name = format!("{} {}", first, last);
+    } else if !first.is_empty() {
+        full_name = first.to_string();
+    } else if !last.is_empty() {
+        full_name = last.to_string();
+    }
+
+    if nolink || full_name.is_empty() {
+        render_templates(&full_name)
+    } else if !target.is_empty() {
+        format!("[[{target}|{}]]", render_templates(&full_name))
+    } else {
+        format!("[[{0}|{0}]]", render_templates(&full_name))
+    }
+}
+
+fn format_wiki_date(
+    year: Option<&str>,
+    month: Option<&str>,
+    day: Option<&str>,
+    df: bool,
+) -> Option<String> {
+    let y = year?.trim();
+    if y.is_empty() {
+        return None;
+    }
+
+    let m = month.map(|s| s.trim()).filter(|s| !s.is_empty());
+    let d = day.map(|s| s.trim()).filter(|s| !s.is_empty());
+
+    let months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
+
+    match (m, d) {
+        (Some(m_str), Some(d_str)) => {
+            if let (Ok(m_num), Ok(d_num)) = (m_str.parse::<usize>(), d_str.parse::<i32>()) {
+                if (1..=12).contains(&m_num) {
+                    let month_name = months[m_num - 1];
+                    if df {
+                        Some(format!("{} {} {}", d_num, month_name, y))
+                    } else {
+                        Some(format!("{} {}, {}", month_name, d_num, y))
+                    }
+                } else {
+                    Some(format!("{}-{}-{}", y, m_str, d_str))
+                }
+            } else {
+                Some(format!("{}-{}-{}", y, m_str, d_str))
+            }
+        }
+        (Some(m_str), None) => {
+            if let Ok(m_num) = m_str.parse::<usize>() {
+                if (1..=12).contains(&m_num) {
+                    Some(format!("{} {}", months[m_num - 1], y))
+                } else {
+                    Some(format!("{}-{}", y, m_str))
+                }
+            } else {
+                Some(format!("{}-{}", y, m_str))
+            }
+        }
+        _ => Some(y.to_string()),
+    }
+}
+
+fn render_start_date_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let df = template_param(&named, &["df"])
+        .map(|s| s.trim().to_lowercase())
+        .is_some_and(|s| s == "y" || s == "yes");
+
+    let y = positional.first().map(|s| s.as_str());
+    let m = positional.get(1).map(|s| s.as_str());
+    let d = positional.get(2).map(|s| s.as_str());
+
+    format_wiki_date(y, m, d, df).unwrap_or_default()
+}
+
+fn render_start_and_end_dates_template(params: &str) -> String {
+    let positional = template_positional_params(params);
+    let named = template_named_params(params);
+    let df = template_param(&named, &["df"])
+        .map(|s| s.trim().to_lowercase())
+        .is_some_and(|s| s == "y" || s == "yes");
+
+    let (start_opt, end_opt) = match positional.len() {
+        len if len >= 6 => {
+            let start = format_wiki_date(
+                Some(&positional[0]),
+                Some(&positional[1]),
+                Some(&positional[2]),
+                df,
+            );
+            let end = format_wiki_date(
+                Some(&positional[3]),
+                Some(&positional[4]),
+                Some(&positional[5]),
+                df,
+            );
+            (start, end)
+        }
+        4 | 5 => {
+            let start = format_wiki_date(Some(&positional[0]), Some(&positional[1]), None, df);
+            let end = format_wiki_date(Some(&positional[2]), Some(&positional[3]), None, df);
+            (start, end)
+        }
+        2 | 3 => {
+            let start = format_wiki_date(Some(&positional[0]), None, None, df);
+            let end = format_wiki_date(Some(&positional[1]), None, None, df);
+            (start, end)
+        }
+        _ => {
+            let start = positional.first().and_then(|y| {
+                format_wiki_date(
+                    Some(y),
+                    positional.get(1).map(|s| s.as_str()),
+                    positional.get(2).map(|s| s.as_str()),
+                    df,
+                )
+            });
+            (start, None)
+        }
+    };
+
+    match (start_opt, end_opt) {
+        (Some(start), Some(end)) => format!("{} – {}", start, end),
+        (Some(start), None) => start,
+        (None, Some(end)) => end,
+        _ => String::new(),
+    }
+}
+
+fn render_steady_template(_params: &str) -> String {
+    "▬".to_string()
+}
+
+fn render_south_ossetia_note_template(_params: &str) -> String {
+    "[[South Ossetia]]'s status is disputed. It considers itself to be an independent state, but this is recognised by [[International recognition of Abkhazia and South Ossetia|only a few other countries]]. The [[Georgia (country)|Georgian]] government and most of the world's other states consider South Ossetia ''de jure'' a part of Georgia's territory.".to_string()
+}
+
+fn render_southeastern_europe_middle_ages_template(params: &str) -> String {
+    let named = template_named_params(params);
+    let chapter = named.get("chapter").map(|s| s.as_str()).unwrap_or("");
+    let chapter_url = named
+        .get("chapter-url")
+        .or_else(|| named.get("chapterurl"))
+        .map(|s| s.as_str())
+        .unwrap_or("");
+    let quote = named.get("quote").map(|s| s.as_str()).unwrap_or("");
+    let page = named.get("page").map(|s| s.as_str()).unwrap_or("");
+    let pages = named.get("pages").map(|s| s.as_str()).unwrap_or("");
+    let r_ref = named.get("ref").map(|s| s.as_str()).unwrap_or("");
+
+    let wikitext = format!(
+        "{{{{cite book | last=Curta | first=Florin | author-link=Florin Curta | title=Southeastern Europe in the Middle Ages, 500–1250 | year=2006 | location=Cambridge | publisher=Cambridge University Press | isbn=978-0-521-81539-0 | url=https://archive.org/details/southeasterneuro0000curt | url-access=registration | chapter={} | chapter-url={} | quote={} | page={} | pages={} | ref={} }}}}",
+        chapter, chapter_url, quote, page, pages, r_ref
+    );
+    render_templates(&wikitext)
+}
+
+fn render_srb_template(params: &str) -> String {
+    render_country_flag_template("Serbia", params)
+}
+
+fn render_sri_template(params: &str) -> String {
+    render_country_flag_template("Sri Lanka", params)
+}
+
+fn render_ssd_template(params: &str) -> String {
+    render_country_flag_template("South Sudan", params)
+}
+
+fn render_stp_template(params: &str) -> String {
+    render_country_flag_template("São Tomé and Príncipe", params)
+}
+
+fn render_sui_template(params: &str) -> String {
+    render_country_flag_template("Switzerland", params)
+}
+
+fn render_sur_template(params: &str) -> String {
+    render_country_flag_template("Suriname", params)
+}
+
+fn render_svk_template(params: &str) -> String {
+    render_country_flag_template("Slovakia", params)
+}
+
+fn render_svn_template(params: &str) -> String {
+    render_country_flag_template("Slovenia", params)
+}
+
+fn render_swe_template(params: &str) -> String {
+    render_country_flag_template("Sweden", params)
+}
+
+fn render_swi_template(params: &str) -> String {
+    render_country_flag_template("Switzerland", params)
+}
+
+fn render_swz_template(params: &str) -> String {
+    render_country_flag_template("Eswatini", params)
+}
+
+fn render_syc_template(params: &str) -> String {
+    render_country_flag_template("Seychelles", params)
+}
+
+fn render_syr_template(params: &str) -> String {
+    render_country_flag_template("Syria", params)
 }

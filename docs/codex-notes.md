@@ -1,5 +1,46 @@
 # Codex Session Notes
 
+## 2026-06-26 Handle S-Series Wikipedia Templates
+
+### Summary
+Handled all 96 templates listed in `s.txt` by checking their definitions on English Wikipedia where needed, adding active renderers for visible S-series templates, registering navigation and maintenance templates as recognized skips, writing separate unit tests for all newly implemented templates, and updating conversion documentation.
+
+### Decisions Made
+- Used the `handle-template` and `add-missing-templates-handle` skills.
+- Classified 49 templates as navigation/sidebars and appended them to `navigations.csv` (e.g., Sorbonne University, Soteriology, Spaceflight, etc.).
+- Classified 18 templates as silent/maintenance/cleanup templates and appended them to `silent.csv` (e.g., Sort under, Source?, static row numbers, etc.).
+- Sorted both CSV files using `./tools/sort.sh`.
+- Added active renderers in Rust for:
+  - Fixed character replacements: `"spaced en dash"`, `"spaced ndash"`, and `"spnd"` mapping to `" – "` in `get_fixed()` inside `mod.rs`.
+  - Date templates: `Start date` and `start and end date` / `start and end dates` (formatting start dates and date ranges with optional `df` Day Month Year formatting, using a private helper `format_wiki_date` in `formatting.rs`).
+  - Flag country shorthand codes: `SRB` (Serbia), `SRI` (Sri Lanka), `SSD` (South Sudan), `STP` (São Tomé and Príncipe), `SUI` (Switzerland), `SUR` (Suriname), `SVK` (Slovakia), `SVN` (Slovenia), `SWE` (Sweden), `SWI` (Switzerland), `SWZ` (Eswatini), `SYC` (Seychelles), `SYR` (Syria) mapping to `render_country_flag_template` in `formatting.rs` (and registered in `resolve_ioc_code_to_name`).
+  - Citations and bibliography: `StandardEbooks` (formats Standard Ebooks author/book/collection links), `Structurae` (formats Structurae database links for structures, persons, literature, or media), and `Southeastern Europe in the Middle Ages, 500–1250` (returns a formatted cite book template string).
+  - Trend-indicator icons: `steady` / `Steady` rendering `"▬"`.
+  - Politics and other: `South Ossetia-note` (standard political status note text), `surrender` (alias to `render_surrendered_template`), and `Switcher` (alias to `render_passthrough_template`).
+  - Sorting: `Sort` (renders display value) and `Sortname` (renders `first last` with optional link target).
+- Wrote separate unit tests for all implemented templates in `src/tests.rs`.
+- Kept all new helper functions private.
+
+### Files Changed
+- `src/silent.csv` [MODIFY]
+- `src/navigations.csv` [MODIFY]
+- `src/templates/mod.rs` [MODIFY]
+- `src/templates/formatting.rs` [MODIFY]
+- `src/templates/citation.rs` [MODIFY]
+- `src/tests.rs` [MODIFY]
+- `DEVELOPMENT.md` [MODIFY]
+- `docs/codex-notes.md` [MODIFY]
+
+### Tests Run
+- Checked formatting: `cargo fmt` (passed cleanly).
+- Checked compilation: `cargo check` (passed cleanly).
+- Checked warning lints: `cargo clippy --all-targets -- -D warnings` (passed cleanly).
+- Verified unit and integration tests: `cargo test` (all passed successfully).
+- Verified ignored tests: `cargo test --locked -- --ignored` (all passed successfully).
+
+### Pending Follow-Ups
+- None.
+
 ## 2026-06-26 Handle L-Series Wikipedia Templates
 
 ### Summary

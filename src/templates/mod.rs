@@ -76,6 +76,9 @@ fn get_fixed() -> HashMap<&'static str, &'static str> {
         ("nbndash", "–"),
         ("nbnd", "–"),
         ("en dash", "–"),
+        ("spaced en dash", " – "),
+        ("spaced ndash", " – "),
+        ("spnd", " – "),
         (
             "singular",
             "__WIKIPEDIA_TO_EPUB_ABBR_START__singular form__WIKIPEDIA_TO_EPUB_ABBR_VALUE__sg.__WIKIPEDIA_TO_EPUB_ABBR_END__",

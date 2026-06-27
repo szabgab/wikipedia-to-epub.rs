@@ -12057,3 +12057,148 @@ fn test_template_legend_striped() {
         "Label"
     );
 }
+
+#[test]
+fn test_template_spaced_en_dash() {
+    assert_eq!(render_templates("{{spaced en dash}}"), " – ");
+    assert_eq!(render_templates("{{spaced ndash}}"), " – ");
+    assert_eq!(render_templates("{{spnd}}"), " – ");
+}
+
+#[test]
+fn test_template_sort() {
+    assert_eq!(render_templates("{{sort|key|value}}"), "value");
+    assert_eq!(render_templates("{{sort|value}}"), "value");
+}
+
+#[test]
+fn test_template_sortname() {
+    assert_eq!(
+        render_templates("{{sortname|Jane|Doe}}"),
+        "[[Jane Doe|Jane Doe]]"
+    );
+    assert_eq!(
+        render_templates("{{sortname|Jane|Doe|Jane Doe (actress)}}"),
+        "[[Jane Doe (actress)|Jane Doe]]"
+    );
+    assert_eq!(
+        render_templates("{{sortname|Jane|Doe|nolink=1}}"),
+        "Jane Doe"
+    );
+}
+
+#[test]
+fn test_template_start_date() {
+    assert_eq!(
+        render_templates("{{Start date|2020|06|15}}"),
+        "June 15, 2020"
+    );
+    assert_eq!(
+        render_templates("{{Start date|2020|06|15|df=y}}"),
+        "15 June 2020"
+    );
+    assert_eq!(render_templates("{{Start date|2020|06}}"), "June 2020");
+    assert_eq!(render_templates("{{Start date|2020}}"), "2020");
+}
+
+#[test]
+fn test_template_start_and_end_dates() {
+    assert_eq!(
+        render_templates("{{start and end dates|2020|06|15|2021|07|20}}"),
+        "June 15, 2020 – July 20, 2021"
+    );
+    assert_eq!(
+        render_templates("{{start and end date|2020|06|15|2021|07|20|df=yes}}"),
+        "15 June 2020 – 20 July 2021"
+    );
+    assert_eq!(
+        render_templates("{{start and end dates|2020|06|2020|07}}"),
+        "June 2020 – July 2020"
+    );
+    assert_eq!(
+        render_templates("{{start and end dates|2020|2021}}"),
+        "2020 – 2021"
+    );
+}
+
+#[test]
+fn test_template_steady() {
+    assert_eq!(render_templates("{{steady}}"), "▬");
+    assert_eq!(render_templates("{{Steady}}"), "▬");
+}
+
+#[test]
+fn test_template_south_ossetia_note() {
+    assert!(
+        render_templates("{{South Ossetia-note}}")
+            .contains("[[South Ossetia]]'s status is disputed")
+    );
+}
+
+#[test]
+fn test_template_southeastern_europe_middle_ages() {
+    let rendered = render_templates("{{Southeastern Europe in the Middle Ages, 500–1250|page=42}}");
+    assert!(rendered.contains("Southeastern Europe in the Middle Ages, 500–1250"));
+    assert!(rendered.contains("Curta"));
+}
+
+#[test]
+fn test_template_standard_ebooks() {
+    assert_eq!(
+        render_templates(
+            "{{StandardEbooks|url=https://standardebooks.org/ebooks/leo-tolstoy/war-and-peace|name=War and Peace}}"
+        ),
+        "''[https://standardebooks.org/ebooks/leo-tolstoy/war-and-peace War and Peace]'' at [[Standard Ebooks]]"
+    );
+    assert_eq!(
+        render_templates(
+            "{{StandardEbooks|url=https://standardebooks.org/collections/sherlock-holmes|name=Sherlock Holmes}}"
+        ),
+        "[https://standardebooks.org/collections/sherlock-holmes A collection of Sherlock Holmes eBooks] at [[Standard Ebooks]]"
+    );
+}
+
+#[test]
+fn test_template_structurae() {
+    assert_eq!(
+        render_templates("{{Structurae|id=s0001859|name=Eiffel Tower}}"),
+        "[https://structurae.net/structures/s0001859 Eiffel Tower] at [[Structurae]]"
+    );
+    assert_eq!(
+        render_templates("{{Structurae|id=p0000001|name=Gustave Eiffel|type=person}}"),
+        "[https://structurae.net/persons/p0000001 Gustave Eiffel] at [[Structurae]]"
+    );
+}
+
+#[test]
+fn test_template_surrender() {
+    assert_eq!(
+        render_templates("{{surrender}}"),
+        "&nbsp;[[File:White flag icon.svg|14px|Surrendered|link=Surrender (military)]]"
+    );
+}
+
+#[test]
+fn test_template_switcher() {
+    assert_eq!(render_templates("{{Switcher|hello}}"), "hello");
+}
+
+#[test]
+fn test_template_country_flags_s() {
+    assert_eq!(render_templates("{{SRB}}"), "[[Serbia|Serbia]]");
+    assert_eq!(render_templates("{{SRI}}"), "[[Sri Lanka|Sri Lanka]]");
+    assert_eq!(render_templates("{{SSD}}"), "[[South Sudan|South Sudan]]");
+    assert_eq!(
+        render_templates("{{STP}}"),
+        "[[São Tomé and Príncipe|São Tomé and Príncipe]]"
+    );
+    assert_eq!(render_templates("{{SUI}}"), "[[Switzerland|Switzerland]]");
+    assert_eq!(render_templates("{{SUR}}"), "[[Suriname|Suriname]]");
+    assert_eq!(render_templates("{{SVK}}"), "[[Slovakia|Slovakia]]");
+    assert_eq!(render_templates("{{SVN}}"), "[[Slovenia|Slovenia]]");
+    assert_eq!(render_templates("{{SWE}}"), "[[Sweden|Sweden]]");
+    assert_eq!(render_templates("{{SWI}}"), "[[Switzerland|Switzerland]]");
+    assert_eq!(render_templates("{{SWZ}}"), "[[Eswatini|Eswatini]]");
+    assert_eq!(render_templates("{{SYC}}"), "[[Seychelles|Seychelles]]");
+    assert_eq!(render_templates("{{SYR}}"), "[[Syria|Syria]]");
+}
