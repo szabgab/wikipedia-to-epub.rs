@@ -30,7 +30,7 @@ cached = "2.0.2"
 xmlem = "0.4.1"
 
 [dev-dependencies]
-similar = "2.7.0"
+similar = "3.1.1"
 
 [lints.clippy]
 cargo        = { priority = -1, level = "deny" }
